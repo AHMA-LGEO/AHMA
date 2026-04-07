@@ -1,0 +1,248 @@
+import os
+import pandas as pd
+import numpy as np
+from pathlib import Path
+
+from sqlalchemy import create_engine, inspect, Column, Integer, String, Float, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError
+from utils import transform_geocode_master
+
+# Import all table preparation classes
+from dataprep.table2_prep import Table2DataPrep
+from dataprep.table3_prep import Table3DataPrep
+from dataprep.table4_prep import Table4DataPrep
+from dataprep.table8_prep import Table8DataPrep
+
+
+DB_DIR = Path(__file__).parent.parent / "source"
+
+class DBUploader:
+    """
+    Automated database uploader for census data tables.
+    Dynamically creates tables and uploads data from all preparation modules.
+    """
+
+    # Define table configurations: {method_name: table_name}
+    TABLE_CONFIGS = {
+        # Table 2 - Indigenous Communities
+        'table_2_1': 'table_2_1_indigenous_territory',
+        'table_2_2': 'table_2_2_metis_community',
+
+        # Table 3 - Indigenous Population
+        'table_3_1_1': 'table_3_1_1_indigenous_pop',
+        'table_3_1_2': 'table_3_1_2_indigenous_age',
+        'table_3_1_3': 'table_3_1_3_indigenous_location',
+        'table_3_1_4': 'table_3_1_4_registered_indian',
+        'table_3_4': 'table_3_4_indigenous_age_gender',
+
+        # Table 4 - Housing Tenure
+        'table_4_1': 'table_4_1_housing_tenure',
+        'table_4_2': 'table_4_2_breakdown_community',
+
+        # Table 8 - Core Housing Need
+        'table_8_1': 'table_8_1_core_housing_need',
+    }
+
+    def __init__(self, db_path):
+        """
+        Initialize DB Uploader.
+
+        Args:
+            master_geocode_filepath: Path to master geocode Excel file
+            db_path: Path to SQLite database file
+        """
+        self.db_path = db_path
+
+        # Initialize database
+        self.engine = create_engine(f'sqlite:///{self.db_path}')
+        self.db_base = declarative_base()
+        self.Session = sessionmaker(bind=self.engine)
+
+        # Initialize data preparation classes
+        self.table_2_prep = Table2DataPrep()
+        self.table_3_prep = Table3DataPrep()
+        self.table_4_prep = Table4DataPrep()
+        self.table_8_prep = Table8DataPrep()
+
+        # Store table classes
+        self.table_classes = {}
+        self.table_data = {}
+
+    def prepare_geocode_master(self):
+        """Load and transform geocode master file"""
+        print("Preparing geocode master...")
+        master_transformed = transform_geocode_master()
+        return master_transformed
+
+    def create_dynamic_table_class(self, table_name, df):
+        """
+        Dynamically create a SQLAlchemy table class based on DataFrame columns.
+
+        Args:
+            table_name: Name for the database table
+            df: DataFrame to infer schema from
+
+        Returns:
+            SQLAlchemy table class
+        """
+        columns = {'__tablename__': table_name}
+
+        # Add primary key
+        columns['pk'] = Column(Integer, primary_key=True, autoincrement=True)
+
+        # Infer column types from DataFrame
+        for col_name in df.columns:
+            col_type = df[col_name].dtype
+
+            if pd.api.types.is_integer_dtype(col_type):
+                columns[str(col_name)] = Column(Integer)
+            elif pd.api.types.is_float_dtype(col_type):
+                columns[str(col_name)] = Column(Float)
+            else:
+                # Default to Text for strings and mixed types
+                columns[str(col_name)] = Column(Text)
+
+        # Create the class dynamically
+        table_class = type(table_name, (self.db_base,), columns)
+        return table_class
+
+    def prepare_all_tables(self):
+        """Prepare all tables from data preparation modules"""
+        print("=" * 60)
+        print("Starting table preparation...")
+        print("=" * 60)
+
+        # Geocode master
+        self.table_data['geocode_master'] = self.prepare_geocode_master()
+
+        # Table 2
+        self.table_data['table_2_1'] = self.table_2_prep.table_2_1()
+        self.table_data['table_2_2'] = self.table_2_prep.table_2_2()
+
+        # Table 3
+        self.table_data['table_3_1_1'] = self.table_3_prep.table_3_1_1()
+        self.table_data['table_3_1_2'] = self.table_3_prep.table_3_1_2()
+        self.table_data['table_3_1_3'] = self.table_3_prep.table_3_1_3()
+        self.table_data['table_3_1_4'] = self.table_3_prep.table_3_1_4()
+        self.table_data['table_3_4'] = self.table_3_prep.table_3_4()
+
+        # Table 4
+        self.table_data['table_4_1'] = self.table_4_prep.table_4_1()
+        self.table_data['table_4_2'] = self.table_4_prep.table_4_2()
+
+        # Table 8
+        self.table_data['table_8_1'] = self.table_8_prep.table_8_1()
+
+        print("\n" + "=" * 60)
+        print("All tables prepared successfully!")
+        print("=" * 60)
+
+    def create_all_table_classes(self):
+        """Create SQLAlchemy table classes for all prepared data"""
+        print("\nCreating database table schemas...")
+
+        # Geocode master
+        self.table_classes['geocode_master'] = self.create_dynamic_table_class(
+            'geocode_master',
+            self.table_data['geocode_master']
+        )
+
+        # All other tables
+        for method_name, table_name in self.TABLE_CONFIGS.items():
+            if method_name in self.table_data:
+                self.table_classes[method_name] = self.create_dynamic_table_class(
+                    table_name,
+                    self.table_data[method_name]
+                )
+
+        # Create all tables in database
+        self.db_base.metadata.create_all(self.engine)
+
+        self.engine.dispose()  # Close all connections
+
+        inspector = inspect(self.engine)
+        created_tables = inspector.get_table_names()
+        print(f"Created {len(created_tables)} tables in database: {created_tables}")
+
+    def insert_data(self, df, table_class, table_name):
+        """
+        Insert DataFrame data into database table.
+
+        Args:
+            df: DataFrame to insert
+            table_class: SQLAlchemy table class
+            table_name: Name of table (for logging)
+        """
+        session = self.Session()
+
+        try:
+            # Replace '--' and similar placeholders with NaN
+            df = df.replace(['--', 'x', 'X', '..'], np.nan)
+
+            # Convert DataFrame to list of dictionaries
+            records = []
+            for _, row in df.iterrows():
+                data = {str(k): v for k, v in row.to_dict().items()}
+                records.append(table_class(**data))
+
+            if records:
+                session.bulk_save_objects(records)
+                session.commit()
+                print(f"Inserted {len(records)} rows into {table_name}")
+            else:
+                print(f"NO DATA TO INSERT FOR {table_name}")
+
+        except IntegrityError as e:
+            session.rollback()
+            print(f"INTEGRITY ERROR in {table_name}: {e}")
+
+        except Exception as e:
+            session.rollback()
+            print(f"ERROR in {table_name}: {e}")
+
+        finally:
+            session.close()
+
+    def upload_all_tables(self):
+        """Upload all prepared data to database"""
+        print("\n" + "=" * 60)
+        print("Starting database upload...")
+        print("=" * 60 + "\n")
+
+        # Upload geocode master
+        print("Uploading geocode_master...")
+        self.insert_data(
+            self.table_data['geocode_master'],
+            self.table_classes['geocode_master'],
+            'geocode_master'
+        )
+
+        # Upload all other tables
+        for method_name, table_name in self.TABLE_CONFIGS.items():
+            if method_name in self.table_data and method_name in self.table_classes:
+                print(f"\nUploading {table_name}...")
+                self.insert_data(
+                    self.table_data[method_name],
+                    self.table_classes[method_name],
+                    table_name
+                )
+
+        print("\n" + "=" * 60)
+        print("Database upload complete!")
+        print("=" * 60)
+
+    def run(self):
+        """Main execution method"""
+        self.prepare_all_tables()
+        self.create_all_table_classes()
+        self.upload_all_tables()
+
+
+# Usage
+if __name__ == "__main__":
+    uploader = DBUploader(
+        db_path=os.path.join(DB_DIR, "ahma.db")
+    )
+    uploader.run()
