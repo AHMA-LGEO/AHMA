@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 # Database configuration
-DB_DIR = Path(__file__).parent.parent.parent / "source"
+DB_DIR = Path(__file__).parent.parent / "source"
 DB_PATH = os.path.join(DB_DIR, "ahma.db")
 
 # Province configuration
@@ -53,8 +53,14 @@ TABLE_COLORS = {
     'border': '#FFFFFF'
 }
 
+CHART_COLORS = ['#D0B46A', '#9CA37A', '#C97A63', '#85A7B2',
+                '#D89A86', '#4B6470', '#80875C', '#b55438',
+                '#1d353d', '#5b2a1c', '#7d6c40', '#4d5137', '#000000']
+
+TABLE_FONT = 'Bahnschrift'
+
 # Map data paths
-MAP_DATA_DIR = Path(__file__).parent.parent.parent / "source" / "mapdata_simplified"
+MAP_DATA_DIR = Path(__file__).parent.parent / "source" / "mapdata_simplified"
 PROVINCE_SHAPEFILE = MAP_DATA_DIR / "province.shp"
 REGION_DATA_DIR = MAP_DATA_DIR / "region_data"
 SUBREGION_DATA_DIR = MAP_DATA_DIR / "subregion_data"

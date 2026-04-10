@@ -5,9 +5,9 @@ import json
 import numpy as np
 import plotly.graph_objects as go
 from helpers.page1_helpers.data_loader import DataLoader
-from helpers.page1_helpers.config import (
-    MAP_COLORS_WO_BLACK, MAP_COLORS_W_BLACK, MAP_COLORS_HIGHLIGHT,
-    MAP_COLORS_HIGHLIGHT_W_BLACK, OPACITY_VALUE, MODEBAR_COLOR,
+from helpers.config import (
+    MAP_COLORS_WO_BLACK, MAP_COLORS_HIGHLIGHT,
+    OPACITY_VALUE, MODEBAR_COLOR,
     MODEBAR_ACTIVECOLOR, PROVINCE_CODE
 )
 
