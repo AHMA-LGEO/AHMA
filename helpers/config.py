@@ -34,12 +34,23 @@ MODEBAR_ACTIVECOLOR = '#044762'
 
 # Default selection
 DEFAULT_GEOGRAPHY = 'Vancouver CY (CSD, BC)'
+DEFAULT_GEOCODE = 5915022  # Vancouver
 
 # Plotly configuration
 PLOT_CONFIG = {
     'displayModeBar': True,
     'displaylogo': False,
     'modeBarButtonsToRemove': ['zoom', 'lasso2d', 'pan', 'select', 'autoScale', 'resetScale', 'resetViewMapbox']
+}
+
+# Page 2 - Table styling
+TABLE_COLORS = {
+    'geography': '#80875C',
+    'headings': '#B5BA9A',
+    'row_alt_1': '#E6E8DD',
+    'row_alt_2': '#CDD0BB',
+    'text': '#000000',
+    'border': '#FFFFFF'
 }
 
 # Map data paths

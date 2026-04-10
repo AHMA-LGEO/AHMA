@@ -30,6 +30,7 @@ class Table4DataPrep:
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
 
+
             for tenure_type, year_hh_map in cm.TABLE_4_1_COL_MAP.items():
                 for hh_type in HH_TYPES:
                     row = {

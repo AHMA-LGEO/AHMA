@@ -27,7 +27,7 @@ def clean_val(val):
     """Replace 'x' and '..' suppressed values with NaN."""
     if pd.isna(val):
         return None
-    if str(val).strip().lower() == "x" or str(val).strip().lower() == "..":
+    if str(val).strip().lower() == "x" or str(val).strip().lower() == ".." or str(val).strip().lower() == "...":
         return None
     return val
 
