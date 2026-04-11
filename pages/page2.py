@@ -4,6 +4,7 @@ Dashboard page 2: Housing needs tables and analysis.
 from dash import dcc, html, Input, Output, State, callback, ALL
 import dash_bootstrap_components as dbc
 
+from helpers.page2_helpers.table_2 import Table2Prep
 from helpers.page2_helpers.table_4 import Table4Prep
 # from helpers.page2_helpers.table_4_2_prep import Table42Prep
 # from helpers.page2_helpers.chart_4_prep import Chart4Prep
@@ -13,9 +14,10 @@ from helpers.page2_helpers.text_content import (
 from helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
 
 # Initialize helpers
+table_2_layout = Table2Prep()
 table_4_layout = Table4Prep()
 
-# Table IDs — add new table IDs here as page 2 grows
+# Table IDs — add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1"]
 
 
@@ -90,6 +92,12 @@ layout = html.Div([
             ], style={'fontFamily': 'Bahnschrift'})
         ], className='muni-reg-text-lgeo'),
 
+        # Section 2 – Nations / Territories and Métis Communities
+        html.Div([
+            html.Div(id='section-2-1-container'),
+            html.Div(id='section-2-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
         # Table 4.1 Section
         html.Div([
             html.Div([
@@ -128,7 +136,7 @@ layout = html.Div([
 ], className='content-container-fullpage')
 
 
-# Callback 1: Any local switch → rebuild visibility store + derive global state (incl. mixed)
+# Any local switch → rebuild visibility store + derive global state (incl. mixed)
 @callback(
     Output("table-visibility-store", "data"),
     Output("global-toggle-btn", "children"),
@@ -151,7 +159,7 @@ def local_toggle_state(toggle_values):
     return new_store, btn_label, btn_color, new_intent
 
 
-# Callback 2: Global button click → set all switches + update store + button state
+# Global button click → set all switches + update store + button state
 @callback(
     Output("table-visibility-store", "data", allow_duplicate=True),
     Output("global-toggle-btn", "children", allow_duplicate=True),
@@ -174,7 +182,42 @@ def global_toggle_click(_, current_intent):
     return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
 
 
-# Callback 3: Table update — reads show_both from visibility store
+# Section 2 – Nations / Territories + Métis Communities
+@callback(
+    Output('section-2-1-container', 'children'),
+    Output('section-2-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+)
+def update_section_2(geo_name, scale):
+    if geo_name is None:
+        from helpers.config import DEFAULT_GEOGRAPHY
+        geo_name = DEFAULT_GEOGRAPHY
+
+    geocode = table_2_layout.data_loader.get_geocode(geo_name)
+
+    if geocode is None:
+        geocode = DEFAULT_GEOCODE
+    else:
+        try:
+            geocode = int(geocode)
+        except (ValueError, TypeError):
+            geocode = DEFAULT_GEOCODE
+
+    if scale == 'to-region-1':
+        region = table_2_layout.data_loader.get_region_geocode(geocode)
+        geocode = int(region) if region is not None else geocode
+    elif scale == 'to-province-1':
+        province = table_2_layout.data_loader.get_province_geocode(geocode)
+        geocode = int(province) if province is not None else geocode
+
+    return (
+        table_2_layout.create_section_2_1_layout(geocode),
+        table_2_layout.create_section_2_2_layout(geocode),
+    )
+
+
+# Table update — reads show_both from visibility store
 @callback(
     Output('table-4-1-container', 'children'),
     Output('chart-4-1-container', 'children'),
@@ -216,6 +259,8 @@ def update_table_4_1(geo_name, scale, visibility):
     )
     
     return table_layout, chart_layout
+
+
 
 
 # @callback(

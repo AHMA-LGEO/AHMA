@@ -62,3 +62,19 @@ class Page2DataLoader:
         if not match.empty:
             return match['Province_Code'].iloc[0]
         return None
+
+    def filter_by_geocode(self, df: pd.DataFrame, geocode: int,
+                          col: str = 'Geocode') -> pd.DataFrame:
+        """
+        Filter a DataFrame by geocode, tolerating int/str type mismatches.
+
+        Args:
+            df:      DataFrame to filter
+            geocode: Integer geocode to match
+            col:     Column name to filter on (default 'Geocode')
+
+        Returns:
+            Filtered DataFrame (may be empty)
+        """
+        mask = (df[col] == geocode) | (df[col] == str(geocode))
+        return df[mask]
