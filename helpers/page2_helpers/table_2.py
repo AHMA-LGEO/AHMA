@@ -60,24 +60,8 @@ class Table2Prep:
         """
         nations = self._get_nations(geocode)
         count = len(nations)
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
         count_badge = html.Div(
-        #     [
-        #     html.Span(
-        #         f"{count} Indigenous Nation{'s' if count != 1 else ''} / {'Territories' if count != 1 else 'Territory'}",
-        #         style={
-        #             'backgroundColor': TABLE_COLORS['geography'],
-        #             'color': '#FFFFFF',
-        #             'fontWeight': 'bold',
-        #             'fontFamily': TABLE_FONT,
-        #             'padding': '6px 14px',
-        #             'borderRadius': '4px',
-        #             'display': 'inline-block',
-        #             'marginBottom': '12px',
-        #         }
-        #     )
-        # ]
         f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
         style={'fontFamily': TABLE_FONT, 'color': '#000000'}
         )
@@ -88,25 +72,6 @@ class Table2Prep:
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
             )
         else:
-            # df_display = pd.DataFrame({'Indigenous Nation / Territory': nations})
-            # base_style = get_base_table_style()
-            # base_style['style_header'] = {
-            #     **base_style.get('style_header', {}),
-            #     'textAlign': 'left',
-            #     'backgroundColor': TABLE_COLORS['geography'],
-            #     'color': '#FFFFFF',
-            # }
-            # body = dash_table.DataTable(
-            #     id='table-2-1',
-            #     columns=[{'name': geo_name, 'id': 'Indigenous Nation / Territory'}],
-            #     data=df_display.to_dict('records'),
-            #     style_data_conditional=generate_style_data_conditional(df_display),
-            #     style_cell_conditional=[{
-            #         'if': {'column_id': 'Indigenous Nation / Territory'},
-            #         'textAlign': 'left',
-            #     }],
-            #     **base_style,
-            # )
             body = html.Div(
                 f"{', '.join(nations)}",
                 style={'fontFamily': TABLE_FONT, 'color': '#000000'}
@@ -114,7 +79,6 @@ class Table2Prep:
 
         return html.Div([
             html.H4(TABLE_2_1_TITLE, className='table-title'),
-            # html.H6(TABLE_2_1_DESC, className='table-desc'),
             count_badge,
             body,
         ], className='pg2-table-lgeo')
@@ -148,24 +112,6 @@ class Table2Prep:
             Dash HTML Div
         """
         communities = self._get_metis(geocode)
-        # count = len(communities)
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        # count_badge = html.Div([
-        #     html.Span(
-        #         f"{count} Métis {'Communities' if count != 1 else 'Community'}",
-        #         style={
-        #             'backgroundColor': TABLE_COLORS['geography'],
-        #             'color': '#FFFFFF',
-        #             'fontWeight': 'bold',
-        #             'fontFamily': TABLE_FONT,
-        #             'padding': '6px 14px',
-        #             'borderRadius': '4px',
-        #             'display': 'inline-block',
-        #             'marginBottom': '12px',
-        #         }
-        #     )
-        # ])
 
         if not communities:
             body = html.Div(
@@ -173,33 +119,12 @@ class Table2Prep:
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
             )
         else:
-            # df_display = pd.DataFrame({'Métis Community': communities})
-            # base_style = get_base_table_style()
-            # base_style['style_header'] = {
-            #     **base_style.get('style_header', {}),
-            #     'textAlign': 'left',
-            #     'backgroundColor': TABLE_COLORS['geography'],
-            #     'color': '#FFFFFF',
-            # }
-            # body = dash_table.DataTable(
-            #     id='table-2-2',
-            #     columns=[{'name': geo_name, 'id': 'Métis Community'}],
-            #     data=df_display.to_dict('records'),
-            #     style_data_conditional=generate_style_data_conditional(df_display),
-            #     style_cell_conditional=[{
-            #         'if': {'column_id': 'Métis Community'},
-            #         'textAlign': 'left',
-            #     }],
-            #     **base_style,
-            # )
             body = html.Div(
                 f"{', '.join(communities)}",
                 style={'fontFamily': TABLE_FONT, 'color': '#000000'}
             )
 
         return html.Div([
-            # html.H4(TABLE_2_2_TITLE, className='table-title'),
             html.Div(TABLE_2_2_DESC, className='table-desc'),
-            # count_badge,
             body,
         ], className='pg2-table-lgeo')

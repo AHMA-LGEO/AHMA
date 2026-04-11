@@ -29,8 +29,6 @@ def derive_global_state(store: dict) -> str:
     if not any(values):
         return "all_off"
     return "mixed"
-# table_4_2_prep = Table42Prep()
-# chart_4_prep = Chart4Prep()
 
 
 def global_toggle_ui():
@@ -116,8 +114,8 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-4-1-container'),
             html.Div(id='chart-4-1-container'),
+            html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Table 4.2 Section (Indigenous only)
@@ -219,8 +217,8 @@ def update_section_2(geo_name, scale):
 
 # Table update — reads show_both from visibility store
 @callback(
-    Output('table-4-1-container', 'children'),
     Output('chart-4-1-container', 'children'),
+    Output('table-4-1-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -258,7 +256,7 @@ def update_table_4_1(geo_name, scale, visibility):
         config=PLOT_CONFIG
     )
     
-    return table_layout, chart_layout
+    return chart_layout, table_layout
 
 
 
