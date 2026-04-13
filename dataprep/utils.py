@@ -70,6 +70,7 @@ def transform_geocode_master() -> pd.DataFrame:
     """
 
     # Taking example table to fetch all geocodes across different years
+    # TODO: Himalya to check, if this needs to be replaced with IHNAT sheets, as they more geographies???
     dfs = {
         "2006": fetch_data("3.1.1", sheets=["2006_Indig_Profile"]),
         "2011": fetch_data("3.1.1", sheets=["2011_Indig_Profile"]),

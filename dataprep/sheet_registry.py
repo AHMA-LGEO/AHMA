@@ -23,7 +23,7 @@ def _resolve_data_path() -> Path:
 
 
 DATA_PATH = _resolve_data_path()
-ANCHOR_COLS = ["Geocode", "Geography"]
+ANCHOR_COLS = ["Geocode", "Geography", "Name", "Region"] # For some sheet it is Name or Region instead of Geography
 # DATA_PATH = r"L:\Projects\25092 - AHMA Dashboard\Source\2026-03-25 IHNAT Data v5.xlsx"
 
 # How many header rows each sheet has before actual data starts.
@@ -178,12 +178,17 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
         for col in frame.columns:
             if col in ANCHOR_COLS:
                 continue
+
             if col in col_seen:
                 new_name = f"{col}_{sheet_name}"
                 rename_map[col] = new_name
                 print(f"[WARN] '{col}' conflict between '{col_seen[col]}' and '{sheet_name}' → renamed to '{new_name}'")
+            # elif col in ['Region', 'Name']: # Renaming Region or Name column to Geography
+            #     new_name = 'Geography'
+            #     rename_map[col] = new_name
             else:
                 col_seen[col] = sheet_name
+
         frames[sheet_name] = frame.rename(columns=rename_map)
 
     # Step 3: merging all data on geocode column
@@ -207,3 +212,8 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
         result = result[result['Geocode'] == geo]
 
     return result.reset_index(drop=True)
+
+
+# if __name__ == '__main__':
+    
+#     a = fetch_data("9.1", sheets=["BC Corrections"])
