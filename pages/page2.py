@@ -6,6 +6,7 @@ import dash_bootstrap_components as dbc
 
 from helpers.page2_helpers.table_2 import Table2Prep
 from helpers.page2_helpers.table_4 import Table4Prep
+from helpers.page2_helpers.table_8 import Table8Prep
 # from helpers.page2_helpers.table_4_2_prep import Table42Prep
 # from helpers.page2_helpers.chart_4_prep import Chart4Prep
 from helpers.page2_helpers.text_content import (
@@ -16,9 +17,10 @@ from helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
 # Initialize helpers
 table_2_layout = Table2Prep()
 table_4_layout = Table4Prep()
+table_8_layout = Table8Prep()
 
 # Table IDs — add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1"]
+TABLE_IDS = ["table-4-1", "table-8-1"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -118,6 +120,28 @@ layout = html.Div([
             html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        # Table 8.1 Section
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': 'Bahnschrift'}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-8-1"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='chart-8-1-container'),
+            html.Div(id='table-8-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
         # Table 4.2 Section (Indigenous only)
         # html.Div(
         #     id='table-4-2-container',
@@ -188,27 +212,7 @@ def global_toggle_click(_, current_intent):
     Input('area-scale-store', 'data'),
 )
 def update_section_2(geo_name, scale):
-    if geo_name is None:
-        from helpers.config import DEFAULT_GEOGRAPHY
-        geo_name = DEFAULT_GEOGRAPHY
-
-    geocode = table_2_layout.data_loader.get_geocode(geo_name)
-
-    if geocode is None:
-        geocode = DEFAULT_GEOCODE
-    else:
-        try:
-            geocode = int(geocode)
-        except (ValueError, TypeError):
-            geocode = DEFAULT_GEOCODE
-
-    if scale == 'to-region-1':
-        region = table_2_layout.data_loader.get_region_geocode(geocode)
-        geocode = int(region) if region is not None else geocode
-    elif scale == 'to-province-1':
-        province = table_2_layout.data_loader.get_province_geocode(geocode)
-        geocode = int(province) if province is not None else geocode
-
+    geocode = _resolve_geocode(geo_name, scale, table_2_layout.data_loader)
     return (
         table_2_layout.create_section_2_1_layout(geocode),
         table_2_layout.create_section_2_2_layout(geocode),
@@ -226,26 +230,7 @@ def update_section_2(geo_name, scale):
 def update_table_4_1(geo_name, scale, visibility):
     """Update Table 4.1 and Chart based on selection."""
     show_both = (visibility or {}).get("table-4-1", False)
-    if geo_name is None:
-        from helpers.config import DEFAULT_GEOGRAPHY
-        geo_name = DEFAULT_GEOGRAPHY
-
-    geocode = table_4_layout.data_loader.get_geocode(geo_name)
-
-    if geocode is None:
-        geocode = DEFAULT_GEOCODE
-    else:
-        try:
-            geocode = int(geocode)
-        except (ValueError, TypeError):
-            geocode = DEFAULT_GEOCODE
-
-    if scale == 'to-region-1':
-        region = table_4_layout.data_loader.get_region_geocode(geocode)
-        geocode = int(region) if region is not None else geocode
-    elif scale == 'to-province-1':
-        province = table_4_layout.data_loader.get_province_geocode(geocode)
-        geocode = int(province) if province is not None else geocode
+    geocode = _resolve_geocode(geo_name, scale, table_4_layout.data_loader)
 
     table_layout = table_4_layout.create_table_4_1_layout(geocode, show_both)
     chart_fig = table_4_layout.create_chart_4_1(geocode)
@@ -259,6 +244,24 @@ def update_table_4_1(geo_name, scale, visibility):
     return chart_layout, table_layout
 
 
+@callback(
+    Output('chart-8-1-container', 'children'),
+    Output('table-8-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+    Input('table-visibility-store', 'data'),
+)
+def update_table_8_1(geo_name, scale, visibility):
+    """Update Table 8.1 and Chart 8.1 based on geography selection."""
+    show_both = (visibility or {}).get("table-8-1", False)
+    geocode = _resolve_geocode(geo_name, scale, table_8_layout.data_loader)
+
+    table = table_8_layout.create_table_8_1_layout(geocode, show_both)
+    chart_fig = table_8_layout.create_chart_8_1(geocode)
+
+    chart = dcc.Graph(id='chart-8-1', figure=chart_fig, config=PLOT_CONFIG)
+
+    return chart, table
 
 
 # @callback(
@@ -291,3 +294,30 @@ def update_table_4_1(geo_name, scale, visibility):
 
 #     # Create table
 #     return table_4_2_prep.create_table_layout(geocode)
+
+
+# Helper function to share geocode resolution logic
+def _resolve_geocode(geo_name, scale, data_loader):
+    if geo_name is None:
+        from helpers.config import DEFAULT_GEOGRAPHY
+        geo_name = DEFAULT_GEOGRAPHY
+
+    geocode = data_loader.get_geocode(geo_name)
+
+    if geocode is None:
+        geocode = DEFAULT_GEOCODE
+    else:
+        try:
+            geocode = int(geocode)
+        except (ValueError, TypeError):
+            geocode = DEFAULT_GEOCODE
+
+    if scale == 'to-region-1':
+        region = data_loader.get_region_geocode(geocode)
+        geocode = int(region) if region is not None else geocode
+    elif scale == 'to-province-1':
+        province = data_loader.get_province_geocode(geocode)
+        geocode = int(province) if province is not None else geocode
+
+    return geocode
+

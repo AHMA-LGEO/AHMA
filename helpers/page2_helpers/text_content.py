@@ -22,3 +22,7 @@ TABLE_4_1_DESC = "Some dummy description for table 4.1..."
 # Table 4.2 descriptions
 TABLE_4_2_TITLE = "4.2 Indigenous HHs by Communities by Tenure (2006-2021)"
 TABLE_4_2_DESC = "Some dummy description for table 4.2..."
+
+# Table 8.1 descriptions
+TABLE_8_1_TITLE = "8.1 Housing Need Indicators"
+TABLE_8_1_DESC = "Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"

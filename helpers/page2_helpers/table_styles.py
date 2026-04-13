@@ -27,7 +27,8 @@ def generate_style_data_conditional(data: pd.DataFrame) -> list:
     return data_style
 
 
-def generate_style_header_conditional(columns: list, is_multiindex: bool = False) -> list:
+def generate_style_header_conditional(columns: list, is_multiindex: bool = False,
+                                      first_col_id: str = 'Households by Tenure') -> list:
     """
     Generate header styling for table columns.
 
@@ -37,8 +38,9 @@ def generate_style_header_conditional(columns: list, is_multiindex: bool = False
         header_index 2 – year / label row        → headings colour; first col → geography colour
 
     Args:
-        columns:      List of column definitions
+        columns:       List of column definitions
         is_multiindex: Whether columns use multi-level (list) names
+        first_col_id:  Column ID of the first (label) column to merge across header rows
 
     Returns:
         List of style dictionaries for DataTable style_header_conditional
@@ -73,19 +75,18 @@ def generate_style_header_conditional(columns: list, is_multiindex: bool = False
          'backgroundColor': TABLE_COLORS['headings'],
          'color': TABLE_COLORS['text']},
 
-        # Override first column (Households by Tenure) at rows 1 & 2
-        {**base, 'if': {'header_index': 1, 'column_id': 'Households by Tenure'},
+        # Override first column at rows 1 & 2 → geography colour (visually merged)
+        {**base, 'if': {'header_index': 1, 'column_id': first_col_id},
          'backgroundColor': TABLE_COLORS['geography'],
          'color': '#FFFFFF'},
-        {**base, 'if': {'header_index': 2, 'column_id': 'Households by Tenure'},
+        {**base, 'if': {'header_index': 2, 'column_id': first_col_id},
          'backgroundColor': TABLE_COLORS['geography'],
          'color': '#FFFFFF'},
 
         # Remove internal borders between the 3 header rows of the first column
-        # so they appear as one merged cell
-        {'if': {'header_index': 0, 'column_id': 'Households by Tenure'}, 'borderBottom': 'none'},
-        {'if': {'header_index': 1, 'column_id': 'Households by Tenure'}, 'borderTop': 'none', 'borderBottom': 'none'},
-        {'if': {'header_index': 2, 'column_id': 'Households by Tenure'}, 'borderTop': 'none'},
+        {'if': {'header_index': 0, 'column_id': first_col_id}, 'borderBottom': 'none'},
+        {'if': {'header_index': 1, 'column_id': first_col_id}, 'borderTop': 'none', 'borderBottom': 'none'},
+        {'if': {'header_index': 2, 'column_id': first_col_id}, 'borderTop': 'none'},
     ]
 
 
@@ -165,6 +166,92 @@ def style_cell_4_1(show_both: bool) -> list:
             'textAlign': 'left',
             'width': '40%',
             'minWidth': '160px',
+        }
+    ]
+    for y in year_cols:
+        styles.append({'if': {'column_id': f'indg_{y}'}, 'textAlign': 'right', 'width': year_width})
+        if show_both:
+            styles.append({'if': {'column_id': f'non_indg_{y}'}, 'textAlign': 'right', 'width': year_width})
+
+    return styles
+
+
+_T8_INDICATORS = {
+    "Affordability (Households paying >30% of income on shelter)",
+    "Adequacy (Households living in dwellings needing Major Repairs)",
+    "Suitability (Households living in overcrowded dwellings)",
+    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
+    "Acceptable Housing (Affordable, Adequate, and Suitable)",
+    "Total households (for reference)",
+}
+_T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"
+_T8_TOTAL = "Total households (for reference)"
+
+
+def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
+    """
+    Generate style_data_conditional entries for the special row types in Table 8.1:
+      Indicator section header rows  → geography colour, white, bold
+      'Below multiple' section header → warning colour (#b55438), white, bold
+      'Below multiple' metric rows    → red italic text
+      'Total households' section hdr  → headings colour, bold
+      ''  (blank separator)           → thin white row
+    """
+    styles = []
+    for i, (_, row) in enumerate(data.iterrows()):
+        val = row.get('Indicator', '')
+
+        if val in _T8_INDICATORS:
+            if val == _T8_BELOW_MULTIPLE:
+                styles.append({
+                    'if': {'row_index': i},
+                    'color': '#b55438',
+                    'fontWeight': 'bold',
+                })
+            elif val == _T8_TOTAL:
+                styles.append({
+                    'if': {'row_index': i},
+                    'backgroundColor': TABLE_COLORS['headings'],
+                    'color': TABLE_COLORS['text'],
+                    'fontWeight': 'bold',
+                })
+            else:
+                styles.append({
+                    'if': {'row_index': i},
+                    'backgroundColor': TABLE_COLORS['geography'],
+                    'color': '#FFFFFF',
+                    'fontWeight': 'bold',
+                })
+        elif val in ('__below_count__', '__below_pct__'):
+            styles.append({
+                'if': {'row_index': i},
+                'color': '#b55438',
+                'fontStyle': 'italic',
+            })
+        elif val == '':
+            styles.append({
+                'if': {'row_index': i},
+                'backgroundColor': '#FFFFFF',
+                'padding': '0px',
+                'lineHeight': '6px',
+                'minHeight': '6px',
+                'height': '6px',
+            })
+
+    return styles
+
+
+def style_cell_8_1(show_both: bool) -> list:
+    year_cols = ['2006', '2016', '2021']
+    n_groups = 2 if show_both else 1
+    year_width = f'{round(60 / (n_groups * len(year_cols)), 1)}%'
+
+    styles = [
+        {
+            'if': {'column_id': 'Indicator'},
+            'textAlign': 'left',
+            'width': '40%',
+            'minWidth': '200px',
         }
     ]
     for y in year_cols:
