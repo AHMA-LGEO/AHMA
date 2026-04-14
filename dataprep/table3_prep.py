@@ -6,7 +6,14 @@ from dataprep.utils import build_master, get_val, sum_bands, pct, clean_val
 
 
 YEARS = ["2006", "2011", "2016", "2021"]
-gender_mapping = {
+TABLE_3_2_TOTAL_KEY = "Total - Age groups"
+TABLE_3_2_NON_INDIGENOUS_SUFFIX = "Non-indigenous"
+# Three named Indigenous identity groups with a 4th group ("Total - Age groups" section)
+# uses column names where both sides of '_' strip to the same age key
+# (e.g. "0 to 14 years_  0 to 14 years") — handled with pattern matching in table_3_2()
+TABLE_3_2_INDIGENOUS_SUFFIXES = ["First Nations", "Metis", "Multiple Indigenous responses"]
+
+GENDER_MAPPING = {
         'Total - Gender': 'Indigenous',
         '  Men+': 'Men+',
         '  Women+': 'Women+'
@@ -191,6 +198,77 @@ class Table3DataPrep:
         print("Table 3.1.4 is ready now...")
         return pd.DataFrame(rows)
 
+    def table_3_2(self) -> pd.DataFrame:
+        print("Processing Table 3.2 and 3.3...")
+
+        df_2021 = fetch_data("3.2-3.3", sheets=["2021_Indig_Profile"])
+
+        def find_col(df, age_key, identity):
+            """
+            Find all column where split on the first '_' gives: left.strip() == age_key  AND  right.strip() == identity.
+            Handles the "Total - Age groups" section whose columns appear as
+            e.g. '0 to 14 years_  0 to 14 years' (internal whitespace in suffix).
+            """
+            for col in df.columns:
+                idx = col.find('_')
+                if idx == -1:
+                    continue
+                if col[:idx].strip() == age_key and col[idx + 1:].strip() == identity:
+                    return col
+            return None
+
+        def sum_indigenous(df, age_key):
+            """
+            Sum counts from all 4 Indigenous groups for a given age key:
+              - 3 named groups (First Nations, Metis, Multiple Indigenous responses)
+              - "Total - Age groups" group: column where both sides strip to age_key
+            """
+            total = 0
+            found = False
+            for suffix in TABLE_3_2_INDIGENOUS_SUFFIXES:
+                val = get_val(df, find_col(df, age_key, suffix))
+                if val is not None and not np.isnan(val):
+                    total += val
+                    found = True
+            # 4th group: suffix strips to the same label as age_key
+            val_4th = get_val(df, find_col(df, age_key, age_key))
+            if val_4th is not None and not np.isnan(val_4th):
+                total += val_4th
+                found = True
+            return total if found else None
+
+        result = []
+        for _, geo_row in df_2021.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+            geo_df = df_2021[df_2021["Geocode"] == geocode].reset_index(drop=True)
+
+            # Denominators — total population for each group
+            non_indg_total = get_val(geo_df, find_col(geo_df, TABLE_3_2_TOTAL_KEY, TABLE_3_2_NON_INDIGENOUS_SUFFIX))
+            indg_total = sum_indigenous(geo_df, TABLE_3_2_TOTAL_KEY)
+
+            for age_key, age_label in cm.TABLE_3_2_COL_MAP.items():
+                non_indg_count = get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_NON_INDIGENOUS_SUFFIX))
+                indg_count = sum_indigenous(geo_df, age_key)
+
+                result.append({
+                    "Geocode": geocode,
+                    "Geography": geography,
+                    "Age Group": age_label,
+                    "Indigenous Count": indg_count,
+                    "Non-Indigenous Count": non_indg_count,
+                    "Indigenous %": pct(indg_count, indg_total),
+                    "Non-Indigenous %": pct(non_indg_count, non_indg_total),
+                    "First Nations": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[0])), # fetching 0th index = First Nations
+                    "Métis": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[1])), # fetching 1st index = Metis
+                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, age_key)), # weird pattern for inuit community??
+                    "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Multiple Other Responses
+                    
+                })
+
+        print("Table 3.2 and 3.3 is ready now...")
+        return pd.DataFrame(result)
+
 
     def table_3_4(self) -> pd.DataFrame:
         print("Processing Table 3.4...")
@@ -209,7 +287,7 @@ class Table3DataPrep:
                     'Age Group - Census 2021': age_label
                 }
 
-                for gender_census, gender_label in gender_mapping.items():
+                for gender_census, gender_label in GENDER_MAPPING.items():
                     # Find matching columns
                     pattern_parts = [age_census, gender_census, 'Indigenous identity']
                     matching_cols = [col for col in df_2021.columns
@@ -233,5 +311,11 @@ class Table3DataPrep:
             "3.1.2": self.table_3_1_2(),
             "3.1.3": self.table_3_1_3(),
             "3.1.4": self.table_3_1_4(),
+            "3.2": self.table_3_2(),
             "3.4": self.table_3_4()
         }
+    
+
+if __name__ == '__main__':
+    t = Table3DataPrep()
+    t.table_3_2()

@@ -102,6 +102,17 @@ TABLE_3_1_4_COL_MAP = strip_map({
     },
 })
 
+# Age bucket keys match the left-hand side of column names (e.g. "0 to 14 years_Non-indigenous")
+TABLE_3_2_COL_MAP = {
+    "0 to 14 years":     "0 - 14",
+    "15 to 24 years":    "15 - 24",
+    "25 to 34 years":    "25 - 34",
+    "35 to 44 years":    "35 - 44",
+    "45 to 54 years":    "45 - 54",
+    "55 to 64 years":    "55 - 64",
+    "65 years and over": "65+",
+}
+
 TABLE_3_4_COL_MAP = {
         '0 to 14 years': 'Under 15',
         '15 to 24 years': '15 - 24',

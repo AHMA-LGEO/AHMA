@@ -306,6 +306,6 @@ class Table4Prep:
             return format_number(value, decimals=0)
         
 
-if __name__ == "__main__":
-    t = Table4Prep()
-    t.create_chart_4_1(5915022)
+# if __name__ == "__main__":
+#     t = Table4Prep()
+#     t.create_chart_4_1(5915022)
