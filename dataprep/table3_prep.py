@@ -6,6 +6,7 @@ from dataprep.utils import build_master, get_val, sum_bands, pct, clean_val
 
 
 YEARS = ["2006", "2011", "2016", "2021"]
+YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 TABLE_3_2_TOTAL_KEY = "Total - Age groups"
 TABLE_3_2_NON_INDIGENOUS_SUFFIX = "Non-indigenous"
 # Three named Indigenous identity groups with a 4th group ("Total - Age groups" section)
@@ -303,6 +304,40 @@ class Table3DataPrep:
 
         print("Table 3.4 is ready now...")
         return result_df
+    
+
+    def table_3_5(self) -> pd.DataFrame:
+        print("Processing Table 3.5...")
+
+        # 2021 is split across two sheets: T1 and T2 (gender diverse).
+        dfs = {
+            "2006": fetch_data("3.5", sheets=["2006_IHNAT_T5"]),
+            "2016": fetch_data("3.5", sheets=["2016_IHNAT_T3"]),
+            "2021": fetch_data("3.5", sheets=["2021_IHNAT_T1", "2021_IHNAT_T2"]),
+        }
+
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for metric, year_col_map in cm.TABLE_3_5_COL_MAP.items():
+                row = {
+                    "Geocode": geocode,
+                    "Geography": geography,
+                    "Metric": metric,
+                }
+                for year in YEARS_MINUS_2011:
+                    df = dfs[year][dfs[year]["Geocode"] == geocode].reset_index(drop=True)
+                    col = year_col_map.get(year)
+                    raw = get_val(df, col) if col else None
+                    row[year] = clean_val(raw)
+                rows.append(row)
+
+        print("Table 3.5 is ready now...")
+        return pd.DataFrame(rows)
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Table 3 methods and returns {name:df}"
@@ -312,10 +347,11 @@ class Table3DataPrep:
             "3.1.3": self.table_3_1_3(),
             "3.1.4": self.table_3_1_4(),
             "3.2": self.table_3_2(),
+            "3.5": self.table_3_5(),
             "3.4": self.table_3_4()
         }
     
 
 if __name__ == '__main__':
     t = Table3DataPrep()
-    t.table_3_2()
+    t.table_3_5()

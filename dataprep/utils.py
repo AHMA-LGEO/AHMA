@@ -24,10 +24,10 @@ def build_master(dfs: dict) -> pd.DataFrame:
 
 
 def clean_val(val):
-    """Replace 'x' and '..' suppressed values with NaN."""
+    """Replace text values with NaN."""
     if pd.isna(val):
         return None
-    if str(val).strip().lower() == "x" or str(val).strip().lower() == ".." or str(val).strip().lower() == "...":
+    if str(val).strip().lower() in {"x", "..", "...", "n/a"}:
         return None
     return val
 

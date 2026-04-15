@@ -35,7 +35,7 @@ TABLE_3_1_1_COL_MAP = strip_map({
     # },
 })
 
-# Raw columns needed from each year to derive the 3 metrics
+
 TABLE_3_1_2_COL_MAP = strip_map({
     "Median Age": {
         "2006": "Median age of the Aboriginal identity population",
@@ -43,7 +43,7 @@ TABLE_3_1_2_COL_MAP = strip_map({
         "2016": "Median age of the Aboriginal identity population",
         "2021": "  Median age_Indigenous",
     },
-    # under 15 — 2006/2011 need individual bands summed, 2016/2021 have it direct
+    
     "under_15_direct": {
         "2016": "  0 to 14 years",
         "2021": "  0 to 14 years_Indigenous_Indigenous",
@@ -52,7 +52,7 @@ TABLE_3_1_2_COL_MAP = strip_map({
         "2006": ["   0 to 4 years", "   5 to 9 years", "   10 to 14 years"],
         "2011": ["  0 to 4 years", "  5 to 9 years", "  10 to 14 years"],
     },
-    # 65+ — 2006/2011 need bands summed, 2016/2021 have it direct
+    
     "over_65_direct": {
         "2016": "    65 years and over",
         "2021": "    65 years and over_Indigenous",
@@ -124,7 +124,49 @@ TABLE_3_4_COL_MAP = {
         'Total - Age groups': 'Total'
     }
 
-# Add to your column_mappings.py file
+
+TABLE_3_5_COL_MAP = strip_map({
+    "Youth-led (under 30)": {
+        "2006": "  29 years or less_Aboriginal household",
+        "2016": "  29 years or less_Aboriginal household",
+        "2021": "  29 years or less_Indigenous household",
+    },
+    "Senior-led (65+)": {
+        "2006": "  65 years and over_Aboriginal household",
+        "2016": "  65 years and over_Aboriginal household",
+        "2021": "  65 years and over_Indigenous household",
+    },
+    "Single-mother-led": {
+        "2006": "  With a lone parent that is a female_Aboriginal household",
+        "2016": "  With a lone parent that is a female_Aboriginal household",
+        "2021": "  With a one-parent that is a woman+_Indigenous household",
+    },
+    "Single-father-led": {
+        "2006": "  With a lone parent that is a male_Aboriginal household",
+        "2016": "  With a lone parent that is a male_Aboriginal household",
+        "2021": "  With a one-parent that is a man+_Indigenous household",
+    },
+    "HH with physical limitation": {
+        "2006": None, # no data in 2006
+        "2016": "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues_Aboriginal household",
+        "2021": "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues_Indigenous household",
+    },
+    "HH with cognitive limitation": {
+        "2006": None, # no data in 2006
+        "2016": "  Household has at least one person with activity limitations reported for Q11(d)_Aboriginal household",
+        "2021": "  Household has at least one person with activity limitations reported for Q18d only_Indigenous household",
+    },
+    "HH with mental or addictions limitation": {
+        "2006": None, # no data in 2006
+        "2016": "  Household has at least one person with activity limitations reported for Q11(e)_Aboriginal household",
+        "2021": "  Household has at least one person with activity limitations reported for Q18e only_Indigenous household",
+    },
+    "HH is gender diverse": {
+        "2006": None, # no data in 2006
+        "2016": None, # no data in 2006
+        "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)_Indigenous household",
+    },
+})
 
 TABLE_4_1_COL_MAP = strip_map({
     "Owner": {
@@ -307,7 +349,7 @@ TABLE_4_1_CALC_COLS = strip_map({
     }
 })
 
-# Breakdown by Indigenous communities
+
 TABLE_4_2_COL_MAP = strip_map({
     "Owner": {
         "First Nations": "Owner_First Nations-led",
@@ -326,7 +368,6 @@ TABLE_4_2_COL_MAP = strip_map({
     }
 })
 
-# Add to your column_mappings.py file
 
 TABLE_8_1_COL_MAP = strip_map({
     "Affordability (Households paying >30% of income on shelter)": {
