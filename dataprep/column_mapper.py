@@ -1,4 +1,4 @@
-from dataprep.utils import strip_map
+from utils import strip_map
 
 
 TABLE_3_1_1_COL_MAP = strip_map({
@@ -163,10 +163,39 @@ TABLE_3_5_COL_MAP = strip_map({
     },
     "HH is gender diverse": {
         "2006": None, # no data in 2006
-        "2016": None, # no data in 2006
+        "2016": None, # no data in 2016
         "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)_Indigenous household",
     },
 })
+
+# Derived from TABLE_3_5_COL_MAP by replacing the trailing household suffix with a community-specific suffix
+_T3_5_SOURCE_SUFFIX = {
+    "2006": "Aboriginal household",
+    "2016": "Aboriginal household",
+    "2021": "Indigenous household",
+}
+_T3_5_COMMUNITY_SUFFIX = {
+    "First Nations": {"2006": "First Nations-led", "2016": "First Nations-led", "2021": "First Nation-led"},
+    "Métis":         {"2006": "Metis-led",          "2016": "Metis-led",          "2021": "Metis-led"},
+    "Inuit":         {"2006": "Inuit-led",           "2016": "Inuit-led",          "2021": "Inuit-led"},
+}
+
+def _build_3_5_1_map():
+    result = {}
+    for metric, year_map in TABLE_3_5_COL_MAP.items():
+        result[metric] = {}
+        for community, suffixes in _T3_5_COMMUNITY_SUFFIX.items():
+            result[metric][community] = {}
+            for year, col in year_map.items():
+                if col is None:
+                    result[metric][community][year] = None
+                else:
+                    src = _T3_5_SOURCE_SUFFIX[year]
+                    tgt = suffixes[year]
+                    result[metric][community][year] = col.replace(src, tgt) if src in col else None
+    return result
+
+TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 TABLE_4_1_COL_MAP = strip_map({
     "Owner": {

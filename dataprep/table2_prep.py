@@ -1,5 +1,5 @@
 import pandas as pd
-from dataprep.sheet_registry import fetch_data
+from sheet_registry import fetch_data
 
 
 class Table2DataPrep:

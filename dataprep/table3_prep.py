@@ -1,12 +1,19 @@
 import pandas as pd
 import numpy as np
-import dataprep.column_mapper as cm
-from dataprep.sheet_registry import fetch_data
-from dataprep.utils import build_master, get_val, sum_bands, pct, clean_val
+import column_mapper as cm
+from sheet_registry import fetch_data
+from utils import (
+    build_master, 
+    get_val, 
+    sum_bands, 
+    pct, 
+    clean_val,
+    YEARS,
+    YEARS_MINUS_2011,
+    INDIGENOUS_COMMUNITIES)
 
 
-YEARS = ["2006", "2011", "2016", "2021"]
-YEARS_MINUS_2011 = ["2006", "2016", "2021"]
+
 TABLE_3_2_TOTAL_KEY = "Total - Age groups"
 TABLE_3_2_NON_INDIGENOUS_SUFFIX = "Non-indigenous"
 # Three named Indigenous identity groups with a 4th group ("Total - Age groups" section)
@@ -70,7 +77,7 @@ class Table3DataPrep:
             .reset_index(drop=True)
         )
 
-        print("Table 3.1.1 is ready now...")
+        print("Table 3.1.1 is ready now...\n" + '=' * 60)
         return result
 
     def table_3_1_2(self) -> pd.DataFrame:
@@ -125,7 +132,7 @@ class Table3DataPrep:
 
             rows.extend(derived.values())
 
-        print("Table 3.1.2 is ready now...")
+        print("Table 3.1.2 is ready now...\n" + '=' * 60)
         return pd.DataFrame(rows)
 
     def table_3_1_3(self):
@@ -160,7 +167,7 @@ class Table3DataPrep:
                     row[year] = clean_val(raw)
                 rows.append(row)
 
-        print("Table 3.1.3 is ready now...")
+        print("Table 3.1.3 is ready now...\n" + '=' * 60)
         return pd.DataFrame(rows)
 
     def table_3_1_4(self):
@@ -196,10 +203,10 @@ class Table3DataPrep:
                     row[year] = clean_val(raw)
                 rows.append(row)
 
-        print("Table 3.1.4 is ready now...")
+        print("Table 3.1.4 is ready now...\n" + '=' * 60)
         return pd.DataFrame(rows)
 
-    def table_3_2(self) -> pd.DataFrame:
+    def table_3_2_3_3(self) -> pd.DataFrame:
         print("Processing Table 3.2 and 3.3...")
 
         df_2021 = fetch_data("3.2-3.3", sheets=["2021_Indig_Profile"])
@@ -267,7 +274,7 @@ class Table3DataPrep:
                     
                 })
 
-        print("Table 3.2 and 3.3 is ready now...")
+        print("Table 3.2 and 3.3 are ready now...\n" + '=' * 60)
         return pd.DataFrame(result)
 
 
@@ -302,12 +309,12 @@ class Table3DataPrep:
 
         result_df = pd.DataFrame(result)
 
-        print("Table 3.4 is ready now...")
+        print("Table 3.4 is ready now...\n" + '=' * 60)
         return result_df
     
 
-    def table_3_5(self) -> pd.DataFrame:
-        print("Processing Table 3.5...")
+    def table_3_5_3_5_1(self) -> tuple[pd.DataFrame, pd.DataFrame]:
+        print("Processing Table 3.5 and Table 3.5.1...")
 
         # 2021 is split across two sheets: T1 and T2 (gender diverse).
         dfs = {
@@ -318,7 +325,8 @@ class Table3DataPrep:
 
         master = build_master(dfs)
 
-        rows = []
+        rows_3_5 = []
+        rows_3_5_1 = []
         for _, geo_row in master.iterrows():
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
@@ -334,24 +342,73 @@ class Table3DataPrep:
                     col = year_col_map.get(year)
                     raw = get_val(df, col) if col else None
                     row[year] = clean_val(raw)
-                rows.append(row)
+                rows_3_5.append(row)
 
-        print("Table 3.5 is ready now...")
-        return pd.DataFrame(rows)
+            for metric, comm_year_map in cm.TABLE_3_5_1_COL_MAP.items():
+                for community in INDIGENOUS_COMMUNITIES:
+                    row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        "Number of Indigenous HHs": metric,
+                        "Indigenous Community": community
+                    }
+                    col_name = comm_year_map.get(community)
+
+                    for year in YEARS_MINUS_2011:
+                        df = dfs[year]
+                        match = df[df["Geocode"] == geocode]
+
+                        if match.empty or col_name[year] not in df.columns:
+                            row[year] = None
+                        else:
+                            val = match[col_name[year]].iloc[0]
+                            row[year] = clean_val(val)
+
+                    rows_3_5_1.append(row)
+
+        print("Table 3.5 and Table 3.5.1 are ready now...\n" + '=' * 60)
+        return pd.DataFrame(rows_3_5), pd.DataFrame(rows_3_5_1)
+    
+    
+    def table_3_6(self) -> pd.DataFrame:
+        print("Processing Table 3.6...")
+
+        df_2021 = fetch_data("3.6", sheets=["2021_Indig_Profile"])
+        
+        # Renaming same columns, and removing unrelated one
+        df_2021.columns.values[-1] = 'Métis'
+        df_2021 = df_2021.drop('Métis_2021_Indig_Profile', axis=1)
+
+        
+        df_communities = df_2021.melt(id_vars=['Geocode', 'Geography'], 
+                               value_vars=df_2021.columns[2:], 
+                               var_name='Indigenous Ancestry, 2021', 
+                               value_name='# of People')
+        df_communities['Indigenous Ancestry, 2021'] = df_communities['Indigenous Ancestry, 2021'].str.strip()
+        df_communities = df_communities[~df_communities['Indigenous Ancestry, 2021'].isin(
+            ['North American Indigenous origins', 'First Nations (North American Indian) origins'])] # Removing not required communities
+        # TODO: Rename certain communities, example: n.o.s and n.i.e
+        
+        print("Table 3.6 is ready now...\n" + '=' * 60)
+        return df_communities.sort_values(by='Geocode')
+    
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Table 3 methods and returns {name:df}"
+        df_3_5, df_3_5_1 = self.table_3_5_3_5_1()
         return {
             "3.1.1": self.table_3_1_1(),
             "3.1.2": self.table_3_1_2(),
             "3.1.3": self.table_3_1_3(),
             "3.1.4": self.table_3_1_4(),
-            "3.2": self.table_3_2(),
-            "3.5": self.table_3_5(),
-            "3.4": self.table_3_4()
+            "3.2-3.3": self.table_3_2_3_3(),
+            "3.4": self.table_3_4(),
+            "3.5": df_3_5,
+            "3.5.1": df_3_5_1,
+            "3.6": self.table_3_6()
         }
     
 
-if __name__ == '__main__':
-    t = Table3DataPrep()
-    t.table_3_5()
+# if __name__ == '__main__':
+#     t = Table3DataPrep()
+#     t.table_3_6()

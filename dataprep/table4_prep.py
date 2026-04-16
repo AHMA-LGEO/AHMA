@@ -1,12 +1,18 @@
 import pandas as pd
 import numpy as np
-import dataprep.column_mapper as cm
-from dataprep.sheet_registry import fetch_data
-from dataprep.utils import build_master, get_val, sum_bands, pct, clean_val
+import column_mapper as cm
+from sheet_registry import fetch_data
+from utils import (
+    build_master, 
+    get_val, 
+    sum_bands, 
+    pct, 
+    clean_val,
+    YEARS,
+    YEARS_MINUS_2011,
+    HH_TYPES,
+    INDIGENOUS_COMMUNITIES)
 
-YEARS = ["2006", "2011", "2016", "2021"]
-HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
-INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
 
 class Table4DataPrep:
 
@@ -122,7 +128,7 @@ class Table4DataPrep:
                     }
                     col_name = community_map.get(community)
 
-                    for year in ["2006", "2016", "2021"]:
+                    for year in YEARS_MINUS_2011:
                         df = dfs[year]
                         match = df[df["Geocode"] == geocode]
 

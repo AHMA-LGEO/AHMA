@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
-from dataprep.sheet_registry import fetch_data
+from sheet_registry import fetch_data
 
+YEARS = ["2006", "2011", "2016", "2021"]
+YEARS_MINUS_2011 = ["2006", "2016", "2021"]
+HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
+INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""
     return {

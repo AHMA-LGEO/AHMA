@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-import dataprep.column_mapper as cm
-from dataprep.sheet_registry import fetch_data
-from dataprep.utils import build_master, get_val, sum_bands, pct, clean_val
+import column_mapper as cm
+from sheet_registry import fetch_data
+from utils import build_master, get_val, sum_bands, pct, clean_val
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 

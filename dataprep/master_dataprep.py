@@ -1,19 +1,19 @@
 import os
 import pandas as pd
 from pathlib import Path
-from dataprep.table2_prep import Table2DataPrep
-from dataprep.table3_prep import Table3DataPrep
-from dataprep.table4_prep import Table4DataPrep
-from dataprep.table8_prep import Table8DataPrep
+from table2_prep import Table2DataPrep
+from table3_prep import Table3DataPrep
+from table4_prep import Table4DataPrep
+from table8_prep import Table8DataPrep
 
 OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 
 TABLE_PREPS = [
     # Table2DataPrep(),
-    # Table3DataPrep(),
+    Table3DataPrep(),
     # Table4DataPrep(),
 
-    Table8DataPrep()
+    # Table8DataPrep()
     #...
 ]
 
