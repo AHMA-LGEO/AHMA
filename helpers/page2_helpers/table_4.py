@@ -7,7 +7,7 @@ from dash import dash_table, html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from .data_loader import Page2DataLoader
+from .data_loader import DataLoader
 from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -25,7 +25,7 @@ class Table4Prep:
     """Prepare and format Table 4 schemas."""
 
     def __init__(self):
-        self.data_loader = Page2DataLoader()
+        self.data_loader = DataLoader()
 
     def prepare_table_4_1_data(self, geocode: int) -> pd.DataFrame:
         """

@@ -257,7 +257,8 @@ def update_table_8_1(geo_name, scale, visibility):
     geocode = _resolve_geocode(geo_name, scale, table_8_layout.data_loader)
 
     table = table_8_layout.create_table_8_1_layout(geocode, show_both)
-    chart_fig = table_8_layout.create_chart_8_1(geocode)
+    # chart_fig = table_8_layout.create_chart_8_1(geocode)
+    chart_fig = table_8_layout.create_chart_8_1_nested(geocode)
 
     chart = dcc.Graph(id='chart-8-1', figure=chart_fig, config=PLOT_CONFIG)
 

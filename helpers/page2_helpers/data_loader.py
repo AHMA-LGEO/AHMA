@@ -6,9 +6,7 @@ from sqlalchemy import create_engine
 from helpers.config import DB_PATH
 
 
-class Page2DataLoader:
-    """Handles loading of table data for page 2."""
-
+class DataLoader:
     def __init__(self):
         self.engine = create_engine(f'sqlite:///{DB_PATH}')
         self._geocode_master = None

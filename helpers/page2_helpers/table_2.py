@@ -5,7 +5,7 @@ import pandas as pd
 from dash import dash_table, html
 import dash_bootstrap_components as dbc
 
-from .data_loader import Page2DataLoader
+from .data_loader import DataLoader
 from .table_styles import (
     generate_style_data_conditional,
     get_base_table_style,
@@ -21,7 +21,7 @@ class Table2Prep:
     """Prepare and format Section 2 layouts."""
 
     def __init__(self):
-        self.data_loader = Page2DataLoader()
+        self.data_loader = DataLoader()
 
     # ------------------------------------------------------------------
     # Section 2.1 – Indigenous Nations / Territories

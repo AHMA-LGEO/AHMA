@@ -12,6 +12,10 @@ DB_PATH = os.path.join(DB_DIR, "ahma.db")
 PROVINCE_CODE = 59
 PROVINCE_NAME = "British Columbia"
 
+# Default selection
+DEFAULT_GEOGRAPHY = 'Vancouver CY (CSD, BC)'
+DEFAULT_GEOCODE = 5915022  # Vancouver
+
 # Map configuration
 MAP_COLORS_WO_BLACK = [
     '#7480dd', '#1a3758', '#7480dd', '#b6657c', '#622637', '#80c2c0',
@@ -31,10 +35,6 @@ OPACITY_VALUE = 0.2
 # Modebar colors
 MODEBAR_COLOR = '#099DD7'
 MODEBAR_ACTIVECOLOR = '#044762'
-
-# Default selection
-DEFAULT_GEOGRAPHY = 'Vancouver CY (CSD, BC)'
-DEFAULT_GEOCODE = 5915022  # Vancouver
 
 # Plotly configuration
 PLOT_CONFIG = {

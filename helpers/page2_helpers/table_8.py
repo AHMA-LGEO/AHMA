@@ -6,7 +6,7 @@ from dash import dash_table, html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from .data_loader import Page2DataLoader
+from .data_loader import DataLoader
 from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -35,10 +35,10 @@ INDICATOR_ORDER = [
 
 # Labels used in the outer ring of the wedge-pie chart
 CHART_DETAIL_LABELS = [
-    "Affordability",
-    "Adequacy",
-    "Suitability",
-    "Below multiple indicators",
+    "Unaffordability",
+    "Inadequacy",
+    "Unsuitability",
+    "Below multiple <br>indicators",
 ]
 CHART_DETAIL_INDICATORS = INDICATOR_ORDER[:4]   # matches labels above
 
@@ -52,21 +52,11 @@ _PIE_OUTER_COLORS = ["#D89A86", "#C97A63", "#b55438", "#5b2a1c"]
 
 class Table8Prep:
     def __init__(self):
-        self.data_loader = Page2DataLoader()
+        self.data_loader = DataLoader()
 
     def prepare_table_8_1_data(self, geocode: int) -> pd.DataFrame:
         """
         Pivot raw table_8_1_core_housing_need into display format.
-
-        Columns returned:
-            Indicator, indg_2006, indg_2016, indg_2021,
-            non_indg_2006, non_indg_2016, non_indg_2021
-
-        Row structure per indicator:
-            section header row  (Indicator = indicator label, no values)
-            Number of households row
-            % of households row
-            blank separator row
         """
         df = self.data_loader.get_table('table_8_1_core_housing_need')
         filtered = self.data_loader.filter_by_geocode(df, geocode)
@@ -371,5 +361,99 @@ class Table8Prep:
             margin=dict(t=90, b=110, l=20, r=20),
             height=540,
         )
+
+        return fig
+
+    def create_chart_8_1_nested(self, geocode: int):
+        """
+        Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need.
+
+        Inner ring : Acceptable housing  |  Unacceptable (aggregate)
+        Outer ring : Acceptable has no sub-categories (full-depth leaf).
+                     Unacceptable is broken into CHART_DETAIL_LABELS sub-slices.
+        """
+        df = self.data_loader.get_table('table_8_1_core_housing_need')
+        filtered = self.data_loader.filter_by_geocode(df, geocode)
+
+        if filtered.empty:
+            return go.Figure()
+
+        indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        def _pct(indicator):
+            mask = (indg['Indicator'] == indicator) & (indg['Metric'] == '% of households')
+            row = indg[mask]
+            if row.empty:
+                return 0.0
+            try:
+                return float(row['2021'].iloc[0])
+            except (ValueError, TypeError):
+                return 0.0
+
+        acceptable_pct = _pct("Acceptable Housing (Affordable, Adequate, and Suitable)")
+        unacceptable_pct = max(0.0, 100.0 - acceptable_pct)
+
+        raw_details = [_pct(ind) for ind in CHART_DETAIL_INDICATORS]
+        total_raw = sum(raw_details)
+        if total_raw > 0:
+            scaled_details = [v * unacceptable_pct / total_raw for v in raw_details]
+        else:
+            scaled_details = [unacceptable_pct / 4] * 4
+
+        # Sunburst hierarchy:
+        #   root → "Acceptable housing"  (leaf, no children)
+        #   root → "Unacceptable"        (parent of 4 detail labels)
+        #        → CHART_DETAIL_LABELS   (leaves)
+        labels  = ["Housing", "Acceptable", "Unacceptable"] + CHART_DETAIL_LABELS
+        # parents = ["", ""] + ["Unacceptable"] * len(CHART_DETAIL_LABELS)
+        parents = ["", "Housing", "Housing"] + ["Unacceptable"] * len(CHART_DETAIL_LABELS)
+        values  = [acceptable_pct + unacceptable_pct, acceptable_pct, unacceptable_pct] + scaled_details
+
+        _UNACCEPTABLE_COLOR = "#5e2a1c"
+
+        colors = ["#FFFFFF", _PIE_ACCEPTABLE_COLOR, _UNACCEPTABLE_COLOR] + _PIE_OUTER_COLORS
+
+
+        text = [
+            lbl  # only show label for Housing
+            if lbl == "Housing"
+            else f"{lbl}<br>{val:.0f}%"
+            if (i < 3 or raw_details[i - 3] > 0) else ""
+            for i, (lbl, val) in enumerate(zip(labels, values))
+        ]
+
+        fig = go.Figure(go.Sunburst(
+            labels=labels,
+            parents=parents,
+            values=values,
+            branchvalues="total",
+            # hole=0.4,
+            marker=dict(
+                colors=colors,
+                line=dict(color="white"),
+            ),
+            text=text,
+            texttemplate="%{text}",
+            insidetextorientation="radial",
+            hovertemplate="<b>%{label}</b><br>%{value:.0f}% of total HHs<extra></extra>",
+        ))
+
+        fig.update_layout(
+            title=dict(
+                text=(
+                    f"2021 Indigenous Households in Unacceptable Housing<br>"
+                    f"<sup>{geo_name}</sup>"
+                ),
+                x=0.5, xanchor="center",
+                font=dict(size=15, family=TABLE_FONT),
+            ),
+            paper_bgcolor="white",
+            font=dict(family=TABLE_FONT),
+            margin=dict(t=90, b=40, l=20, r=20),
+            height=550,
+        )
+        fig.update_traces(leaf=dict(opacity=0.9))
+
 
         return fig
