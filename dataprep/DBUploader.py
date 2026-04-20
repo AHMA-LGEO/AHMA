@@ -10,10 +10,10 @@ from sqlalchemy.exc import IntegrityError
 from utils import transform_geocode_master
 
 # Import all table preparation classes
-from dataprep.table2_prep import Table2DataPrep
-from dataprep.table3_prep import Table3DataPrep
-from dataprep.table4_prep import Table4DataPrep
-from dataprep.table8_prep import Table8DataPrep
+from table2_prep import Table2DataPrep
+from table3_prep import Table3DataPrep
+from table4_prep import Table4DataPrep
+from table8_prep import Table8DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -34,8 +34,12 @@ class DBUploader:
         'table_3_1_1': 'table_3_1_1_indigenous_pop',
         'table_3_1_2': 'table_3_1_2_indigenous_age',
         'table_3_1_3': 'table_3_1_3_indigenous_location',
-        'table_3_1_4': 'table_3_1_4_registered_indian',
+        'table_3_1_4': 'table_3_1_4_indigenous_move',
+        'table_3_2_3_3': 'table_3_2_3_3_indigenous_age_group',
         'table_3_4': 'table_3_4_indigenous_age_gender',
+        'table_3_5': 'table_3_5_indigenous_priority_pop',
+        'table_3_5_1': 'table_3_5_1_indigenous_priority_pop_breakdown',
+        'table_3_6': 'table_3_6_indigenous_pop_ancestry',
 
         # Table 4 - Housing Tenure
         'table_4_1': 'table_4_1_housing_tenure',
@@ -126,7 +130,10 @@ class DBUploader:
         self.table_data['table_3_1_2'] = self.table_3_prep.table_3_1_2()
         self.table_data['table_3_1_3'] = self.table_3_prep.table_3_1_3()
         self.table_data['table_3_1_4'] = self.table_3_prep.table_3_1_4()
+        self.table_data['table_3_2_3_3'] = self.table_3_prep.table_3_2_3_3()
         self.table_data['table_3_4'] = self.table_3_prep.table_3_4()
+        self.table_data['table_3_5'], self.table_data['table_3_5_1']  = self.table_3_prep.table_3_5_3_5_1()
+        self.table_data['table_3_6'] = self.table_3_prep.table_3_6()
 
         # Table 4
         self.table_data['table_4_1'] = self.table_4_prep.table_4_1()
@@ -179,7 +186,7 @@ class DBUploader:
 
         try:
             # Replace '--' and similar placeholders with NaN
-            df = df.replace(['--', 'x', 'X', '..'], np.nan)
+            df = df.replace(['--', 'x', 'X', '..', '#N/A', '...', 'n/a'], np.nan)
 
             # Convert DataFrame to list of dictionaries
             records = []

@@ -109,7 +109,7 @@ class Table8DataPrep:
 
         result = pd.DataFrame(rows)
 
-        print("Table 8.1 is ready now...")
+        print("Table 8.1 is ready now...\n" + '=' * 60)
         return result
 
     def run_all(self) -> dict[str, pd.DataFrame]:
