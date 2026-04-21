@@ -21,8 +21,8 @@ from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
 from helpers.config import CHART_COLORS
 
 
-class Table4Prep:
-    """Prepare and format Table 4 schemas."""
+class Section4Prep:
+    """Prepare and format Section 4 schemas."""
 
     def __init__(self):
         self.data_loader = DataLoader()

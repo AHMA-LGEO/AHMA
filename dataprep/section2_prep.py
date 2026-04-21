@@ -2,7 +2,7 @@ import pandas as pd
 from sheet_registry import fetch_data
 
 
-class Table2DataPrep:
+class Section2DataPrep:
 
     def table_2_1(self) -> pd.DataFrame:
         df = fetch_data("2.1")

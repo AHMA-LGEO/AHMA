@@ -6,7 +6,7 @@ from utils import build_master, get_val, sum_bands, pct, clean_val
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 
-class Table8DataPrep:
+class Section8DataPrep:
 
     def table_8_1(self) -> pd.DataFrame:
         """

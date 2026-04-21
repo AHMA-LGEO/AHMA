@@ -4,9 +4,9 @@ Dashboard page 2: Housing needs tables and analysis.
 from dash import dcc, html, Input, Output, State, callback, ALL
 import dash_bootstrap_components as dbc
 
-from helpers.page2_helpers.table_2 import Table2Prep
-from helpers.page2_helpers.table_4 import Table4Prep
-from helpers.page2_helpers.table_8 import Table8Prep
+from helpers.page2_helpers.section_2 import Section2Prep
+from helpers.page2_helpers.section_4 import Section4Prep
+from helpers.page2_helpers.section_8 import Section8Prep
 # from helpers.page2_helpers.table_4_2_prep import Table42Prep
 # from helpers.page2_helpers.chart_4_prep import Chart4Prep
 from helpers.page2_helpers.text_content import (
@@ -15,9 +15,9 @@ from helpers.page2_helpers.text_content import (
 from helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
 
 # Initialize helpers
-table_2_layout = Table2Prep()
-table_4_layout = Table4Prep()
-table_8_layout = Table8Prep()
+section_2_layout = Section2Prep()
+section_4_layout = Section4Prep()
+section_8_layout = Section8Prep()
 
 # Table IDs — add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1", "table-8-1"]
@@ -212,10 +212,10 @@ def global_toggle_click(_, current_intent):
     Input('area-scale-store', 'data'),
 )
 def update_section_2(geo_name, scale):
-    geocode = _resolve_geocode(geo_name, scale, table_2_layout.data_loader)
+    geocode = _resolve_geocode(geo_name, scale, section_2_layout.data_loader)
     return (
-        table_2_layout.create_section_2_1_layout(geocode),
-        table_2_layout.create_section_2_2_layout(geocode),
+        section_2_layout.create_section_2_1_layout(geocode),
+        section_2_layout.create_section_2_2_layout(geocode),
     )
 
 
@@ -230,10 +230,10 @@ def update_section_2(geo_name, scale):
 def update_table_4_1(geo_name, scale, visibility):
     """Update Table 4.1 and Chart based on selection."""
     show_both = (visibility or {}).get("table-4-1", False)
-    geocode = _resolve_geocode(geo_name, scale, table_4_layout.data_loader)
+    geocode = _resolve_geocode(geo_name, scale, section_4_layout.data_loader)
 
-    table_layout = table_4_layout.create_table_4_1_layout(geocode, show_both)
-    chart_fig = table_4_layout.create_chart_4_1(geocode)
+    table_layout = section_4_layout.create_table_4_1_layout(geocode, show_both)
+    chart_fig = section_4_layout.create_chart_4_1(geocode)
 
     chart_layout = dcc.Graph(
         id='chart-4-1',
@@ -254,11 +254,10 @@ def update_table_4_1(geo_name, scale, visibility):
 def update_table_8_1(geo_name, scale, visibility):
     """Update Table 8.1 and Chart 8.1 based on geography selection."""
     show_both = (visibility or {}).get("table-8-1", False)
-    geocode = _resolve_geocode(geo_name, scale, table_8_layout.data_loader)
+    geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
-    table = table_8_layout.create_table_8_1_layout(geocode, show_both)
-    # chart_fig = table_8_layout.create_chart_8_1(geocode)
-    chart_fig = table_8_layout.create_chart_8_1_nested(geocode)
+    table = section_8_layout.create_table_8_1_layout(geocode, show_both)
+    chart_fig = section_8_layout.create_chart_8_1(geocode)
 
     chart = dcc.Graph(id='chart-8-1', figure=chart_fig, config=PLOT_CONFIG)
 

@@ -45,12 +45,11 @@ CHART_DETAIL_INDICATORS = INDICATOR_ORDER[:4]   # matches labels above
 # Colours for the pie chart, updating the following logic for clear understanding of categories
 # _PIE_ACCEPTABLE_COLOR = CHART_COLORS[0] # choosing 1st chart color
 _PIE_ACCEPTABLE_COLOR = "#9CA37A"
-_PIE_HOLLOW = "rgba(0,0,0,0)"
 # _PIE_OUTER_COLORS = [CHART_COLORS[i] for i in range(1,5)]
 _PIE_OUTER_COLORS = ["#D89A86", "#C97A63", "#b55438", "#5b2a1c"]
 
 
-class Table8Prep:
+class Section8Prep:
     def __init__(self):
         self.data_loader = DataLoader()
 
@@ -202,175 +201,10 @@ class Table8Prep:
             table
         ], className='pg2-table-lgeo')
 
-  
+
     def create_chart_8_1(self, geocode: int):
         """
-        Create wedge-pie chart for 2021 Indigenous Core Housing Need.
-
-        Inner donut : Acceptable (solid) vs Unacceptable (hollow gap)
-        Outer ring  : 4 sub-categories of unacceptable, scaled to sum to
-                      the unacceptable % so the ring aligns with the gap.
-
-        Args:
-            geocode: Geographic code
-
-        Returns:
-            Plotly Figure
-        """
-        df = self.data_loader.get_table('table_8_1_core_housing_need')
-        filtered = self.data_loader.filter_by_geocode(df, geocode)
-
-        if filtered.empty:
-            return go.Figure()
-
-        indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        def _pct(indicator):
-            mask = (indg['Indicator'] == indicator) & (indg['Metric'] == '% of households')
-            row = indg[mask]
-            if row.empty:
-                return 0.0
-            try:
-                return float(row['2021'].iloc[0])
-            except (ValueError, TypeError):
-                return 0.0
-
-        acceptable_pct = _pct("Acceptable Housing (Affordable, Adequate, and Suitable)")
-        unacceptable_pct = max(0.0, 100.0 - acceptable_pct)
-
-        # Raw percentages for the 4 detail categories
-        raw_details = [_pct(ind) for ind in CHART_DETAIL_INDICATORS]
-
-        # Scale so that detail values sum to unacceptable_pct (for ring alignment)
-        total_raw = sum(raw_details)
-        if total_raw > 0:
-            scaled_details = [v * unacceptable_pct / total_raw for v in raw_details]
-        else:
-            scaled_details = [unacceptable_pct / 4] * 4
-
-        # Rotation: centre the unacceptable gap at the top (90°)
-        rotation = 90 - (acceptable_pct + unacceptable_pct / 2) * 3.6
-
-        fig = go.Figure()
-
-        # Inner donut — showlegend=False, legend handled via scatter traces below
-        fig.add_trace(go.Pie(
-            labels=["Acceptable housing", "Unacceptable"],
-            values=[acceptable_pct, unacceptable_pct],
-            marker=dict(
-                colors=[_PIE_ACCEPTABLE_COLOR, _PIE_HOLLOW],
-                line=dict(color=[_PIE_ACCEPTABLE_COLOR, _PIE_HOLLOW], width=2),
-            ),
-            hole=0.5,
-            direction="clockwise",
-            rotation=rotation,
-            sort=False,
-            textfont=dict(size=13, family=TABLE_FONT),
-            texttemplate=["%{label}<br>%{value:.0f}%", ""],
-            textposition="outside",
-            automargin=True,
-            hovertemplate=[
-                "<b>%{label}</b><br>%{value:.0f}%<extra></extra>",
-                "<extra></extra>",
-            ],
-            pull=[0.2, 0],
-            showlegend=False,
-            name="",
-            domain=dict(x=[0.0, 1.0], y=[0.0, 1.0]),
-        ))
-
-        # Outer ring — no pull on any segment; uniform white line gives consistent gaps
-        outer_labels = [""] + CHART_DETAIL_LABELS
-        outer_values = [acceptable_pct] + scaled_details
-        outer_colors = [_PIE_HOLLOW] + _PIE_OUTER_COLORS
-
-        fig.add_trace(go.Pie(
-            labels=outer_labels,
-            values=outer_values,
-            marker=dict(
-                colors=outer_colors,
-                line=dict(color='white'),
-            ),
-            hole=0.62,
-            direction="clockwise",
-            rotation=rotation,
-            sort=False,
-            textfont=dict(size=11, family=TABLE_FONT),
-            texttemplate=[""] + [
-                "%{label}<br>%{value:.0f}%" if v > 0 else ""
-                for v in raw_details
-            ],
-            textposition="outside",
-            automargin=True,
-            hovertemplate=(
-                ["<extra></extra>"] +
-                ["<b>%{label}</b><br>%{value:.0f}% of total HHs<extra></extra>"]
-                * len(CHART_DETAIL_LABELS)
-            ),
-            pull=[0.1] + [0.1] * len(CHART_DETAIL_LABELS),
-            showlegend=False,
-            name="",
-            domain=dict(x=[0.0, 1.0], y=[0.0, 1.0]),
-        ))
-
-        # Legend entries — invisible scatter traces give per-entry control
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None], mode='markers',
-            marker=dict(color=_PIE_ACCEPTABLE_COLOR, size=12, symbol='square'),
-            name='Acceptable housing', showlegend=True,
-        ))
-        for label, color in zip(CHART_DETAIL_LABELS, _PIE_OUTER_COLORS):
-            fig.add_trace(go.Scatter(
-                x=[None], y=[None], mode='markers',
-                marker=dict(color=color, size=12, symbol='square'),
-                name=label, showlegend=True,
-            ))
-
-        # Centre annotation — show unacceptable %
-        fig.add_annotation(
-            text=f"{unacceptable_pct:.0f}%<br><span style='font-size:11px'>Unacceptable</span>",
-            x=0.55, y=0.5,
-            xref="paper", yref="paper",
-            showarrow=False,
-            font=dict(size=15, color="#5b2a1c", family=TABLE_FONT),
-            align="center",
-        )
-
-        fig.update_layout(
-            title=dict(
-                text=(
-                    f"2021 Indigenous Households in Unacceptable Housing<br>"
-                    f"<sup>{geo_name}</sup>"
-                ),
-                x=0.5, xanchor="center",
-                font=dict(size=15, family=TABLE_FONT),
-            ),
-            paper_bgcolor="white",
-            plot_bgcolor="white",
-            font=dict(family=TABLE_FONT),
-            legend=dict(
-                orientation="h",
-                x=0.5, y=-0.08,
-                xanchor="center",
-                yanchor="top",
-                font=dict(size=11),
-            ),
-            xaxis=dict(visible=False),
-            yaxis=dict(visible=False),
-            margin=dict(t=90, b=110, l=20, r=20),
-            height=540,
-        )
-
-        return fig
-
-    def create_chart_8_1_nested(self, geocode: int):
-        """
         Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need.
-
-        Inner ring : Acceptable housing  |  Unacceptable (aggregate)
-        Outer ring : Acceptable has no sub-categories (full-depth leaf).
-                     Unacceptable is broken into CHART_DETAIL_LABELS sub-slices.
         """
         df = self.data_loader.get_table('table_8_1_core_housing_need')
         filtered = self.data_loader.filter_by_geocode(df, geocode)
@@ -416,7 +250,7 @@ class Table8Prep:
 
 
         text = [
-            lbl  # only show label for Housing
+            lbl
             if lbl == "Housing"
             else f"{lbl}<br>{val:.0f}%"
             if (i < 3 or raw_details[i - 3] > 0) else ""
@@ -428,7 +262,6 @@ class Table8Prep:
             parents=parents,
             values=values,
             branchvalues="total",
-            # hole=0.4,
             marker=dict(
                 colors=colors,
                 line=dict(color="white"),

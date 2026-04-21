@@ -17,14 +17,14 @@ from .text_content import (
 from helpers.config import TABLE_FONT
 
 
-class Table2Prep:
+class Section2Prep:
     """Prepare and format Section 2 layouts."""
 
     def __init__(self):
         self.data_loader = DataLoader()
 
     # ------------------------------------------------------------------
-    # Section 2.1 – Indigenous Nations / Territories
+    # Table 2.1 – Indigenous Nations / Territories
     # ------------------------------------------------------------------
 
     def _get_nations(self, geocode: int) -> list:
@@ -84,7 +84,7 @@ class Table2Prep:
         ], className='pg2-table-lgeo')
 
     # ------------------------------------------------------------------
-    # Section 2.2 – Métis Communities
+    # Table 2.2 – Métis Communities
     # ------------------------------------------------------------------
 
     def _get_metis(self, geocode: int) -> list:

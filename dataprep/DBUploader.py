@@ -10,10 +10,10 @@ from sqlalchemy.exc import IntegrityError
 from utils import transform_geocode_master
 
 # Import all table preparation classes
-from table2_prep import Table2DataPrep
-from table3_prep import Table3DataPrep
-from table4_prep import Table4DataPrep
-from table8_prep import Table8DataPrep
+from dataprep.section2_prep import Section2DataPrep
+from dataprep.section3_prep import Section3DataPrep
+from dataprep.section4_prep import Section4DataPrep
+from dataprep.section8_prep import Section8DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -26,11 +26,11 @@ class DBUploader:
 
     # Define table configurations: {method_name: table_name}
     TABLE_CONFIGS = {
-        # Table 2 - Indigenous Communities
+        # Section 2 - Indigenous Communities
         'table_2_1': 'table_2_1_indigenous_territory',
         'table_2_2': 'table_2_2_metis_community',
 
-        # Table 3 - Indigenous Population
+        # Section 3 - Indigenous Population
         'table_3_1_1': 'table_3_1_1_indigenous_pop',
         'table_3_1_2': 'table_3_1_2_indigenous_age',
         'table_3_1_3': 'table_3_1_3_indigenous_location',
@@ -41,11 +41,11 @@ class DBUploader:
         'table_3_5_1': 'table_3_5_1_indigenous_priority_pop_breakdown',
         'table_3_6': 'table_3_6_indigenous_pop_ancestry',
 
-        # Table 4 - Housing Tenure
+        # Section 4 - Housing Tenure
         'table_4_1': 'table_4_1_housing_tenure',
         'table_4_2': 'table_4_2_breakdown_community',
 
-        # Table 8 - Core Housing Need
+        # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
     }
 
@@ -65,10 +65,10 @@ class DBUploader:
         self.Session = sessionmaker(bind=self.engine)
 
         # Initialize data preparation classes
-        self.table_2_prep = Table2DataPrep()
-        self.table_3_prep = Table3DataPrep()
-        self.table_4_prep = Table4DataPrep()
-        self.table_8_prep = Table8DataPrep()
+        self.section_2_prep = Section2DataPrep()
+        self.section_3_prep = Section3DataPrep()
+        self.section_4_prep = Section4DataPrep()
+        self.section_8_prep = Section8DataPrep()
 
         # Store table classes
         self.table_classes = {}
@@ -122,25 +122,25 @@ class DBUploader:
         self.table_data['geocode_master'] = self.prepare_geocode_master()
 
         # Table 2
-        self.table_data['table_2_1'] = self.table_2_prep.table_2_1()
-        self.table_data['table_2_2'] = self.table_2_prep.table_2_2()
+        self.table_data['table_2_1'] = self.section_2_prep.table_2_1()
+        self.table_data['table_2_2'] = self.section_2_prep.table_2_2()
 
         # Table 3
-        self.table_data['table_3_1_1'] = self.table_3_prep.table_3_1_1()
-        self.table_data['table_3_1_2'] = self.table_3_prep.table_3_1_2()
-        self.table_data['table_3_1_3'] = self.table_3_prep.table_3_1_3()
-        self.table_data['table_3_1_4'] = self.table_3_prep.table_3_1_4()
-        self.table_data['table_3_2_3_3'] = self.table_3_prep.table_3_2_3_3()
-        self.table_data['table_3_4'] = self.table_3_prep.table_3_4()
-        self.table_data['table_3_5'], self.table_data['table_3_5_1']  = self.table_3_prep.table_3_5_3_5_1()
-        self.table_data['table_3_6'] = self.table_3_prep.table_3_6()
+        self.table_data['table_3_1_1'] = self.section_3_prep.table_3_1_1()
+        self.table_data['table_3_1_2'] = self.section_3_prep.table_3_1_2()
+        self.table_data['table_3_1_3'] = self.section_3_prep.table_3_1_3()
+        self.table_data['table_3_1_4'] = self.section_3_prep.table_3_1_4()
+        self.table_data['table_3_2_3_3'] = self.section_3_prep.table_3_2_3_3()
+        self.table_data['table_3_4'] = self.section_3_prep.table_3_4()
+        self.table_data['table_3_5'], self.table_data['table_3_5_1']  = self.section_3_prep.table_3_5_3_5_1()
+        self.table_data['table_3_6'] = self.section_3_prep.table_3_6()
 
         # Table 4
-        self.table_data['table_4_1'] = self.table_4_prep.table_4_1()
-        self.table_data['table_4_2'] = self.table_4_prep.table_4_2()
+        self.table_data['table_4_1'] = self.section_4_prep.table_4_1()
+        self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
 
         # Table 8
-        self.table_data['table_8_1'] = self.table_8_prep.table_8_1()
+        self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
 
         print("\n" + "=" * 60)
         print("All tables prepared successfully!")

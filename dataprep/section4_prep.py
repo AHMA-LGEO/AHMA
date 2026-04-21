@@ -14,7 +14,7 @@ from utils import (
     INDIGENOUS_COMMUNITIES)
 
 
-class Table4DataPrep:
+class Section4DataPrep:
 
     def table_4_1(self) -> pd.DataFrame:
         """

@@ -27,7 +27,7 @@ GENDER_MAPPING = {
         '  Women+': 'Women+'
     }
 
-class Table3DataPrep:
+class Section3DataPrep:
 
     def table_3_1_1(self) -> pd.DataFrame:
         print("Processing Table 3.1.1...")
