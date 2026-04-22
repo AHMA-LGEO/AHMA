@@ -6,7 +6,7 @@ from dash import dash_table, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from .data_loader import DataLoader
+from .data_loader import get_data_loader
 from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -19,7 +19,7 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
-from helpers.config import CHART_COLORS, TABLE_COLORS, TABLE_FONT, PLOT_CONFIG
+from helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG
 
 YEAR_COLS = ['2006', '2016', '2021']
 
@@ -50,13 +50,14 @@ _PIE_OUTER_COLORS = ["#D89A86", "#C97A63", "#b55438", "#5b2a1c"]
 
 
 class Section8Prep:
+    """Prepare and format Section 8 schemas."""
+    
     def __init__(self):
-        self.data_loader = DataLoader()
+        self.data_loader = get_data_loader()
 
     def prepare_table_8_1_data(self, geocode: int) -> pd.DataFrame:
-        """
-        Pivot raw table_8_1_core_housing_need into display format.
-        """
+        """Pivot raw table_8_1_core_housing_need into display format."""
+
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:
@@ -202,9 +203,7 @@ class Section8Prep:
 
 
     def create_chart_8_1(self, geocode: int):
-        """
-        Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need.
-        """
+        """Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need."""
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:

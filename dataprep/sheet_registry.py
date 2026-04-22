@@ -1,30 +1,14 @@
-import pdb, sys
+import pdb, sys, os
 import pandas as pd
 from functools import lru_cache
 from collections import defaultdict
 from pathlib import Path
 
 
-def _resolve_data_path() -> Path:
-    source_dir = Path(__file__).parent.parent / "source" / "data"
-    xlsx_files = list(source_dir.glob("*.xlsx"))
 
-    if not xlsx_files:
-        sys.exit(f"[ERROR] No .xlsx files found in {source_dir.resolve()}")
-
-    if len(xlsx_files) > 1:
-        names = "\n  ".join(f.name for f in xlsx_files)
-        sys.exit(
-            f"[ERROR] Multiple .xlsx files found in {source_dir.resolve()} — "
-            f"expected exactly one:\n  {names}"
-        )
-
-    return xlsx_files[0]
-
-
-DATA_PATH = _resolve_data_path()
+source_dir = Path(__file__).parent.parent / "source" / "data"
+DATA_PATH = os.path.join(source_dir, r"2026-04-16 IHNAT Data v6.xlsx") # CHECK IN DROPBOX'S SOURCE FOLDER, IF THIS IS THE RECENT DATA FILE
 ANCHOR_COLS = ["Geocode", "Geography", "Name", "Region"] # For some sheet it is Name or Region instead of Geography
-# DATA_PATH = r"L:\Projects\25092 - AHMA Dashboard\Source\2026-03-25 IHNAT Data v5.xlsx"
 
 # How many header rows each sheet has before actual data starts.
 # output_row: the row index where "output number:" lives, ie row tells which table each column belongs to eg: 2.1, 2.2
@@ -73,6 +57,7 @@ def build_registry() -> dict:
     """
     registry = defaultdict(lambda: defaultdict(list))
 
+    print(f"Reading {DATA_PATH}, check if this the most recent data file...")
     ahma_data = pd.ExcelFile(DATA_PATH)
 
     for sheet_name in ahma_data.sheet_names:
@@ -214,6 +199,6 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
     return result.reset_index(drop=True)
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
     
-#     a = fetch_data("9.1", sheets=["BC Corrections"])
+    a = fetch_data("9.1", sheets=["BC Corrections"])

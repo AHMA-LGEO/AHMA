@@ -1,5 +1,5 @@
 """
-Data loading utilities for all 2 tables.
+Data loading utilities for all tables.
 """
 import pandas as pd
 from sqlalchemy import create_engine
@@ -58,3 +58,19 @@ class DataLoader:
         if not match.empty:
             return match['Province_Code'].iloc[0]
         return None
+    
+
+# Module-level dataloader
+_shared_loader = None
+
+def get_data_loader() -> DataLoader:
+    """
+    Return the shared DataLoader instance, creating it on first call.
+
+    All Section Prep classes should use this instead of instantiating
+    their own DataLoader so that the table and geocode caches are shared.
+    """
+    global _shared_loader
+    if _shared_loader is None:
+        _shared_loader = DataLoader()
+    return _shared_loader

@@ -7,12 +7,11 @@ from dash import dash_table, html
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from .data_loader import DataLoader
+from .data_loader import get_data_loader
 from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
-    get_special_row_styles,
     get_special_row_styles_3_1,
     style_cell_3_1,
     format_number,
@@ -29,7 +28,7 @@ class Section3Prep:
     """Prepare and format Section 3 schemas."""
 
     def __init__(self):
-        self.data_loader = DataLoader()
+        self.data_loader = get_data_loader()
 
     def prepare_table_3_1_data(self, geocode: int) -> pd.DataFrame:
 

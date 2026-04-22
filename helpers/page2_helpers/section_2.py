@@ -5,11 +5,7 @@ import pandas as pd
 from dash import dash_table, html
 import dash_bootstrap_components as dbc
 
-from .data_loader import DataLoader
-from .table_styles import (
-    generate_style_data_conditional,
-    get_base_table_style,
-)
+from .data_loader import get_data_loader
 from .text_content import (
     TABLE_2_1_TITLE,
     TABLE_2_2_DESC
@@ -21,19 +17,13 @@ class Section2Prep:
     """Prepare and format Section 2 layouts."""
 
     def __init__(self):
-        self.data_loader = DataLoader()
+        self.data_loader = get_data_loader()
 
-    # ------------------------------------------------------------------
-    # Table 2.1 – Indigenous Nations / Territories
-    # ------------------------------------------------------------------
+    ##### Table 2.1 – Indigenous Nations / Territories #####
 
     def _get_nations(self, geocode: int) -> list:
-        """
-        Return a deduplicated, sorted list of nation names for the geocode.
+        """Return a deduplicated, sorted list of nation names for the geocode."""
 
-        The source table is wide: one row per geocode with Nation1…Nation21
-        columns
-        """
         filtered = self.data_loader.get_table('table_2_1_indigenous_territory', geocode)
 
         if filtered.empty:
@@ -82,10 +72,8 @@ class Section2Prep:
             body,
         ], className='pg2-table-lgeo')
 
-    # ------------------------------------------------------------------
-    # Table 2.2 – Métis Communities
-    # ------------------------------------------------------------------
-
+    
+    ##### Table 2.2 – Métis Communities #####
     def _get_metis(self, geocode: int) -> list:
         """Return a deduplicated, sorted list of Métis community names."""
         filtered = self.data_loader.get_table('table_2_2_metis_community', geocode)

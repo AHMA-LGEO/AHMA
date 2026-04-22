@@ -7,12 +7,12 @@ from dash import dash_table, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
-from .data_loader import DataLoader
+from .data_loader import get_data_loader
 from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
-    get_special_row_styles,
+    get_special_row_styles_4_1,
     style_cell_4_1,
     format_number,
     format_percent
@@ -25,7 +25,7 @@ class Section4Prep:
     """Prepare and format Section 4 schemas."""
 
     def __init__(self):
-        self.data_loader = DataLoader()
+        self.data_loader = get_data_loader()
 
     def prepare_table_4_1_data(self, geocode: int) -> pd.DataFrame:
         filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
@@ -132,7 +132,7 @@ class Section4Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + get_special_row_styles(df_display)
+                + get_special_row_styles_4_1(df_display)
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
             style_cell_conditional=style_cell_conditional,
@@ -148,16 +148,7 @@ class Section4Prep:
 
 
     def create_chart_4_1(self, geocode: int):
-        """
-        Create stacked bar chart for housing tenure over time.
-
-        Args:
-            geocode: Geographic code
-            show_both: If True, show both Indigenous and Non-Indigenous
-
-        Returns:
-            Plotly Figure object
-        """
+        """Create stacked bar chart for housing tenure over time."""
         # Load data
         filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 

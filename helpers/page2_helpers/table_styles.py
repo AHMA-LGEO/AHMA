@@ -5,45 +5,246 @@ import pandas as pd
 from helpers.config import TABLE_COLORS, TABLE_FONT
 
 
-def generate_style_data_conditional(data: pd.DataFrame) -> list:
+##### Shared blank-separator style #####
+_BLANK_ROW_STYLE = {
+    'backgroundColor': '#FFFFFF',
+    'padding': '0px',
+    'lineHeight': '6px',
+    'minHeight': '6px',
+    'height': '6px',
+}
+
+
+
+##### Generic stylers  (reusable across all tables) #####
+
+def make_style_cell(
+    label_col_id: str,
+    value_col_ids: list,
+    label_width: str = '40%',
+    label_min_width: str = '160px',
+) -> list:
     """
-    Generate alternating row colors for table data.
+    Build style_cell_conditional for a table with one label column
+    and one or more right-aligned value columns.
+
+    The label column gets ``label_width``; each value column shares the
+    remaining 60% equally.
 
     Args:
-        data: DataFrame with table data
+        label_col_id:   Column ID of the left-hand label column.
+        value_col_ids:  Ordered list of value column IDs.
+        label_width:    CSS width for the label column.
+        label_min_width: CSS min-width for the label column.
 
     Returns:
-        List of style dictionaries for DataTable
+        List of style_cell_conditional dicts.
     """
-    data_style = []
-    for i in range(len(data)):
-        bg_color = TABLE_COLORS['row_alt_1'] if i % 2 == 0 else TABLE_COLORS['row_alt_2']
-        data_style.append({
+    n = len(value_col_ids)
+    value_width = f'{round(60 / n, 1)}%' if n else '0%'
+
+    styles = [{
+        'if': {'column_id': label_col_id},
+        'textAlign': 'left',
+        'width': label_width,
+        'minWidth': label_min_width,
+    }]
+    for col_id in value_col_ids:
+        styles.append({'if': {'column_id': col_id}, 'textAlign': 'right', 'width': value_width})
+    return styles
+
+
+def make_special_row_styles(
+    data: pd.DataFrame,
+    label_col: str,
+    *,
+    geo_headers: set = frozenset(),
+    section_headers: set = frozenset(),
+    warning_headers: set = frozenset(),
+    total_labels: set = frozenset({'TOTAL'}),
+    italic_labels: set = frozenset(),
+    warning_color: str = '#b55438',
+    blank_label: str = '',
+) -> list:
+    """
+    Build style_data_conditional for special rows in a DataTable.
+
+    Row classification (first match wins):
+      geo_headers     → geography colour + white text + bold
+      warning_headers → warning_color text + bold
+      section_headers → headings colour + body text + bold
+      total_labels    → bold only
+      italic_labels   → warning_color text + italic
+      blank_label     → thin white separator
+
+    Args:
+        data:            DataFrame passed to the DataTable.
+        label_col:       Name of the column holding row-type labels.
+        geo_headers:     Label values that render as geography-colour header rows.
+        section_headers: Label values that render as headings-colour section rows.
+        warning_headers: Label values that render in warning_color bold.
+        total_labels:    Label values that render bold only (default: {'TOTAL'}).
+        italic_labels:   Label values that render italic in warning_color.
+        warning_color:   CSS colour for warning/below-multiple rows.
+        blank_label:     Label value used for blank separator rows (default: '').
+
+    Returns:
+        List of style_data_conditional dicts.
+    """
+    _GEO = {
+        'backgroundColor': TABLE_COLORS['geography'],
+        'color': '#FFFFFF',
+        'fontWeight': 'bold',
+    }
+    _SECTION = {
+        'backgroundColor': TABLE_COLORS['headings'],
+        'color': TABLE_COLORS['text'],
+        'fontWeight': 'bold',
+    }
+
+    styles = []
+    for i, (_, row) in enumerate(data.iterrows()):
+        val = row.get(label_col, '')
+        rule = {'if': {'row_index': i}}
+
+        if val in geo_headers:
+            styles.append({**rule, **_GEO})
+        elif val in warning_headers:
+            styles.append({**rule, 'color': warning_color, 'fontWeight': 'bold'})
+        elif val in section_headers:
+            styles.append({**rule, **_SECTION})
+        elif val in total_labels:
+            styles.append({**rule, 'fontWeight': 'bold'})
+        elif val in italic_labels:
+            styles.append({**rule, 'color': warning_color, 'fontStyle': 'italic'})
+        elif val == blank_label:
+            styles.append({**rule, **_BLANK_ROW_STYLE})
+
+    return styles
+
+
+###### Section 3 – Demographics #####
+
+
+_T3_1_SECTION_HEADERS = frozenset({
+    'Indigenous Population (by CSD)',
+    'Regional Indigenous Households (by CD)',
+    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
+})
+
+
+def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Indicator',
+        geo_headers={'__geo_header__', '__cd_header__'},
+        section_headers=_T3_1_SECTION_HEADERS,
+    )
+
+
+def style_cell_3_1() -> list:
+    return make_style_cell(
+        'Indicator',
+        ['2006', '2011', '2016', '2021'],
+        label_min_width='200px',
+    )
+
+
+##### Section 4 – Housing Tenure #####
+
+def get_special_row_styles_4_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Households by Tenure',
+        geo_headers={'Households by Tenure'},
+    )
+
+
+def style_cell_4_1(show_both: bool) -> list:
+    year_cols = ['2006', '2011', '2016', '2021']
+    value_cols = [f'indg_{y}' for y in year_cols]
+    if show_both:
+        value_cols += [f'non_indg_{y}' for y in year_cols]
+    return make_style_cell('Households by Tenure', value_cols, label_min_width='160px')
+
+
+##### Section 8 – Core Housing Need #####
+
+_T8_INDICATORS = frozenset({
+    "Affordability (Households paying >30% of income on shelter)",
+    "Adequacy (Households living in dwellings needing Major Repairs)",
+    "Suitability (Households living in overcrowded dwellings)",
+    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
+    "Acceptable Housing (Affordable, Adequate, and Suitable)",
+    "Total households (for reference)",
+})
+_T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"
+_T8_TOTAL = "Total households (for reference)"
+
+# Indicators that use geography-colour header styling (excludes warning + total rows)
+_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
+
+
+def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Indicator',
+        geo_headers=_T8_GEO_HEADERS,
+        warning_headers={_T8_BELOW_MULTIPLE},
+        section_headers={_T8_TOTAL},
+        total_labels=frozenset(),           # no plain TOTAL rows in 8.1
+        italic_labels={'__below_count__', '__below_pct__'},
+    )
+
+
+def style_cell_8_1(show_both: bool) -> list:
+    year_cols = ['2006', '2016', '2021']
+    value_cols = [f'indg_{y}' for y in year_cols]
+    if show_both:
+        value_cols += [f'non_indg_{y}' for y in year_cols]
+    return make_style_cell('Indicator', value_cols, label_min_width='200px')
+
+
+##### Shared header and base styles #####
+
+def generate_style_data_conditional(data: pd.DataFrame) -> list:
+    """
+    Generate alternating row colours for table data.
+
+    Args:
+        data: DataFrame with table data.
+
+    Returns:
+        List of style dicts for DataTable style_data_conditional.
+    """
+    return [
+        {
             'if': {'row_index': i},
-            'backgroundColor': bg_color,
+            'backgroundColor': TABLE_COLORS['row_alt_1'] if i % 2 == 0 else TABLE_COLORS['row_alt_2'],
             'color': TABLE_COLORS['text'],
-            'border': f"1px solid {TABLE_COLORS['border']}"
-        })
-    return data_style
+            'border': f"1px solid {TABLE_COLORS['border']}",
+        }
+        for i in range(len(data))
+    ]
 
 
-def generate_style_header_conditional(columns: list, is_multiindex: bool = False,
-                                      first_col_id: str = 'Households by Tenure') -> list:
+def generate_style_header_conditional(
+    columns: list,
+    is_multiindex: bool = False,
+    first_col_id: str = 'Households by Tenure',
+) -> list:
     """
     Generate header styling for table columns.
 
     For 3-level multi-index headers:
-        header_index 0 – geography name row      → geography colour
-        header_index 1 – group row               → headings colour; first col → geography colour
-        header_index 2 – year / label row        → headings colour; first col → geography colour
+        header_index 0 – geography name row  → geography colour
+        header_index 1 – group row           → headings colour; first col → geography colour
+        header_index 2 – year / label row    → headings colour; first col → geography colour
 
     Args:
-        columns:       List of column definitions
-        is_multiindex: Whether columns use multi-level (list) names
-        first_col_id:  Column ID of the first (label) column to merge across header rows
+        columns:       List of column definitions.
+        is_multiindex: Whether columns use multi-level (list) names.
+        first_col_id:  Column ID of the first (label) column to visually merge.
 
     Returns:
-        List of style dictionaries for DataTable style_header_conditional
+        List of style dicts for DataTable style_header_conditional.
     """
     if not is_multiindex:
         return [
@@ -52,36 +253,30 @@ def generate_style_header_conditional(columns: list, is_multiindex: bool = False
                 'backgroundColor': TABLE_COLORS['geography'] if i == 0 else TABLE_COLORS['headings'],
                 'color': TABLE_COLORS['text'],
                 'fontWeight': 'bold',
-                'border': f"1px solid {TABLE_COLORS['border']}"
+                'border': f"1px solid {TABLE_COLORS['border']}",
             }
             for i, col in enumerate(columns)
         ]
 
     base = {'fontWeight': 'bold', 'border': f"1px solid {TABLE_COLORS['border']}"}
-
     return [
         # Row 0 – geography name: geography colour across all columns
         {**base, 'if': {'header_index': 0},
-         'backgroundColor': TABLE_COLORS['geography'],
-         'color': '#FFFFFF'},
+         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
 
         # Row 1 – group labels: headings colour
         {**base, 'if': {'header_index': 1},
-         'backgroundColor': TABLE_COLORS['headings'],
-         'color': TABLE_COLORS['text']},
+         'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']},
 
         # Row 2 – year labels: headings colour
         {**base, 'if': {'header_index': 2},
-         'backgroundColor': TABLE_COLORS['headings'],
-         'color': TABLE_COLORS['text']},
+         'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']},
 
         # Override first column at rows 1 & 2 → geography colour (visually merged)
         {**base, 'if': {'header_index': 1, 'column_id': first_col_id},
-         'backgroundColor': TABLE_COLORS['geography'],
-         'color': '#FFFFFF'},
+         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
         {**base, 'if': {'header_index': 2, 'column_id': first_col_id},
-         'backgroundColor': TABLE_COLORS['geography'],
-         'color': '#FFFFFF'},
+         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
 
         # Remove internal borders between the 3 header rows of the first column
         {'if': {'header_index': 0, 'column_id': first_col_id}, 'borderBottom': 'none'},
@@ -90,54 +285,18 @@ def generate_style_header_conditional(columns: list, is_multiindex: bool = False
     ]
 
 
-def get_special_row_styles(data: pd.DataFrame) -> list:
-    """
-    Generate style_data_conditional entries for the three special row types
-    inserted by prepare_table_4_1_data:
-
-      'Households by Tenure'  → section header (geography colour, white, bold)
-      'TOTAL'                 → bold
-      ''                      → thin blank separator (white background)
-    """
-    styles = []
-    for i, (_, row) in enumerate(data.iterrows()):
-        tenure = row.get('Households by Tenure', '')
-        if tenure == 'Households by Tenure':
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': TABLE_COLORS['geography'],
-                'color': '#FFFFFF',
-                'fontWeight': 'bold',
-            })
-        elif tenure == 'TOTAL':
-            styles.append({
-                'if': {'row_index': i},
-                'fontWeight': 'bold',
-            })
-        elif tenure == '':
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': '#FFFFFF',
-                'padding': '0px',
-                'lineHeight': '6px',
-                'minHeight': '6px',
-                'height': '6px',
-            })
-    return styles
-
-
 def get_base_table_style() -> dict:
-    """Get base styling for all tables."""
+    """Get base styling shared by all tables."""
     return {
         'style_table': {
             'overflowY': 'auto',
-            'overflowX': 'auto'
+            'overflowX': 'auto',
         },
         'style_data': {
             'whiteSpace': 'normal',
             'height': 'auto',
             'overflow': 'hidden',
-            'textOverflow': 'ellipsis'
+            'textOverflow': 'ellipsis',
         },
         'style_cell': {
             'font-family': TABLE_FONT,
@@ -145,189 +304,17 @@ def get_base_table_style() -> dict:
             'whiteSpace': 'normal',
             'overflow': 'hidden',
             'textOverflow': 'ellipsis',
-            'border': f"1px solid {TABLE_COLORS['border']}"
+            'border': f"1px solid {TABLE_COLORS['border']}",
         },
         'style_header': {
             'textAlign': 'center',
             'fontWeight': 'bold',
-            'font-family': TABLE_FONT
-        }
+            'font-family': TABLE_FONT,
+        },
     }
 
-def style_cell_4_1(show_both: bool) -> list:
-    year_cols = ['2006', '2011', '2016', '2021']
-    n_groups = 2 if show_both else 1
-    # 40% for the label column; remaining 60% split across all year cells
-    year_width = f'{round(60 / (n_groups * len(year_cols)), 1)}%'
 
-    styles = [
-        {
-            'if': {'column_id': 'Households by Tenure'},
-            'textAlign': 'left',
-            'width': '40%',
-            'minWidth': '160px',
-        }
-    ]
-    for y in year_cols:
-        styles.append({'if': {'column_id': f'indg_{y}'}, 'textAlign': 'right', 'width': year_width})
-        if show_both:
-            styles.append({'if': {'column_id': f'non_indg_{y}'}, 'textAlign': 'right', 'width': year_width})
-
-    return styles
-
-
-_T8_INDICATORS = {
-    "Affordability (Households paying >30% of income on shelter)",
-    "Adequacy (Households living in dwellings needing Major Repairs)",
-    "Suitability (Households living in overcrowded dwellings)",
-    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
-    "Acceptable Housing (Affordable, Adequate, and Suitable)",
-    "Total households (for reference)",
-}
-_T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"
-_T8_TOTAL = "Total households (for reference)"
-
-
-def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
-    """
-    Generate style_data_conditional entries for the special row types in Table 8.1:
-      Indicator section header rows  → geography colour, white, bold
-      'Below multiple' section header → warning colour (#b55438), white, bold
-      'Below multiple' metric rows    → red italic text
-      'Total households' section hdr  → headings colour, bold
-      ''  (blank separator)           → thin white row
-    """
-    styles = []
-    for i, (_, row) in enumerate(data.iterrows()):
-        val = row.get('Indicator', '')
-
-        if val in _T8_INDICATORS:
-            if val == _T8_BELOW_MULTIPLE:
-                styles.append({
-                    'if': {'row_index': i},
-                    'color': '#b55438',
-                    'fontWeight': 'bold',
-                })
-            elif val == _T8_TOTAL:
-                styles.append({
-                    'if': {'row_index': i},
-                    'backgroundColor': TABLE_COLORS['headings'],
-                    'color': TABLE_COLORS['text'],
-                    'fontWeight': 'bold',
-                })
-            else:
-                styles.append({
-                    'if': {'row_index': i},
-                    'backgroundColor': TABLE_COLORS['geography'],
-                    'color': '#FFFFFF',
-                    'fontWeight': 'bold',
-                })
-        elif val in ('__below_count__', '__below_pct__'):
-            styles.append({
-                'if': {'row_index': i},
-                'color': '#b55438',
-                'fontStyle': 'italic',
-            })
-        elif val == '':
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': '#FFFFFF',
-                'padding': '0px',
-                'lineHeight': '6px',
-                'minHeight': '6px',
-                'height': '6px',
-            })
-
-    return styles
-
-
-_T3_1_SECTION_HEADERS = {
-    'Indigenous Population (by CSD)',
-    'Regional Indigenous Households (by CD)',
-    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
-}
-
-
-def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
-    """
-    Generate style_data_conditional entries for Table 3.1 special rows:
-      '__geo_header__'  → geography colour, white, bold   (CSD name row)
-      '__cd_header__'   → geography colour, white, bold   (CD name row, same style)
-      section header strings → headings colour, bold
-      'TOTAL'           → bold
-      ''                → thin white separator
-    """
-    styles = []
-    for i, (_, row) in enumerate(data.iterrows()):
-        val = row.get('Indicator', '')
-
-        if val in ('__geo_header__', '__cd_header__'):
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': TABLE_COLORS['geography'],
-                'color': '#FFFFFF',
-                'fontWeight': 'bold',
-            })
-        elif val in _T3_1_SECTION_HEADERS:
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': TABLE_COLORS['headings'],
-                'color': TABLE_COLORS['text'],
-                'fontWeight': 'bold',
-            })
-        elif val == 'TOTAL':
-            styles.append({
-                'if': {'row_index': i},
-                'fontWeight': 'bold',
-            })
-        elif val == '':
-            styles.append({
-                'if': {'row_index': i},
-                'backgroundColor': '#FFFFFF',
-                'padding': '0px',
-                'lineHeight': '6px',
-                'minHeight': '6px',
-                'height': '6px',
-            })
-    return styles
-
-
-def style_cell_3_1() -> list:
-    year_cols = ['2006', '2011', '2016', '2021']
-    year_width = f'{round(60 / len(year_cols), 1)}%'
-    styles = [
-        {
-            'if': {'column_id': 'Indicator'},
-            'textAlign': 'left',
-            'width': '40%',
-            'minWidth': '200px',
-        }
-    ]
-    for y in year_cols:
-        styles.append({'if': {'column_id': y}, 'textAlign': 'right', 'width': year_width})
-    return styles
-
-
-def style_cell_8_1(show_both: bool) -> list:
-    year_cols = ['2006', '2016', '2021']
-    n_groups = 2 if show_both else 1
-    year_width = f'{round(60 / (n_groups * len(year_cols)), 1)}%'
-
-    styles = [
-        {
-            'if': {'column_id': 'Indicator'},
-            'textAlign': 'left',
-            'width': '40%',
-            'minWidth': '200px',
-        }
-    ]
-    for y in year_cols:
-        styles.append({'if': {'column_id': f'indg_{y}'}, 'textAlign': 'right', 'width': year_width})
-        if show_both:
-            styles.append({'if': {'column_id': f'non_indg_{y}'}, 'textAlign': 'right', 'width': year_width})
-
-    return styles
-
+##### Cell formatters #####
 
 def format_number(value, decimals: int = 0):
     """Format number with commas and specified decimals."""
@@ -336,8 +323,7 @@ def format_number(value, decimals: int = 0):
     try:
         if decimals == 0:
             return f'{int(value):,}'
-        else:
-            return f'{float(value):,.{decimals}f}'
+        return f'{float(value):,.{decimals}f}'
     except (ValueError, TypeError):
         return value
 
@@ -347,9 +333,7 @@ def format_percent(value, multiply: bool = False):
     if pd.isna(value) or value == 'n/a':
         return value
     try:
-        if multiply:
-            return f'{float(value) * 100:.0f}%'
-        else:
-            return f'{float(value):.0f}%'
+        v = float(value) * 100 if multiply else float(value)
+        return f'{v:.0f}%'
     except (ValueError, TypeError):
         return value
