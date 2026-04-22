@@ -3,7 +3,7 @@ Table 4.1 and 4.2 preparation and layout - Housing Tenure.
 """
 import pandas as pd
 import numpy as np
-from dash import dash_table, html
+from dash import dash_table, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
@@ -18,7 +18,7 @@ from .table_styles import (
     format_percent
 )
 from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
-from helpers.config import CHART_COLORS
+from helpers.config import CHART_COLORS, PLOT_CONFIG
 
 
 class Section4Prep:
@@ -28,21 +28,7 @@ class Section4Prep:
         self.data_loader = DataLoader()
 
     def prepare_table_4_1_data(self, geocode: int) -> pd.DataFrame:
-        """
-        Prepare table 4.1 data for a specific geocode, pivoting both household
-        types into a single row per tenure category.
-
-        Columns returned:
-            Households by Tenure, indg_2006 … indg_2021, non_indg_2006 … non_indg_2021
-
-        Args:
-            geocode: Geographic code
-
-        Returns:
-            Formatted and pivoted DataFrame
-        """
-        df = self.data_loader.get_table('table_4_1_housing_tenure')
-        filtered = df[df['Geocode'] == geocode].copy()
+        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 
         if filtered.empty:
             return pd.DataFrame()
@@ -154,8 +140,6 @@ class Section4Prep:
         )
 
         layout = html.Div([
-            html.H4(TABLE_4_1_TITLE, className='table-title'),
-            html.H6(TABLE_4_1_DESC, className='table-desc'),
             dbc.Button("Export", id="export-table-4-1", className="export-pdf"),
             table
         ], className='pg2-table-lgeo')
@@ -175,10 +159,7 @@ class Section4Prep:
             Plotly Figure object
         """
         # Load data
-        df = self.data_loader.get_table('table_4_1_housing_tenure')
-
-        # Filter
-        filtered = df[(df['Geocode'] == geocode)].copy()
+        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 
         if filtered.empty:
             return go.Figure()
@@ -291,7 +272,14 @@ class Section4Prep:
             )
         )
 
-        return fig
+
+        chart_layout = html.Div([
+            html.H4(TABLE_4_1_TITLE, className='table-title'),
+            html.H6(TABLE_4_1_DESC, className='table-desc'),
+            dcc.Graph(id='chart-4-1',figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+        
+        return chart_layout
 
     def _format_cell(self, tenure_type: str, value):
         """Format cell based on tenure type."""

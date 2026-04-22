@@ -2,7 +2,7 @@
 Table 8.1 preparation and layout - Core Housing Need Indicators.
 """
 import pandas as pd
-from dash import dash_table, html
+from dash import dash_table, html, dcc
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
@@ -19,7 +19,7 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
-from helpers.config import CHART_COLORS, TABLE_COLORS, TABLE_FONT
+from helpers.config import CHART_COLORS, TABLE_COLORS, TABLE_FONT, PLOT_CONFIG
 
 YEAR_COLS = ['2006', '2016', '2021']
 
@@ -57,8 +57,7 @@ class Section8Prep:
         """
         Pivot raw table_8_1_core_housing_need into display format.
         """
-        df = self.data_loader.get_table('table_8_1_core_housing_need')
-        filtered = self.data_loader.filter_by_geocode(df, geocode)
+        filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:
             return pd.DataFrame()
@@ -194,20 +193,19 @@ class Section8Prep:
             **base_style
         )
 
-        return html.Div([
-            html.H4(TABLE_8_1_TITLE, className='table-title'),
-            html.H6(TABLE_8_1_DESC, className='table-desc'),
+        layout = html.Div([
             dbc.Button("Export", id="export-table-8-1", className="export-pdf"),
             table
         ], className='pg2-table-lgeo')
+
+        return layout
 
 
     def create_chart_8_1(self, geocode: int):
         """
         Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need.
         """
-        df = self.data_loader.get_table('table_8_1_core_housing_need')
-        filtered = self.data_loader.filter_by_geocode(df, geocode)
+        filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:
             return go.Figure()
@@ -289,4 +287,11 @@ class Section8Prep:
         fig.update_traces(leaf=dict(opacity=0.9))
 
 
-        return fig
+        chart_layout = html.Div([
+            html.H4(TABLE_8_1_TITLE, className='table-title'),
+            html.H6(TABLE_8_1_DESC, className='table-desc'),
+            dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+
+
+        return chart_layout

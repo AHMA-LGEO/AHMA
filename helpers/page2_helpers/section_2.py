@@ -34,8 +34,7 @@ class Section2Prep:
         The source table is wide: one row per geocode with Nation1…Nation21
         columns
         """
-        df = self.data_loader.get_table('table_2_1_indigenous_territory')
-        filtered = self.data_loader.filter_by_geocode(df, geocode)
+        filtered = self.data_loader.get_table('table_2_1_indigenous_territory', geocode)
 
         if filtered.empty:
             return []
@@ -89,8 +88,7 @@ class Section2Prep:
 
     def _get_metis(self, geocode: int) -> list:
         """Return a deduplicated, sorted list of Métis community names."""
-        df = self.data_loader.get_table('table_2_2_metis_community')
-        filtered = self.data_loader.filter_by_geocode(df, geocode)
+        filtered = self.data_loader.get_table('table_2_2_metis_community', geocode)
 
         if filtered.empty:
             return []

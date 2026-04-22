@@ -241,6 +241,73 @@ def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
     return styles
 
 
+_T3_1_SECTION_HEADERS = {
+    'Indigenous Population (by CSD)',
+    'Regional Indigenous Households (by CD)',
+    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
+}
+
+
+def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
+    """
+    Generate style_data_conditional entries for Table 3.1 special rows:
+      '__geo_header__'  → geography colour, white, bold   (CSD name row)
+      '__cd_header__'   → geography colour, white, bold   (CD name row, same style)
+      section header strings → headings colour, bold
+      'TOTAL'           → bold
+      ''                → thin white separator
+    """
+    styles = []
+    for i, (_, row) in enumerate(data.iterrows()):
+        val = row.get('Indicator', '')
+
+        if val in ('__geo_header__', '__cd_header__'):
+            styles.append({
+                'if': {'row_index': i},
+                'backgroundColor': TABLE_COLORS['geography'],
+                'color': '#FFFFFF',
+                'fontWeight': 'bold',
+            })
+        elif val in _T3_1_SECTION_HEADERS:
+            styles.append({
+                'if': {'row_index': i},
+                'backgroundColor': TABLE_COLORS['headings'],
+                'color': TABLE_COLORS['text'],
+                'fontWeight': 'bold',
+            })
+        elif val == 'TOTAL':
+            styles.append({
+                'if': {'row_index': i},
+                'fontWeight': 'bold',
+            })
+        elif val == '':
+            styles.append({
+                'if': {'row_index': i},
+                'backgroundColor': '#FFFFFF',
+                'padding': '0px',
+                'lineHeight': '6px',
+                'minHeight': '6px',
+                'height': '6px',
+            })
+    return styles
+
+
+def style_cell_3_1() -> list:
+    year_cols = ['2006', '2011', '2016', '2021']
+    year_width = f'{round(60 / len(year_cols), 1)}%'
+    styles = [
+        {
+            'if': {'column_id': 'Indicator'},
+            'textAlign': 'left',
+            'width': '40%',
+            'minWidth': '200px',
+        }
+    ]
+    for y in year_cols:
+        styles.append({'if': {'column_id': y}, 'textAlign': 'right', 'width': year_width})
+    return styles
+
+
 def style_cell_8_1(show_both: bool) -> list:
     year_cols = ['2006', '2016', '2021']
     n_groups = 2 if show_both else 1

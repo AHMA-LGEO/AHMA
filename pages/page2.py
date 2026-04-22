@@ -5,6 +5,7 @@ from dash import dcc, html, Input, Output, State, callback, ALL
 import dash_bootstrap_components as dbc
 
 from helpers.page2_helpers.section_2 import Section2Prep
+from helpers.page2_helpers.section_3 import Section3Prep
 from helpers.page2_helpers.section_4 import Section4Prep
 from helpers.page2_helpers.section_8 import Section8Prep
 # from helpers.page2_helpers.table_4_2_prep import Table42Prep
@@ -16,6 +17,7 @@ from helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
 
 # Initialize helpers
 section_2_layout = Section2Prep()
+section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
 section_8_layout = Section8Prep()
 
@@ -94,8 +96,14 @@ layout = html.Div([
 
         # Section 2 – Nations / Territories and Métis Communities
         html.Div([
-            html.Div(id='section-2-1-container'),
-            html.Div(id='section-2-2-container'),
+            html.Div(id='table-2-1-container'),
+            html.Div(id='table-2-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        # Section 3 - Demographics
+        html.Div([
+            html.Div(id='table-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Table 4.1 Section
@@ -206,8 +214,8 @@ def global_toggle_click(_, current_intent):
 
 # Section 2 – Nations / Territories + Métis Communities
 @callback(
-    Output('section-2-1-container', 'children'),
-    Output('section-2-2-container', 'children'),
+    Output('table-2-1-container', 'children'),
+    Output('table-2-2-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
 )
@@ -228,19 +236,12 @@ def update_section_2(geo_name, scale):
     Input('table-visibility-store', 'data'),
 )
 def update_table_4_1(geo_name, scale, visibility):
-    """Update Table 4.1 and Chart based on selection."""
     show_both = (visibility or {}).get("table-4-1", False)
     geocode = _resolve_geocode(geo_name, scale, section_4_layout.data_loader)
 
     table_layout = section_4_layout.create_table_4_1_layout(geocode, show_both)
-    chart_fig = section_4_layout.create_chart_4_1(geocode)
+    chart_layout = section_4_layout.create_chart_4_1(geocode)
 
-    chart_layout = dcc.Graph(
-        id='chart-4-1',
-        figure=chart_fig,
-        config=PLOT_CONFIG
-    )
-    
     return chart_layout, table_layout
 
 
@@ -252,17 +253,27 @@ def update_table_4_1(geo_name, scale, visibility):
     Input('table-visibility-store', 'data'),
 )
 def update_table_8_1(geo_name, scale, visibility):
-    """Update Table 8.1 and Chart 8.1 based on geography selection."""
     show_both = (visibility or {}).get("table-8-1", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
-    table = section_8_layout.create_table_8_1_layout(geocode, show_both)
-    chart_fig = section_8_layout.create_chart_8_1(geocode)
+    table_layout = section_8_layout.create_table_8_1_layout(geocode, show_both)
+    chart_layout = section_8_layout.create_chart_8_1(geocode)
 
-    chart = dcc.Graph(id='chart-8-1', figure=chart_fig, config=PLOT_CONFIG)
+    return chart_layout, table_layout
 
-    return chart, table
 
+@callback(
+    Output('table-3-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+    Input('table-visibility-store', 'data'),
+)
+def update_table_3_1(geo_name, scale, visibility):
+    geocode = _resolve_geocode(geo_name, scale, section_2_layout.data_loader)
+
+    table_layout = section_3_layout.create_table_3_1_layout(geocode)
+
+    return table_layout
 
 # @callback(
 #     Output('table-4-2-container', 'children'),

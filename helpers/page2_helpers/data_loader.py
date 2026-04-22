@@ -1,5 +1,5 @@
 """
-Data loading utilities for page 2 tables.
+Data loading utilities for all 2 tables.
 """
 import pandas as pd
 from sqlalchemy import create_engine
@@ -19,18 +19,16 @@ class DataLoader:
             self._geocode_master = pd.read_sql_table('geocode_master', self.engine)
         return self._geocode_master
 
-    def get_table(self, table_name: str) -> pd.DataFrame:
-        """
-        Load table from database with caching.
-
-        Args:
-            table_name: Name of the table to load
-
-        Returns:
-            DataFrame with table data
-        """
+    def get_table(self, table_name: str, geocode: str = None) -> pd.DataFrame:
+        """Load table from database with caching."""
         if table_name not in self._table_cache:
             self._table_cache[table_name] = pd.read_sql_table(table_name, self.engine)
+
+        if geocode:
+            mask = (self._table_cache[table_name]['Geocode'] == geocode
+                    ) | (self._table_cache[table_name]['Geocode'] == int(geocode))
+            return self._table_cache[table_name][mask]
+    
         return self._table_cache[table_name].copy()
 
     def get_geography_name(self, geocode: int) -> str:
@@ -60,19 +58,3 @@ class DataLoader:
         if not match.empty:
             return match['Province_Code'].iloc[0]
         return None
-
-    def filter_by_geocode(self, df: pd.DataFrame, geocode: int,
-                          col: str = 'Geocode') -> pd.DataFrame:
-        """
-        Filter a DataFrame by geocode, tolerating int/str type mismatches.
-
-        Args:
-            df:      DataFrame to filter
-            geocode: Integer geocode to match
-            col:     Column name to filter on (default 'Geocode')
-
-        Returns:
-            Filtered DataFrame (may be empty)
-        """
-        mask = (df[col] == geocode) | (df[col] == str(geocode))
-        return df[mask]
