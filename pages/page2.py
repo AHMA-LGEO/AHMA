@@ -4,16 +4,16 @@ Dashboard page 2: Housing needs tables and analysis.
 from dash import dcc, html, Input, Output, State, callback, ALL
 import dash_bootstrap_components as dbc
 
-from helpers.page2_helpers.section_2 import Section2Prep
-from helpers.page2_helpers.section_3 import Section3Prep
-from helpers.page2_helpers.section_4 import Section4Prep
-from helpers.page2_helpers.section_8 import Section8Prep
-# from helpers.page2_helpers.table_4_2_prep import Table42Prep
-# from helpers.page2_helpers.chart_4_prep import Chart4Prep
-from helpers.page2_helpers.text_content import (
+from dashboard_helpers.page2_helpers.section_2 import Section2Prep
+from dashboard_helpers.page2_helpers.section_3 import Section3Prep
+from dashboard_helpers.page2_helpers.section_4 import Section4Prep
+from dashboard_helpers.page2_helpers.section_8 import Section8Prep
+# from dashboard_helpers.page2_helpers.table_4_2_prep import Table42Prep
+# from dashboard_helpers.page2_helpers.chart_4_prep import Chart4Prep
+from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
-from helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
+from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
 
 # Initialize helpers
 section_2_layout = Section2Prep()
@@ -47,7 +47,7 @@ def global_toggle_ui():
                 html.Div([
                     dbc.Button(
                         id="global-toggle-btn",
-                        children="○ Hide Comparison",
+                        children="● Show Comparison",
                         color="secondary",
                         outline=True,
                         size="sm",
@@ -186,9 +186,9 @@ def local_toggle_state(toggle_values):
     global_state = derive_global_state(new_store)
 
     if global_state == "all_on":
-        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_on"
+        btn_label, btn_color, new_intent = "○ Hide Comparison", "success", "all_on"
     elif global_state == "all_off":
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_off"
+        btn_label, btn_color, new_intent = "● Show Comparison", "secondary", "all_off"
     else:  # mixed — next global click will turn all on
         btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
 

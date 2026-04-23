@@ -19,7 +19,7 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
-from helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
 
 # Fixed display order for indicators

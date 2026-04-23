@@ -416,6 +416,6 @@ class Section3DataPrep:
         }
     
 
-# if __name__ == '__main__':
-#     t = Table3DataPrep()
-#     t.table_3_6()
+if __name__ == '__main__':
+    t = Section3DataPrep()
+    t.table_3_6()

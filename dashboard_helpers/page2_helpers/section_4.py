@@ -18,7 +18,7 @@ from .table_styles import (
     format_percent
 )
 from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
-from helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
 
 class Section4Prep:

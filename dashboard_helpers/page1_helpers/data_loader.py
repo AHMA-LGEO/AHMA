@@ -4,7 +4,7 @@ Data loading utilities for dashboard.
 import pandas as pd
 import geopandas as gpd
 from sqlalchemy import create_engine
-from helpers.config import DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, REGION_DATA_DIR, SUBREGION_DATA_DIR
+from dashboard_helpers.config import DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, REGION_DATA_DIR, SUBREGION_DATA_DIR
 
 
 class DataLoader:

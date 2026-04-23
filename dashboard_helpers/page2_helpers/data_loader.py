@@ -3,7 +3,7 @@ Data loading utilities for all tables.
 """
 import pandas as pd
 from sqlalchemy import create_engine
-from helpers.config import DB_PATH
+from dashboard_helpers.config import DB_PATH
 
 
 class DataLoader:

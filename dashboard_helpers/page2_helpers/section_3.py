@@ -28,7 +28,7 @@ from .text_content import (
     TABLE_3_1_TITLE, CHART_3_2_TITLE,
     TABLE_3_3_TITLE, TABLE_3_4_TITLE,
     TABLE_3_5_TITLE, TABLE_3_6_TITLE)
-from helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
 _AGE_GROUPS_3_2_3_3 = ['0 - 14', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
 _AGE_GROUPS_3_4 = ['Under 15', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']

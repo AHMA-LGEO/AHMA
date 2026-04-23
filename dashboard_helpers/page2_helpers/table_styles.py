@@ -2,7 +2,7 @@
 Styling utilities for Dash DataTables.
 """
 import pandas as pd
-from helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011
 
 
 #-------------------- Shared blank-separator style --------------------

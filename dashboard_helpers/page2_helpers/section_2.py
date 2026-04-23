@@ -10,7 +10,7 @@ from .text_content import (
     TABLE_2_1_TITLE,
     TABLE_2_2_DESC
 )
-from helpers.config import TABLE_FONT
+from dashboard_helpers.config import TABLE_FONT
 
 
 class Section2Prep:
