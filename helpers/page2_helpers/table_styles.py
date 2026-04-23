@@ -2,10 +2,10 @@
 Styling utilities for Dash DataTables.
 """
 import pandas as pd
-from helpers.config import TABLE_COLORS, TABLE_FONT
+from helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011
 
 
-##### Shared blank-separator style #####
+#-------------------- Shared blank-separator style --------------------
 _BLANK_ROW_STYLE = {
     'backgroundColor': '#FFFFFF',
     'padding': '0px',
@@ -14,9 +14,10 @@ _BLANK_ROW_STYLE = {
     'height': '6px',
 }
 
+def blank_row(col_name='', years='', label=''):
+    return {col_name: label, **{y: '' for y in years}}
 
-
-##### Generic stylers  (reusable across all tables) #####
+#-------------------- Generic stylers  (reusable across all tables) --------------------
 
 def make_style_cell(
     label_col_id: str,
@@ -123,86 +124,7 @@ def make_special_row_styles(
     return styles
 
 
-###### Section 3 – Demographics #####
-
-
-_T3_1_SECTION_HEADERS = frozenset({
-    'Indigenous Population (by CSD)',
-    'Regional Indigenous Households (by CD)',
-    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
-})
-
-
-def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Indicator',
-        geo_headers={'__geo_header__', '__cd_header__'},
-        section_headers=_T3_1_SECTION_HEADERS,
-    )
-
-
-def style_cell_3_1() -> list:
-    return make_style_cell(
-        'Indicator',
-        ['2006', '2011', '2016', '2021'],
-        label_min_width='200px',
-    )
-
-
-##### Section 4 – Housing Tenure #####
-
-def get_special_row_styles_4_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Households by Tenure',
-        geo_headers={'Households by Tenure'},
-    )
-
-
-def style_cell_4_1(show_both: bool) -> list:
-    year_cols = ['2006', '2011', '2016', '2021']
-    value_cols = [f'indg_{y}' for y in year_cols]
-    if show_both:
-        value_cols += [f'non_indg_{y}' for y in year_cols]
-    return make_style_cell('Households by Tenure', value_cols, label_min_width='160px')
-
-
-##### Section 8 – Core Housing Need #####
-
-_T8_INDICATORS = frozenset({
-    "Affordability (Households paying >30% of income on shelter)",
-    "Adequacy (Households living in dwellings needing Major Repairs)",
-    "Suitability (Households living in overcrowded dwellings)",
-    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
-    "Acceptable Housing (Affordable, Adequate, and Suitable)",
-    "Total households (for reference)",
-})
-_T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"
-_T8_TOTAL = "Total households (for reference)"
-
-# Indicators that use geography-colour header styling (excludes warning + total rows)
-_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
-
-
-def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Indicator',
-        geo_headers=_T8_GEO_HEADERS,
-        warning_headers={_T8_BELOW_MULTIPLE},
-        section_headers={_T8_TOTAL},
-        total_labels=frozenset(),           # no plain TOTAL rows in 8.1
-        italic_labels={'__below_count__', '__below_pct__'},
-    )
-
-
-def style_cell_8_1(show_both: bool) -> list:
-    year_cols = ['2006', '2016', '2021']
-    value_cols = [f'indg_{y}' for y in year_cols]
-    if show_both:
-        value_cols += [f'non_indg_{y}' for y in year_cols]
-    return make_style_cell('Indicator', value_cols, label_min_width='200px')
-
-
-##### Shared header and base styles #####
+#-------------------- Shared header and base styles --------------------
 
 def generate_style_data_conditional(data: pd.DataFrame) -> list:
     """
@@ -314,7 +236,7 @@ def get_base_table_style() -> dict:
     }
 
 
-##### Cell formatters #####
+#-------------------- Cell formatters --------------------
 
 def format_number(value, decimals: int = 0):
     """Format number with commas and specified decimals."""
@@ -337,3 +259,124 @@ def format_percent(value, multiply: bool = False):
         return f'{v:.0f}%'
     except (ValueError, TypeError):
         return value
+
+
+
+# -------------------- Section 3 – Demographics --------------------
+
+############### Table 3.1 stylers ###############
+_T3_1_SECTION_HEADERS = frozenset({
+    'Indigenous Population (by CSD)',
+    'Regional Indigenous Households (by CD)',
+    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
+})
+
+
+def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Indicator',
+        geo_headers={'__geo_header__', '__cd_header__'},
+        section_headers=_T3_1_SECTION_HEADERS,
+    )
+
+
+def style_cell_3_1() -> list:
+    return make_style_cell(
+        'Indicator',
+        YEARS,
+        label_min_width='200px',
+    )
+
+############### Table 3.3 stylers ###############
+
+_T3_3_VALUE_COLS = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+
+def get_special_row_styles_3_3(data: pd.DataFrame) -> list:
+    return make_special_row_styles(data, 'Age Group', total_labels={'Total'})
+
+
+def style_cell_3_3() -> list:
+    return make_style_cell('Age Group', _T3_3_VALUE_COLS, label_width='25%', label_min_width='120px')
+
+
+############### Table 3.4 stylers ###############
+
+_T3_4_VALUE_COLS = ['Indigenous', 'Men+', 'Women+']
+
+def get_special_row_styles_3_4(data: pd.DataFrame) -> list:
+    return make_special_row_styles(data, 'Age Group', total_labels={'Total'})
+
+
+def style_cell_3_4() -> list:
+    return make_style_cell('Age Group', _T3_4_VALUE_COLS, label_width='25%', label_min_width='120px')
+
+
+############### Table 3.5 stylers ###############
+
+def get_special_row_styles_3_5(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Number of Indigenous HHs',
+        geo_headers={'Number of Indigenous HHs'},
+        total_labels={'Total'},
+    )
+
+
+def style_cell_3_5() -> list:
+    return make_style_cell('Number of Indigenous HHs', YEARS_MINUS_2011, label_width='25%', label_min_width='120px')
+
+
+#-------------------- Section 4 – Housing Tenure --------------------
+
+############### Table 4.1 stylers ###############
+
+def get_special_row_styles_4_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Households by Tenure',
+        geo_headers={'Households by Tenure'},
+    )
+
+
+def style_cell_4_1(show_both: bool) -> list:
+    value_cols = [f'indg_{y}' for y in YEARS]
+    if show_both:
+        value_cols += [f'non_indg_{y}' for y in YEARS]
+    return make_style_cell('Households by Tenure', value_cols, label_min_width='160px')
+
+
+#-------------------- Section 8 – Core Housing Need --------------------
+
+############### Table 8.1 stylers ###############
+
+_T8_INDICATORS = frozenset({
+    "Affordability (Households paying >30% of income on shelter)",
+    "Adequacy (Households living in dwellings needing Major Repairs)",
+    "Suitability (Households living in overcrowded dwellings)",
+    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
+    "Acceptable Housing (Affordable, Adequate, and Suitable)",
+    "Total households (for reference)",
+})
+_T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"
+_T8_TOTAL = "Total households (for reference)"
+
+# Indicators that use geography-colour header styling (excludes warning + total rows)
+_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
+
+
+def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Indicator',
+        geo_headers=_T8_GEO_HEADERS,
+        warning_headers={_T8_BELOW_MULTIPLE},
+        section_headers={_T8_TOTAL},
+        total_labels=frozenset(),           # no plain TOTAL rows in 8.1
+        italic_labels={'__below_count__', '__below_pct__'},
+    )
+
+
+def style_cell_8_1(show_both: bool) -> list:
+    value_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
+    if show_both:
+        value_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
+    return make_style_cell('Indicator', value_cols, label_min_width='200px')
+
+

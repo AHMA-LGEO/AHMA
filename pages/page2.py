@@ -94,7 +94,7 @@ layout = html.Div([
             ], style={'fontFamily': 'Bahnschrift'})
         ], className='muni-reg-text-lgeo'),
 
-        # Section 2 – Nations / Territories and Métis Communities
+        # Section 2 - Nations / Territories and Métis Communities
         html.Div([
             html.Div(id='table-2-1-container'),
             html.Div(id='table-2-2-container'),
@@ -104,6 +104,12 @@ layout = html.Div([
         # Section 3 - Demographics
         html.Div([
             html.Div(id='table-3-1-container'),
+            html.Div(id='chart-3-2-container'),
+            html.Div(id='chart-3-3-container'),
+            html.Div(id='table-3-3-container'),
+            html.Div(id='chart-3-4-container'),
+            html.Div(id='table-3-4-container'),
+            html.Div(id='table-3-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Table 4.1 Section
@@ -212,7 +218,7 @@ def global_toggle_click(_, current_intent):
     return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
 
 
-# Section 2 – Nations / Territories + Métis Communities
+# Section 2 - Nations / Territories + Métis Communities
 @callback(
     Output('table-2-1-container', 'children'),
     Output('table-2-2-container', 'children'),
@@ -222,12 +228,38 @@ def global_toggle_click(_, current_intent):
 def update_section_2(geo_name, scale):
     geocode = _resolve_geocode(geo_name, scale, section_2_layout.data_loader)
     return (
-        section_2_layout.create_section_2_1_layout(geocode),
-        section_2_layout.create_section_2_2_layout(geocode),
+        section_2_layout.prepare_table_2_1_layout(geocode),
+        section_2_layout.prepare_table_2_2_layout(geocode),
     )
 
 
-# Table update — reads show_both from visibility store
+# Section 3 - Demographics
+@callback(
+    Output('table-3-1-container', 'children'),
+    Output('chart-3-2-container', 'children'),
+    Output('chart-3-3-container', 'children'),
+    Output('table-3-3-container', 'children'),
+    Output('chart-3-4-container', 'children'),
+    Output('table-3-4-container', 'children'),
+    Output('table-3-5-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_3(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_3_layout.data_loader)
+
+    return (
+        section_3_layout.create_table_3_1_layout(geocode),
+        section_3_layout.create_chart_3_2(geocode),
+        section_3_layout.create_chart_3_3(geocode),
+        section_3_layout.create_table_3_3_layout(geocode),
+        section_3_layout.create_chart_3_4(geocode),
+        section_3_layout.create_table_3_4_layout(geocode),
+        section_3_layout.create_table_3_5_layout(geocode),
+    )
+
+
+
 @callback(
     Output('chart-4-1-container', 'children'),
     Output('table-4-1-container', 'children'),
@@ -262,18 +294,6 @@ def update_table_8_1(geo_name, scale, visibility):
     return chart_layout, table_layout
 
 
-@callback(
-    Output('table-3-1-container', 'children'),
-    Input('main-area', 'data'),
-    Input('area-scale-store', 'data'),
-    Input('table-visibility-store', 'data'),
-)
-def update_table_3_1(geo_name, scale, visibility):
-    geocode = _resolve_geocode(geo_name, scale, section_2_layout.data_loader)
-
-    table_layout = section_3_layout.create_table_3_1_layout(geocode)
-
-    return table_layout
 
 # @callback(
 #     Output('table-4-2-container', 'children'),

@@ -37,16 +37,8 @@ class Section2Prep:
             if pd.notna(v) and str(v).strip() != ''
         })
 
-    def create_section_2_1_layout(self, geocode: int):
-        """
-        Build the Section 2.1 layout: count badge + nations DataTable.
-
-        Args:
-            geocode: Integer geographic code
-
-        Returns:
-            Dash HTML Div
-        """
+    def prepare_table_2_1_layout(self, geocode: int):
+        """Build the Table 2.1 layout: count badge + nations DataTable."""
         nations = self._get_nations(geocode)
         count = len(nations)
 
@@ -87,16 +79,8 @@ class Section2Prep:
             if pd.notna(v) and str(v).strip() != ''
         })
 
-    def create_section_2_2_layout(self, geocode: int):
-        """
-        Build the Section 2.2 layout: count badge + Métis communities DataTable.
-
-        Args:
-            geocode: Integer geographic code
-
-        Returns:
-            Dash HTML Div
-        """
+    def prepare_table_2_2_layout(self, geocode: int):
+        """Build the Table 2.2 layout: count badge + Métis communities DataTable."""
         communities = self._get_metis(geocode)
 
         if not communities:

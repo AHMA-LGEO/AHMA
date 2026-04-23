@@ -19,9 +19,8 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
-from helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG
+from helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
-YEAR_COLS = ['2006', '2016', '2021']
 
 # Fixed display order for indicators
 INDICATOR_ORDER = [
@@ -30,7 +29,7 @@ INDICATOR_ORDER = [
     "Suitability (Households living in overcrowded dwellings)",
     _T8_BELOW_MULTIPLE,
     "Acceptable Housing (Affordable, Adequate, and Suitable)",
-    "Total households (for reference)",
+    _T8_TOTAL,
 ]
 
 # Labels used in the outer ring of the wedge-pie chart
@@ -40,24 +39,21 @@ CHART_DETAIL_LABELS = [
     "Unsuitability",
     "Below multiple <br>indicators",
 ]
-CHART_DETAIL_INDICATORS = INDICATOR_ORDER[:4]   # matches labels above
+CHART_DETAIL_INDICATORS = INDICATOR_ORDER[:4]
 
-# Colours for the pie chart, updating the following logic for clear understanding of categories
-# _PIE_ACCEPTABLE_COLOR = CHART_COLORS[0] # choosing 1st chart color
+# Going with colors that makes sense for acceptable and unacceptable housing needs, 
+# instead of selected first 5 colors from color pallete
 _PIE_ACCEPTABLE_COLOR = "#9CA37A"
-# _PIE_OUTER_COLORS = [CHART_COLORS[i] for i in range(1,5)]
 _PIE_OUTER_COLORS = ["#D89A86", "#C97A63", "#b55438", "#5b2a1c"]
 
 
 class Section8Prep:
     """Prepare and format Section 8 schemas."""
-    
+
     def __init__(self):
         self.data_loader = get_data_loader()
 
     def prepare_table_8_1_data(self, geocode: int) -> pd.DataFrame:
-        """Pivot raw table_8_1_core_housing_need into display format."""
-
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:
@@ -66,69 +62,45 @@ class Section8Prep:
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         non_indg = filtered[filtered['Household Type'] == 'Non-Indigenous HHs']
 
-        indg_cols = [f'indg_{y}' for y in YEAR_COLS]
-        non_indg_cols = [f'non_indg_{y}' for y in YEAR_COLS]
+        indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
+        non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
 
         def blank_row(label=''):
             return {'Indicator': label, **{c: '' for c in all_val_cols}}
 
-        def _lookup(subset, indicator, metric):
-            mask = (subset['Indicator'] == indicator) & (subset['Metric'] == metric)
-            row = subset[mask]
-            return row.iloc[0] if not row.empty else None
+        indg_idx = indg.set_index(['Indicator', 'Metric'])
+        non_indg_idx = non_indg.set_index(['Indicator', 'Metric'])
+
+        def _fmt_vals(idx_df, indicator, metric, fmt_fn, prefix):
+            try:
+                row = idx_df.loc[(indicator, metric)]
+                return {f'{prefix}_{y}': fmt_fn(row[y]) for y in YEARS_MINUS_2011}
+            except KeyError:
+                return {f'{prefix}_{y}': 'NA' for y in YEARS_MINUS_2011}
 
         rows = []
         for indicator in INDICATOR_ORDER:
-            indg_count = _lookup(indg, indicator, 'Number of households')
-            indg_pct = _lookup(indg, indicator, '% of households')
-            non_indg_count = _lookup(non_indg, indicator, 'Number of households')
-            non_indg_pct = _lookup(non_indg, indicator, '% of households')
+            indg_count_vals = _fmt_vals(indg_idx, indicator, 'Number of households', format_number, 'indg')
+            non_indg_count_vals = _fmt_vals(non_indg_idx, indicator, 'Number of households', format_number, 'non_indg')
 
             if indicator == _T8_TOTAL:
-                # Single bold row: indicator name + count values inline, no % row
-                total_row = {'Indicator': indicator}
-                for y in YEAR_COLS:
-                    total_row[f'indg_{y}'] = (
-                        format_number(indg_count[y]) if indg_count is not None else 'NA'
-                    )
-                    total_row[f'non_indg_{y}'] = (
-                        format_number(non_indg_count[y]) if non_indg_count is not None else 'NA'
-                    )
-                rows.append(total_row)
+                rows.append({'Indicator': indicator, **indg_count_vals, **non_indg_count_vals})
                 rows.append(blank_row())
                 continue
+
+            indg_pct_vals = _fmt_vals(indg_idx, indicator, '% of households', format_percent, 'indg')
+            non_indg_pct_vals = _fmt_vals(non_indg_idx, indicator, '% of households', format_percent, 'non_indg')
 
             # Section header row
             rows.append(blank_row(indicator))
 
-            # Number of households row
-            count_row = {'Indicator': 'Number of households'}
-            for y in YEAR_COLS:
-                count_row[f'indg_{y}'] = (
-                    format_number(indg_count[y]) if indg_count is not None else 'NA'
-                )
-                count_row[f'non_indg_{y}'] = (
-                    format_number(non_indg_count[y]) if non_indg_count is not None else 'NA'
-                )
-            if indicator == _T8_BELOW_MULTIPLE:
-                count_row['Indicator'] = '__below_count__'
-            rows.append(count_row)
+            count_label = '__below_count__' if indicator == _T8_BELOW_MULTIPLE else 'Number of households'
+            rows.append({'Indicator': count_label, **indg_count_vals, **non_indg_count_vals})
 
-            # % of households row
-            pct_row = {'Indicator': '% of households'}
-            for y in YEAR_COLS:
-                pct_row[f'indg_{y}'] = (
-                    format_percent(indg_pct[y]) if indg_pct is not None else 'NA'
-                )
-                pct_row[f'non_indg_{y}'] = (
-                    format_percent(non_indg_pct[y]) if non_indg_pct is not None else 'NA'
-                )
-            if indicator == _T8_BELOW_MULTIPLE:
-                pct_row['Indicator'] = '__below_pct__'
-            rows.append(pct_row)
+            pct_label = '__below_pct__' if indicator == _T8_BELOW_MULTIPLE else '% of households'
+            rows.append({'Indicator': pct_label, **indg_pct_vals, **non_indg_pct_vals})
 
-            # Blank separator
             rows.append(blank_row())
 
         return pd.DataFrame(rows, dtype=object)
@@ -139,13 +111,6 @@ class Section8Prep:
             Level 0 – geography name
             Level 1 – Indigenous HHs | Non-Indigenous HHs (toggled)
             Level 2 – census year
-
-        Args:
-            geocode:   Geographic code
-            show_both: If True, include Non-Indigenous columns
-
-        Returns:
-            Dash HTML Div
         """
         df = self.prepare_table_8_1_data(geocode)
         if df.empty:
@@ -157,19 +122,19 @@ class Section8Prep:
             {"name": ["", "Indicator", ""], "id": "Indicator"}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
-            for y in YEAR_COLS
+            for y in YEARS_MINUS_2011
         ]
         if show_both:
             columns += [
                 {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
-                for y in YEAR_COLS
+                for y in YEARS_MINUS_2011
             ]
 
-        data_cols = ['Indicator'] + [f'indg_{y}' for y in YEAR_COLS]
+        data_cols = ['Indicator'] + [f'indg_{y}' for y in YEARS_MINUS_2011]
         if show_both:
-            data_cols += [f'non_indg_{y}' for y in YEAR_COLS]
+            data_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
 
-        # Replace internal tags back to display text for the DataTable
+        # Replace internal sentinel tags with display text
         df_display = df[data_cols].copy()
         df_display['Indicator'] = df_display['Indicator'].replace({
             '__below_count__': 'Number of households',
@@ -194,13 +159,10 @@ class Section8Prep:
             **base_style
         )
 
-        layout = html.Div([
+        return html.Div([
             dbc.Button("Export", id="export-table-8-1", className="export-pdf"),
             table
         ], className='pg2-table-lgeo')
-
-        return layout
-
 
     def create_chart_8_1(self, geocode: int):
         """Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need."""
@@ -212,14 +174,12 @@ class Section8Prep:
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
+        indg_pct_idx = indg[indg['Metric'] == '% of households'].set_index('Indicator')['2021']
+
         def _pct(indicator):
-            mask = (indg['Indicator'] == indicator) & (indg['Metric'] == '% of households')
-            row = indg[mask]
-            if row.empty:
-                return 0.0
             try:
-                return float(row['2021'].iloc[0])
-            except (ValueError, TypeError):
+                return float(indg_pct_idx.loc[indicator])
+            except (KeyError, ValueError, TypeError):
                 return 0.0
 
         acceptable_pct = _pct("Acceptable Housing (Affordable, Adequate, and Suitable)")
@@ -227,28 +187,18 @@ class Section8Prep:
 
         raw_details = [_pct(ind) for ind in CHART_DETAIL_INDICATORS]
         total_raw = sum(raw_details)
-        if total_raw > 0:
-            scaled_details = [v * unacceptable_pct / total_raw for v in raw_details]
-        else:
-            scaled_details = [unacceptable_pct / 4] * 4
+        scaled_details = (
+            [v * unacceptable_pct / total_raw for v in raw_details]
+            if total_raw > 0 else [unacceptable_pct / 4] * 4
+        )
 
-        # Sunburst hierarchy:
-        #   root → "Acceptable housing"  (leaf, no children)
-        #   root → "Unacceptable"        (parent of 4 detail labels)
-        #        → CHART_DETAIL_LABELS   (leaves)
         labels  = ["Housing", "Acceptable", "Unacceptable"] + CHART_DETAIL_LABELS
-        # parents = ["", ""] + ["Unacceptable"] * len(CHART_DETAIL_LABELS)
         parents = ["", "Housing", "Housing"] + ["Unacceptable"] * len(CHART_DETAIL_LABELS)
         values  = [acceptable_pct + unacceptable_pct, acceptable_pct, unacceptable_pct] + scaled_details
-
-        _UNACCEPTABLE_COLOR = "#5e2a1c"
-
-        colors = ["#FFFFFF", _PIE_ACCEPTABLE_COLOR, _UNACCEPTABLE_COLOR] + _PIE_OUTER_COLORS
-
+        colors  = ["#FFFFFF", _PIE_ACCEPTABLE_COLOR, "#5e2a1c"] + _PIE_OUTER_COLORS
 
         text = [
-            lbl
-            if lbl == "Housing"
+            lbl if lbl == "Housing"
             else f"{lbl}<br>{val:.0f}%"
             if (i < 3 or raw_details[i - 3] > 0) else ""
             for i, (lbl, val) in enumerate(zip(labels, values))
@@ -259,10 +209,7 @@ class Section8Prep:
             parents=parents,
             values=values,
             branchvalues="total",
-            marker=dict(
-                colors=colors,
-                line=dict(color="white"),
-            ),
+            marker=dict(colors=colors, line=dict(color="white")),
             text=text,
             texttemplate="%{text}",
             insidetextorientation="radial",
@@ -271,10 +218,7 @@ class Section8Prep:
 
         fig.update_layout(
             title=dict(
-                text=(
-                    f"2021 Indigenous Households in Unacceptable Housing<br>"
-                    f"<sup>{geo_name}</sup>"
-                ),
+                text=f"2021 Indigenous Households in Unacceptable Housing<br><sup>{geo_name}</sup>",
                 x=0.5, xanchor="center",
                 font=dict(size=15, family=TABLE_FONT),
             ),
@@ -285,12 +229,8 @@ class Section8Prep:
         )
         fig.update_traces(leaf=dict(opacity=0.9))
 
-
-        chart_layout = html.Div([
+        return html.Div([
             html.H4(TABLE_8_1_TITLE, className='table-title'),
             html.H6(TABLE_8_1_DESC, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
-
-
-        return chart_layout

@@ -18,7 +18,7 @@ from .table_styles import (
     format_percent
 )
 from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
-from helpers.config import CHART_COLORS, PLOT_CONFIG
+from helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
 
 class Section4Prep:
@@ -33,52 +33,49 @@ class Section4Prep:
         if filtered.empty:
             return pd.DataFrame()
 
-        year_cols = ['2006', '2011', '2016', '2021']
+        filtered = filtered.copy()
 
-        # Format values in place for each household type
-        for ht in filtered['Household Type'].unique():
-            mask = filtered['Household Type'] == ht
-            for year in year_cols:
-                filtered.loc[mask, year] = filtered[mask].apply(
-                    lambda row, y=year: self._format_cell(row['Households by Tenure'], row[y]),
-                    axis=1
-                )
+        pct_mask = filtered['Households by Tenure'].str.contains('of Owners|of Renters', na=False)
+        for year in YEARS:
+            filtered.loc[pct_mask, year] = filtered.loc[pct_mask, year].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            filtered.loc[~pct_mask, year] = filtered.loc[~pct_mask, year].apply(
+                lambda v: format_number(v, decimals=0)
+            )
 
         # Split by household type and prefix year columns
         indg = (
             filtered[filtered['Household Type'] == 'Indigenous HHs']
-            [['Households by Tenure'] + year_cols]
-            .rename(columns={y: f'indg_{y}' for y in year_cols})
+            [['Households by Tenure'] + YEARS]
+            .rename(columns={y: f'indg_{y}' for y in YEARS})
         )
         non_indg = (
             filtered[filtered['Household Type'] == 'Non-Indigenous HHs']
-            [['Households by Tenure'] + year_cols]
-            .rename(columns={y: f'non_indg_{y}' for y in year_cols})
+            [['Households by Tenure'] + YEARS]
+            .rename(columns={y: f'non_indg_{y}' for y in YEARS})
         )
 
         result = indg.merge(non_indg, on='Households by Tenure', how='left')
 
-        # Fill any NaN in non-indigenous columns (tenure types absent from that group)
-        non_indg_cols = [f'non_indg_{y}' for y in year_cols]
+        non_indg_cols = [f'non_indg_{y}' for y in YEARS]
         result[non_indg_cols] = result[non_indg_cols].fillna('NA')
 
-        # Build final row list with helper/separator rows inserted
-        indg_cols = [f'indg_{y}' for y in year_cols]
+        indg_cols = [f'indg_{y}' for y in YEARS]
         all_val_cols = indg_cols + non_indg_cols
 
         def blank_row(label=''):
             return {'Households by Tenure': label, **{c: '' for c in all_val_cols}}
 
-        rows = [blank_row('Households by Tenure')]   # section header row
+        rows = [blank_row('Households by Tenure')]
         for _, row in result.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
-            if tenure == 'TOTAL':
-                rows.append(blank_row())             # separator after TOTAL
-            elif 'without a mortgage' in str(tenure):
-                rows.append(blank_row())             # separator after % of Owners without a mortgage
+            if tenure == 'TOTAL' or 'without a mortgage' in str(tenure):
+                rows.append(blank_row())
 
         return pd.DataFrame(rows, dtype=object)
+    
 
     def create_table_4_1_layout(self, geocode: int, show_both: bool = False):
         """
@@ -86,13 +83,6 @@ class Section4Prep:
             Level 0 – geography name (merged across all year columns)
             Level 1 – "Indigenous HHs" / "Non-Indigenous HHs"
             Level 2 – census year
-
-        Args:
-            geocode:   Geographic code
-            show_both: If True, append Non-Indigenous HHs columns
-
-        Returns:
-            Dash HTML Div with table
         """
         df = self.prepare_table_4_1_data(geocode)
 
@@ -100,30 +90,25 @@ class Section4Prep:
             return html.Div("No data available", className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        year_cols = ['2006', '2011', '2016', '2021']
 
-        # 3-level column definitions
         columns = [
             {"name": ["", "Census Year", ""], "id": "Households by Tenure"}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
-            for y in year_cols
+            for y in YEARS
         ]
-
         if show_both:
             columns += [
                 {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
-                for y in year_cols
+                for y in YEARS
             ]
 
-        # Keep only the columns being displayed
-        data_cols = ['Households by Tenure'] + [f'indg_{y}' for y in year_cols]
+        data_cols = ['Households by Tenure'] + [f'indg_{y}' for y in YEARS]
         if show_both:
-            data_cols += [f'non_indg_{y}' for y in year_cols]
+            data_cols += [f'non_indg_{y}' for y in YEARS]
         df_display = df[data_cols]
 
         base_style = get_base_table_style()
-        style_cell_conditional = style_cell_4_1(show_both)
 
         table = dash_table.DataTable(
             id='table-4-1',
@@ -135,30 +120,24 @@ class Section4Prep:
                 + get_special_row_styles_4_1(df_display)
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
-            style_cell_conditional=style_cell_conditional,
+            style_cell_conditional=style_cell_4_1(show_both),
             **base_style
         )
 
-        layout = html.Div([
+        return html.Div([
             dbc.Button("Export", id="export-table-4-1", className="export-pdf"),
             table
         ], className='pg2-table-lgeo')
 
-        return layout
-
 
     def create_chart_4_1(self, geocode: int):
         """Create stacked bar chart for housing tenure over time."""
-        # Load data
         filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 
         if filtered.empty:
             return go.Figure()
 
-        # Charts always show Indigenous HHs only — filter once up front
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs'].copy()
-
-        years = ['2006', '2011', '2016', '2021']
 
         # Pull owner count and the two mortgage % rows for derivation
         owner_raw = indg[indg['Households by Tenure'] == 'Owner']
@@ -173,15 +152,16 @@ class Section4Prep:
 
         def _derive(label, pct_df):
             """Owner count × mortgage % """
-            row = {'Households by Tenure': label}
-            for year in years:
-                try:
-                    owner_count = float(owner_raw[year].iloc[0])
-                    pct = float(pct_df[year].iloc[0])
-                    row[year] = round(owner_count * pct / 100)
-                except (IndexError, ValueError, TypeError):
-                    row[year] = 0
-            return row
+            owner_counts = (
+                pd.to_numeric(owner_raw[YEARS].iloc[0], errors='coerce').fillna(0)
+                if not owner_raw.empty else pd.Series(0.0, index=YEARS)
+            )
+            pcts = (
+                pd.to_numeric(pct_df[YEARS].iloc[0], errors='coerce').fillna(0)
+                if not pct_df.empty else pd.Series(0.0, index=YEARS)
+            )
+            derived = (owner_counts * pcts / 100).round().astype(int)
+            return {'Households by Tenure': label, **derived.to_dict()}
 
         # Count rows: exclude % rows, TOTAL, and 'Owner' (split into two derived rows)
         count_rows = indg[
@@ -196,51 +176,37 @@ class Section4Prep:
         ])
         count_rows = pd.concat([derived, count_rows], ignore_index=True)
 
-        # Totals row for denominator (Indigenous only)
         total_rows = indg[indg['Households by Tenure'] == 'TOTAL'].copy()
-
-        # Geography name
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        # Create stacked bar chart
-        fig = go.Figure()
+        count_indexed = count_rows.set_index('Households by Tenure')[YEARS]
+        totals_series = (
+            pd.to_numeric(total_rows[YEARS].iloc[0], errors='coerce').fillna(0)
+            if not total_rows.empty else pd.Series(0.0, index=YEARS)
+        )
 
         tenure_list = count_rows['Households by Tenure'].unique()
-        colors = {
-            tenure: CHART_COLORS[i % len(CHART_COLORS)]
-            for i, tenure in enumerate(tenure_list)
-        }
+        colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(tenure_list)}
 
+        fig = go.Figure()
         for tenure in tenure_list:
-            tenure_data = count_rows[count_rows['Households by Tenure'] == tenure]
-
-            percentages = []
-            for year in years:
-                count = tenure_data[year].iloc[0] if not tenure_data.empty else 0
-                total = total_rows[year].iloc[0] if not total_rows.empty else 0
-
-                try:
-                    pct = (float(count) / float(total)) * 100 if float(total) > 0 else 0
-                except (ValueError, TypeError):
-                    pct = 0
-
-                percentages.append(pct)
+            counts = pd.to_numeric(count_indexed.loc[tenure], errors='coerce').fillna(0)
+            percentages = (
+                counts / totals_series.replace(0, float('nan')) * 100
+            ).fillna(0).tolist()
 
             fig.add_trace(go.Bar(
                 name=tenure,
-                x=years,
+                x=YEARS,
                 y=percentages,
-                marker_color=colors.get(tenure, '#95A5A6'),
-                text=[f"{p:.1f}%" for p in percentages],
+                marker_color=colors[tenure],
+                # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
             ))
 
-        geo_name_display = geo_name or str(geocode)
-        title_text = f'Indigenous Households by Tenure — {geo_name_display}'
-
         fig.update_layout(
-            title=dict(text=title_text, x=0.5, xanchor='center'),
+            title=dict(text=f'Indigenous Households by Tenure — {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Census Year',
             yaxis=dict(
                 title='Percentage of Households',
@@ -254,37 +220,19 @@ class Section4Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family="Bahnschrift"),
-            legend=dict(
-                orientation="h",
-                yanchor="top",
-                y=-0.15,
-                xanchor="center",
-                x=0.5
-            )
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
 
-
-        chart_layout = html.Div([
+        return html.Div([
             html.H4(TABLE_4_1_TITLE, className='table-title'),
             html.H6(TABLE_4_1_DESC, className='table-desc'),
-            dcc.Graph(id='chart-4-1',figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
-        
-        return chart_layout
 
     def _format_cell(self, tenure_type: str, value):
         """Format cell based on tenure type."""
         if pd.isna(value):
             return 'NA'
-
-        # Percentage rows
         if 'of Owners' in tenure_type or 'of Renters' in tenure_type:
             return format_percent(value, multiply=False)
-        else:
-            # Count rows
-            return format_number(value, decimals=0)
-        
-
-# if __name__ == "__main__":
-#     t = Table4Prep()
-#     t.create_chart_4_1(5915022)
+        return format_number(value, decimals=0)
