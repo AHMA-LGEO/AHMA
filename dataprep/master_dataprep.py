@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 from pathlib import Path
-from dataprep.section2_prep import Section2DataPrep
-from dataprep.section3_prep import Section3DataPrep
-from dataprep.section4_prep import Section4DataPrep
-from dataprep.section8_prep import Section8DataPrep
+from section2_prep import Section2DataPrep
+from section3_prep import Section3DataPrep
+from section4_prep import Section4DataPrep
+from section8_prep import Section8DataPrep
 
 OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 

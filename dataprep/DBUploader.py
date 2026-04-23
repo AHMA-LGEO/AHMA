@@ -10,10 +10,10 @@ from sqlalchemy.exc import IntegrityError
 from utils import transform_geocode_master
 
 # Import all table preparation classes
-from dataprep.section2_prep import Section2DataPrep
-from dataprep.section3_prep import Section3DataPrep
-from dataprep.section4_prep import Section4DataPrep
-from dataprep.section8_prep import Section8DataPrep
+from section2_prep import Section2DataPrep
+from section3_prep import Section3DataPrep
+from section4_prep import Section4DataPrep
+from section8_prep import Section8DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"

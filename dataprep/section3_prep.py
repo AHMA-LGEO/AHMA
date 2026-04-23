@@ -14,7 +14,6 @@ from utils import (
 
 
 
-TABLE_3_2_TOTAL_KEY = "Total - Age groups"
 TABLE_3_2_NON_INDIGENOUS_SUFFIX = "Non-indigenous"
 # Three named Indigenous identity groups with a 4th group ("Total - Age groups" section)
 # uses column names where both sides of '_' strip to the same age key
@@ -251,9 +250,17 @@ class Section3DataPrep:
             geography = geo_row["Geography"]
             geo_df = df_2021[df_2021["Geocode"] == geocode].reset_index(drop=True)
 
-            # Denominators — total population for each group
-            non_indg_total = get_val(geo_df, find_col(geo_df, TABLE_3_2_TOTAL_KEY, TABLE_3_2_NON_INDIGENOUS_SUFFIX))
-            indg_total = sum_indigenous(geo_df, TABLE_3_2_TOTAL_KEY)
+            # Compute totals by summing individual age-group counts
+            # (raw "Total - Age groups" row is inconsistent with summed parts)
+            indg_total = 0
+            non_indg_total = 0
+            for age_key in cm.TABLE_3_2_COL_MAP:
+                v_indg = sum_indigenous(geo_df, age_key)
+                v_non = get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_NON_INDIGENOUS_SUFFIX))
+                if v_indg is not None:
+                    indg_total += v_indg
+                if v_non is not None:
+                    non_indg_total += v_non
 
             for age_key, age_label in cm.TABLE_3_2_COL_MAP.items():
                 non_indg_count = get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_NON_INDIGENOUS_SUFFIX))
