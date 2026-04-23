@@ -79,10 +79,10 @@ class Section4Prep:
 
     def create_table_4_1_layout(self, geocode: int, show_both: bool = False):
         """
-        Create Dash DataTable layout for Table 4.1 with 3-level column headers:
-            Level 0 – geography name (merged across all year columns)
-            Level 1 – "Indigenous HHs" / "Non-Indigenous HHs"
-            Level 2 – census year
+        Create Dash DataTable layout for Table 4.1 with Households by Tenure (2006, 2011, 2016, 2021).:
+            Level 0 - geography name (merged across all year columns)
+            Level 1 - "Indigenous HHs" / "Non-Indigenous HHs"
+            Level 2 - census year
         """
         df = self.prepare_table_4_1_data(geocode)
 
@@ -131,7 +131,7 @@ class Section4Prep:
 
 
     def create_chart_4_1(self, geocode: int):
-        """Create stacked bar chart for housing tenure over time."""
+        """Create stacked bar chart for Table 4.1 for housing tenure over time."""
         filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 
         if filtered.empty:

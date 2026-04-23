@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
 from .table_styles import (
+    blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
@@ -66,9 +67,6 @@ class Section8Prep:
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
 
-        def blank_row(label=''):
-            return {'Indicator': label, **{c: '' for c in all_val_cols}}
-
         indg_idx = indg.set_index(['Indicator', 'Metric'])
         non_indg_idx = non_indg.set_index(['Indicator', 'Metric'])
 
@@ -86,14 +84,14 @@ class Section8Prep:
 
             if indicator == _T8_TOTAL:
                 rows.append({'Indicator': indicator, **indg_count_vals, **non_indg_count_vals})
-                rows.append(blank_row())
+                rows.append(blank_row('Indicator'))
                 continue
 
             indg_pct_vals = _fmt_vals(indg_idx, indicator, '% of households', format_percent, 'indg')
             non_indg_pct_vals = _fmt_vals(non_indg_idx, indicator, '% of households', format_percent, 'non_indg')
 
             # Section header row
-            rows.append(blank_row(indicator))
+            rows.append(blank_row('Indicator', all_val_cols, indicator))
 
             count_label = '__below_count__' if indicator == _T8_BELOW_MULTIPLE else 'Number of households'
             rows.append({'Indicator': count_label, **indg_count_vals, **non_indg_count_vals})
@@ -101,16 +99,16 @@ class Section8Prep:
             pct_label = '__below_pct__' if indicator == _T8_BELOW_MULTIPLE else '% of households'
             rows.append({'Indicator': pct_label, **indg_pct_vals, **non_indg_pct_vals})
 
-            rows.append(blank_row())
+            rows.append(blank_row('Indicator'))
 
         return pd.DataFrame(rows, dtype=object)
 
     def create_table_8_1_layout(self, geocode: int, show_both: bool = False):
         """
-        Create Dash DataTable for Table 8.1 with 3-level column headers:
-            Level 0 – geography name
-            Level 1 – Indigenous HHs | Non-Indigenous HHs (toggled)
-            Level 2 – census year
+        Create Dash DataTable for Table 8.1 with Core Housing Needs indicators (2006, 2016, 2021).:
+            Level 0 - geography name
+            Level 1 - Indigenous HHs | Non-Indigenous HHs (toggled)
+            Level 2 - census year
         """
         df = self.prepare_table_8_1_data(geocode)
         if df.empty:
@@ -134,7 +132,7 @@ class Section8Prep:
         if show_both:
             data_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
 
-        # Replace internal sentinel tags with display text
+        # Replace internal tags with display text
         df_display = df[data_cols].copy()
         df_display['Indicator'] = df_display['Indicator'].replace({
             '__below_count__': 'Number of households',
@@ -165,7 +163,7 @@ class Section8Prep:
         ], className='pg2-table-lgeo')
 
     def create_chart_8_1(self, geocode: int):
-        """Sunburst (nested-pie) chart for 2021 Indigenous Core Housing Need."""
+        """Sunburst (nested-pie) chart for for Table 8.1 2021 Indigenous Core Housing Need."""
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
         if filtered.empty:

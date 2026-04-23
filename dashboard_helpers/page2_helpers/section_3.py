@@ -10,6 +10,8 @@ import plotly.graph_objects as go
 from .data_loader import get_data_loader
 from .table_styles import (
     blank_row,
+    make_special_row_styles,
+    make_style_cell,
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
@@ -21,18 +23,26 @@ from .table_styles import (
     style_cell_3_4,
     get_special_row_styles_3_5,
     style_cell_3_5,
+    get_special_row_styles_3_6,
+    style_cell_3_6,
     format_number,
     format_percent
 )
 from .text_content import (
     TABLE_3_1_TITLE, CHART_3_2_TITLE,
     TABLE_3_3_TITLE, TABLE_3_4_TITLE,
-    TABLE_3_5_TITLE, TABLE_3_6_TITLE)
-from dashboard_helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+    TABLE_3_5_TITLE, TABLE_3_6_TITLE,
+    CHART_3_6_DESC, TABLE_3_6_NOTE)
+from dashboard_helpers.config import TABLE_FONT, CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
 _AGE_GROUPS_3_2_3_3 = ['0 - 14', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
 _AGE_GROUPS_3_4 = ['Under 15', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
-
+_PRIORITY_POP_GROUPS = [
+            'Youth-led (under 30)', 'Senior-led (65+)', 'Single-mother-led',
+            'Single-father-led', 'HH with physical limitation', 'HH with cognitive limitation',
+            'HH with mental or addictions limitation', 'HH is gender diverse',
+        ]
+_COMMUNITIES = ['First Nations', 'Métis', 'Inuit']
 
 class Section3Prep:
     """Prepare and format Section 3 schemas."""
@@ -149,7 +159,7 @@ class Section3Prep:
     
 
     def create_chart_3_2(self, geocode: int):
-        """Create 100% stacked bar chart: Indigenous vs Non-Indigenous population by age group (2021)."""
+        """Create 100% stacked bar chart for Table 3.2 Indigenous vs Non-Indigenous population by age group (2021)."""
         df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
         if df.empty:
@@ -187,7 +197,7 @@ class Section3Prep:
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
-            font=dict(family="Bahnschrift"),
+            font=dict(family=TABLE_FONT),
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
 
@@ -198,7 +208,7 @@ class Section3Prep:
 
 
     def create_chart_3_3(self, geocode: int):
-        """Create stacked bar chart: Indigenous population by identity and age group (2021)."""
+        """Create stacked bar chart for Table 3.3 Indigenous population by identity and age group (2021)."""
         df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
         if df.empty:
@@ -234,7 +244,7 @@ class Section3Prep:
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
-            font=dict(family="Bahnschrift"),
+            font=dict(family=TABLE_FONT),
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
 
@@ -256,7 +266,6 @@ class Section3Prep:
         value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
         display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
 
-        # Reindex to canonical age order and rename source cols to display names
         table_df = (
             df.set_index('Age Group')[value_cols]
             .reindex(_AGE_GROUPS_3_2_3_3)
@@ -301,7 +310,7 @@ class Section3Prep:
     
 
     def create_chart_3_4(self, geocode: int):
-        """Create stacked bar chart: Indigenous population by gender (2021)."""
+        """Create stacked bar chart for Table 3.4 Indigenous population by gender (2021)."""
         df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
 
         if df.empty:
@@ -336,7 +345,7 @@ class Section3Prep:
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
-            font=dict(family="Bahnschrift"),
+            font=dict(family=TABLE_FONT),
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
 
@@ -357,7 +366,6 @@ class Section3Prep:
 
         value_cols = ['Indigenous', 'Men+', 'Women+']
 
-        # Reindex to canonical age order
         table_df = (
             df.set_index('Age Group - Census 2021')[value_cols]
             .reindex(_AGE_GROUPS_3_4)
@@ -411,18 +419,11 @@ class Section3Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        priority_pop_groups = [
-            'Youth-led (under 30)', 'Senior-led (65+)', 'Single-mother-led',
-            'Single-father-led', 'HH with physical limitation', 'HH with cognitive limitation',
-            'HH with mental or addictions limitation', 'HH is gender diverse',
-        ]
-
         _LABEL_COL = 'Number of Indigenous HHs'
 
-        # Reindex to canonical order and rename index column
         table_df = (
             df.set_index('Metric')[YEARS_MINUS_2011]
-            .reindex(priority_pop_groups)
+            .reindex(_PRIORITY_POP_GROUPS)
             .reset_index()
             .rename(columns={'Metric': _LABEL_COL})
         )
@@ -462,7 +463,195 @@ class Section3Prep:
             table
         ], className='pg2-table-lgeo')
 
+    def create_table_3_5_1_layout(self, geocode: int):
+        """Create Dash DataTable for Table 3.5.1 with Priority Population by Indigenous Community (2006, 2016, 2021).:
+            Level 0 - geography name
+            Level 1 - census year
+            Level 2 - Indigenous Community
+        """
+        df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        _LABEL_COL = 'Number of HHs'
+
+        community_df = []
+        for community in _COMMUNITIES:
+            indig_df = (
+                df[df['Indigenous Community'] == community]
+                .set_index('Number of Indigenous HHs')[YEARS_MINUS_2011]
+                .reindex(_PRIORITY_POP_GROUPS)
+                .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+            )
+            community_df.append(indig_df)
+
+        table_df = (
+            pd.concat(community_df, axis=1)
+            .reset_index()
+            .rename(columns={'Number of Indigenous HHs': _LABEL_COL})
+        )
+
+        # Column order: year, community (2006_f, 2006_m, 2006_i, 2016_f, ...)
+        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in _COMMUNITIES]
+
+        for col in val_cols:
+            table_df[col] = table_df[col].apply(format_number)
+
+        # Prepend section header row
+        header = pd.DataFrame([blank_row(_LABEL_COL, val_cols, _LABEL_COL)])
+        table_df = pd.concat([header, table_df], ignore_index=True)
+
+        # 3-level columns: [geo_name, year, community]
+        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
+            for y in YEARS_MINUS_2011
+            for community in _COMMUNITIES
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-3-5-1',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+                + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            **base_style
+        )
+
+        return html.Div([
+            html.H4(TABLE_3_5_TITLE, className='table-title'),
+            dbc.Button("Export", id="export-table-3-5-1", className="export-pdf"),
+            table
+        ], className='pg2-table-lgeo')
+    
+
+    def create_chart_3_6(self, geocode: int):
+        """Create donut chart for Table 3.6 Indigenous ancestry distribution (2021)."""
+
+        df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+        labels = "Indigenous Ancestry, 2021"
+        df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        top_labels = (df.nlargest(10, "# of People")[labels].tolist())
+
+        text = [
+            lbl if lbl in top_labels else ""
+            for lbl in df[labels]
+        ]
+
+        fig = go.Figure(go.Pie(
+            labels=df[labels],
+            values=df["# of People"],
+            marker=dict(colors=CHART_COLORS, line=dict(color="white")),
+            hole=0.3,
+            text=text,
+            textinfo="text",
+            insidetextorientation="radial",
+            hovertemplate="<b>%{label}</b><br>Count of people: %{value:,}<br>% of people: %{percent}<extra></extra>",
+        ))
+
+        fig.update_layout(
+            title=dict(
+                text=f"2021 Indigenous Ancestry<br><sup>{geo_name}</sup>",
+                x=0.5, xanchor="center",
+                font=dict(size=15, family=TABLE_FONT),
+            ),
+            paper_bgcolor="white",
+            showlegend=False,
+            margin=dict(t=90, b=40, l=20, r=20),
+            height=550,
+
+            annotations=[
+                dict(
+                    text="Indigenous<br>Distribution",
+                    x=0.5, y=0.5,
+                    font=dict(size=14, family=TABLE_FONT),
+                    showarrow=False,
+                    align="center"
+                )
+            ]
+        )
+
+        return html.Div([
+            html.H4(TABLE_3_6_TITLE, className='table-title'),
+            html.I(CHART_3_6_DESC),
+            dcc.Graph(id='chart-3-6', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+
+
+    def create_table_3_6_layout(self, geocode: int):
+        """Create Dash DataTable for Table 3.6: population by indigenous ancestry (2021)."""
+
+        df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        value_col = '# of People'
+        index_col = 'Indigenous Ancestry, 2021'
+        total_id = 'Total - Indigenous ancestry responses for the population in private households - 25% sample data'
+        table_df = (
+            df.set_index(index_col)[value_col]
+            .reset_index()
+        )
+
+        table_df[value_col] = table_df[value_col].apply(format_number)
+
+        # move total row at the bottom
+        mask = table_df[index_col] == total_id
+        table_df = pd.concat(
+            [table_df[~mask], table_df[mask]],
+            ignore_index=True
+        )
+        table_df.loc[table_df[index_col] == total_id, index_col] = "Total*"
+
+        columns = [{"name": [geo_name, index_col], "id": "Indigenous Ancestry, 2021"}] + [
+            {"name": [geo_name, value_col], "id": value_col} 
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-3-6',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+                + get_special_row_styles_3_6(table_df)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id='Indigenous Ancestry, 2021'
+            ),
+            style_cell_conditional=style_cell_3_6(),
+            **base_style
+        )
+
+        return html.Div([
+            dbc.Button("Export", id="export-table-3-6", className="export-pdf"),
+            table,
+            html.I(TABLE_3_6_NOTE),
+        ], className='pg2-table-lgeo')
+    
 
 if __name__ == "__main__":
     t = Section3Prep()
-    t.prepare_table_3_1_data(5915022)
+    t.create_table_3_6_layout(5915022)

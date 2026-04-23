@@ -110,6 +110,9 @@ layout = html.Div([
             html.Div(id='chart-3-4-container'),
             html.Div(id='table-3-4-container'),
             html.Div(id='table-3-5-container'),
+            html.Div(id='table-3-5-1-container'),
+            html.Div(id='chart-3-6-container'),
+            html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Table 4.1 Section
@@ -242,6 +245,9 @@ def update_section_2(geo_name, scale):
     Output('chart-3-4-container', 'children'),
     Output('table-3-4-container', 'children'),
     Output('table-3-5-container', 'children'),
+    Output('table-3-5-1-container', 'children'),
+    Output('chart-3-6-container', 'children'),
+    Output('table-3-6-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data')
 )
@@ -256,6 +262,9 @@ def update_section_3(geo_name, scale):
         section_3_layout.create_chart_3_4(geocode),
         section_3_layout.create_table_3_4_layout(geocode),
         section_3_layout.create_table_3_5_layout(geocode),
+        section_3_layout.create_table_3_5_1_layout(geocode),
+        section_3_layout.create_chart_3_6(geocode),
+        section_3_layout.create_table_3_6_layout(geocode),
     )
 
 

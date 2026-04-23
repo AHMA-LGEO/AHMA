@@ -325,6 +325,18 @@ def style_cell_3_5() -> list:
     return make_style_cell('Number of Indigenous HHs', YEARS_MINUS_2011, label_width='25%', label_min_width='120px')
 
 
+############### Table 3.6 stylers ###############
+
+_T3_6_VALUE_COLS = ['# of People']
+
+def get_special_row_styles_3_6(data: pd.DataFrame) -> list:
+    return make_special_row_styles(data, 'Indigenous Ancestry, 2021', total_labels={'Total*'})
+
+
+def style_cell_3_6() -> list:
+    return make_style_cell('Indigenous Ancestry, 2021', _T3_6_VALUE_COLS, label_width='25%', label_min_width='120px')
+
+
 #-------------------- Section 4 – Housing Tenure --------------------
 
 ############### Table 4.1 stylers ###############
