@@ -13,7 +13,7 @@ from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
-from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG
+from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG, TABLE_FONT
 
 # Initialize helpers
 section_2_layout = Section2Prep()
@@ -91,7 +91,7 @@ layout = html.Div([
                 # html.Ul([
                 #     html.Li([html.I([note])]) for note in NOTES
                 # ])
-            ], style={'fontFamily': 'Bahnschrift'})
+            ], style={'fontFamily': TABLE_FONT})
         ], className='muni-reg-text-lgeo'),
 
         # Section 2 - Nations / Territories and Métis Communities
@@ -103,25 +103,25 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            html.Div(id='table-3-1-container'),
-            html.Div(id='chart-3-2-container'),
-            html.Div(id='chart-3-3-container'),
-            html.Div(id='table-3-3-container'),
-            html.Div(id='chart-3-4-container'),
-            html.Div(id='table-3-4-container'),
-            html.Div(id='table-3-5-container'),
-            html.Div(id='table-3-5-1-container'),
-            html.Div(id='chart-3-6-container'),
-            html.Div(id='table-3-6-container'),
+            # html.Div(id='table-3-1-container'),
+            # html.Div(id='chart-3-2-container'),
+            # html.Div(id='chart-3-3-container'),
+            # html.Div(id='table-3-3-container'),
+            # html.Div(id='chart-3-4-container'),
+            # html.Div(id='table-3-4-container'),
+            # html.Div(id='table-3-5-container'),
+            # html.Div(id='table-3-5-1-container'),
+            # html.Div(id='chart-3-6-container'),
+            # html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
-        # Table 4.1 Section
+        # Section 4 - Housing Tenure
         html.Div([
             html.Div([
                 html.Div([
                     html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
                     html.Span('Indigenous & Non-Indigenous',
-                              style={'fontFamily': 'Bahnschrift'}),
+                              style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-4-1"},
@@ -137,13 +137,17 @@ layout = html.Div([
             html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
-        # Table 8.1 Section
+        html.Div([
+            html.Div(id='table-4-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 8 - Housing Need Indicators
         html.Div([
             html.Div([
                 html.Div([
                     html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
                     html.Span('Indigenous & Non-Indigenous',
-                              style={'fontFamily': 'Bahnschrift'}),
+                              style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-8-1"},
@@ -272,18 +276,20 @@ def update_section_3(geo_name, scale):
 @callback(
     Output('chart-4-1-container', 'children'),
     Output('table-4-1-container', 'children'),
+    Output('table-4-2-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
 )
-def update_table_4_1(geo_name, scale, visibility):
+def update_section_4(geo_name, scale, visibility):
     show_both = (visibility or {}).get("table-4-1", False)
     geocode = _resolve_geocode(geo_name, scale, section_4_layout.data_loader)
 
-    table_layout = section_4_layout.create_table_4_1_layout(geocode, show_both)
-    chart_layout = section_4_layout.create_chart_4_1(geocode)
-
-    return chart_layout, table_layout
+    return (
+        section_4_layout.create_chart_4_1(geocode),
+        section_4_layout.create_table_4_1_layout(geocode, show_both),
+        section_4_layout.create_table_4_2_layout(geocode)
+    )
 
 
 @callback(
@@ -293,7 +299,7 @@ def update_table_4_1(geo_name, scale, visibility):
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
 )
-def update_table_8_1(geo_name, scale, visibility):
+def update_section_8(geo_name, scale, visibility):
     show_both = (visibility or {}).get("table-8-1", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 

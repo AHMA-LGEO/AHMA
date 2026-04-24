@@ -33,7 +33,10 @@ from .text_content import (
     TABLE_3_3_TITLE, TABLE_3_4_TITLE,
     TABLE_3_5_TITLE, TABLE_3_6_TITLE,
     CHART_3_6_DESC, TABLE_3_6_NOTE)
-from dashboard_helpers.config import TABLE_FONT, CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+
+from dashboard_helpers.config import (
+    TABLE_FONT, CHART_COLORS, PLOT_CONFIG, 
+    YEARS, YEARS_MINUS_2011, COMMUNITIES)
 
 _AGE_GROUPS_3_2_3_3 = ['0 - 14', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
 _AGE_GROUPS_3_4 = ['Under 15', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
@@ -42,7 +45,6 @@ _PRIORITY_POP_GROUPS = [
             'Single-father-led', 'HH with physical limitation', 'HH with cognitive limitation',
             'HH with mental or addictions limitation', 'HH is gender diverse',
         ]
-_COMMUNITIES = ['First Nations', 'Métis', 'Inuit']
 
 class Section3Prep:
     """Prepare and format Section 3 schemas."""
@@ -479,7 +481,7 @@ class Section3Prep:
         _LABEL_COL = 'Number of HHs'
 
         community_df = []
-        for community in _COMMUNITIES:
+        for community in COMMUNITIES:
             indig_df = (
                 df[df['Indigenous Community'] == community]
                 .set_index('Number of Indigenous HHs')[YEARS_MINUS_2011]
@@ -495,7 +497,7 @@ class Section3Prep:
         )
 
         # Column order: year, community (2006_f, 2006_m, 2006_i, 2016_f, ...)
-        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in _COMMUNITIES]
+        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in COMMUNITIES]
 
         for col in val_cols:
             table_df[col] = table_df[col].apply(format_number)
@@ -508,7 +510,7 @@ class Section3Prep:
         columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
-            for community in _COMMUNITIES
+            for community in COMMUNITIES
         ]
 
         base_style = get_base_table_style()
@@ -530,7 +532,6 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_3_5_TITLE, className='table-title'),
             dbc.Button("Export", id="export-table-3-5-1", className="export-pdf"),
             table
         ], className='pg2-table-lgeo')

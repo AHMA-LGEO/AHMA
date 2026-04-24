@@ -1,5 +1,5 @@
 """
-Table 4.1 and 4.2 preparation and layout - Housing Tenure.
+Section 4 preparation and layout - Housing Tenure.
 """
 import pandas as pd
 import numpy as np
@@ -9,16 +9,21 @@ import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
 from .table_styles import (
+    blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
+    make_special_row_styles,
+    make_style_cell,
     get_special_row_styles_4_1,
     style_cell_4_1,
     format_number,
     format_percent
 )
 from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
-from dashboard_helpers.config import CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import (
+    CHART_COLORS, PLOT_CONFIG, YEARS, 
+    YEARS_MINUS_2011, COMMUNITIES)
 
 
 class Section4Prep:
@@ -64,15 +69,12 @@ class Section4Prep:
         indg_cols = [f'indg_{y}' for y in YEARS]
         all_val_cols = indg_cols + non_indg_cols
 
-        def blank_row(label=''):
-            return {'Households by Tenure': label, **{c: '' for c in all_val_cols}}
-
-        rows = [blank_row('Households by Tenure')]
+        rows = [blank_row('Households by Tenure', all_val_cols, 'Households by Tenure')]
         for _, row in result.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
             if tenure == 'TOTAL' or 'without a mortgage' in str(tenure):
-                rows.append(blank_row())
+                rows.append(blank_row('Households by Tenure'))
 
         return pd.DataFrame(rows, dtype=object)
     
@@ -206,7 +208,7 @@ class Section4Prep:
             ))
 
         fig.update_layout(
-            title=dict(text=f'Indigenous Households by Tenure — {geo_name}', x=0.5, xanchor='center'),
+            title=dict(text=f'Indigenous Households by Tenure - {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Census Year',
             yaxis=dict(
                 title='Percentage of Households',
@@ -228,6 +230,88 @@ class Section4Prep:
             html.H6(TABLE_4_1_DESC, className='table-desc'),
             dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
+    
+
+    def create_table_4_2_layout(self, geocode: int):
+        """Create Dash DataTable for Table 4.2 with housing tenure over time by Indigenous communities.:
+            Level 0 - geography name
+            Level 1 - census year
+            Level 2 - Indigenous Community
+        """
+        df = self.data_loader.get_table('table_4_2_breakdown_community', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        _LABEL_COL = 'Households by Tenure'
+
+        community_df = []
+        for community in COMMUNITIES:
+            indig_df = (
+                df[df['Indigenous Community'] == community]
+                .set_index(_LABEL_COL)[YEARS_MINUS_2011]
+                .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+            )
+            community_df.append(indig_df)
+
+        table_df = (
+            pd.concat(community_df, axis=1)
+            .reset_index()
+        )
+
+        # Column order: year, community (2006_f, 2006_m, 2006_i, 2016_f, ...)
+        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in COMMUNITIES]
+
+        pct_mask = table_df[_LABEL_COL].str.contains('of Owners|of Renters', na=False)
+        for col in val_cols:
+            table_df.loc[pct_mask, col] = table_df.loc[pct_mask, col].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            table_df.loc[~pct_mask, col] = table_df.loc[~pct_mask, col].apply(format_number)
+
+        # Prepend section header row
+
+        rows = [blank_row(_LABEL_COL, val_cols, _LABEL_COL)]
+        for _, row in table_df.iterrows():
+            rows.append(row.to_dict())
+            tenure = row['Households by Tenure']
+            if tenure == 'TOTAL' or 'without a mortgage' in str(tenure):
+                rows.append(blank_row('Households by Tenure'))
+
+        formatted_df = pd.DataFrame(rows, dtype=object)
+
+        # 3-level columns: [geo_name, year, community]
+        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
+            for y in YEARS_MINUS_2011
+            for community in COMMUNITIES
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-4-2',
+            columns=columns,
+            data=formatted_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(formatted_df)
+                + make_special_row_styles(formatted_df, _LABEL_COL, geo_headers={_LABEL_COL})
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            **base_style
+        )
+
+        return html.Div([
+            dbc.Button("Export", id="export-table-4-2", className="export-pdf"),
+            table
+        ], className='pg2-table-lgeo')
+    
 
     def _format_cell(self, tenure_type: str, value):
         """Format cell based on tenure type."""
