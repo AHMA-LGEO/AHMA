@@ -118,7 +118,7 @@ class Section4DataPrep:
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
 
-            for tenure_type, community_map in cm.TABLE_4_2_COL_MAP.items():
+            for tenure_type, year_community_map in cm.TABLE_4_2_COL_MAP.items():
                 for community in INDIGENOUS_COMMUNITIES:
                     row = {
                         "Geocode": geocode,
@@ -126,17 +126,50 @@ class Section4DataPrep:
                         "Households by Tenure": tenure_type,
                         "Indigenous Community": community
                     }
-                    col_name = community_map.get(community)
 
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
                         match = df[df["Geocode"] == geocode]
 
-                        if match.empty or col_name not in df.columns:
+                        if match.empty:
                             row[year] = None
-                        else:
+                            continue
+
+                        col_name = year_community_map.get(year, {}).get(community)
+
+                        # Direct value if column exists
+                        if col_name and col_name in df.columns:
                             val = match[col_name].iloc[0]
                             row[year] = clean_val(val)
+
+                        # Calculate percentages if needed
+                        elif tenure_type in ["% of Owners with mortgage",
+                                             "% of Owners without a mortgage"] and year in cm.TABLE_4_2_CALC_COLS:
+                            calc_cols = cm.TABLE_4_2_CALC_COLS[year].get(community, {})
+                            total_owners = get_val(match, cm.TABLE_4_2_COL_MAP["Owner"][year].get(community))
+
+                            if tenure_type == "% of Owners with mortgage":
+                                with_mortgage = get_val(match, calc_cols.get("owner_with_mortgage"))
+                                row[year] = pct(with_mortgage, total_owners)
+
+                            else:  # without mortgage
+                                without_mortgage = get_val(match, calc_cols.get("owner_without_mortgage"))
+                                row[year] = pct(without_mortgage, total_owners)
+
+                        elif tenure_type in ["% of Renters in subsidized housing",
+                                             "% of Renters not in subsidized housing"] and year in cm.TABLE_4_2_CALC_COLS:
+                            calc_cols = cm.TABLE_4_2_CALC_COLS[year].get(community, {})
+                            total_renters = get_val(match, cm.TABLE_4_2_COL_MAP["Renter"][year].get(community))
+
+                            if tenure_type == "% of Renters in subsidized housing":
+                                subsidized = get_val(match, calc_cols.get("renter_subsidized"))
+                                row[year] = pct(subsidized, total_renters)
+
+                            else:  # not subsidized
+                                not_subsidized = get_val(match, calc_cols.get("renter_not_subsidized"))
+                                row[year] = pct(not_subsidized, total_renters)
+                        else:
+                            row[year] = None
 
                     rows.append(row)
 
@@ -151,3 +184,7 @@ class Section4DataPrep:
             "4.1": self.table_4_1(),
             "4.2": self.table_4_2(),
         }
+
+if __name__ == '__main__':
+    t = Section4DataPrep()
+    t.table_4_2()

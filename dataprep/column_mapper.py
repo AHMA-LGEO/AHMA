@@ -1,4 +1,4 @@
-from utils import strip_map
+from utils import strip_map, YEARS, YEARS_MINUS_2011
 
 
 TABLE_3_1_1_COL_MAP = strip_map({
@@ -168,7 +168,7 @@ TABLE_3_5_COL_MAP = strip_map({
     },
 })
 
-# Derived from TABLE_3_5_COL_MAP by replacing the trailing household suffix with a community-specific suffix
+
 _T3_5_SOURCE_SUFFIX = {
     "2006": "Aboriginal household",
     "2016": "Aboriginal household",
@@ -197,205 +197,146 @@ def _build_3_5_1_map():
 
 TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
-TABLE_4_1_COL_MAP = strip_map({
+
+
+_HH_SUFFIX = {
+    "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
+    "2011": {"Indigenous HHs": "Indigenous"},
+    "2016": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
+}
+
+_T4_1_TENURE_PREFIX = {
     "Owner": {
-        "2006": {
-            "Indigenous HHs": "Owners_Aboriginal household",
-            "Non-Indigenous HHs": "Owners_Non-Aboriginal HH"
-        },
-        "2011": {
-            "Indigenous HHs": "Owner_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": "Owner_Aboriginal household",
-            "Non-Indigenous HHs": "Owner_Non-Aboriginal household"
-        },
-        "2021": {
-            "Indigenous HHs": "Owner_Indigenous household",
-            "Non-Indigenous HHs": "Owner_Non-Indigenous household"
-        }
+        "2006": "Owners",
+        "2011": "Owner", "2016": "Owner", "2021": "Owner",
     },
     "Renter": {
-        "2006": {
-            "Indigenous HHs": "Renter_Aboriginal household",
-            "Non-Indigenous HHs": "Renter_Non-Aboriginal HH"
-        },
-        "2011": {
-            "Indigenous HHs": "Renter_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": "Renter_Aboriginal household",
-            "Non-Indigenous HHs": "Renter_Non-Aboriginal household"
-        },
-        "2021": {
-            "Indigenous HHs": "Renter_Indigenous household",
-            "Non-Indigenous HHs": "Renter_Non-Indigenous household"
-        }
+        "2006": "Renter", "2011": "Renter", "2016": "Renter", "2021": "Renter",
     },
     "Dwelling provided by local government or First Nation": {
-        "2006": {
-            "Indigenous HHs": "Dwelling provided by the local government, First Nation or Indian band_Aboriginal household",
-            "Non-Indigenous HHs": "Dwelling provided by the local government, First Nation or Indian band_Non-Aboriginal HH"
-        },
-        "2011": {
-            "Indigenous HHs": "Band housing_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": "Dwelling provided by the local government, First Nation or Indian band_Aboriginal household",
-            "Non-Indigenous HHs": "Dwelling provided by the local government, First Nation or Indian band_Non-Aboriginal household"
-        },
-        "2021": {
-            "Indigenous HHs": "Dwelling provided by the local government, First Nation or Indian band_Indigenous household",
-            "Non-Indigenous HHs": None  # Not available in 2021 for non-indigenous
-        }
+        "2006": "Dwelling provided by the local government, First Nation or Indian band",
+        "2011": "Band housing",   # different label in 2011
+        "2016": "Dwelling provided by the local government, First Nation or Indian band",
+        "2021": "Dwelling provided by the local government, First Nation or Indian band",
     },
     "TOTAL": {
-        "2006": {
-            "Indigenous HHs": "Total – Housing tenure and presence of mortgage_Aboriginal household",
-            "Non-Indigenous HHs": "Total – Housing tenure and presence of mortgage_Non-Aboriginal HH"
-        },
-        "2011": {
-            "Indigenous HHs": "Total number of private Aboriginal households by tenure_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": "Total - Tenure including presence of mortgage payments and subsidized housing_Aboriginal household",
-            "Non-Indigenous HHs": "Total - Tenure including presence of mortgage payments and subsidized housing_Non-Aboriginal household"
-        },
-        "2021": {
-            "Indigenous HHs": "Total - Tenure including presence of mortgage payment and subsidized housing_Indigenous household",
-            "Non-Indigenous HHs": "Total - Tenure including presence of mortgage payment and subsidized housing_Non-Indigenous household"
-        }
+        "2006": "Total – Housing tenure and presence of mortgage",
+        "2011": "Total number of private Aboriginal households by tenure",
+        "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
+        "2021": "Total - Tenure including presence of mortgage payment and subsidized housing",
     },
-    "% of Owners with mortgage": {
-        "2006": {
-            "Indigenous HHs": None,  # Calculate from with/without mortgage
-            "Non-Indigenous HHs": None
-        },
-        "2011": {
-            "Indigenous HHs": "% of owner households with a mortgage_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        },
-        "2021": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        }
-    },
-    "% of Owners without a mortgage": {
-        "2006": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        },
-        "2011": {
-            "Indigenous HHs": "% of owner households WITHOUT a mortgage_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        },
-        "2021": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        }
-    },
-    "% of Renters in subsidized housing": {
-        "2006": {
-            "Indigenous HHs": None,  # Not available
-            "Non-Indigenous HHs": None
-        },
-        "2011": {
-            "Indigenous HHs": "% of tenant households in subsidized housing_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        },
-        "2021": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        }
-    },
-    "% of Renters not in subsidized housing": {
-        "2006": {
-            "Indigenous HHs": None,  # Not available
-            "Non-Indigenous HHs": None
-        },
-        "2011": {
-            "Indigenous HHs": "% of tenant households NOT in subsidized housing_Indigenous"
-        },
-        "2016": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        },
-        "2021": {
-            "Indigenous HHs": None,  # Calculate
-            "Non-Indigenous HHs": None
-        }
-    }
-})
+}
 
-# Columns needed for calculations
-TABLE_4_1_CALC_COLS = strip_map({
-    "2006": {
-        "Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Aboriginal household",
-            "owner_without_mortgage": "Owner - without mortgage_Aboriginal household"
-        },
-        "Non-Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Non-Aboriginal HH",
-            "owner_without_mortgage": "Owner - without mortgage_Non-Aboriginal HH"
-        }
-    },
-    "2016": {
-        "Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Aboriginal household",
-            "owner_without_mortgage": "Owner - without mortgage_Aboriginal household",
-            "renter_subsidized": "Renter - subsidized housing_Aboriginal household",
-            "renter_not_subsidized": "Renter - not subsidized housing_Aboriginal household"
-        },
-        "Non-Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Non-Aboriginal household",
-            "owner_without_mortgage": "Owner - without mortgage_Non-Aboriginal household",
-            "renter_subsidized": "Renter - subsidized housing_Non-Aboriginal household",
-            "renter_not_subsidized": "Renter - not subsidized housing_Non-Aboriginal household"
-        }
-    },
-    "2021": {
-        "Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Indigenous household",
-            "owner_without_mortgage": "Owner - without mortgage_Indigenous household",
-            "renter_subsidized": "Renter - subsidized housing_Indigenous household",
-            "renter_not_subsidized": "Renter - not subsidized housing_Indigenous household"
-        },
-        "Non-Indigenous HHs": {
-            "owner_with_mortgage": "Owner - with mortgage_Non-Indigenous household",
-            "owner_without_mortgage": "Owner - without mortgage_Non-Indigenous household",
-            "renter_subsidized": "Renter - subsidized housing_Non-Indigenous household",
-            "renter_not_subsidized": "Renter - not subsidized housing_Non-Indigenous household"
-        }
-    }
-})
-
-
-TABLE_4_2_COL_MAP = strip_map({
-    "Owner": {
-        "First Nations": "Owner_First Nations-led",
-        "Métis": "Owner_Metis-led",
-        "Inuit": "Owner_Inuit-led"
-    },
-    "Renter": {
-        "First Nations": "Renter_First Nations-led",
-        "Métis": "Renter_Metis-led",
-        "Inuit": "Renter_Inuit-led"
-    },
+# No exact pattern for this, hence taking this out
+_T4_1_DWELLING = {
     "Dwelling provided by local government or First Nation": {
-        "First Nations": "Dwelling provided by the local government, First Nation or Indian band_First Nations-led",
-        "Métis": "Dwelling provided by the local government, First Nation or Indian band_Metis-led",
-        "Inuit": "Dwelling provided by the local government, First Nation or Indian band_Inuit-led"
+        "2021": {"Non-Indigenous HHs": None},   # not available in 2021
+    },
+}
+
+_T4_1_PCT_DIRECT = {
+    "% of Owners with mortgage":          {"Indigenous HHs": "% of owner households with a mortgage_Indigenous"},
+    "% of Owners without a mortgage":     {"Indigenous HHs": "% of owner households WITHOUT a mortgage_Indigenous"},
+    "% of Renters in subsidized housing": {"Indigenous HHs": "% of tenant households in subsidized housing_Indigenous"},
+    "% of Renters not in subsidized housing": {"Indigenous HHs": "% of tenant households NOT in subsidized housing_Indigenous"},
+}
+
+# Calc column labels – shared between table 4.1 (by HH type) and 4.2 (by community)
+_CALC_LABELS = {
+    "owner_with_mortgage":    "Owner - with mortgage",
+    "owner_without_mortgage": "Owner - without mortgage",
+    "renter_subsidized":      "Renter - subsidized housing",
+    "renter_not_subsidized":  "Renter - not subsidized housing",
+}
+
+# Which calc keys are available per year, no subsidized data for 2006
+_CALC_YEARS_4_1 = {
+    "2006": ["owner_with_mortgage", "owner_without_mortgage"],
+    "2016": list(_CALC_LABELS),
+    "2021": list(_CALC_LABELS),
+}
+
+# Community suffixes for table 4.2 (same across 2006, 2016, 2021)
+_T4_2_COMMUNITY_SUFFIX = {
+    "First Nations": "First Nations-led",
+    "Métis":         "Metis-led",
+    "Inuit":         "Inuit-led",
+}
+
+def _build_4_1_col_map():
+    result = {}
+    for tenure, year_prefix_map in _T4_1_TENURE_PREFIX.items():
+        result[tenure] = {}
+        for year in YEARS:
+            dwelling = _T4_1_DWELLING.get(tenure, {}).get(year, {})
+            result[tenure][year] = {
+                hh_type: (
+                    dwelling[hh_type] if hh_type in dwelling
+                    else f"{year_prefix_map[year]}_{suffix}"
+                )
+                for hh_type, suffix in _HH_SUFFIX[year].items()
+            }
+    
+    for field, direct_map in _T4_1_PCT_DIRECT.items():
+        result[field] = {
+            year: {
+                hh_type: (direct_map.get(hh_type) if year == "2011" else None)
+                for hh_type in _HH_SUFFIX[year]
+            }
+            for year in YEARS
+        }
+    return result
+
+
+def _build_4_1_calc_cols():
+    return {
+        year: {
+            hh_type: {key: f"{_CALC_LABELS[key]}_{suffix}" for key in keys}
+            for hh_type, suffix in _HH_SUFFIX[year].items()
+        }
+        for year, keys in _CALC_YEARS_4_1.items()
     }
-})
+
+
+def _build_4_2_col_map():
+    result = {}
+    
+    for tenure, year_prefix_map in _T4_1_TENURE_PREFIX.items():
+        result[tenure] = {
+            year: {
+                community: f"{year_prefix_map[year]}_{comm_suffix}"
+                for community, comm_suffix in _T4_2_COMMUNITY_SUFFIX.items()
+            }
+            for year in YEARS_MINUS_2011
+        }
+    
+    for field in _T4_1_PCT_DIRECT:
+        result[field] = {
+            year: {community: None for community in _T4_2_COMMUNITY_SUFFIX}
+            for year in YEARS_MINUS_2011
+        }
+    return result
+
+
+def _build_4_2_calc_cols():
+    return {
+        year: {
+            community: {
+                key: f"{_CALC_LABELS[key]}_{comm_suffix}"
+                for key in keys
+            }
+            for community, comm_suffix in _T4_2_COMMUNITY_SUFFIX.items()
+        }
+        for year, keys in _CALC_YEARS_4_1.items()
+        if year in YEARS_MINUS_2011
+    }
+
+
+TABLE_4_1_COL_MAP   = strip_map(_build_4_1_col_map())
+TABLE_4_1_CALC_COLS = strip_map(_build_4_1_calc_cols())
+TABLE_4_2_COL_MAP   = strip_map(_build_4_2_col_map())
+TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
 
 
 TABLE_8_1_COL_MAP = strip_map({
