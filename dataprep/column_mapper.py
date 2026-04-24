@@ -125,55 +125,53 @@ TABLE_3_4_COL_MAP = {
     }
 
 
+_T3_5_YEAR_SUFFIX = {
+    "2006": "Aboriginal household",
+    "2016": "Aboriginal household",
+    "2021": "Indigenous household",
+}
+
+def _t3_5_col(prefix_2006_2016, prefix_2021=None, no_2006=False):
+    """Build {year: col_name} for a TABLE_3_5 metric.
+    no_2006=True when 2006 has no data for this metric."""
+
+    prefix_2021 = prefix_2021 if prefix_2021 is not None else prefix_2006_2016
+    return {
+        "2006": None if no_2006 else f"{prefix_2006_2016}_{_T3_5_YEAR_SUFFIX['2006']}",
+        "2016": f"{prefix_2006_2016}_{_T3_5_YEAR_SUFFIX['2016']}",
+        "2021": f"{prefix_2021}_{_T3_5_YEAR_SUFFIX['2021']}",
+    }
+
 TABLE_3_5_COL_MAP = strip_map({
-    "Youth-led (under 30)": {
-        "2006": "  29 years or less_Aboriginal household",
-        "2016": "  29 years or less_Aboriginal household",
-        "2021": "  29 years or less_Indigenous household",
-    },
-    "Senior-led (65+)": {
-        "2006": "  65 years and over_Aboriginal household",
-        "2016": "  65 years and over_Aboriginal household",
-        "2021": "  65 years and over_Indigenous household",
-    },
-    "Single-mother-led": {
-        "2006": "  With a lone parent that is a female_Aboriginal household",
-        "2016": "  With a lone parent that is a female_Aboriginal household",
-        "2021": "  With a one-parent that is a woman+_Indigenous household",
-    },
-    "Single-father-led": {
-        "2006": "  With a lone parent that is a male_Aboriginal household",
-        "2016": "  With a lone parent that is a male_Aboriginal household",
-        "2021": "  With a one-parent that is a man+_Indigenous household",
-    },
-    "HH with physical limitation": {
-        "2006": None, # no data in 2006
-        "2016": "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues_Aboriginal household",
-        "2021": "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues_Indigenous household",
-    },
-    "HH with cognitive limitation": {
-        "2006": None, # no data in 2006
-        "2016": "  Household has at least one person with activity limitations reported for Q11(d)_Aboriginal household",
-        "2021": "  Household has at least one person with activity limitations reported for Q18d only_Indigenous household",
-    },
-    "HH with mental or addictions limitation": {
-        "2006": None, # no data in 2006
-        "2016": "  Household has at least one person with activity limitations reported for Q11(e)_Aboriginal household",
-        "2021": "  Household has at least one person with activity limitations reported for Q18e only_Indigenous household",
-    },
-    "HH is gender diverse": {
-        "2006": None, # no data in 2006
-        "2016": None, # no data in 2016
+    "Youth-led (under 30)":    _t3_5_col("  29 years or less"),
+    "Senior-led (65+)":        _t3_5_col("  65 years and over"),
+    "Single-mother-led":       _t3_5_col("  With a lone parent that is a female",
+                                          "  With a one-parent that is a woman+"),
+    "Single-father-led":       _t3_5_col("  With a lone parent that is a male",
+                                          "  With a one-parent that is a man+"),
+    "HH with physical limitation": _t3_5_col(
+        "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues",
+        "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues",
+        no_2006=True,
+    ),
+    "HH with cognitive limitation": _t3_5_col(
+        "  Household has at least one person with activity limitations reported for Q11(d)",
+        "  Household has at least one person with activity limitations reported for Q18d only",
+        no_2006=True,
+    ),
+    "HH with mental or addictions limitation": _t3_5_col(
+        "  Household has at least one person with activity limitations reported for Q11(e)",
+        "  Household has at least one person with activity limitations reported for Q18e only",
+        no_2006=True,
+    ),
+    "HH is gender diverse": {  # unique 2021 column name, hence kept explicit
+        "2006": None,
+        "2016": None,
         "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)_Indigenous household",
     },
 })
 
 
-_T3_5_SOURCE_SUFFIX = {
-    "2006": "Aboriginal household",
-    "2016": "Aboriginal household",
-    "2021": "Indigenous household",
-}
 _T3_5_COMMUNITY_SUFFIX = {
     "First Nations": {"2006": "First Nations-led", "2016": "First Nations-led", "2021": "First Nation-led"},
     "Métis":         {"2006": "Metis-led",          "2016": "Metis-led",          "2021": "Metis-led"},
@@ -190,7 +188,7 @@ def _build_3_5_1_map():
                 if col is None:
                     result[metric][community][year] = None
                 else:
-                    src = _T3_5_SOURCE_SUFFIX[year]
+                    src = _T3_5_YEAR_SUFFIX[year]
                     tgt = suffixes[year]
                     result[metric][community][year] = col.replace(src, tgt) if src in col else None
     return result
@@ -339,103 +337,122 @@ TABLE_4_2_COL_MAP   = strip_map(_build_4_2_col_map())
 TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
 
 
-TABLE_8_1_COL_MAP = strip_map({
-    "Affordability (Households paying >30% of income on shelter)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Below affordability threshold_Aboriginal household",
-                "Non-Indigenous HHs": "Below affordability threshold_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": "Below affordability: 30% or more of household income is spent on shelter costs_Aboriginal household",
-                "Non-Indigenous HHs": "Below affordability: 30% or more of household income is spent on shelter costs_Non-Aboriginal household"
-            },
-            "2021": {
-                "Indigenous HHs": "Below affordability standard (Spending 30% or more )_Indigenous household",
-                "Non-Indigenous HHs": "Below affordability standard (Spending 30% or more )_Non-Indigenous household"
-            }
-        }
-    },
-    "Adequacy (Households living in dwellings needing Major Repairs)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Below adequacy: major repairs are needed_Aboriginal household",
-                "Non-Indigenous HHs": "Below adequacy: major repairs are needed_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": "Below adequacy: major repairs needed_Aboriginal household",
-                "Non-Indigenous HHs": "Below adequacy: major repairs needed_Non-Aboriginal household"
-            },
-            "2021": {
-                "Indigenous HHs": "Below adequacy standard (major repairs needed)_Indigenous household",
-                "Non-Indigenous HHs": "Below adequacy standard (major repairs needed)_Non-Indigenous household"
-            }
-        }
-    },
-    "Suitability (Households living in overcrowded dwellings)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Below suitability (crowding) standard_Aboriginal household",
-                "Non-Indigenous HHs": "Below suitability (crowding) standard_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": "Below suitability: not suitable_Aboriginal household",
-                "Non-Indigenous HHs": "Below suitability: not suitable_Non-Aboriginal household"
-            },
-            "2021": {
-                "Indigenous HHs": "Below suitability: not suitable_Indigenous household",
-                "Non-Indigenous HHs": "Below suitability: not suitable_Non-Indigenous household"
-            }
-        }
-    },
-    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Below Multiple standards_Aboriginal household",
-                "Non-Indigenous HHs": "Below Multiple standards_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": "Below Multiple standards_Aboriginal household",
-                "Non-Indigenous HHs": "Below Multiple standards_Non-Aboriginal household"
-            },
-            "2021": {
-                "Indigenous HHs": "Below multiple standards_Indigenous household",
-                "Non-Indigenous HHs": "Below multiple standards_Non-Indigenous household"
-            }
-        }
-    },
-    "Acceptable Housing (Affordable, Adequate, and Suitable)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Acceptable_Aboriginal household",
-                "Non-Indigenous HHs": "Acceptable_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": None,  # Calculate: Total - all below standards
-                "Non-Indigenous HHs": None
-            },
-            "2021": {
-                "Indigenous HHs": None,  # Calculate: Total - all below standards
-                "Non-Indigenous HHs": None
-            }
-        }
-    },
-    "Total households (for reference)": {
-        "Number of households": {
-            "2006": {
-                "Indigenous HHs": "Total - Housing indicators_Aboriginal household",
-                "Non-Indigenous HHs": "Total - Housing indicators_Non-Aboriginal household"
-            },
-            "2016": {
-                "Indigenous HHs": "Total - Housing indicators_Aboriginal household",
-                "Non-Indigenous HHs": "Total - Housing indicators_Non-Aboriginal household"
-            },
-            "2021": {
-                "Indigenous HHs": "Total - Housing indicators_Indigenous household",
-                "Non-Indigenous HHs": "Total - Housing indicators_Non-Indigenous household"
-            }
-        }
+_T7_HH_SUFFIX = {
+    "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
+}
+_T7_DWELLING_PREFIX = {
+    "Owned dwellings":  "Median monthly shelter costs for owned dwellings ($)",
+    "Rented dwellings": "Median monthly shelter costs for rented dwellings ($)",
+}
+
+TABLE_7_1_7_2_COL_MAP = strip_map({
+    tenure: {
+        year: {hh: f"{prefix}_{suffix}" for hh, suffix in suffixes.items()}
+        for year, suffixes in _T7_HH_SUFFIX.items()
     }
+    for tenure, prefix in _T7_DWELLING_PREFIX.items()
 })
 
 
+_T8_1_HH_SUFFIX = {
+    "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2016": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
+}
+
+
+_T8_1_INDICATOR_PREFIX = {
+    "Affordability (Households paying >30% of income on shelter)": {
+        "2006": "Below affordability threshold",
+        "2016": "Below affordability: 30% or more of household income is spent on shelter costs",
+        "2021": "Below affordability standard (Spending 30% or more )",
+    },
+    "Adequacy (Households living in dwellings needing Major Repairs)": {
+        "2006": "Below adequacy: major repairs are needed",
+        "2016": "Below adequacy: major repairs needed",
+        "2021": "Below adequacy standard (major repairs needed)",
+    },
+    "Suitability (Households living in overcrowded dwellings)": {
+        "2006": "Below suitability (crowding) standard",
+        "2016": "Below suitability: not suitable",
+        "2021": "Below suitability: not suitable",
+    },
+    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)": {
+        "2006": "Below Multiple standards",
+        "2016": "Below Multiple standards",
+        "2021": "Below multiple standards",
+    },
+    "Acceptable Housing (Affordable, Adequate, and Suitable)": {
+        "2006": "Acceptable",
+        "2016": None,  # Calculate: Total - all below standards
+        "2021": None,
+    },
+    "Total households (for reference)": {
+        "2006": "Total - Housing indicators",
+        "2016": "Total - Housing indicators",
+        "2021": "Total - Housing indicators",
+    },
+}
+
+TABLE_8_1_COL_MAP = strip_map({
+    indicator: {
+        "Number of households": {
+            year: {
+                hh: f"{prefix}_{suffix}" if prefix else None
+                for hh, suffix in _T8_1_HH_SUFFIX[year].items()
+            }
+            for year, prefix in year_map.items()
+        }
+    }
+    for indicator, year_map in _T8_1_INDICATOR_PREFIX.items()
+})
+
+
+_T8_7_INCOME = {
+    "Very Low Income": "20% or under of area median household income (AMHI)",
+    "Low":             "21% to 50% of AMHI",
+    "Moderate":        "51% to 80% of AMHI",
+    "Median":          "81% to 120% of AMHI",
+    "High":            "121% and over of AMHI",
+}
+_T8_7_HH_SIZE = {
+    "1pp":  "  1 person HH",
+    "2pp":  "  2 persons HH",
+    "3pp":  "  3 persons HH",
+    "4pp":  "  4 persons HH",
+    "5+pp": "  5 or more persons HH",
+}
+_T8_7_BASE = "Households in core housing need status_  Households with household income"
+
+TABLE_8_7_COL_MAP = strip_map({
+    hh_size: {
+        income: f"{_T8_7_BASE} {bracket}_{size}_  Indigenous household"
+        for income, bracket in _T8_7_INCOME.items()
+    }
+    for hh_size, size in _T8_7_HH_SIZE.items()
+})
+
+
+_T9_FY_YEARS  = [f"FY{i:02d}" for i in range(9, 25)]   # FY09 … FY24
+_T9_AGE_GROUPS = ["Under 30", "30-49", "50+"]
+
+def _build_9_1_map(prefix: str) -> dict:
+    return strip_map({
+        fy: {age: f"{prefix}_{fy}_{age}" for age in _T9_AGE_GROUPS}
+        for fy in _T9_FY_YEARS
+    })
+
+TABLE_9_1_COL_MAP   = _build_9_1_map("Indigenous")
+TABLE_9_1_1_COL_MAP = _build_9_1_map("All persons")
+
+TABLE_9_2_COL_MAP = strip_map({
+    "Children Who Exited Care due to Transitioning into Adulthood":{
+        "Indigenous": "Exited Care_Indigenous",
+        "Total Population": "Exited Care_Total"
+    },
+    "Children Who Exited from their Youth Agreement (YA) due to Transitioning into Adulthood":{
+        "Indigenous": "Exited from their Youth Agreement_Indigenous",
+        "Total Population": "Exited from their Youth Agreement_Total"
+    },
+})

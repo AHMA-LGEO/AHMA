@@ -13,7 +13,9 @@ from utils import transform_geocode_master
 from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
+from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
+from section9_prep import Section9DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -45,8 +47,18 @@ class DBUploader:
         'table_4_1': 'table_4_1_housing_tenure',
         'table_4_2': 'table_4_2_breakdown_community',
 
+        # Section 7 - Shelter Costs and Rental Market
+        'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
+        'table_7_3_1': 'table_7_3_1_rental_units',
+
         # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
+        'table_8_7': 'table_8_7_housing_deficit',
+
+        # Section 9 - Systemic Pathways and Indigenous Homelessness
+        'table_9_1': 'table_9_1_number_corrections',
+        'table_9_1_1': 'table_9_1_1_percent_corrections',
+        'table_9_2': 'table_9_2_ageing_out_of_care',
     }
 
     def __init__(self, db_path):
@@ -68,7 +80,9 @@ class DBUploader:
         self.section_2_prep = Section2DataPrep()
         self.section_3_prep = Section3DataPrep()
         self.section_4_prep = Section4DataPrep()
+        self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
+        self.section_9_prep = Section9DataPrep()
 
         # Store table classes
         self.table_classes = {}
@@ -121,11 +135,11 @@ class DBUploader:
         # Geocode master
         self.table_data['geocode_master'] = self.prepare_geocode_master()
 
-        # Table 2
+        # Section 2
         self.table_data['table_2_1'] = self.section_2_prep.table_2_1()
         self.table_data['table_2_2'] = self.section_2_prep.table_2_2()
 
-        # Table 3
+        # Section 3
         self.table_data['table_3_1_1'] = self.section_3_prep.table_3_1_1()
         self.table_data['table_3_1_2'] = self.section_3_prep.table_3_1_2()
         self.table_data['table_3_1_3'] = self.section_3_prep.table_3_1_3()
@@ -135,12 +149,22 @@ class DBUploader:
         self.table_data['table_3_5'], self.table_data['table_3_5_1']  = self.section_3_prep.table_3_5_3_5_1()
         self.table_data['table_3_6'] = self.section_3_prep.table_3_6()
 
-        # Table 4
+        # Section 4
         self.table_data['table_4_1'] = self.section_4_prep.table_4_1()
         self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
 
-        # Table 8
+        # Section 7
+        self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
+        self.table_data['table_7_3_1'] = self.section_7_prep.table_7_3_1()
+
+        # Section 8
         self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
+        self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
+
+        # Section 9
+        self.table_data['table_9_1'] = self.section_9_prep.table_9_1()
+        self.table_data['table_9_1_1'] = self.section_9_prep.table_9_1_1()
+        self.table_data['table_9_2'] = self.section_9_prep.table_9_2()
 
         print("\n" + "=" * 60)
         print("All tables prepared successfully!")

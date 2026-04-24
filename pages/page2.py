@@ -103,16 +103,16 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            # html.Div(id='table-3-1-container'),
-            # html.Div(id='chart-3-2-container'),
-            # html.Div(id='chart-3-3-container'),
-            # html.Div(id='table-3-3-container'),
-            # html.Div(id='chart-3-4-container'),
-            # html.Div(id='table-3-4-container'),
-            # html.Div(id='table-3-5-container'),
-            # html.Div(id='table-3-5-1-container'),
-            # html.Div(id='chart-3-6-container'),
-            # html.Div(id='table-3-6-container'),
+            html.Div(id='table-3-1-container'),
+            html.Div(id='chart-3-2-container'),
+            html.Div(id='chart-3-3-container'),
+            html.Div(id='table-3-3-container'),
+            html.Div(id='chart-3-4-container'),
+            html.Div(id='table-3-4-container'),
+            html.Div(id='table-3-5-container'),
+            html.Div(id='table-3-5-1-container'),
+            html.Div(id='chart-3-6-container'),
+            html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 4 - Housing Tenure
