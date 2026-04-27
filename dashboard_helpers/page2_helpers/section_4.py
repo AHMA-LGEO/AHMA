@@ -4,7 +4,6 @@ Section 4 preparation and layout - Housing Tenure.
 import pandas as pd
 import numpy as np
 from dash import dash_table, html, dcc
-import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
@@ -21,9 +20,12 @@ from .table_styles import (
     format_percent
 )
 from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC
+
 from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS, 
+    CHART_COLORS, PLOT_CONFIG, YEARS,
     YEARS_MINUS_2011, COMMUNITIES)
+
+from .export_helpers import with_export_btn
 
 
 class Section4Prep:
@@ -127,8 +129,7 @@ class Section4Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-4-1", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-4-1'),
         ], className='pg2-table-lgeo')
 
 
@@ -308,8 +309,7 @@ class Section4Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-4-2", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-4-2'),
         ], className='pg2-table-lgeo')
     
 

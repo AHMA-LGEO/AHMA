@@ -3,7 +3,6 @@ Table 8.1 preparation and layout - Core Housing Need Indicators.
 """
 import pandas as pd
 from dash import dash_table, html, dcc
-import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
@@ -20,7 +19,9 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
+from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+
 
 
 # Fixed display order for indicators
@@ -158,8 +159,7 @@ class Section8Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-8-1", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-8-1'),
         ], className='pg2-table-lgeo')
 
     def create_chart_8_1(self, geocode: int):

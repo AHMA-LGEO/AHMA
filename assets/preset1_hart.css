@@ -821,6 +821,12 @@ input[type="button"].button-primary:focus {
   color: white;
 }
 
+.export-xlsx-btn {
+  background-color: #5b2a1c;
+  border-color: #5b2a1c;
+  color: white;
+}
+
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 input[type="email"],

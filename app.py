@@ -1,5 +1,5 @@
 # Import necessary libraries
-from dash import Dash, html, dcc, callback_context, no_update, Input, Output, State
+from dash import Dash, html, dcc, callback_context, no_update, Input, Output, State, ALL
 import dash
 import pandas as pd
 from io import BytesIO
@@ -7,19 +7,14 @@ from io import BytesIO
 from app_file import app
 
 # Connect to app pages
-# from pages.Archive import test_pie
-# from pages import page1
 from pages import page1, page2
-# from pages import page1
-# Dynamically import the tables
-# from pages.page2 import *
+from dashboard_helpers.page2_helpers.export_helpers import table_to_excel
+
 
 # Define the index page layout
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content', children=[]),
-    # html.H2("Pie-of-Pie Chart", style={"textAlign": "center"}),
-    # dcc.Graph(figure=test_pie.fig, style={"height": "500px"}),
     # Add external scripts for jsPDF and html2canvas
     html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"),
     html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
@@ -28,9 +23,6 @@ app.layout = html.Div([
 ])
 
 server = app.server
-
-
-
 
 
 # Create the callback to handle multipage inputs
@@ -43,8 +35,6 @@ def display_page(pathname):
         return page1.layout
     elif pathname == '/page2':
         return page2.layout
-    # elif pathname == '/test_pie':
-    #     return test_pie.fig
     else:
         return "404 Page Error! Please choose a link"
 
@@ -69,85 +59,30 @@ app.clientside_callback(
     State('main-area', 'data')
 )
 
-# table_functions = {
-#     'export-table-15': (update_output_1, "Output1"),
-#     'export-table-1': (update_output_2a, "Output2a"),
-#     'export-table-2': (update_output_2b, "Output2b"),
-#     'export-table-3': (update_output_3a, "Output3a"),
-#     'export-table-4': (update_output_3b, "Output3b"),
-#     'export-table-5': (update_output_4a, "Output4a"),
-#     'export-table-6': (update_output_4b, "Output4b"),
-#     'export-table-7': (update_output_5a, "Output5a"),
-#     'export-table-8': (update_output_5b, "Output5b"),
-#     'export-table-9': (update_output_6, "Output6"),
-#     'export-table-10': (update_output_7, "Output7"),
-#     'export-table-11': (update_output_8, "Output8"),
-#     'export-table-12': (update_output_9, "Output9"),
-#     'export-table-13': (update_output_10a, "Output10a"),
-#     'export-table-14': (update_output_10b, "Output10b"),
-# }
+@app.callback(
+    Output("download-dataframe-xlsx", "data"),
+    Input({"type": "export-btn", "index": ALL}, "n_clicks"),
+    State({"type": "export-data", "index": ALL}, "data"),
+    State({"type": "export-cols", "index": ALL}, "data"),
+    prevent_initial_call=True,
+)
+def download_xlsx(n_clicks_list, all_data, all_cols):
+    if not callback_context.triggered or all((n or 0) == 0 for n in n_clicks_list):
+        return no_update
 
-# @app.callback(
-#     Output("download-dataframe-xlsx", "data"),
-#     [Input(f"export-table-{i}", "n_clicks") for i in range(1, 16)] +
-#     [State('main-area', 'data'), State('comparison-area', 'data'), State('area-scale-store', 'data')],
-#     prevent_initial_call=True,
-# )
-# def download_xlsx(*args):
-#     ctx = callback_context
-#     if not ctx.triggered:
-#         return no_update
+    triggered_id = callback_context.triggered_id
+    if not isinstance(triggered_id, dict) or triggered_id.get("type") != "export-btn":
+        return no_update
 
-#     triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
-#     if not triggered_id.startswith("export-table"):
-#         return no_update
+    table_id = triggered_id["index"]
 
-#     triggered_index = int(triggered_id.split("-")[-1])
-#     n_clicks = args[triggered_index - 1]  # -1 because args is zero-indexed
+    # states_list[0] is the list of matched export-data stores
+    store_ids = [item["id"]["index"] for item in callback_context.states_list[0]]
+    if table_id not in store_ids:
+        return no_update
 
-#     # Check if the button was actually clicked
-#     if n_clicks is None:
-#         return no_update
-
-#     geo = args[-3]
-#     geo_c = args[-2]
-#     scale = args[-1]
-
-#     func, filename_template = table_functions.get(triggered_id, (None, None))
-#     if func is None:
-#         return no_update
-
-#     # Update the table based on the geo parameter
-#     column_names, data_table, _, _, _ = func(geo, geo_c, scale, None)
-#     filename = f"{geo}_{filename_template}.xlsx"
-
-#     # Function to handle the conversion
-#     def convert_value(val):
-#         try:
-#             if val == 'n/a':
-#                 return val
-#             elif '%' in val:
-#                 return float(val.replace('%', '')) / 100
-#             elif ',' in val and '.' in val:
-#                 return float(val.replace(',', ''))
-#             elif ',' in val:
-#                 return int(val.replace(',', ''))
-#             elif '.' in val:
-#                 return float(val)
-#             else:
-#                 return val
-#         except ValueError:
-#             return val
-
-#     table = pd.DataFrame(data_table)
-#     for col in table.columns:
-#         table[col] = table[col].apply(lambda x: convert_value(str(x)))
-
-#     output = BytesIO()
-#     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-#         table.to_excel(writer, index=False)
-#     output.seek(0)
-#     return dcc.send_bytes(output.read(), filename=filename)
+    idx = store_ids.index(table_id)
+    return table_to_excel(all_cols[idx], all_data[idx], f"{table_id}.xlsx")
 
 if __name__ == '__main__':
     app.run_server(debug=True, host='0.0.0.0')

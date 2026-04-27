@@ -4,7 +4,6 @@ Section 3 preparation and layout - Demographics.
 import pandas as pd
 import numpy as np
 from dash import dash_table, html, dcc
-import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
@@ -34,9 +33,13 @@ from .text_content import (
     TABLE_3_5_TITLE, TABLE_3_6_TITLE,
     CHART_3_6_DESC, TABLE_3_6_NOTE)
 
+from .export_helpers import with_export_btn
+
 from dashboard_helpers.config import (
-    TABLE_FONT, CHART_COLORS, PLOT_CONFIG, 
+    TABLE_FONT, CHART_COLORS, PLOT_CONFIG,
     YEARS, YEARS_MINUS_2011, COMMUNITIES)
+
+
 
 _AGE_GROUPS_3_2_3_3 = ['0 - 14', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
 _AGE_GROUPS_3_4 = ['Under 15', '15 - 24', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '65+']
@@ -155,8 +158,7 @@ class Section3Prep:
 
         return html.Div([
             html.H4(TABLE_3_1_TITLE, className='table-title'),
-            dbc.Button("Export", id="export-table-3-1", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-3-1'),
         ], className='pg2-table-lgeo')
     
 
@@ -306,8 +308,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-3-3", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-3-3'),
         ], className='pg2-table-lgeo')
     
 
@@ -407,8 +408,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-3-4", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-3-4'),
         ], className='pg2-table-lgeo')
     
 
@@ -461,8 +461,7 @@ class Section3Prep:
 
         return html.Div([
             html.H4(TABLE_3_5_TITLE, className='table-title'),
-            dbc.Button("Export", id="export-table-3-5", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-3-5'),
         ], className='pg2-table-lgeo')
 
     def create_table_3_5_1_layout(self, geocode: int):
@@ -532,8 +531,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-3-5-1", className="export-pdf"),
-            table
+            with_export_btn(table, 'table-3-5-1'),
         ], className='pg2-table-lgeo')
     
 
@@ -647,8 +645,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            dbc.Button("Export", id="export-table-3-6", className="export-pdf"),
-            table,
+            with_export_btn(table, 'table-3-6'),
             html.I(TABLE_3_6_NOTE),
         ], className='pg2-table-lgeo')
     
