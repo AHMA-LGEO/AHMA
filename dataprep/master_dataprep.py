@@ -1,26 +1,29 @@
 import os
 import pandas as pd
 from pathlib import Path
-from table2_prep import Table2DataPrep
-from table3_prep import Table3DataPrep
-from table4_prep import Table4DataPrep
-from table8_prep import Table8DataPrep
+from section2_prep import Section2DataPrep
+from section3_prep import Section3DataPrep
+from section4_prep import Section4DataPrep
+from section7_prep import Section7DataPrep
+from section8_prep import Section8DataPrep
+from section9_prep import Section9DataPrep
 
 OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 
-TABLE_PREPS = [
-    # Table2DataPrep(),
-    Table3DataPrep(),
-    # Table4DataPrep(),
-
-    # Table8DataPrep()
+SECTION_PREPS = [
+    # Section2DataPrep(),
+    # Section3DataPrep(),
+    # Section4DataPrep(),
+    Section7DataPrep(),
+    Section8DataPrep(),
+    Section9DataPrep()
     #...
 ]
 
 def run_all():
     all_outputs: dict[str, pd.DataFrame] = {}
 
-    for prep in TABLE_PREPS:
+    for prep in SECTION_PREPS:
         results = prep.run_all()
         all_outputs.update(results)
 
@@ -35,3 +38,5 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
+    t = Section7DataPrep()
+    t.run_all()

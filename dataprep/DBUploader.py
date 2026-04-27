@@ -10,10 +10,12 @@ from sqlalchemy.exc import IntegrityError
 from utils import transform_geocode_master
 
 # Import all table preparation classes
-from dataprep.table2_prep import Table2DataPrep
-from dataprep.table3_prep import Table3DataPrep
-from dataprep.table4_prep import Table4DataPrep
-from dataprep.table8_prep import Table8DataPrep
+from section2_prep import Section2DataPrep
+from section3_prep import Section3DataPrep
+from section4_prep import Section4DataPrep
+from section7_prep import Section7DataPrep
+from section8_prep import Section8DataPrep
+from section9_prep import Section9DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -26,23 +28,37 @@ class DBUploader:
 
     # Define table configurations: {method_name: table_name}
     TABLE_CONFIGS = {
-        # Table 2 - Indigenous Communities
+        # Section 2 - Indigenous Communities
         'table_2_1': 'table_2_1_indigenous_territory',
         'table_2_2': 'table_2_2_metis_community',
 
-        # Table 3 - Indigenous Population
+        # Section 3 - Indigenous Population
         'table_3_1_1': 'table_3_1_1_indigenous_pop',
         'table_3_1_2': 'table_3_1_2_indigenous_age',
         'table_3_1_3': 'table_3_1_3_indigenous_location',
-        'table_3_1_4': 'table_3_1_4_registered_indian',
+        'table_3_1_4': 'table_3_1_4_indigenous_move',
+        'table_3_2_3_3': 'table_3_2_3_3_indigenous_age_group',
         'table_3_4': 'table_3_4_indigenous_age_gender',
+        'table_3_5': 'table_3_5_indigenous_priority_pop',
+        'table_3_5_1': 'table_3_5_1_indigenous_priority_pop_breakdown',
+        'table_3_6': 'table_3_6_indigenous_pop_ancestry',
 
-        # Table 4 - Housing Tenure
+        # Section 4 - Housing Tenure
         'table_4_1': 'table_4_1_housing_tenure',
         'table_4_2': 'table_4_2_breakdown_community',
 
-        # Table 8 - Core Housing Need
+        # Section 7 - Shelter Costs and Rental Market
+        'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
+        'table_7_3_1': 'table_7_3_1_rental_units',
+
+        # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
+        'table_8_7': 'table_8_7_housing_deficit',
+
+        # Section 9 - Systemic Pathways and Indigenous Homelessness
+        'table_9_1': 'table_9_1_number_corrections',
+        'table_9_1_1': 'table_9_1_1_percent_corrections',
+        'table_9_2': 'table_9_2_ageing_out_of_care',
     }
 
     def __init__(self, db_path):
@@ -61,10 +77,12 @@ class DBUploader:
         self.Session = sessionmaker(bind=self.engine)
 
         # Initialize data preparation classes
-        self.table_2_prep = Table2DataPrep()
-        self.table_3_prep = Table3DataPrep()
-        self.table_4_prep = Table4DataPrep()
-        self.table_8_prep = Table8DataPrep()
+        self.section_2_prep = Section2DataPrep()
+        self.section_3_prep = Section3DataPrep()
+        self.section_4_prep = Section4DataPrep()
+        self.section_7_prep = Section7DataPrep()
+        self.section_8_prep = Section8DataPrep()
+        self.section_9_prep = Section9DataPrep()
 
         # Store table classes
         self.table_classes = {}
@@ -117,23 +135,36 @@ class DBUploader:
         # Geocode master
         self.table_data['geocode_master'] = self.prepare_geocode_master()
 
-        # Table 2
-        self.table_data['table_2_1'] = self.table_2_prep.table_2_1()
-        self.table_data['table_2_2'] = self.table_2_prep.table_2_2()
+        # Section 2
+        self.table_data['table_2_1'] = self.section_2_prep.table_2_1()
+        self.table_data['table_2_2'] = self.section_2_prep.table_2_2()
 
-        # Table 3
-        self.table_data['table_3_1_1'] = self.table_3_prep.table_3_1_1()
-        self.table_data['table_3_1_2'] = self.table_3_prep.table_3_1_2()
-        self.table_data['table_3_1_3'] = self.table_3_prep.table_3_1_3()
-        self.table_data['table_3_1_4'] = self.table_3_prep.table_3_1_4()
-        self.table_data['table_3_4'] = self.table_3_prep.table_3_4()
+        # Section 3
+        self.table_data['table_3_1_1'] = self.section_3_prep.table_3_1_1()
+        self.table_data['table_3_1_2'] = self.section_3_prep.table_3_1_2()
+        self.table_data['table_3_1_3'] = self.section_3_prep.table_3_1_3()
+        self.table_data['table_3_1_4'] = self.section_3_prep.table_3_1_4()
+        self.table_data['table_3_2_3_3'] = self.section_3_prep.table_3_2_3_3()
+        self.table_data['table_3_4'] = self.section_3_prep.table_3_4()
+        self.table_data['table_3_5'], self.table_data['table_3_5_1']  = self.section_3_prep.table_3_5_3_5_1()
+        self.table_data['table_3_6'] = self.section_3_prep.table_3_6()
 
-        # Table 4
-        self.table_data['table_4_1'] = self.table_4_prep.table_4_1()
-        self.table_data['table_4_2'] = self.table_4_prep.table_4_2()
+        # Section 4
+        self.table_data['table_4_1'] = self.section_4_prep.table_4_1()
+        self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
 
-        # Table 8
-        self.table_data['table_8_1'] = self.table_8_prep.table_8_1()
+        # Section 7
+        self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
+        self.table_data['table_7_3_1'] = self.section_7_prep.table_7_3_1()
+
+        # Section 8
+        self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
+        self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
+
+        # Section 9
+        self.table_data['table_9_1'] = self.section_9_prep.table_9_1()
+        self.table_data['table_9_1_1'] = self.section_9_prep.table_9_1_1()
+        self.table_data['table_9_2'] = self.section_9_prep.table_9_2()
 
         print("\n" + "=" * 60)
         print("All tables prepared successfully!")
@@ -179,7 +210,7 @@ class DBUploader:
 
         try:
             # Replace '--' and similar placeholders with NaN
-            df = df.replace(['--', 'x', 'X', '..'], np.nan)
+            df = df.replace(['--', 'x', 'X', '..', '#N/A', '...', 'n/a'], np.nan)
 
             # Convert DataFrame to list of dictionaries
             records = []

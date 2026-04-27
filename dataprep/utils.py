@@ -4,8 +4,12 @@ from sheet_registry import fetch_data
 
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
+YEARS_2016_2021 = ["2016", "2021"]
+
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
+NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", '--']
+
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""
     return {
@@ -31,7 +35,7 @@ def clean_val(val):
     """Replace text values with NaN."""
     if pd.isna(val):
         return None
-    if str(val).strip().lower() in {"x", "..", "...", "n/a"}:
+    if str(val).strip().lower() in NO_INFO_VALUES:
         return None
     return val
 
@@ -73,16 +77,8 @@ def transform_geocode_master() -> pd.DataFrame:
         Geo_Code | Region_Code | Province_Code | Geography | Region | Province
     """
 
-    # Taking example table to fetch all geocodes across different years
-    # TODO: Himalya to check, if this needs to be replaced with IHNAT sheets, as they more geographies???
-    dfs = {
-        "2006": fetch_data("3.1.1", sheets=["2006_Indig_Profile"]),
-        "2011": fetch_data("3.1.1", sheets=["2011_Indig_Profile"]),
-        "2016": fetch_data("3.1.1", sheets=["2016_Indig_Profile"]),
-        "2021": fetch_data("3.1.1", sheets=["2021_Indig_Profile"]),
-    }
-
-    master_df = build_master(dfs)
+    # Taking example table to fetch all geocodes for 2021, KEEP ONLY 2021 GEOs
+    df_2021 = fetch_data("3.5", sheets=["2021_IHNAT_T1"])
 
     def extract_name(text):
         """Extract clean name from format 'Name (Code) Value ( %)'"""
@@ -94,6 +90,16 @@ def transform_geocode_master() -> pd.DataFrame:
         if '(' in text:
             return text.split('(')[0].strip()
         return text
+    
+    def is_no_info_row(row, exclude_cols, no_info_vals=NO_INFO_VALUES):
+        """
+        Return True if ALL attribute columns (i.e. not geocode/geo cols)
+        contains only 'x', '..', '...' or NaN.
+        """
+        attr_vals = row.drop(labels=exclude_cols, errors='ignore')
+        return attr_vals.apply(
+            lambda v: pd.isna(v) or str(v).strip() in no_info_vals
+        ).all()
 
     def determine_level(geocode):
         """Determine geographic level based on geocode length"""
@@ -117,6 +123,13 @@ def transform_geocode_master() -> pd.DataFrame:
         elif level == 'csd':
             return f"{name} (CSD, BC)"
         return name
+    
+    mask_no_info = df_2021.apply(is_no_info_row, axis=1, exclude_cols=["Geocode", "Geography"])
+    cleaned_df_2021 = df_2021[~mask_no_info].reset_index(drop=True)
+
+    print(f"Original rows : {len(df_2021)}")
+    print(f"No-info rows  : {len(df_2021[mask_no_info])}")
+    
 
     rows = []
 
@@ -126,7 +139,7 @@ def transform_geocode_master() -> pd.DataFrame:
     current_region_code = None
     current_region_name = None
 
-    for _, row in master_df.iterrows():
+    for _, row in cleaned_df_2021.iterrows():
         geocode = str(row['Geocode'])
         geography_raw = row['Geography']
 
