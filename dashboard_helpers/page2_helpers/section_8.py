@@ -11,6 +11,8 @@ from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
+    make_special_row_styles,
+    make_style_cell,
     get_special_row_styles_8_1,
     style_cell_8_1,
     format_number,
@@ -18,7 +20,7 @@ from .table_styles import (
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC
+from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC, TABLE_8_7_TITLE
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
@@ -161,6 +163,7 @@ class Section8Prep:
         return html.Div([
             with_export_btn(table, 'table-8-1'),
         ], className='pg2-table-lgeo')
+    
 
     def create_chart_8_1(self, geocode: int):
         """Sunburst (nested-pie) chart for for Table 8.1 2021 Indigenous Core Housing Need."""
@@ -231,4 +234,47 @@ class Section8Prep:
             html.H4(TABLE_8_1_TITLE, className='table-title'),
             html.H6(TABLE_8_1_DESC, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+    
+    
+    def create_table_8_7_layout(self, geocode: int):
+        """Create pie chart for Table 8.7 Housing Deficit by Income and HH size (2021)."""
+        df = self.data_loader.get_table('table_8_7_housing_deficit', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        hh_cols = ['1pp', '2pp', '3pp', '4pp', '5+pp', 'Total']
+
+        table_df = df.set_index('Income Type')[hh_cols].reset_index()
+
+        table_df = table_df.applymap(format_number)
+
+        columns = [{"name": [geo_name, "2021 Affordable Housing Deficit - Indigenous HHs in Core Housing Need"], "id": "Income Type"}] + [
+            {"name": [geo_name, col], "id": col} for col in hh_cols
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-8-7',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+                + make_special_row_styles(table_df, 'Income Type', total_labels={'Total'}, total_col=True)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id='Income Type'
+            ),
+            style_cell_conditional=make_style_cell('Income Type', hh_cols, label_width='25%', label_min_width='120px'),
+            **base_style
+        )
+
+        return html.Div([
+            html.H4(TABLE_8_7_TITLE, className='table-title'),
+            with_export_btn(table, 'table-8-7'),
         ], className='pg2-table-lgeo')

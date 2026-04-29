@@ -17,8 +17,6 @@ from .table_styles import (
     format_number,
     format_percent,
     format_dollar,
-    get_special_row_styles_7_1,
-    style_cell_7_1,
 )
 from .text_content import (
     SECTION_7_TITLE, TABLE_7_1_TITLE,
@@ -99,12 +97,15 @@ class Section7Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(display_df)
-                + get_special_row_styles_7_1(display_df)
+                + make_special_row_styles(display_df, _LABEL_COL,
+                                          geo_headers={_SECTION_HEADER},
+                                          total_labels={}
+                                          )
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
-            style_cell_conditional=style_cell_7_1(show_both),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
             **base_style
         )
 

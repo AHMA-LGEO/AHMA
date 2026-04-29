@@ -64,6 +64,7 @@ def make_special_row_styles(
     warning_headers: set = frozenset(),
     total_labels: set = frozenset({'TOTAL'}),
     italic_labels: set = frozenset(),
+    total_col: bool = False,
     warning_color: str = '#b55438',
     blank_label: str = '',
 ) -> list:
@@ -71,23 +72,25 @@ def make_special_row_styles(
     Build style_data_conditional for special rows in a DataTable.
 
     Row classification (first match wins):
-      geo_headers     → geography colour + white text + bold
-      warning_headers → warning_color text + bold
-      section_headers → headings colour + body text + bold
-      total_labels    → bold only
-      italic_labels   → warning_color text + italic
-      blank_label     → thin white separator
+      geo_headers       → geography colour + white text + bold
+      warning_headers   → warning_color text + bold
+      section_headers   → headings colour + body text + bold
+      total_labels      → bold only (exact match on label column)
+      italic_labels     → warning_color text + italic
+      blank_label       → thin white separator
+      total_col         → bold all cells in any column whose ID contains 'total'
 
     Args:
-        data:            DataFrame passed to the DataTable.
-        label_col:       Name of the column holding row-type labels.
-        geo_headers:     Label values that render as geography-colour header rows.
-        section_headers: Label values that render as headings-colour section rows.
-        warning_headers: Label values that render in warning_color bold.
-        total_labels:    Label values that render bold only (default: {'TOTAL'}).
-        italic_labels:   Label values that render italic in warning_color.
-        warning_color:   CSS colour for warning/below-multiple rows.
-        blank_label:     Label value used for blank separator rows (default: '').
+        data:               DataFrame passed to the DataTable.
+        label_col:          Name of the column holding row-type labels.
+        geo_headers:        Label values that render as geography-colour header rows.
+        section_headers:    Label values that render as headings-colour section rows.
+        warning_headers:    Label values that render in warning_color bold.
+        total_labels:       Label values that render bold only (default: {'TOTAL'}).
+        italic_labels:      Label values that render italic in warning_color.
+        total_col:          If True, bold all cells in columns whose ID contains 'total'.
+        warning_color:      CSS colour for warning/below-multiple rows.
+        blank_label:        Label value used for blank separator rows (default: '').
 
     Returns:
         List of style_data_conditional dicts.
@@ -120,6 +123,11 @@ def make_special_row_styles(
             styles.append({**rule, 'color': warning_color, 'fontStyle': 'italic'})
         elif val == blank_label:
             styles.append({**rule, **_BLANK_ROW_STYLE})
+
+    if total_col:
+        for col in data.columns:
+            if 'total' in str(col).lower():
+                styles.append({'if': {'column_id': col}, 'fontWeight': 'bold'})
 
     return styles
 
@@ -156,9 +164,9 @@ def generate_style_header_conditional(
     Generate header styling for table columns.
 
     For 3-level multi-index headers:
-        header_index 0 – geography name row  → geography colour
-        header_index 1 – group row           → headings colour; first col → geography colour
-        header_index 2 – year / label row    → headings colour; first col → geography colour
+        header_index 0 - geography name row  → geography colour
+        header_index 1 - group row           → headings colour; first col → geography colour
+        header_index 2 - year / label row    → headings colour; first col → geography colour
 
     Args:
         columns:       List of column definitions.
@@ -269,123 +277,6 @@ def format_dollar(value):
         return f'${int(float(value)):,}'
     except (ValueError, TypeError):
         return value
-
-
-
-# -------------------- Section 3 – Demographics --------------------
-
-############### Table 3.1 stylers ###############
-_T3_1_SECTION_HEADERS = frozenset({
-    'Indigenous Population (by CSD)',
-    'Regional Indigenous Households (by CD)',
-    'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
-})
-
-
-def get_special_row_styles_3_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Indicator',
-        geo_headers={'__geo_header__', '__cd_header__'},
-        section_headers=_T3_1_SECTION_HEADERS,
-    )
-
-
-def style_cell_3_1() -> list:
-    return make_style_cell(
-        'Indicator',
-        YEARS,
-        label_min_width='200px',
-    )
-
-############### Table 3.3 stylers ###############
-
-_T3_3_VALUE_COLS = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
-
-def get_special_row_styles_3_3(data: pd.DataFrame) -> list:
-    return make_special_row_styles(data, 'Age Group', total_labels={'Total'})
-
-
-def style_cell_3_3() -> list:
-    return make_style_cell('Age Group', _T3_3_VALUE_COLS, label_width='25%', label_min_width='120px')
-
-
-############### Table 3.4 stylers ###############
-
-_T3_4_VALUE_COLS = ['Indigenous', 'Men+', 'Women+']
-
-def get_special_row_styles_3_4(data: pd.DataFrame) -> list:
-    return make_special_row_styles(data, 'Age Group', total_labels={'Total'})
-
-
-def style_cell_3_4() -> list:
-    return make_style_cell('Age Group', _T3_4_VALUE_COLS, label_width='25%', label_min_width='120px')
-
-
-############### Table 3.5 stylers ###############
-
-def get_special_row_styles_3_5(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Number of Indigenous HHs',
-        geo_headers={'Number of Indigenous HHs'},
-        total_labels={'Total'},
-    )
-
-
-def style_cell_3_5() -> list:
-    return make_style_cell('Number of Indigenous HHs', YEARS_MINUS_2011, label_width='25%', label_min_width='120px')
-
-
-############### Table 3.6 stylers ###############
-
-_T3_6_VALUE_COLS = ['# of People']
-
-def get_special_row_styles_3_6(data: pd.DataFrame) -> list:
-    return make_special_row_styles(data, 'Indigenous Ancestry, 2021', total_labels={'Total*'})
-
-
-def style_cell_3_6() -> list:
-    return make_style_cell('Indigenous Ancestry, 2021', _T3_6_VALUE_COLS, label_width='25%', label_min_width='120px')
-
-
-#-------------------- Section 4 – Housing Tenure --------------------
-
-############### Table 4.1 stylers ###############
-
-def get_special_row_styles_4_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Households by Tenure',
-        geo_headers={'Households by Tenure'},
-    )
-
-
-def style_cell_4_1(show_both: bool) -> list:
-    value_cols = [f'indg_{y}' for y in YEARS]
-    if show_both:
-        value_cols += [f'non_indg_{y}' for y in YEARS]
-    return make_style_cell('Households by Tenure', value_cols, label_min_width='160px')
-
-
-
-#-------------------- Section 7 – Shelter Costs and Rental Market  --------------------
-
-############### Table 7.1 stylers ###############
-_T7_1_SECTION_HEADER = 'Median Shelter Cost of Dwelling'
-
-
-def get_special_row_styles_7_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
-        data, 'Households by Tenure:',
-        geo_headers={_T7_1_SECTION_HEADER},
-        total_labels=frozenset(),
-    )
-
-
-def style_cell_7_1(show_both: bool) -> list:
-    value_cols = [f'indg_{y}' for y in YEARS_2016_2021]
-    if show_both:
-        value_cols += [f'non_indg_{y}' for y in YEARS_2016_2021]
-    return make_style_cell('Households by Tenure:', value_cols, label_min_width='160px')
-
 
 
 

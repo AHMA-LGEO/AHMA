@@ -14,8 +14,6 @@ from .table_styles import (
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    get_special_row_styles_4_1,
-    style_cell_4_1,
     format_number,
     format_percent
 )
@@ -94,6 +92,7 @@ class Section4Prep:
             return html.Div("No data available", className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        _LABEL_COL = "Households by Tenure"
 
         columns = [
             {"name": ["", "Census Year", ""], "id": "Households by Tenure"}
@@ -107,12 +106,13 @@ class Section4Prep:
                 for y in YEARS
             ]
 
-        data_cols = ['Households by Tenure'] + [f'indg_{y}' for y in YEARS]
+        data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS]
         if show_both:
             data_cols += [f'non_indg_{y}' for y in YEARS]
         df_display = df[data_cols]
 
         base_style = get_base_table_style()
+        data_cols.remove(_LABEL_COL)
 
         table = dash_table.DataTable(
             id='table-4-1',
@@ -121,10 +121,10 @@ class Section4Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + get_special_row_styles_4_1(df_display)
+                + make_special_row_styles(df_display, _LABEL_COL, geo_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
-            style_cell_conditional=style_cell_4_1(show_both),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
 
