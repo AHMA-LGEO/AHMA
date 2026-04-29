@@ -2,7 +2,7 @@
 Styling utilities for Dash DataTables.
 """
 import pandas as pd
-from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011, YEARS_2016_2021
 
 
 #-------------------- Shared blank-separator style --------------------
@@ -261,6 +261,16 @@ def format_percent(value, multiply: bool = False):
         return value
 
 
+def format_dollar(value):
+    """Format value as a dollar amount"""
+    if pd.isna(value) or value == 'n/a':
+        return value
+    try:
+        return f'${int(float(value)):,}'
+    except (ValueError, TypeError):
+        return value
+
+
 
 # -------------------- Section 3 – Demographics --------------------
 
@@ -355,6 +365,31 @@ def style_cell_4_1(show_both: bool) -> list:
     return make_style_cell('Households by Tenure', value_cols, label_min_width='160px')
 
 
+
+#-------------------- Section 7 – Shelter Costs and Rental Market  --------------------
+
+############### Table 7.1 stylers ###############
+_T7_1_SECTION_HEADER = 'Median Shelter Cost of Dwelling'
+
+
+def get_special_row_styles_7_1(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Households by Tenure:',
+        geo_headers={_T7_1_SECTION_HEADER},
+        total_labels=frozenset(),
+    )
+
+
+def style_cell_7_1(show_both: bool) -> list:
+    value_cols = [f'indg_{y}' for y in YEARS_2016_2021]
+    if show_both:
+        value_cols += [f'non_indg_{y}' for y in YEARS_2016_2021]
+    return make_style_cell('Households by Tenure:', value_cols, label_min_width='160px')
+
+
+
+
+
 #-------------------- Section 8 – Core Housing Need --------------------
 
 ############### Table 8.1 stylers ###############
@@ -390,5 +425,4 @@ def style_cell_8_1(show_both: bool) -> list:
     if show_both:
         value_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
     return make_style_cell('Indicator', value_cols, label_min_width='200px')
-
 

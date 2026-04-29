@@ -7,6 +7,7 @@ import dash_bootstrap_components as dbc
 from dashboard_helpers.page2_helpers.section_2 import Section2Prep
 from dashboard_helpers.page2_helpers.section_3 import Section3Prep
 from dashboard_helpers.page2_helpers.section_4 import Section4Prep
+from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 # from dashboard_helpers.page2_helpers.table_4_2_prep import Table42Prep
 # from dashboard_helpers.page2_helpers.chart_4_prep import Chart4Prep
@@ -19,10 +20,11 @@ from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG, TABLE_FONT
 section_2_layout = Section2Prep()
 section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
+section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 
 # Table IDs — add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-8-1"]
+TABLE_IDS = ["table-4-1", "table-7-1", "table-8-1"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -103,16 +105,16 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            html.Div(id='table-3-1-container'),
-            html.Div(id='chart-3-2-container'),
-            html.Div(id='chart-3-3-container'),
-            html.Div(id='table-3-3-container'),
-            html.Div(id='chart-3-4-container'),
-            html.Div(id='table-3-4-container'),
-            html.Div(id='table-3-5-container'),
-            html.Div(id='table-3-5-1-container'),
-            html.Div(id='chart-3-6-container'),
-            html.Div(id='table-3-6-container'),
+            # html.Div(id='table-3-1-container'),
+            # html.Div(id='chart-3-2-container'),
+            # html.Div(id='chart-3-3-container'),
+            # html.Div(id='table-3-3-container'),
+            # html.Div(id='chart-3-4-container'),
+            # html.Div(id='table-3-4-container'),
+            # html.Div(id='table-3-5-container'),
+            # html.Div(id='table-3-5-1-container'),
+            # html.Div(id='chart-3-6-container'),
+            # html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 4 - Housing Tenure
@@ -133,12 +135,38 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-4-1-container'),
-            html.Div(id='table-4-1-container'),
+            # html.Div(id='chart-4-1-container'),
+            # html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-4-2-container'),
+            # html.Div(id='table-4-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 7 - Shelter Costs
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-7-1"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='table-7-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='chart-7-3-1-container'),
+            html.Div(id='table-7-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -293,6 +321,24 @@ def update_section_4(geo_name, scale, visibility):
 
 
 @callback(
+    Output('table-7-1-container', 'children'),
+    Output('chart-7-3-1-container', 'children'),
+    Output('table-7-3-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+    Input('table-visibility-store', 'data'),
+)
+def update_section_7(geo_name, scale, visibility):
+    show_both = (visibility or {}).get("table-7-1", False)
+    geocode = _resolve_geocode(geo_name, scale, section_7_layout.data_loader)
+    return (
+        section_7_layout.create_table_7_1_layout(geocode, show_both),
+        section_7_layout.create_chart_7_3_1(geocode),
+        section_7_layout.create_table_7_3_1_layout(geocode)
+        )
+
+
+@callback(
     Output('chart-8-1-container', 'children'),
     Output('table-8-1-container', 'children'),
     Input('main-area', 'data'),
@@ -345,7 +391,7 @@ def update_section_8(geo_name, scale, visibility):
 # Helper function to share geocode resolution logic
 def _resolve_geocode(geo_name, scale, data_loader):
     if geo_name is None:
-        from helpers.config import DEFAULT_GEOGRAPHY
+        from dashboard_helpers.config import DEFAULT_GEOGRAPHY
         geo_name = DEFAULT_GEOGRAPHY
 
     geocode = data_loader.get_geocode(geo_name)

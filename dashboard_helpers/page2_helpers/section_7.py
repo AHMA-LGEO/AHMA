@@ -1,0 +1,219 @@
+"""
+Section 7 preparation and layout - Shelter Costs and Rental Market
+"""
+import pandas as pd
+import numpy as np
+from dash import dash_table, html, dcc
+import plotly.graph_objects as go
+
+from .data_loader import get_data_loader
+from .table_styles import (
+    blank_row,
+    generate_style_data_conditional,
+    generate_style_header_conditional,
+    get_base_table_style,
+    make_special_row_styles,
+    make_style_cell,
+    format_number,
+    format_percent,
+    format_dollar,
+    get_special_row_styles_7_1,
+    style_cell_7_1,
+)
+from .text_content import (
+    SECTION_7_TITLE, TABLE_7_1_TITLE,
+    TABLE_7_3_TITLE, TABLE_7_3_1_TITLE
+    )
+
+from dashboard_helpers.config import (
+    CHART_COLORS, PLOT_CONFIG, YEARS,
+    YEARS_2016_2021, COMMUNITIES, TABLE_COLORS, TABLE_FONT)
+
+from .export_helpers import with_export_btn
+
+
+class Section7Prep:
+    """Prepare and format Section 7 schemas."""
+
+    def __init__(self):
+        self.data_loader = get_data_loader()
+
+    def create_table_7_1_layout(self, geocode: int, show_both: bool = False):
+        """Create Dash DataTable for Table 7.1 and 7.2: median shelter cost (2016, 2021)."""
+
+        df = self.data_loader.get_table('table_7_1_7_2_dwelllings', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        _LABEL_COL = 'Households by Tenure:'
+        _SECTION_HEADER = 'Median Shelter Cost of Dwelling'
+
+        
+        indg = (
+            df[df['Household Type'] == 'Indigenous HHs']
+            [[_LABEL_COL] + YEARS_2016_2021]
+            .rename(columns={y: f'indg_{y}' for y in YEARS_2016_2021})
+        )
+        non_indg = (
+            df[df['Household Type'] == 'Non-Indigenous HHs']
+            [[_LABEL_COL] + YEARS_2016_2021]
+            .rename(columns={y: f'non_indg_{y}' for y in YEARS_2016_2021})
+        )
+
+        table_df = indg.merge(non_indg, on=_LABEL_COL, how='left')
+
+        val_cols = [f'indg_{y}' for y in YEARS_2016_2021]
+        if show_both:
+            val_cols += [f'non_indg_{y}' for y in YEARS_2016_2021]
+
+        
+        for col in val_cols:
+            table_df[col] = table_df[col].map(format_dollar)
+
+        
+        rows = [blank_row(_LABEL_COL, val_cols, _SECTION_HEADER)]
+        rows += table_df[[_LABEL_COL] + val_cols].to_dict('records')
+        display_df = pd.DataFrame(rows, dtype=object)
+
+        columns = [
+            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+        ] + [
+            {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
+            for y in YEARS_2016_2021
+        ]
+        if show_both:
+            columns += [
+                {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
+                for y in YEARS_2016_2021
+            ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-7-1',
+            columns=columns,
+            data=display_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(display_df)
+                + get_special_row_styles_7_1(display_df)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=style_cell_7_1(show_both),
+            **base_style
+        )
+
+        return html.Div([
+            html.H3(SECTION_7_TITLE, className='table-title'),
+            html.H4(TABLE_7_1_TITLE, className='table-title'),
+            with_export_btn(table, 'table-7-1'),
+        ], className='pg2-table-lgeo')
+    
+
+    def create_chart_7_3_1(self, geocode: int):
+        """Create pie chart for Table 7.3.1 Primary and Secondary Rental Units (2021)."""
+        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
+        labels = "Rental Type"
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+
+        fig = go.Figure(go.Pie(
+            labels=df[labels],
+            values=df["2021"],
+            marker=dict(colors=CHART_COLORS, line=dict(color="white")),
+            # text=text,
+            # textinfo="text",
+            # insidetextorientation="radial",
+            hovertemplate="<b>%{label}</b><br>Count of people: %{value:,}<br>% of people: %{percent}<extra></extra>",
+        ))
+
+        fig.update_layout(
+            title=dict(
+                text=f"2021 Share of Primary and Secondary Rental Units<br><sup>{geo_name}</sup>",
+                x=0.5, xanchor="center",
+                font=dict(size=15, family=TABLE_FONT),
+            ),
+            paper_bgcolor="white",
+            showlegend=False,
+            margin=dict(t=90, b=40, l=20, r=20),
+            height=550,
+        )
+
+        return html.Div([
+            html.H3(TABLE_7_3_TITLE, className='table-title'),
+            html.H4(TABLE_7_3_1_TITLE, className='table-title'),
+            dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+
+    
+
+    def create_table_7_3_1_layout(self, geocode: int):
+        """Create Dash DataTable for Table 7.3.1: Primary and Secondary Rental Units (2016, 2021)."""
+
+        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        _LABEL_COL = 'Number of primary and secondary rental units'
+        _SUB_COL = 'sub_type'
+
+        rows = (
+            df.set_index('Rental Type')[YEARS_2016_2021]
+            .reset_index()
+            .rename(columns={'Rental Type': _SUB_COL})
+        )
+        rows[_SUB_COL] = rows[_SUB_COL].replace(
+            {"Primary Renters": "Primary", "Secondary Renters": "Secondary"}
+        )
+        for col in YEARS_2016_2021:
+            rows[col] = rows[col].map(format_number)
+
+        # Label column: show on first row only to simulate a merged cell
+        rows.insert(0, _LABEL_COL, '')
+        rows.iloc[0, rows.columns.get_loc(_LABEL_COL)] = _LABEL_COL
+        table_df = rows.reset_index(drop=True)
+
+        columns = [
+            {"name": ["", ""], "id": _LABEL_COL},
+            {"name": [geo_name, ""], "id": _SUB_COL},
+            {"name": [geo_name, "2016"], "id": "2016"},
+            {"name": [geo_name, "2021"], "id": "2021"},
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-7-3-1',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, [_SUB_COL] + YEARS_2016_2021, label_width='40%', label_min_width='200px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-7-3-1'),
+        ], className='pg2-table-lgeo')
+
+
+if __name__ == '__main__':
+    s = Section7Prep()
+    s.create_table_7_1_layout(5915022)
