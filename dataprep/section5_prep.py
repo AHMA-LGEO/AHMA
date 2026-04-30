@@ -7,12 +7,8 @@ from utils import (
     get_val, 
     sum_bands, 
     pct, 
-    clean_val,
-    YEARS,
-    YEARS_MINUS_2011,
-    POP_SIZES,
-    HH_TYPES,
-    INDIGENOUS_COMMUNITIES)
+    clean_val
+    )
 
 
 INCOME_BRACKETS = [

@@ -328,10 +328,10 @@ TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
 
 # Size-row column prefixes, shared by both 4.3/4.4 and 4.3.1
 _T4_3_SIZE_PREFIX = {
-    "1pp":   {"2006": "  1 person",             "2016": "1 person",          "2021": "1 person"},
-    "2pp":   {"2006": "  2 persons",            "2016": "2 persons",         "2021": "2 persons"},
-    "3pp":   {"2006": "  3 persons",            "2016": "3 persons",         "2021": "3 persons"},
-    "4pp":   {"2006": "  4 persons",            "2016": "4 persons",         "2021": "4 persons"},
+    "1 pp":   {"2006": "  1 person",             "2016": "1 person",          "2021": "1 person"},
+    "2 pp":   {"2006": "  2 persons",            "2016": "2 persons",         "2021": "2 persons"},
+    "3 pp":   {"2006": "  3 persons",            "2016": "3 persons",         "2021": "3 persons"},
+    "4 pp":   {"2006": "  4 persons",            "2016": "4 persons",         "2021": "4 persons"},
     "5+ pp": {"2006": "  5 or more",            "2016": "5 or more persons", "2021": "5 or more persons"},
     "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
 }
@@ -473,11 +473,11 @@ _T8_7_INCOME = {
     "High":            "121% and over of AMHI",
 }
 _T8_7_HH_SIZE = {
-    "1pp":  "  1 person HH",
-    "2pp":  "  2 persons HH",
-    "3pp":  "  3 persons HH",
-    "4pp":  "  4 persons HH",
-    "5+pp": "  5 or more persons HH",
+    "1 pp":  "  1 person HH",
+    "2 pp":  "  2 persons HH",
+    "3 pp":  "  3 persons HH",
+    "4 pp":  "  4 persons HH",
+    "5+ pp": "  5 or more persons HH",
 }
 _T8_7_BASE = "Households in core housing need status_  Households with household income"
 

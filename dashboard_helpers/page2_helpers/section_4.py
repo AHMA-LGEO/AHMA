@@ -239,7 +239,7 @@ class Section4Prep:
             Level 1 - census year
             Level 2 - Indigenous Community
         """
-        df = self.data_loader.get_table('table_4_2_breakdown_community', geocode)
+        df = self.data_loader.get_table('table_4_2_housing_tenure_breakdown', geocode)
 
         if df.empty:
             return html.Div("No data available", className='pg2-table-lgeo')
