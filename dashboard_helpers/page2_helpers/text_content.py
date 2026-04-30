@@ -67,3 +67,9 @@ TABLE_8_1_DESC = "Households in Acceptable & Unacceptable (unaffordable, need ma
 
 # Table 8.7 descriptions
 TABLE_8_7_TITLE = "8.7 Indigenous Affordable Housing Deficit by Income & Household Size (2021)"
+
+#-------------------- Section 9 descriptions --------------------
+SECTION_9_TITLE = '9. Systemic Pathways and Indigenous Homelessness ("Where does the system fail?")'
+
+# Table 9.1 descriptions
+TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by Age Group (2008-2024)(Region)"

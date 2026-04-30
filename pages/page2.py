@@ -9,8 +9,8 @@ from dashboard_helpers.page2_helpers.section_3 import Section3Prep
 from dashboard_helpers.page2_helpers.section_4 import Section4Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
-# from dashboard_helpers.page2_helpers.table_4_2_prep import Table42Prep
-# from dashboard_helpers.page2_helpers.chart_4_prep import Chart4Prep
+from dashboard_helpers.page2_helpers.section_9 import Section9Prep
+
 from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
@@ -22,8 +22,9 @@ section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
+section_9_layout = Section9Prep()
 
-# Table IDs — add new table IDs with toggle features as page 2 grows
+# Table IDs - add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1", "table-7-1", "table-8-1"]
 
 
@@ -187,14 +188,19 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-8-7-container'),
+            # html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        # Section 9 - Systematic Pathways and Indigenous Homelessness
+        html.Div([
+            html.Div(id='chart-9-1-container'),
+            html.Div(id='table-9-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
         html.Footer([
@@ -353,6 +359,20 @@ def update_section_8(geo_name, scale, visibility):
         section_8_layout.create_chart_8_1(geocode),
         section_8_layout.create_table_8_1_layout(geocode, show_both),
         section_8_layout.create_table_8_7_layout(geocode)
+    )
+
+
+@callback(
+    Output('table-9-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_9(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_9_layout.data_loader)
+
+    return (
+        section_9_layout.create_chart_9_1(geocode),
+        section_9_layout.create_table_9_1_layout(geocode)
     )
 
 

@@ -9,7 +9,6 @@ from utils import (build_master,
                    clean_val,
                    HH_TYPES)
 
-
 class Section9DataPrep:
 
     def table_9_1(self) -> pd.DataFrame:
@@ -29,9 +28,11 @@ class Section9DataPrep:
         print("Processing Table 9.1.1...")
         result_indig = self.table_9_1()
         result_all   = self._build_corrections_table("9.1.1", cm.TABLE_9_1_1_COL_MAP)
-        result_all.iloc[:, -4:] = round(
-            (result_indig.iloc[:, -4:] / result_all.iloc[:, -4:]) * 100, 1
+
+        result_all.iloc[:, 3:] = round(
+            (result_indig.iloc[:, 3:] / result_all.iloc[:, 3:]) * 100, 1
         )
+
 
         print("Table 9.1.1 is ready now...\n" + '=' * 60)
         return result_all
@@ -106,7 +107,27 @@ class Section9DataPrep:
                 
         result = pd.DataFrame(rows)
         result['Total'] = result[['Under 30', '30-49', '50+']].sum(axis=1, min_count=3)
-        return result
+        
+        # return non-transposed results, if data is to be stored in long form
+        melted = result.melt(
+            id_vars=['Geocode', 'Geography', 'Year'], 
+            value_vars=cm._T9_AGE_GROUPS + ["Total"],
+            var_name='Age', 
+            value_name='Value'
+        )
+
+        result_transposed = (
+            melted.pivot_table(
+                index=['Geocode', 'Geography', 'Age'], 
+                columns='Year', 
+                values='Value',
+                sort=False
+            )
+            .reset_index()
+            .reindex(columns=['Geocode', 'Geography', 'Age'] + cm._T9_FY_YEARS)
+        )
+
+        return result_transposed
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Table 9 methods and returns {name:df}"
@@ -116,4 +137,6 @@ class Section9DataPrep:
             "9.2": self.table_9_2(),
         }
     
-
+if __name__ == '__main__':
+    t = Section9DataPrep()
+    t.table_9_1()

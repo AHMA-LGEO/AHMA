@@ -1,5 +1,5 @@
 """
-Table 8.1 preparation and layout - Core Housing Need Indicators.
+Section 8 preparation and layout - Core Housing Need Indicators.
 """
 import pandas as pd
 from dash import dash_table, html, dcc

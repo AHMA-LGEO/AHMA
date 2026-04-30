@@ -74,13 +74,13 @@ class Section3Prep:
         for pop_type in ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']:
             rows.append({'Indicator': pop_type, **get_values(df_3_1_1, label_col_1, pop_type)})
         rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_1, label_col_1, 'TOTAL')})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 2: Age Profile #####
         label_col_2 = 'Age Profile'
         for metric in ['Median Age (years)', '% Under 15 years old', '% 65 years or older']:
             rows.append({'Indicator': metric, **get_values(df_3_1_2, label_col_2, metric, pct_row=metric.startswith('%'))})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 3: Regional Indigenous Households (by CD) #####
         label_col_3 = 'Regional Indigenous Households (by CD)'
@@ -89,7 +89,7 @@ class Section3Prep:
         for hh_type in ['On Reserve', 'Off Reserve']:
             rows.append({'Indicator': hh_type, **get_values(df_3_1_3, label_col_3, hh_type)})
         rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_3, label_col_3, 'TOTAL')})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 4: Indigenous-led HH moves (by CD) #####
         label_col_4 = 'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...'
