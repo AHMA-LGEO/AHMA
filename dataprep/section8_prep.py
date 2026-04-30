@@ -7,9 +7,9 @@ from utils import (build_master,
                    sum_bands, 
                    pct, 
                    clean_val,
-                   HH_TYPES)
+                   HH_TYPES,
+                   POP_SIZES)
 
-POP_TYPE = ['1pp', '2pp', '3pp', '4pp', '5+pp']
 
 class Section8DataPrep:
 
@@ -142,10 +142,10 @@ class Section8DataPrep:
             rows.append(row)
 
         result = pd.concat(rows, ignore_index=True)
-        result[POP_TYPE] = result[POP_TYPE].apply(lambda col: col.map(clean_val))
+        result[POP_SIZES] = result[POP_SIZES].apply(lambda col: col.map(clean_val))
 
         totals = (
-            result.groupby(["Geocode", "Geography"], as_index=False)[POP_TYPE].sum().assign(**{"Income Type": "Total"})
+            result.groupby(["Geocode", "Geography"], as_index=False)[POP_SIZES].sum().assign(**{"Income Type": "Total"})
         )
 
         result = (
@@ -154,14 +154,14 @@ class Section8DataPrep:
                 key=lambda col: col if col.name != "Income Type" else (col=="Total").astype(int)).reset_index(drop=True)
         )
 
-        result['Total'] = result[POP_TYPE].sum(axis=1, skipna=False)
+        result['Total'] = result[POP_SIZES].sum(axis=1, skipna=False)
 
         print("Table 8.7 is ready now...\n" + '=' * 60)
         return result
 
     
     def run_all(self) -> dict[str, pd.DataFrame]:
-        "Runs all Table 8 methods and returns {name:df}"
+        "Runs all Section 8 methods and returns {name:df}"
         return {
             "8.1": self.table_8_1(),
             "8.7": self.table_8_7(),

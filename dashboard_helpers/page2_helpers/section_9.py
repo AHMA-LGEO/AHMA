@@ -40,8 +40,8 @@ class Section9Prep:
         # _AGE_GROUPS = ["Under 30", "30-49", "50+", "Total"]
 
         for col in _FY_YEARS:
-            df_9_1[col] = df_9_1[col].map(format_number)
-            df_9_1_1[col] = df_9_1_1[col].map(format_percent)
+            df_9_1.loc[:, col] = df_9_1[col].map(format_number)
+            df_9_1_1.loc[:, col] = df_9_1_1[col].map(format_percent)
 
         label_col_1 = 'Number of people released who identify as indigenous'
         label_col_2 = 'Percentage of people released who identify as indigenous'

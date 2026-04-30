@@ -10,6 +10,7 @@ from utils import (
     clean_val,
     YEARS,
     YEARS_MINUS_2011,
+    POP_SIZES,
     HH_TYPES,
     INDIGENOUS_COMMUNITIES)
 
@@ -17,9 +18,7 @@ from utils import (
 class Section4DataPrep:
 
     def table_4_1(self) -> pd.DataFrame:
-        """
-        Table 4.1: Housing Tenure - Indigenous vs Non-Indigenous Households
-        """
+        """Table 4.1: Housing Tenure - Indigenous vs Non-Indigenous Households"""
         print("Processing Table 4.1...")
 
         dfs = {
@@ -100,7 +99,6 @@ class Section4DataPrep:
     def table_4_2(self) -> pd.DataFrame:
         """
         Table 4.1 Breakdown / Table 4.2: Housing Tenure by Indigenous Community
-        (First Nations, Métis, Inuit)
         Note: 2011 data not available by community breakdown
         """
         print("Processing Table 4.2...")
@@ -177,12 +175,93 @@ class Section4DataPrep:
 
         print("Table 4.2 is ready now...\n" + '=' * 60)
         return result
+    
+    def table_4_3_4_4(self, process_table: str) -> pd.DataFrame:
+        """Table 4.3 and 4.4: HHs by Household size
+        Args:
+            process_table:  Specifiy table name to process: either 4.3 or 4.4
+        """
+        if process_table == "4.3":
+            print("Processing Table 4.3...")
+            category = HH_TYPES
+            table_mapper = cm.TABLE_4_3_4_4_COL_MAP
+        else:
+            print("Processing Table 4.4...")
+            category = [comm + "-led Households by Size (number of people)"  for comm in INDIGENOUS_COMMUNITIES]
+            table_mapper = cm.TABLE_4_3_1_COL_MAP
+
+        dfs = {
+            "2006": fetch_data("4.3", sheets=["2006_IHNAT_T5"]),
+            "2016": fetch_data("4.3", sheets=["2016_IHNAT_T3"]),
+            "2021": fetch_data("4.3", sheets=["2021_IHNAT_T1"])
+        }
+        master = build_master(dfs)
+
+        rows = []
+
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for hh_size, year_map in table_mapper.items():
+                for cat in category:
+                    output_row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        "Households by Size (number of people)": hh_size,
+                        "Household Type": cat
+                    }
+
+                    for year in YEARS_MINUS_2011:
+                        df = dfs[year]
+                        match = df[df["Geocode"] == geocode]
+            
+                        if match.empty:
+                            output_row[year] = None
+                            continue
+            
+                        col_name = year_map.get(cat, {}).get(year)
+            
+                        if col_name and col_name in df.columns:
+                            val = match[col_name].iloc[0]
+                            output_row[year] = clean_val(val)
+                        else:
+                            output_row[year] = None
+                    
+                    rows.append(output_row)
+
+        result = pd.DataFrame(rows)
+
+        
+        for year in YEARS_MINUS_2011:
+            totals = (
+                result[result["Households by Size (number of people)"].isin(POP_SIZES)]
+                .groupby(["Geocode", "Household Type"])[year]
+                .sum(min_count=1)
+            )
+
+            total_mask = result["Households by Size (number of people)"] == "Total"
+
+            result.loc[total_mask, year] = result[total_mask].apply(
+                lambda row: totals.get((row["Geocode"], row["Household Type"])),
+                axis=1
+            )
+
+        if process_table == "4.3":
+            print("Table 4.3 is ready now...\n" + '=' * 60)
+        else:
+            print("Table 4.4 is ready now...\n" + '=' * 60)
+
+        return result
+    
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Table 4 methods and returns {name:df}"
         return {
             "4.1": self.table_4_1(),
             "4.2": self.table_4_2(),
+            "4.3": self.table_4_3_4_4("4.3"),
+            "4.4": self.table_4_3_4_4("4.4"),
         }
 
 if __name__ == '__main__':

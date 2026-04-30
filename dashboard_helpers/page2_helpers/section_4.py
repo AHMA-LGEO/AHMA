@@ -154,7 +154,7 @@ class Section4Prep:
         ]
 
         def _derive(label, pct_df):
-            """Owner count × mortgage % """
+            """Owner count x mortgage % """
             owner_counts = (
                 pd.to_numeric(owner_raw[YEARS].iloc[0], errors='coerce').fillna(0)
                 if not owner_raw.empty else pd.Series(0.0, index=YEARS)
