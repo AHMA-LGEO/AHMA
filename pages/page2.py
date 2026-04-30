@@ -200,6 +200,7 @@ layout = html.Div([
         html.Div([
             html.Div(id='chart-9-1-container'),
             html.Div(id='table-9-1-container'),
+            html.Div(id='table-9-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -363,7 +364,9 @@ def update_section_8(geo_name, scale, visibility):
 
 
 @callback(
+    Output('chart-9-1-container', 'children'),
     Output('table-9-1-container', 'children'),
+    Output('table-9-2-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data')
 )
@@ -372,7 +375,8 @@ def update_section_9(geo_name, scale):
 
     return (
         section_9_layout.create_chart_9_1(geocode),
-        section_9_layout.create_table_9_1_layout(geocode)
+        section_9_layout.create_table_9_1_layout(geocode),
+        section_9_layout.create_table_9_2_layout(geocode)
     )
 
 

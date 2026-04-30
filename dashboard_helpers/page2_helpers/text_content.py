@@ -73,3 +73,6 @@ SECTION_9_TITLE = '9. Systemic Pathways and Indigenous Homelessness ("Where does
 
 # Table 9.1 descriptions
 TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by Age Group (2008-2024)(Region)"
+
+# Table 9.2 descriptions
+TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"

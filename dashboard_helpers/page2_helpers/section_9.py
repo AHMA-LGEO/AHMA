@@ -16,7 +16,7 @@ from .table_styles import (
     format_number,
     format_percent,
 )
-from .text_content import SECTION_9_TITLE, TABLE_9_1_TITLE
+from .text_content import SECTION_9_TITLE, TABLE_9_1_TITLE, TABLE_9_2_TITLE
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
@@ -131,4 +131,50 @@ class Section9Prep:
             html.H3(SECTION_9_TITLE, className='table-title'),
             html.H4(TABLE_9_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+
+
+    def create_table_9_2_layout(self, geocode: int):
+        """Create Dash DataTable for Table 9.2: Indigenous Children Ageing out of Care or Youth Agreements."""
+
+        df = self.data_loader.get_table('table_9_2_ageing_out_of_care', geocode)
+
+        if df.empty:
+            return html.Div("No data available", className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        value_cols = ['Indigenous',	'Total Population', '% Indigenous']
+
+        table_df = df.set_index('Exit Reason')[value_cols].reset_index()
+
+        for col in value_cols:
+            table_df[col] = table_df[col].apply(format_number)
+
+
+        columns = [{"name": [geo_name, "Data from MCFD Region - FY2024"], "id": "Exit Reason"}] + [
+            {"name": [geo_name, col], "id": col} for col in value_cols
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-9-2',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+                + make_special_row_styles(table_df, 'Exit Reason', total_labels={'Total Children Ageing Out of Care'})
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id='Exit Reason'
+            ),
+            style_cell_conditional=make_style_cell('Exit Reason', value_cols, label_width='40%'),
+            **base_style
+        )
+
+        return html.Div([
+            html.H4(TABLE_9_2_TITLE, className='table-title'),
+            with_export_btn(table, 'table-9-2'),
         ], className='pg2-table-lgeo')
