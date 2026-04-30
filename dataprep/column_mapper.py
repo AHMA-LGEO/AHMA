@@ -336,6 +336,28 @@ TABLE_4_1_CALC_COLS = strip_map(_build_4_1_calc_cols())
 TABLE_4_2_COL_MAP   = strip_map(_build_4_2_col_map())
 TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
 
+TABLE_5_1_COL_MAP = strip_map({
+    'Median Annual Household Income': {
+        '2016': {
+            'Indigenous household': '  Median total income of households in 2015 ($)_Aboriginal household',
+            'Non-Indigenous household': '  Median total income of households in 2015 ($)_Non-Aboriginal household'
+        },
+        '2021': {
+            'Indigenous household': '  Median total income of households in 2020_Indigenous household',
+            'Non-Indigenous household': '  Median total income of households in 2020_Non-Indigenous household'
+        }
+    },
+    'Median Annual Per Person Income': {
+        '2016': {
+            'Indigenous person': '    Median total income in 2015 per person_Aboriginal household',
+            'Non-Indigenous person': '    Median total income in 2015 per person_Non-Aboriginal household'
+        },
+        '2021': {
+            'Indigenous person': '    Median total income in 2020 per person_Indigenous identity',
+            'Non-Indigenous person': '    Median total income in 2020 per person_Non-Indigenous identity'
+        }
+    }
+})
 
 _T7_HH_SUFFIX = {
     "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
