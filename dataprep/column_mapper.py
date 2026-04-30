@@ -336,7 +336,7 @@ TABLE_4_1_CALC_COLS = strip_map(_build_4_1_calc_cols())
 TABLE_4_2_COL_MAP   = strip_map(_build_4_2_col_map())
 TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
 
-TABLE_5_1_COL_MAP = strip_map({
+TABLE_5_4_COL_MAP = strip_map({
     'Median Annual Household Income': {
         '2016': {
             'Indigenous household': '  Median total income of households in 2015 ($)_Aboriginal household',
@@ -358,6 +358,37 @@ TABLE_5_1_COL_MAP = strip_map({
         }
     }
 })
+
+_T5_5_5_6_HH_SUFFIX = {
+    "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
+}
+
+_T5_5_5_6_MAINTAINER_PREFIX = {
+    '1 maintainer': {
+        '2016': '  1 household maintainer',
+        '2021': '  One-maintainer household'
+    },
+    '2 maintainers': {
+        '2016': '  2 household maintainers',
+        '2021': '  Two-maintainer household'
+    },
+    '3+ maintainers': {
+        '2016': '  3 or more household maintainers',
+        '2021': '  Three-or-more-maintainer household'
+    }
+}
+
+TABLE_5_5_5_6_COL_MAP = strip_map({
+    maintainers: {
+        year: {
+            hh: f"{year_map[year]}_{suffix}" for hh, suffix in suffixes.items()
+        }
+        for year, suffixes in _T5_5_5_6_HH_SUFFIX.items()
+    }
+    for maintainers, year_map in _T5_5_5_6_MAINTAINER_PREFIX.items()
+})
+TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
 
 _T7_HH_SUFFIX = {
     "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
