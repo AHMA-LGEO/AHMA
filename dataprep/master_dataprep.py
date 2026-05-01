@@ -18,6 +18,10 @@ SECTION_PREPS = [
     Section5DataPrep(),
     # Section7DataPrep(),
     # Section8DataPrep(),
+    Section4DataPrep(),
+    # Section5DataPrep(),
+    # Section7DataPrep(),
+    Section8DataPrep(),
     # Section9DataPrep()
     #...
 ]
@@ -40,5 +44,3 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
-    t = Section5DataPrep()
-    t.run_all()

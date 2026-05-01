@@ -57,10 +57,22 @@ SECTION_7_TITLE = '7. Shelter Costs and Rental Market ("How are people housed?")
 TABLE_7_1_TITLE = "7.1 & 7.2 Households Median Shelter Cost for Owned & Rented dwellings (Indigenous & non-Indigenous) (2016, 2021)"
 
 # Table 7.3 descriptions
-TABLE_7_3_TITLE = "CMHC Rental Market Survey data (number of rental units, average rent, vacancy rate) (2016-2023)"
-TABLE_7_3_1_TITLE = "Number of Primary and Secondary Rental Units"
+TABLE_7_3_TITLE = "7.3 CMHC Rental Market Survey data (number of rental units, average rent, vacancy rate) (2016-2023)"
+TABLE_7_3_1_TITLE = "7.3.1 Number of Primary and Secondary Rental Units"
 
 #-------------------- Section 8 descriptions --------------------
 # Table 8.1 descriptions
 TABLE_8_1_TITLE = "8.1 Housing Need Indicators"
 TABLE_8_1_DESC = "Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"
+
+# Table 8.7 descriptions
+TABLE_8_7_TITLE = "8.7 Indigenous Affordable Housing Deficit by Income & Household Size (2021)"
+
+#-------------------- Section 9 descriptions --------------------
+SECTION_9_TITLE = '9. Systemic Pathways and Indigenous Homelessness ("Where does the system fail?")'
+
+# Table 9.1 descriptions
+TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by Age Group (2008-2024)(Region)"
+
+# Table 9.2 descriptions
+TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"

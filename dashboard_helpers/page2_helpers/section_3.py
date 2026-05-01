@@ -14,16 +14,6 @@ from .table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
-    get_special_row_styles_3_1,
-    style_cell_3_1,
-    get_special_row_styles_3_3,
-    style_cell_3_3,
-    get_special_row_styles_3_4,
-    style_cell_3_4,
-    get_special_row_styles_3_5,
-    style_cell_3_5,
-    get_special_row_styles_3_6,
-    style_cell_3_6,
     format_number,
     format_percent
 )
@@ -84,13 +74,13 @@ class Section3Prep:
         for pop_type in ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']:
             rows.append({'Indicator': pop_type, **get_values(df_3_1_1, label_col_1, pop_type)})
         rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_1, label_col_1, 'TOTAL')})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 2: Age Profile #####
         label_col_2 = 'Age Profile'
         for metric in ['Median Age (years)', '% Under 15 years old', '% 65 years or older']:
             rows.append({'Indicator': metric, **get_values(df_3_1_2, label_col_2, metric, pct_row=metric.startswith('%'))})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 3: Regional Indigenous Households (by CD) #####
         label_col_3 = 'Regional Indigenous Households (by CD)'
@@ -99,7 +89,7 @@ class Section3Prep:
         for hh_type in ['On Reserve', 'Off Reserve']:
             rows.append({'Indicator': hh_type, **get_values(df_3_1_3, label_col_3, hh_type)})
         rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_3, label_col_3, 'TOTAL')})
-        rows.append(blank_row())
+        rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 4: Indigenous-led HH moves (by CD) #####
         label_col_4 = 'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...'
@@ -112,10 +102,7 @@ class Section3Prep:
 
     def create_table_3_1_layout(self, geocode: int):
         """
-        Create Dash DataTable layout for Table 3.1 with 2-level column headers:
-            Level 0 – geography name (merged across all year columns)
-            Level 1 – census year
-        """
+        Create Dash DataTable layout for Table 3.1 with 2-level column headers"""
         df = self.prepare_table_3_1_data(geocode)
 
         if df.empty:
@@ -139,6 +126,11 @@ class Section3Prep:
         ]
 
         base_style = get_base_table_style()
+        t_3_1_section_headers = {
+            'Indigenous Population (by CSD)',
+            'Regional Indigenous Households (by CD)',
+            'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
+        }
 
         table = dash_table.DataTable(
             id='table-3-1',
@@ -147,12 +139,14 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + get_special_row_styles_3_1(df)
+                + make_special_row_styles(df, 'Indicator',
+                                          geo_headers={'__geo_header__', '__cd_header__'},
+                                          section_headers=t_3_1_section_headers)
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Indicator'
             ),
-            style_cell_conditional=style_cell_3_1(),
+            style_cell_conditional=make_style_cell('Indicator', YEARS, label_min_width='200px'),
             **base_style
         )
 
@@ -298,12 +292,13 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + get_special_row_styles_3_3(table_df)
+                + make_special_row_styles(table_df, 'Age Group', total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Age Group'
             ),
-            style_cell_conditional=style_cell_3_3(),
+            style_cell_conditional=make_style_cell('Age Group', display_cols, 
+                                                   label_width='25%', label_min_width='120px'),
             **base_style
         )
 
@@ -398,12 +393,13 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + get_special_row_styles_3_4(table_df)
+                + make_special_row_styles(table_df, 'Age Group', total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Age Group'
             ),
-            style_cell_conditional=style_cell_3_4(),
+            style_cell_conditional=make_style_cell('Age Group', value_cols, 
+                                                   label_width='25%', label_min_width='120px'),
             **base_style
         )
 
@@ -450,12 +446,15 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + get_special_row_styles_3_5(table_df)
+                + make_special_row_styles(table_df, _LABEL_COL,
+                                          geo_headers={_LABEL_COL},
+                                          total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
-            style_cell_conditional=style_cell_3_5(),
+            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_MINUS_2011, 
+                                                   label_width='25%', label_min_width='120px'),
             **base_style
         )
 
@@ -635,12 +634,13 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + get_special_row_styles_3_6(table_df)
+                + make_special_row_styles(table_df, index_col, total_labels={'Total*'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Indigenous Ancestry, 2021'
+                columns, is_multiindex=True, first_col_id=index_col
             ),
-            style_cell_conditional=style_cell_3_6(),
+            style_cell_conditional=make_style_cell(index_col, value_col, 
+                                                   label_width='25%', label_min_width='120px'),
             **base_style
         )
 

@@ -9,8 +9,8 @@ from dashboard_helpers.page2_helpers.section_3 import Section3Prep
 from dashboard_helpers.page2_helpers.section_4 import Section4Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
-# from dashboard_helpers.page2_helpers.table_4_2_prep import Table42Prep
-# from dashboard_helpers.page2_helpers.chart_4_prep import Chart4Prep
+from dashboard_helpers.page2_helpers.section_9 import Section9Prep
+
 from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
@@ -22,8 +22,9 @@ section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
+section_9_layout = Section9Prep()
 
-# Table IDs — add new table IDs with toggle features as page 2 grows
+# Table IDs - add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1", "table-7-1", "table-8-1"]
 
 
@@ -161,12 +162,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-7-1-container'),
+            # html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='chart-7-3-1-container'),
-            html.Div(id='table-7-3-1-container'),
+            # html.Div(id='chart-7-3-1-container'),
+            # html.Div(id='table-7-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -187,15 +188,20 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
-        # Table 4.2 Section (Indigenous only)
-        # html.Div(
-        #     id='table-4-2-container',
-        #     className='pg2-table-plot-box-lgeo'
-        # ),
+        html.Div([
+            # html.Div(id='table-8-7-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 9 - Systematic Pathways and Indigenous Homelessness
+        html.Div([
+            html.Div(id='chart-9-1-container'),
+            html.Div(id='table-9-1-container'),
+            html.Div(id='table-9-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
         html.Footer([
@@ -341,6 +347,7 @@ def update_section_7(geo_name, scale, visibility):
 @callback(
     Output('chart-8-1-container', 'children'),
     Output('table-8-1-container', 'children'),
+    Output('table-8-7-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -349,43 +356,28 @@ def update_section_8(geo_name, scale, visibility):
     show_both = (visibility or {}).get("table-8-1", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
-    table_layout = section_8_layout.create_table_8_1_layout(geocode, show_both)
-    chart_layout = section_8_layout.create_chart_8_1(geocode)
+    return (
+        section_8_layout.create_chart_8_1(geocode),
+        section_8_layout.create_table_8_1_layout(geocode, show_both),
+        section_8_layout.create_table_8_7_layout(geocode)
+    )
 
-    return chart_layout, table_layout
 
+@callback(
+    Output('chart-9-1-container', 'children'),
+    Output('table-9-1-container', 'children'),
+    Output('table-9-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_9(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_9_layout.data_loader)
 
-
-# @callback(
-#     Output('table-4-2-container', 'children'),
-#     Input('main-area', 'data'),
-#     Input('area-scale-store', 'data'),
-#     Input('household-type-toggle', 'value')
-# )
-# def update_table_4_2(geo_name, scale, household_type):
-#     """Update Table 4.2 - only show for Indigenous households."""
-#     # Only show for Indigenous HHs
-#     if household_type != 'Indigenous HHs':
-#         return html.Div()
-
-#     # Get geocode
-#     if geo_name is None:
-#         from helpers.config import DEFAULT_GEOGRAPHY
-#         geo_name = DEFAULT_GEOGRAPHY
-
-#     geocode = table_4_layout.data_loader.get_geocode(geo_name)
-
-#     if geocode is None:
-#         geocode = DEFAULT_GEOCODE
-
-#     # Handle scale changes
-#     if scale == 'to-region-1':
-#         geocode = table_4_layout.data_loader.get_region_geocode(geocode)
-#     elif scale == 'to-province-1':
-#         geocode = table_4_layout.data_loader.get_province_geocode(geocode)
-
-#     # Create table
-#     return table_4_2_prep.create_table_layout(geocode)
+    return (
+        section_9_layout.create_chart_9_1(geocode),
+        section_9_layout.create_table_9_1_layout(geocode),
+        section_9_layout.create_table_9_2_layout(geocode)
+    )
 
 
 # Helper function to share geocode resolution logic
