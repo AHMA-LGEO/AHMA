@@ -67,6 +67,7 @@ class Section5DataPrep:
 
         print("Table 5.1 is ready now...\n" + '=' * 60)
         return result
+    
 
     def table_5_4(self) -> pd.DataFrame:
         """
@@ -114,6 +115,7 @@ class Section5DataPrep:
 
         print("Table 5.4 is ready now...\n" + '=' * 60)
         return result
+    
     
     def table_5_5_5_6(self) -> pd.DataFrame:
         """
@@ -190,6 +192,7 @@ class Section5DataPrep:
 
         print("Table 5.5-5.6 is ready now...\n" + '=' * 60)
         return result
+    
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Section 5 methods and returns {name:df}"
