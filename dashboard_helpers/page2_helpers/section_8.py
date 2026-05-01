@@ -246,7 +246,7 @@ class Section8Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        hh_cols = ['1pp', '2pp', '3pp', '4pp', '5+pp', 'Total']
+        hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
 
         table_df = df.set_index('Income Type')[hh_cols].reset_index()
 

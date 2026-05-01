@@ -52,6 +52,8 @@ class DBUploader:
 
         # Section 5 - Income
         'table_5_1': 'table_5_1_income_shelter_cost',
+        'table_5_4': 'table_5_4_median_income',
+        'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
 
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
@@ -164,6 +166,8 @@ class DBUploader:
 
         # Section 5
         self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
+        self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
+        self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
 
         # Section 7
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
