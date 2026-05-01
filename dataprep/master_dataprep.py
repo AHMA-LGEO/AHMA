@@ -14,6 +14,10 @@ OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 SECTION_PREPS = [
     # Section2DataPrep(),
     # Section3DataPrep(),
+    # Section4DataPrep(),
+    Section5DataPrep(),
+    # Section7DataPrep(),
+    # Section8DataPrep(),
     Section4DataPrep(),
     # Section5DataPrep(),
     # Section7DataPrep(),
