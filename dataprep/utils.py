@@ -8,7 +8,8 @@ YEARS_2016_2021 = ["2016", "2021"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
-NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", '--']
+NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx"]
+POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
 
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""

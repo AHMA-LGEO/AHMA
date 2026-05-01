@@ -4,6 +4,7 @@ from pathlib import Path
 from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
+from section5_prep import Section5DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
@@ -14,9 +15,10 @@ SECTION_PREPS = [
     # Section2DataPrep(),
     # Section3DataPrep(),
     # Section4DataPrep(),
-    Section7DataPrep(),
-    Section8DataPrep(),
-    Section9DataPrep()
+    Section5DataPrep(),
+    # Section7DataPrep(),
+    # Section8DataPrep(),
+    # Section9DataPrep()
     #...
 ]
 
@@ -38,5 +40,3 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
-    t = Section7DataPrep()
-    t.run_all()

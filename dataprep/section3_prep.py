@@ -15,10 +15,7 @@ from utils import (
 
 
 TABLE_3_2_NON_INDIGENOUS_SUFFIX = "Non-indigenous"
-# Three named Indigenous identity groups with a 4th group ("Total - Age groups" section)
-# uses column names where both sides of '_' strip to the same age key
-# (e.g. "0 to 14 years_  0 to 14 years") — handled with pattern matching in table_3_2()
-TABLE_3_2_INDIGENOUS_SUFFIXES = ["First Nations", "Metis", "Multiple Indigenous responses"]
+TABLE_3_2_INDIGENOUS_SUFFIXES = ["First Nations (North American Indian)", "Métis", "Inuk (Inuit)", "Multiple Indigenous responses"]
 
 GENDER_MAPPING = {
         'Total - Gender': 'Indigenous',
@@ -211,11 +208,7 @@ class Section3DataPrep:
         df_2021 = fetch_data("3.2-3.3", sheets=["2021_Indig_Profile"])
 
         def find_col(df, age_key, identity):
-            """
-            Find all column where split on the first '_' gives: left.strip() == age_key  AND  right.strip() == identity.
-            Handles the "Total - Age groups" section whose columns appear as
-            e.g. '0 to 14 years_  0 to 14 years' (internal whitespace in suffix).
-            """
+            """Find all column where split on the first '_' gives: left.strip() == age_key  AND  right.strip() == identity."""
             for col in df.columns:
                 idx = col.find('_')
                 if idx == -1:
@@ -225,11 +218,7 @@ class Section3DataPrep:
             return None
 
         def sum_indigenous(df, age_key):
-            """
-            Sum counts from all 4 Indigenous groups for a given age key:
-              - 3 named groups (First Nations, Metis, Multiple Indigenous responses)
-              - "Total - Age groups" group: column where both sides strip to age_key
-            """
+            """Sum counts from all 4 Indigenous groups for a given age key"""
             total = 0
             found = False
             for suffix in TABLE_3_2_INDIGENOUS_SUFFIXES:
@@ -237,11 +226,6 @@ class Section3DataPrep:
                 if val is not None and not np.isnan(val):
                     total += val
                     found = True
-            # 4th group: suffix strips to the same label as age_key
-            val_4th = get_val(df, find_col(df, age_key, age_key))
-            if val_4th is not None and not np.isnan(val_4th):
-                total += val_4th
-                found = True
             return total if found else None
 
         result = []
@@ -250,8 +234,6 @@ class Section3DataPrep:
             geography = geo_row["Geography"]
             geo_df = df_2021[df_2021["Geocode"] == geocode].reset_index(drop=True)
 
-            # Compute totals by summing individual age-group counts
-            # (raw "Total - Age groups" row is inconsistent with summed parts)
             indg_total = 0
             non_indg_total = 0
             for age_key in cm.TABLE_3_2_COL_MAP:
@@ -276,7 +258,7 @@ class Section3DataPrep:
                     "Non-Indigenous %": pct(non_indg_count, non_indg_total),
                     "First Nations": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[0])), # fetching 0th index = First Nations
                     "Métis": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[1])), # fetching 1st index = Metis
-                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, age_key)), # weird pattern for inuit community??
+                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 1st index = Inuit
                     "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Multiple Other Responses
                     
                 })
@@ -418,4 +400,4 @@ class Section3DataPrep:
 
 if __name__ == '__main__':
     t = Section3DataPrep()
-    t.table_3_6()
+    t.table_3_2_3_3()

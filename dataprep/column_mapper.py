@@ -197,7 +197,7 @@ TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 
 
-_HH_SUFFIX = {
+_HH_SUFFIX_4_1_4_2 = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
     "2011": {"Indigenous HHs": "Indigenous"},
     "2016": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
@@ -226,13 +226,6 @@ _T4_1_TENURE_PREFIX = {
     },
 }
 
-# No exact pattern for this, hence taking this out
-_T4_1_DWELLING = {
-    "Dwelling provided by local government or First Nation": {
-        "2021": {"Non-Indigenous HHs": None},   # not available in 2021
-    },
-}
-
 _T4_1_PCT_DIRECT = {
     "% of Owners with mortgage":          {"Indigenous HHs": "% of owner households with a mortgage_Indigenous"},
     "% of Owners without a mortgage":     {"Indigenous HHs": "% of owner households WITHOUT a mortgage_Indigenous"},
@@ -241,7 +234,7 @@ _T4_1_PCT_DIRECT = {
 }
 
 # Calc column labels – shared between table 4.1 (by HH type) and 4.2 (by community)
-_CALC_LABELS = {
+_CALC_LABELS_4_1_4_2 = {
     "owner_with_mortgage":    "Owner - with mortgage",
     "owner_without_mortgage": "Owner - without mortgage",
     "renter_subsidized":      "Renter - subsidized housing",
@@ -251,8 +244,8 @@ _CALC_LABELS = {
 # Which calc keys are available per year, no subsidized data for 2006
 _CALC_YEARS_4_1 = {
     "2006": ["owner_with_mortgage", "owner_without_mortgage"],
-    "2016": list(_CALC_LABELS),
-    "2021": list(_CALC_LABELS),
+    "2016": list(_CALC_LABELS_4_1_4_2),
+    "2021": list(_CALC_LABELS_4_1_4_2),
 }
 
 # Community suffixes for table 4.2 (same across 2006, 2016, 2021)
@@ -267,20 +260,16 @@ def _build_4_1_col_map():
     for tenure, year_prefix_map in _T4_1_TENURE_PREFIX.items():
         result[tenure] = {}
         for year in YEARS:
-            dwelling = _T4_1_DWELLING.get(tenure, {}).get(year, {})
             result[tenure][year] = {
-                hh_type: (
-                    dwelling[hh_type] if hh_type in dwelling
-                    else f"{year_prefix_map[year]}_{suffix}"
-                )
-                for hh_type, suffix in _HH_SUFFIX[year].items()
+                hh_type: f"{year_prefix_map[year]}_{suffix}"
+                for hh_type, suffix in _HH_SUFFIX_4_1_4_2[year].items()
             }
     
     for field, direct_map in _T4_1_PCT_DIRECT.items():
         result[field] = {
             year: {
                 hh_type: (direct_map.get(hh_type) if year == "2011" else None)
-                for hh_type in _HH_SUFFIX[year]
+                for hh_type in _HH_SUFFIX_4_1_4_2[year]
             }
             for year in YEARS
         }
@@ -290,8 +279,8 @@ def _build_4_1_col_map():
 def _build_4_1_calc_cols():
     return {
         year: {
-            hh_type: {key: f"{_CALC_LABELS[key]}_{suffix}" for key in keys}
-            for hh_type, suffix in _HH_SUFFIX[year].items()
+            hh_type: {key: f"{_CALC_LABELS_4_1_4_2[key]}_{suffix}" for key in keys}
+            for hh_type, suffix in _HH_SUFFIX_4_1_4_2[year].items()
         }
         for year, keys in _CALC_YEARS_4_1.items()
     }
@@ -321,7 +310,7 @@ def _build_4_2_calc_cols():
     return {
         year: {
             community: {
-                key: f"{_CALC_LABELS[key]}_{comm_suffix}"
+                key: f"{_CALC_LABELS_4_1_4_2[key]}_{comm_suffix}"
                 for key in keys
             }
             for community, comm_suffix in _T4_2_COMMUNITY_SUFFIX.items()
@@ -335,6 +324,129 @@ TABLE_4_1_COL_MAP   = strip_map(_build_4_1_col_map())
 TABLE_4_1_CALC_COLS = strip_map(_build_4_1_calc_cols())
 TABLE_4_2_COL_MAP   = strip_map(_build_4_2_col_map())
 TABLE_4_2_CALC_COLS = strip_map(_build_4_2_calc_cols())
+
+
+# Size-row column prefixes, shared by both 4.3/4.4 and 4.3.1
+_T4_3_SIZE_PREFIX = {
+    "1 pp":   {"2006": "  1 person",             "2016": "1 person",          "2021": "1 person"},
+    "2 pp":   {"2006": "  2 persons",            "2016": "2 persons",         "2021": "2 persons"},
+    "3 pp":   {"2006": "  3 persons",            "2016": "3 persons",         "2021": "3 persons"},
+    "4 pp":   {"2006": "  4 persons",            "2016": "4 persons",         "2021": "4 persons"},
+    "5+ pp": {"2006": "  5 or more",            "2016": "5 or more persons", "2021": "5 or more persons"},
+    "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
+}
+_T4_3_AVG_PREFIX = {
+    "2006": "Average number of persons",
+    "2016": "Average household size",
+    "2021": "Average Household size",
+}
+
+_T4_3_1_COMMUNITY_SUFFIX = {
+    "First Nations-led Households by Size (number of people)": {
+        "2006": "First Nations led", "2016": "First Nations-led", "2021": "First Nations-led"
+    },
+    "Métis-led Households by Size (number of people)": {
+        "2006": "Metis led", "2016": "Metis-led", "2021": "Metis-led"
+    },
+    "Inuit-led Households by Size (number of people)": {
+        "2006": "Inuit led", "2016": "Inuit-led", "2021": "Inuit-led"
+    },
+}
+
+
+_HH_SUFFIX_4_3 = _HH_SUFFIX_4_1_4_2.copy()
+_HH_SUFFIX_4_3["2006"]["Indigenous HHs"] = "  Aboriginal household"
+
+_T4_3_4_4_HH_SUFFIX = {
+    hh: {year: _HH_SUFFIX_4_1_4_2[year][hh] for year in YEARS_MINUS_2011}
+    for hh in ("Indigenous HHs", "Non-Indigenous HHs")
+}
+
+
+def _build_size_map_4_3_4_4(size_prefixes: dict, group_suffix_map: dict) -> dict:
+    """Build {size: {group: {year: col_name}}} for household-size tables."""
+    return {
+        size: {
+            group: {year: f"{size_prefix[year]}_{suffix[year]}" for year in YEARS_MINUS_2011}
+            for group, suffix in group_suffix_map.items()
+        }
+        for size, size_prefix in size_prefixes.items()
+    }
+
+
+TABLE_4_3_4_4_COL_MAP = strip_map(_build_size_map_4_3_4_4(
+    {**_T4_3_SIZE_PREFIX, "Average Household Size": _T4_3_AVG_PREFIX},
+    _T4_3_4_4_HH_SUFFIX,
+))
+
+TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
+    {**_T4_3_SIZE_PREFIX, "Average": _T4_3_AVG_PREFIX},
+    _T4_3_1_COMMUNITY_SUFFIX,
+))
+
+
+TABLE_5_1_COL_MAP = {
+    'Total - Private Households by core housing need status  _  Households with household income 20% or under of area median household income (AMHI)_  Indigenous household': 'Very Low Income (20% or under of AMHI)',
+    'Total - Private Households by core housing need status  _  Households with household income 21% to 50% of AMHI_  Indigenous household': 'Low Income (21% or 50% of AMHI)',
+    'Total - Private Households by core housing need status  _  Households with household income 51% to 80% of AMHI_  Indigenous household': 'Moderate Income (51% or 80% of AMHI)',
+    'Total - Private Households by core housing need status  _  Households with household income 81% to 120% of AMHI_  Indigenous household': 'Median Income (81% to 120% of AMHI)',
+    'Total - Private Households by core housing need status  _  Households with household income 121% and over of AMHI_  Indigenous household': 'High Income (121% and more of AMHI)'
+    }
+
+
+TABLE_5_4_COL_MAP = strip_map({
+    'Median Annual Household Income': {
+        '2016': {
+            'Indigenous household': '  Median total income of households in 2015 ($)_Aboriginal household',
+            'Non-Indigenous household': '  Median total income of households in 2015 ($)_Non-Aboriginal household'
+        },
+        '2021': {
+            'Indigenous household': '  Median total income of households in 2020_Indigenous household',
+            'Non-Indigenous household': '  Median total income of households in 2020_Non-Indigenous household'
+        }
+    },
+    'Median Annual Per Person Income': {
+        '2016': {
+            'Indigenous person': '    Median total income in 2015 per person_Aboriginal household',
+            'Non-Indigenous person': '    Median total income in 2015 per person_Non-Aboriginal household'
+        },
+        '2021': {
+            'Indigenous person': '    Median total income in 2020 per person_Indigenous identity',
+            'Non-Indigenous person': '    Median total income in 2020 per person_Non-Indigenous identity'
+        }
+    }
+})
+
+_T5_5_5_6_HH_SUFFIX = {
+    "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
+    "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
+}
+
+_T5_5_5_6_MAINTAINER_PREFIX = {
+    '1 maintainer': {
+        '2016': '  1 household maintainer',
+        '2021': '  One-maintainer household'
+    },
+    '2 maintainers': {
+        '2016': '  2 household maintainers',
+        '2021': '  Two-maintainer household'
+    },
+    '3+ maintainers': {
+        '2016': '  3 or more household maintainers',
+        '2021': '  Three-or-more-maintainer household'
+    }
+}
+
+TABLE_5_5_5_6_COL_MAP = strip_map({
+    maintainers: {
+        year: {
+            hh: f"{year_map[year]}_{suffix}" for hh, suffix in suffixes.items()
+        }
+        for year, suffixes in _T5_5_5_6_HH_SUFFIX.items()
+    }
+    for maintainers, year_map in _T5_5_5_6_MAINTAINER_PREFIX.items()
+})
+TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
 
 
 _T7_HH_SUFFIX = {
@@ -417,11 +529,11 @@ _T8_7_INCOME = {
     "High":            "121% and over of AMHI",
 }
 _T8_7_HH_SIZE = {
-    "1pp":  "  1 person HH",
-    "2pp":  "  2 persons HH",
-    "3pp":  "  3 persons HH",
-    "4pp":  "  4 persons HH",
-    "5+pp": "  5 or more persons HH",
+    "1 pp":  "  1 person HH",
+    "2 pp":  "  2 persons HH",
+    "3 pp":  "  3 persons HH",
+    "4 pp":  "  4 persons HH",
+    "5+ pp": "  5 or more persons HH",
 }
 _T8_7_BASE = "Households in core housing need status_  Households with household income"
 

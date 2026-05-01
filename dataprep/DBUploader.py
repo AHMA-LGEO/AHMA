@@ -13,6 +13,7 @@ from utils import transform_geocode_master
 from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
+from section5_prep import Section5DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
@@ -45,7 +46,14 @@ class DBUploader:
 
         # Section 4 - Housing Tenure
         'table_4_1': 'table_4_1_housing_tenure',
-        'table_4_2': 'table_4_2_breakdown_community',
+        'table_4_2': 'table_4_2_housing_tenure_breakdown',
+        'table_4_3': 'table_4_3_hh_by_household_size',
+        'table_4_4': 'table_4_4_hh_by_household_size_breakdown',
+
+        # Section 5 - Income
+        'table_5_1': 'table_5_1_income_shelter_cost',
+        'table_5_4': 'table_5_4_median_income',
+        'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
 
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
@@ -80,6 +88,7 @@ class DBUploader:
         self.section_2_prep = Section2DataPrep()
         self.section_3_prep = Section3DataPrep()
         self.section_4_prep = Section4DataPrep()
+        self.section_5_prep = Section5DataPrep()
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
@@ -152,6 +161,13 @@ class DBUploader:
         # Section 4
         self.table_data['table_4_1'] = self.section_4_prep.table_4_1()
         self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
+        self.table_data['table_4_3'] = self.section_4_prep.table_4_3_4_4("4.3")
+        self.table_data['table_4_4'] = self.section_4_prep.table_4_3_4_4("4.4")
+
+        # Section 5
+        self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
+        self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
+        self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
 
         # Section 7
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
