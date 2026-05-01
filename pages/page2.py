@@ -106,16 +106,16 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            html.Div(id='table-3-1-container'),
-            html.Div(id='chart-3-2-container'),
-            html.Div(id='chart-3-3-container'),
-            html.Div(id='table-3-3-container'),
-            html.Div(id='chart-3-4-container'),
-            html.Div(id='table-3-4-container'),
-            html.Div(id='table-3-5-container'),
-            html.Div(id='table-3-5-1-container'),
-            html.Div(id='chart-3-6-container'),
-            html.Div(id='table-3-6-container'),
+            # html.Div(id='table-3-1-container'),
+            # html.Div(id='chart-3-2-container'),
+            # html.Div(id='chart-3-3-container'),
+            # html.Div(id='table-3-3-container'),
+            # html.Div(id='chart-3-4-container'),
+            # html.Div(id='table-3-4-container'),
+            # html.Div(id='table-3-5-container'),
+            # html.Div(id='table-3-5-1-container'),
+            # html.Div(id='chart-3-6-container'),
+            # html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 4 - Housing Tenure
@@ -142,6 +142,9 @@ layout = html.Div([
 
         html.Div([
             html.Div(id='table-4-2-container'),
+            html.Div(id='chart-4-3-container'),
+            html.Div(id='table-4-3-container'),
+            html.Div(id='table-4-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 7 - Shelter Costs
@@ -162,12 +165,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-7-1-container'),
+            # html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='chart-7-3-1-container'),
-            html.Div(id='table-7-3-1-container'),
+            # html.Div(id='chart-7-3-1-container'),
+            # html.Div(id='table-7-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -188,19 +191,19 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-8-7-container'),
+            # html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            html.Div(id='chart-9-1-container'),
-            html.Div(id='table-9-1-container'),
-            html.Div(id='table-9-2-container'),
+            # html.Div(id='chart-9-1-container'),
+            # html.Div(id='table-9-1-container'),
+            # html.Div(id='table-9-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -311,6 +314,9 @@ def update_section_3(geo_name, scale):
     Output('chart-4-1-container', 'children'),
     Output('table-4-1-container', 'children'),
     Output('table-4-2-container', 'children'),
+    Output('chart-4-3-container', 'children'),
+    Output('table-4-3-container', 'children'),
+    Output('table-4-4-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -322,7 +328,10 @@ def update_section_4(geo_name, scale, visibility):
     return (
         section_4_layout.create_chart_4_1(geocode),
         section_4_layout.create_table_4_1_layout(geocode, show_both),
-        section_4_layout.create_table_4_2_layout(geocode)
+        section_4_layout.create_table_4_2_layout(geocode),
+        section_4_layout.create_chart_4_3(geocode),
+        section_4_layout.create_table_4_3_layout(geocode, show_both),
+        section_4_layout.create_table_4_4_layout(geocode),
     )
 
 

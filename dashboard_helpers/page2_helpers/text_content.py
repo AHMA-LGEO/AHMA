@@ -49,6 +49,9 @@ TABLE_4_1_DESC = "Some dummy description for table 4.1..."
 TABLE_4_2_TITLE = "4.2 Indigenous HHs by Communities by Tenure (2006-2021)"
 TABLE_4_2_DESC = "Some dummy description for table 4.2..."
 
+# Table 4.3 descriptions
+TABLE_4_3_TITLE = "4.3 HHs by Household Size (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+
 
 #-------------------- Section 7 descriptions --------------------
 SECTION_7_TITLE = '7. Shelter Costs and Rental Market ("How are people housed?")'
