@@ -159,19 +159,20 @@ def generate_style_header_conditional(
     columns: list,
     is_multiindex: bool = False,
     first_col_id: str = 'Households by Tenure',
+    n_header_rows: int = 3,
 ) -> list:
     """
     Generate header styling for table columns.
 
-    For 3-level multi-index headers:
-        header_index 0 - geography name row  → geography colour
-        header_index 1 - group row           → headings colour; first col → geography colour
-        header_index 2 - year / label row    → headings colour; first col → geography colour
+    For multi-index headers (n_header_rows levels):
+        header_index 0          - geography name row → geography colour (all columns)
+        header_index 1..n-1     - label/group/year rows → headings colour; first col → geography colour
 
     Args:
-        columns:       List of column definitions.
-        is_multiindex: Whether columns use multi-level (list) names.
-        first_col_id:  Column ID of the first (label) column to visually merge.
+        columns:        List of column definitions.
+        is_multiindex:  Whether columns use multi-level (list) names.
+        first_col_id:   Column ID of the first (label) column to visually merge across all rows.
+        n_header_rows:  Number of header levels (default 3; use 4 for HHs + % of Total (tables like 5.5)).
 
     Returns:
         List of style dicts for DataTable style_header_conditional.
@@ -189,30 +190,23 @@ def generate_style_header_conditional(
         ]
 
     base = {'fontWeight': 'bold', 'border': f"1px solid {TABLE_COLORS['border']}"}
-    return [
-        # Row 0 – geography name: geography colour across all columns
+    last = n_header_rows - 1
+    styles = [
         {**base, 'if': {'header_index': 0},
          'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
-
-        # Row 1 – group labels: headings colour
-        {**base, 'if': {'header_index': 1},
-         'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']},
-
-        # Row 2 – year labels: headings colour
-        {**base, 'if': {'header_index': 2},
-         'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']},
-
-        # Override first column at rows 1 & 2 → geography colour (visually merged)
-        {**base, 'if': {'header_index': 1, 'column_id': first_col_id},
-         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
-        {**base, 'if': {'header_index': 2, 'column_id': first_col_id},
-         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
-
-        # Remove internal borders between the 3 header rows of the first column
-        {'if': {'header_index': 0, 'column_id': first_col_id}, 'borderBottom': 'none'},
-        {'if': {'header_index': 1, 'column_id': first_col_id}, 'borderTop': 'none', 'borderBottom': 'none'},
-        {'if': {'header_index': 2, 'column_id': first_col_id}, 'borderTop': 'none'},
     ]
+    for i in range(1, n_header_rows):
+        styles.append({**base, 'if': {'header_index': i},
+                       'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']})
+    for i in range(1, n_header_rows):
+        styles.append({**base, 'if': {'header_index': i, 'column_id': first_col_id},
+                       'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'})
+    styles.append({'if': {'header_index': 0, 'column_id': first_col_id}, 'borderBottom': 'none'})
+    for i in range(1, last):
+        styles.append({'if': {'header_index': i, 'column_id': first_col_id},
+                       'borderTop': 'none', 'borderBottom': 'none'})
+    styles.append({'if': {'header_index': last, 'column_id': first_col_id}, 'borderTop': 'none'})
+    return styles
 
 
 def get_base_table_style() -> dict:
