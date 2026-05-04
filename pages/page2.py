@@ -53,7 +53,7 @@ def global_toggle_ui():
                     dbc.Button(
                         id="global-toggle-btn",
                         children="● Show Comparison",
-                        color="secondary",
+                        color="success",
                         outline=True,
                         size="sm",
                         className="d-flex align-items-center gap-2",
@@ -108,16 +108,16 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            # html.Div(id='table-3-1-container'),
-            # html.Div(id='chart-3-2-container'),
-            # html.Div(id='chart-3-3-container'),
-            # html.Div(id='table-3-3-container'),
-            # html.Div(id='chart-3-4-container'),
-            # html.Div(id='table-3-4-container'),
-            # html.Div(id='table-3-5-container'),
-            # html.Div(id='table-3-5-1-container'),
-            # html.Div(id='chart-3-6-container'),
-            # html.Div(id='table-3-6-container'),
+            html.Div(id='table-3-1-container'),
+            html.Div(id='chart-3-2-container'),
+            html.Div(id='chart-3-3-container'),
+            html.Div(id='table-3-3-container'),
+            html.Div(id='chart-3-4-container'),
+            html.Div(id='table-3-4-container'),
+            html.Div(id='table-3-5-container'),
+            html.Div(id='table-3-5-1-container'),
+            html.Div(id='chart-3-6-container'),
+            html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 4 - Housing Tenure
@@ -138,15 +138,15 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='chart-4-1-container'),
-            # html.Div(id='table-4-1-container'),
+            html.Div(id='chart-4-1-container'),
+            html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            # html.Div(id='table-4-2-container'),
-            # html.Div(id='chart-4-3-container'),
-            # html.Div(id='table-4-3-container'),
-            # html.Div(id='table-4-4-container'),
+            html.Div(id='table-4-2-container'),
+            html.Div(id='chart-4-3-container'),
+            html.Div(id='table-4-3-container'),
+            html.Div(id='table-4-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
@@ -194,12 +194,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='table-7-1-container'),
+            html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            # html.Div(id='chart-7-3-1-container'),
-            # html.Div(id='table-7-3-1-container'),
+            html.Div(id='chart-7-3-1-container'),
+            html.Div(id='table-7-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -220,19 +220,19 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='chart-8-1-container'),
-            # html.Div(id='table-8-1-container'),
+            html.Div(id='chart-8-1-container'),
+            html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            # html.Div(id='table-8-7-container'),
+            html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            # html.Div(id='chart-9-1-container'),
-            # html.Div(id='table-9-1-container'),
-            # html.Div(id='table-9-2-container'),
+            html.Div(id='chart-9-1-container'),
+            html.Div(id='table-9-1-container'),
+            html.Div(id='table-9-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -259,9 +259,9 @@ def local_toggle_state(toggle_values):
     global_state = derive_global_state(new_store)
 
     if global_state == "all_on":
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "success", "all_on"
+        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_on"
     elif global_state == "all_off":
-        btn_label, btn_color, new_intent = "● Show Comparison", "secondary", "all_off"
+        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_off"
     else:  # mixed — next global click will turn all on
         btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
 
