@@ -22,7 +22,7 @@ from .text_content import SECTION_5_TITLE, TABLE_5_1_TITLE, TABLE_5_4_TITLE
 
 from dashboard_helpers.config import (
     CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_2016_2021,
-    YEARS_MINUS_2011, COMMUNITIES)
+    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
 
 from .export_helpers import with_export_btn
 
@@ -37,18 +37,29 @@ class Section5Prep:
         """Create Dash DataTable for Table 5.1: HART income & shelter cost of Indigenous Households."""
         df = self.data_loader.get_table('table_5_1_income_shelter_cost', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H3(SECTION_5_TITLE, className='table-title'),
+                html.H4(TABLE_5_1_TITLE, className='table-title'),
+                html.Div(
+                "No data for HART income & shelter cost of Indigenous Households.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        
+        df = df.fillna("NA")
+
         value_cols = ['% of Total Indigenous HHs', 'Annual HH Income', 
                       'Affordable Shelter Cost (2020 CAD$)']
 
         table_df = df.set_index('Income Category')[value_cols].reset_index()
 
         table_df['% of Total Indigenous HHs'] = table_df['% of Total Indigenous HHs'].apply(format_percent)
+
+        # Not assigning "NA" to Area Median Household Income row
+        table_df.at[0, "% of Total Indigenous HHs"] = ""
 
         columns = [{"name": [geo_name, "Income Category"], "id": "Income Category"}] + [
             {"name": [geo_name, col], "id": col} for col in value_cols
@@ -83,10 +94,17 @@ class Section5Prep:
         """Create Dash DataTable for Table 5.4: Median Household & Per Person Income (2016, 2021)."""
         df = self.data_loader.get_table('table_5_4_median_income', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_5_4_TITLE, className='table-title'),
+                html.Div(
+                "No data for Median Household & Per Person Income (2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         result = (df.set_index('Household/person identity')[YEARS_2016_2021]
                   .reset_index()
@@ -144,10 +162,17 @@ class Section5Prep:
         """Create Dash DataTable for Table 5.5: Households by Number of Household Maintainers (2016, 2021)."""
         df = self.data_loader.get_table('table_5_5_5_6_number_hh_maintainers', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Households by Number of Household Maintainers (2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+
         _LABEL_COL = 'Households by Number of Household Maintainers'
         _HH_TYPES = [('Indigenous HHs', 'indg'), ('Non-Indigenous HHs', 'non_indg')]
 
@@ -216,3 +241,8 @@ class Section5Prep:
         return html.Div([
             with_export_btn(table, 'table-5-5'),
         ], className='pg2-table-lgeo')
+
+
+if __name__ == "__main__":
+    t = Section5Prep()
+    t.create_table_5_1_layout(5915022)

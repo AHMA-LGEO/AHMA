@@ -27,7 +27,7 @@ section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-5-5", "table-7-1", "table-8-1"]
+TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-7-1", "table-8-1"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -144,8 +144,31 @@ layout = html.Div([
 
         html.Div([
             html.Div(id='table-4-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-4-3"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
             html.Div(id='chart-4-3-container'),
             html.Div(id='table-4-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
             html.Div(id='table-4-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 

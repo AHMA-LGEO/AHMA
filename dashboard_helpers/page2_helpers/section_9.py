@@ -35,7 +35,17 @@ class Section9Prep:
         df_9_1 = self.data_loader.get_table('table_9_1_number_corrections', geocode)
         df_9_1_1 = self.data_loader.get_table('table_9_1_1_percent_corrections', geocode)
 
+        if df_9_1.empty or df_9_1.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Indigenous People Released from Corrections (2008-2024).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df_9_1 = df_9_1.fillna("NA")
+        df_9_1_1 = df_9_1_1.fillna("NA")
         
         # _AGE_GROUPS = ["Under 30", "30-49", "50+", "Total"]
 
@@ -89,8 +99,15 @@ class Section9Prep:
         """Area chart for for Table 9.1 Indigenous People Released from Corrections (2008-2024)."""
         filtered = self.data_loader.get_table('table_9_1_number_corrections', geocode)
 
-        if filtered.empty:
-            return go.Figure()
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H3(SECTION_9_TITLE, className='table-title'),
+                html.H4(TABLE_9_1_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Indigenous People Released from Corrections (2008-2024).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         plot_df = filtered[filtered['Age'] != 'Total']

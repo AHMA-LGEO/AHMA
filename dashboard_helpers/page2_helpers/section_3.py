@@ -105,8 +105,16 @@ class Section3Prep:
         Create Dash DataTable layout for Table 3.1 with 2-level column headers"""
         df = self.prepare_table_3_1_data(geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_3_1_TITLE, className='table-title'),
+                html.Div(
+                "No data for Population and Age Distribution for Indigenous Population (2006, 2011, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+    
+        df = df.fillna("NA")
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -160,8 +168,14 @@ class Section3Prep:
         """Create 100% stacked bar chart for Table 3.2 Indigenous vs Non-Indigenous population by age group (2021)."""
         df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(CHART_3_2_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Indigenous vs Non-Indigenous population by age group (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -209,8 +223,14 @@ class Section3Prep:
         """Create stacked bar chart for Table 3.3 Indigenous population by identity and age group (2021)."""
         df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_3_3_TITLE, className='table-title'),
+                html.Div(
+                "No chart for population by identity and age group (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -256,10 +276,16 @@ class Section3Prep:
         """Create Dash DataTable for Table 3.3: population by identity and age group (2021)."""
         df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for population by identity and age group (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
         display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
@@ -311,8 +337,14 @@ class Section3Prep:
         """Create stacked bar chart for Table 3.4 Indigenous population by gender (2021)."""
         df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_3_4_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Indigenous population by gender (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -357,10 +389,16 @@ class Section3Prep:
         """Create Dash DataTable for Table 3.4: population by gender (2021)."""
         df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
-
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for population by gender (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+        
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         value_cols = ['Indigenous', 'Men+', 'Women+']
 
@@ -412,10 +450,17 @@ class Section3Prep:
         """Create Dash DataTable for Table 3.5: Priority Population (2006, 2016, 2021)."""
         df = self.data_loader.get_table('table_3_5_indigenous_priority_pop', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_3_5_TITLE, className='table-title'),
+                html.Div(
+                "No data for Priority Population (2006, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         _LABEL_COL = 'Number of Indigenous HHs'
 
@@ -471,10 +516,16 @@ class Section3Prep:
         """
         df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Priority Population by Indigenous Community (2006, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         _LABEL_COL = 'Number of HHs'
 
@@ -538,6 +589,15 @@ class Section3Prep:
         """Create donut chart for Table 3.6 Indigenous ancestry distribution (2021)."""
 
         df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+        if df.empty or df["# of People"].isna().all():
+            return html.Div([
+                html.H4(TABLE_3_6_TITLE, className='table-title'),
+                html.Div(
+                "No distribution chart available for Indigenous ancestry distribution (2021) for the selected geography.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
         labels = "Indigenous Ancestry, 2021"
         df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
 
@@ -598,8 +658,13 @@ class Section3Prep:
 
         df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df["# of People"].isna().all():
+            return html.Div([
+                html.Div(
+                "No data available for Indigenous ancestry distribution (2021) for the selected geography.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -639,7 +704,7 @@ class Section3Prep:
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=index_col
             ),
-            style_cell_conditional=make_style_cell(index_col, value_col, 
+            style_cell_conditional=make_style_cell(index_col, [value_col],
                                                    label_width='25%', label_min_width='120px'),
             **base_style
         )
