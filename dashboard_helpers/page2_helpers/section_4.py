@@ -21,7 +21,7 @@ from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC, TABLE_4_3_TITLE
 
 from dashboard_helpers.config import (
     CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_MINUS_2011, COMMUNITIES)
+    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
 
 from .export_helpers import with_export_btn
 
@@ -88,10 +88,17 @@ class Section4Prep:
         """
         df = self.prepare_table_4_1_data(geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Households by Tenure (2006, 2011, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+
         _LABEL_COL = "Households by Tenure"
 
         columns = [
@@ -137,8 +144,15 @@ class Section4Prep:
         """Create stacked bar chart for Table 4.1 for housing tenure over time."""
         filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
 
-        if filtered.empty:
-            return go.Figure()
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_4_1_TITLE, className='table-title'),
+                html.H6(TABLE_4_1_DESC, className='table-desc'),
+                html.Div(
+                "No chart for housing tenure over time (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs'].copy()
 
@@ -238,10 +252,16 @@ class Section4Prep:
         """Create Dash DataTable for Table 4.2 with housing tenure over time by Indigenous communities."""
         df = self.data_loader.get_table('table_4_2_housing_tenure_breakdown', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for housing tenure over time by Indigenous communities.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         _LABEL_COL = 'Households by Tenure'
 
@@ -314,10 +334,16 @@ class Section4Prep:
         """Create Dash DataTable for Table 4.3 with households by household size"""
         df = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for households by household size.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         filtered = df.copy()
         _LABEL_COL = 'Households by Size (number of people)'
@@ -404,8 +430,14 @@ class Section4Prep:
         """Create stacked bar chart for Table 4.3 households by household size."""
         filtered = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode)
 
-        if filtered.empty:
-            return go.Figure()
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_4_3_TITLE, className='table-title'),
+                html.Div(
+                "No chart for households by household size.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs'].copy()
         hh_size_col = 'Households by Size (number of people)'
@@ -470,8 +502,13 @@ class Section4Prep:
         """Create Dash DataTable for Table 4.4 with households by household size by Indigenous communities."""
         df = self.data_loader.get_table('table_4_4_hh_by_household_size_breakdown', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for households by household size by Indigenous communities.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -540,12 +577,3 @@ class Section4Prep:
             with_export_btn(table, 'table-4-4'),
         ], className='pg2-table-lgeo')
     
-
-
-    def _format_cell(self, tenure_type: str, value):
-        """Format cell based on tenure type."""
-        if pd.isna(value):
-            return 'NA'
-        if 'of Owners' in tenure_type or 'of Renters' in tenure_type:
-            return format_percent(value, multiply=False)
-        return format_number(value, decimals=0)

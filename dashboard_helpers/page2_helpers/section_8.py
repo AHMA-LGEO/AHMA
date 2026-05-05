@@ -114,10 +114,16 @@ class Section8Prep:
             Level 2 - census year
         """
         df = self.prepare_table_8_1_data(geocode)
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Core Housing Needs indicators (2006, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         columns = [
             {"name": ["", "Indicator", ""], "id": "Indicator"}
@@ -169,8 +175,15 @@ class Section8Prep:
         """Sunburst (nested-pie) chart for for Table 8.1 2021 Indigenous Core Housing Need."""
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
-        if filtered.empty:
-            return go.Figure()
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_8_1_TITLE, className='table-title'),
+                html.H6(TABLE_8_1_DESC, className='table-desc'),
+                html.Div(
+                "No chart for 2021 Indigenous Core Housing Need.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
@@ -241,10 +254,17 @@ class Section8Prep:
         """Create pie chart for Table 8.7 Housing Deficit by Income and HH size (2021)."""
         df = self.data_loader.get_table('table_8_7_housing_deficit', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_8_7_TITLE, className='table-title'),
+                html.Div(
+                "No data for Housing Deficit by Income and HH size (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
 

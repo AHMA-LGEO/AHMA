@@ -8,6 +8,7 @@ from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINU
 #-------------------- Shared blank-separator style --------------------
 _BLANK_ROW_STYLE = {
     'backgroundColor': '#FFFFFF',
+    'color': '#FFFFFF',
     'padding': '0px',
     'lineHeight': '6px',
     'minHeight': '6px',

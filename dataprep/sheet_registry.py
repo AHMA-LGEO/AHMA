@@ -27,6 +27,8 @@ _STANDARD_SHEETS = [
     "2016_IHNAT_T4",
     "2021_IHNAT_T1",
     "2021_IHNAT_T2",
+    "2006_HART",
+    "2016_HART",
     "2021_HART",
     "CMHC",
     "BC Corrections",
@@ -40,9 +42,8 @@ _STANDARD_SHEETS = [
 SHEET_HEADER_CONFIG = {
     **{sheet: _STANDARD_CONFIG for sheet in _STANDARD_SHEETS},
     "PiT Count": {"output_row": 0, "col_row": 5, "data_start": 6},
-    # "BC Stats Projections": {"output_row": 0, "col_row": 1, "data_start": 2, "output_col_start": 1},
-    # "Native Land": {"output_row": 0, "col_row": 1, "data_start": 2, "output_col_start": 1},
-    # "Metis Communities": {"output_row": 0, "col_row": 1, "data_start": 2, "output_col_start": 1},
+    "Native Land_URLs": {"output_row": 0, "col_row": 0, "data_start": 1},
+    "Friendship Centres": {"output_row": 0, "col_row": 0, "data_start": 1},
 }
 
 

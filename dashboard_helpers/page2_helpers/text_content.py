@@ -87,3 +87,4 @@ TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by 
 
 # Table 9.2 descriptions
 TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"
+
