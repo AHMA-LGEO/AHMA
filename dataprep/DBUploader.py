@@ -31,6 +31,7 @@ class DBUploader:
     TABLE_CONFIGS = {
         # Section 2 - Indigenous Communities
         'table_2_1': 'table_2_1_indigenous_territory',
+        'table_2_1_1': 'table_2_1_1_nation_links',
         'table_2_2': 'table_2_2_metis_community',
 
         # Section 3 - Indigenous Population
@@ -145,7 +146,7 @@ class DBUploader:
         self.table_data['geocode_master'] = self.prepare_geocode_master()
 
         # Section 2
-        self.table_data['table_2_1'] = self.section_2_prep.table_2_1()
+        self.table_data['table_2_1'], self.table_data['table_2_1_1'] = self.section_2_prep.table_2_1()
         self.table_data['table_2_2'] = self.section_2_prep.table_2_2()
 
         # Section 3
