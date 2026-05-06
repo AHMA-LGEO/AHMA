@@ -18,6 +18,7 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
+    SECTION_3_TITLE,
     TABLE_3_1_TITLE, CHART_3_2_TITLE,
     TABLE_3_3_TITLE, TABLE_3_4_TITLE,
     TABLE_3_5_TITLE, TABLE_3_6_TITLE,
@@ -107,7 +108,8 @@ class Section3Prep:
 
         if df.empty or df.isnull().values.all():
             return html.Div([
-                html.H4(TABLE_3_1_TITLE, className='table-title'),
+                html.H4(SECTION_3_TITLE, className='table-title'),
+                html.H6(TABLE_3_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for Population and Age Distribution for Indigenous Population (2006, 2011, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}

@@ -178,8 +178,8 @@ class Section9Prep:
 
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
-                html.H3(SECTION_9_TITLE, className='table-title'),
-                html.H4(TABLE_9_1_TITLE, className='table-title'),
+                html.H4(SECTION_9_TITLE, className='table-title'),
+                html.H6(TABLE_9_1_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Indigenous People Released from Corrections (2008-2024).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -222,8 +222,8 @@ class Section9Prep:
         )
 
         return html.Div([
-            html.H3(SECTION_9_TITLE, className='table-title'),
-            html.H4(TABLE_9_1_TITLE, className='table-title'),
+            html.H4(SECTION_9_TITLE, className='table-title'),
+            html.H6(TABLE_9_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 

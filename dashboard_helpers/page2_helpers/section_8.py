@@ -19,7 +19,7 @@ from .table_styles import (
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC, TABLE_8_7_TITLE
+from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_7_TITLE
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
@@ -181,8 +181,8 @@ class Section8Prep:
 
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
-                html.H4(TABLE_8_1_TITLE, className='table-title'),
-                html.H6(TABLE_8_1_DESC, className='table-desc'),
+                html.H4(SECTION_8_TITLE, className='table-title'),
+                html.H6(TABLE_8_1_TITLE, className='table-desc'),
                 html.Div(
                 "No chart for 2021 Indigenous Core Housing Need.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -248,8 +248,8 @@ class Section8Prep:
         fig.update_traces(leaf=dict(opacity=0.9))
 
         return html.Div([
-            html.H4(TABLE_8_1_TITLE, className='table-title'),
-            html.H6(TABLE_8_1_DESC, className='table-desc'),
+            html.H4(SECTION_8_TITLE, className='table-title'),
+            html.H6(TABLE_8_1_TITLE, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     

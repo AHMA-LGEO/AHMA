@@ -39,8 +39,8 @@ class Section5Prep:
 
         if df.empty or df.isnull().values.all():
             return html.Div([
-                html.H3(SECTION_5_TITLE, className='table-title'),
-                html.H4(TABLE_5_1_TITLE, className='table-title'),
+                html.H4(SECTION_5_TITLE, className='table-title'),
+                html.H6(TABLE_5_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for HART income & shelter cost of Indigenous Households.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -85,8 +85,8 @@ class Section5Prep:
         )
 
         return html.Div([
-            html.H3(SECTION_5_TITLE, className='table-title'),
-            html.H4(TABLE_5_1_TITLE, className='table-title'),
+            html.H4(SECTION_5_TITLE, className='table-title'),
+            html.H6(TABLE_5_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-5-1'),
         ], className='pg2-table-lgeo')
     

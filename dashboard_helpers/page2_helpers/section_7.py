@@ -43,8 +43,8 @@ class Section7Prep:
 
         if df.empty or df.isnull().values.all():
             return html.Div([
-                html.H3(SECTION_7_TITLE, className='table-title'),
-                html.H4(TABLE_7_1_TITLE, className='table-title'),
+                html.H4(SECTION_7_TITLE, className='table-title'),
+                html.H6(TABLE_7_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for median shelter cost (2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -118,8 +118,8 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H3(SECTION_7_TITLE, className='table-title'),
-            html.H4(TABLE_7_1_TITLE, className='table-title'),
+            html.H4(SECTION_7_TITLE, className='table-title'),
+            html.H6(TABLE_7_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-7-1'),
         ], className='pg2-table-lgeo')
     
@@ -131,8 +131,8 @@ class Section7Prep:
 
         if df.empty or df.isnull().values.all():
             return html.Div([
-                html.H3(TABLE_7_3_TITLE, className='table-title'),
-                html.H4(TABLE_7_3_1_TITLE, className='table-title'),
+                html.H4(TABLE_7_3_TITLE, className='table-title'),
+                html.H6(TABLE_7_3_1_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Primary and Secondary Rental Units (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -165,8 +165,8 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H3(TABLE_7_3_TITLE, className='table-title'),
-            html.H4(TABLE_7_3_1_TITLE, className='table-title'),
+            html.H4(TABLE_7_3_TITLE, className='table-title'),
+            html.H6(TABLE_7_3_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 

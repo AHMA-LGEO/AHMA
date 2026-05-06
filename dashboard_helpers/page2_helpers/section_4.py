@@ -17,7 +17,7 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import TABLE_4_1_TITLE, TABLE_4_1_DESC, TABLE_4_3_TITLE
+from .text_content import SECTION_4_TITLE, TABLE_4_1_TITLE, TABLE_4_1_DESC, TABLE_4_3_TITLE
 
 from dashboard_helpers.config import (
     CHART_COLORS, PLOT_CONFIG, YEARS,
@@ -146,6 +146,7 @@ class Section4Prep:
 
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
+                html.H3(SECTION_4_TITLE, className='table-title'),
                 html.H4(TABLE_4_1_TITLE, className='table-title'),
                 html.H6(TABLE_4_1_DESC, className='table-desc'),
                 html.Div(
@@ -242,6 +243,7 @@ class Section4Prep:
         )
 
         return html.Div([
+            html.H3(SECTION_4_TITLE, className='table-title'),
             html.H4(TABLE_4_1_TITLE, className='table-title'),
             html.H6(TABLE_4_1_DESC, className='table-desc'),
             dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG)
