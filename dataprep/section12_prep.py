@@ -1,0 +1,47 @@
+import pandas as pd
+import numpy as np
+import column_mapper as cm
+from sheet_registry import fetch_data
+from utils import (
+    build_master,
+    get_val,
+    sum_bands,
+    pct,
+    clean_val,
+    HH_TYPES,
+    YEARS_2016_2021)
+
+
+class Section12DataPrep:
+
+    def table_12_2(self) -> pd.DataFrame:
+        """Table 12.2: Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"""
+        print("Processing Table 12.2...")
+
+        df = (fetch_data("12.2", sheets=["Housing Targets"])
+              .rename(columns={'Total Indigenous Housing Need': 'Total Indigenous Housing Need - 2034'}))
+        
+        df["Rent/affordability assistance (39%)"] = df["Total Indigenous Housing Need - 2034"] * 0.39
+        df["Supportive Housing (20%)"] = df["Total Indigenous Housing Need - 2034"] * 0.20
+        df["Affordable home ownership (4%)"] = df["Total Indigenous Housing Need - 2034"] * 0.04
+        df["Independent subsidized housing (37%)"] = df["Total Indigenous Housing Need - 2034"] * 0.37
+
+        geo_columns = ["Geocode", "Geography"]
+        housing_attrs = [attr for attr in df.columns if attr not in geo_columns]
+
+        df_pivot = pd.melt(df, id_vars=geo_columns, var_name="Calculation of Indigenous Housing Target",
+                           value_vars=housing_attrs, value_name= "# of HHs (2034)"
+                           ).sort_values(geo_columns)
+        
+        print("Table 12.2 is ready now...\n" + '=' * 60)
+        return df_pivot
+
+    def run_all(self) -> dict[str, pd.DataFrame]:
+        "Runs all Section 12 methods and returns {name:df}"
+        return {
+            "12.2": self.table_12_2(),
+        }
+    
+if __name__ == '__main__':
+    t = Section12DataPrep()
+    t.table_12_2()

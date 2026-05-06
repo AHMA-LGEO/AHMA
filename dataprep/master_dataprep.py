@@ -8,6 +8,7 @@ from section5_prep import Section5DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
+from section12_prep import Section12DataPrep
 
 OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 
@@ -17,8 +18,9 @@ SECTION_PREPS = [
     # Section4DataPrep(),
     # Section5DataPrep(),
     # Section7DataPrep(),
-    Section8DataPrep(),
-    # Section9DataPrep()
+    # Section8DataPrep(),
+    # Section9DataPrep(),
+    Section12DataPrep()
     #...
 ]
 
