@@ -12,13 +12,13 @@ from section9_prep import Section9DataPrep
 OUTPUT_DIR = Path(__file__).parent.parent / "throughputs"
 
 SECTION_PREPS = [
-    # Section2DataPrep(),
-    # Section3DataPrep(),
-    # Section4DataPrep(),
-    Section5DataPrep(),
-    # Section7DataPrep(),
-    # Section8DataPrep(),
-    # Section9DataPrep()
+    #Section2DataPrep(),
+    #Section3DataPrep(),
+    #Section4DataPrep(),
+    #Section5DataPrep(),
+    #Section7DataPrep(),
+    #Section8DataPrep(),
+    #Section9DataPrep()
     #...
 ]
 
@@ -32,7 +32,7 @@ def run_all():
     for table_id, df in all_outputs.items():
         safe_name = table_id.replace(".", "_")
         path = os.path.join(OUTPUT_DIR, f"table_{safe_name}.csv")
-        df.to_csv(path, index=False)
+        df.to_csv(path, index=False, encoding='utf-8-sig')
         print(f"Saved {table_id}")
 
     print(f"\n Done.... {len(all_outputs)} tables saved to {OUTPUT_DIR}")

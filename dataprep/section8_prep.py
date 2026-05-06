@@ -2,14 +2,17 @@ import pandas as pd
 import numpy as np
 import column_mapper as cm
 from sheet_registry import fetch_data
-from utils import (build_master, 
-                   get_val, 
-                   sum_bands, 
-                   pct, 
-                   clean_val,
-                   HH_TYPES,
-                   POP_SIZES)
-
+from utils import (
+    build_master, 
+    get_val, 
+    sum_bands, 
+    pct, 
+    clean_val,
+    HH_TYPES,
+    POP_SIZES,
+    YEARS_MINUS_2011,
+    HH_TYPES,
+    INDIGENOUS_COMMUNITIES)
 
 class Section8DataPrep:
 
@@ -117,6 +120,116 @@ class Section8DataPrep:
         print("Table 8.1 is ready now...\n" + '=' * 60)
         return result
 
+    def table_8_3(self) -> pd.DataFrame:
+        """
+        Table 8.3: Households in Core Housing Need (CHN) or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)
+        """
+        print("Processing Table 8.3...")
+
+        result = self.create_table_8_3_8_4(cm.TABLE_8_3_COL_MAP, HH_TYPES)
+
+        print("Table 8.3 is ready now...\n" + '=' * 60)
+        return result
+
+    def table_8_4(self) -> pd.DataFrame:
+        """
+        Table 8.4: Households in Core Housing Need (CHN) or Extreme CHN, by Tenure (by Indigenous distinction) (2006, 2016, 2021)
+        """
+        print("Processing Table 8.4...")
+
+        indigenous_distinctions = ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+        result = self.create_table_8_3_8_4(cm.TABLE_8_4_COL_MAP, indigenous_distinctions)
+
+        print("Table 8.4 is ready now...\n" + '=' * 60)
+        return result
+
+    def create_table_8_3_8_4(self, col_map: dict, distinctions: list) -> pd.DataFrame:
+        """
+        Does the bulk of the work for tables 8.3 & 8.4 since the logic is the same. 
+        Takes the specific column map and list of distinctions i.e. [Indigenous, Non-Indigenous] OR [First Nations-led, Inuit-led, etc.]
+        """
+
+        dfs = {
+            "2006": fetch_data("8.3-8.4", sheets=["2006_IHNAT_T6"]),
+            "2016": fetch_data("8.3-8.4", sheets=["2016_IHNAT_T4"]),
+            "2021": fetch_data("8.3-8.4", sheets=["2021_IHNAT_T2"])
+        }
+
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for statistic, year_hh_map in col_map.items():
+                for hh_type in distinctions:
+                    row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        "Census Year": statistic,
+                        "Household Type": hh_type
+                    }
+
+                    for year in YEARS_MINUS_2011:
+                        df = dfs[year]
+                        match = df[df["Geocode"] == geocode]
+
+                        if match.empty:
+                            row[year] = None
+                            continue
+
+                        col_name = year_hh_map.get(year, {}).get(hh_type)
+
+                        # Direct value if column already exists in the source table
+                        if col_name and col_name in df.columns:
+                            val = match[col_name].iloc[0]
+                            row[year] = clean_val(val)
+
+                        # Calculate percentages if needed
+                        elif statistic in cm._T8_3_8_4_CALC_COLS:
+
+                            calc_cols = cm.TABLE_8_3_8_4_CALC_COL_MAP[year][hh_type]
+                            total_cols = calc_cols["total"]
+                            renters_cols = calc_cols["renters"]
+
+                            if statistic in ["Rate of CHN (%)", "Rate of Extreme CHN (%)"]:
+
+                                examined_col = total_cols["examined"]
+                                examined = get_val(match, examined_col)
+                                
+                                if statistic == "Rate of CHN (%)":
+                                    chn = get_val(match, total_cols["chn"])
+                                    pct_chn = pct(chn, examined)
+                                    row[year] = min(pct_chn, 100.0) if pct_chn is not None else None # limit percentages to 100
+
+                                elif statistic == "Rate of Extreme CHN (%)":
+                                    echn = get_val(match, total_cols["echn"])
+                                    pct_echn = pct(echn, examined)
+                                    row[year] = min(pct_echn, 100.0) if pct_echn is not None else None # limit percentages to 100
+
+                            elif statistic in ["% of HHs in CHN who rent", "% of HHs in Extreme CHN who rent"]:
+                                
+                                if statistic == "% of HHs in CHN who rent":
+                                    chn_renters = get_val(match, renters_cols["chn"])
+                                    chn_total = get_val(match, total_cols["chn"])
+                                    pct_chn_renters = pct(chn_renters, chn_total)
+                                    row[year] = min(pct_chn_renters, 100.0) if pct_chn_renters is not None else None # limit percentages to 100
+                            
+                                elif statistic == "% of HHs in Extreme CHN who rent":
+                                    echn_renters = get_val(match, renters_cols["echn"])
+                                    echn_total = get_val(match, total_cols["echn"])
+                                    pct_echn_renters = pct(echn_renters, echn_total)
+                                    row[year] = min(pct_echn_renters, 100.0) if pct_echn_renters is not None else None # limit percentages to 100
+                        else:
+                            row[year] = None
+
+                    rows.append(row)
+
+        result = pd.DataFrame(rows)
+
+        return result
+
     def table_8_7(self) -> pd.DataFrame:
         """
         Table 8.7: Indigenous Affordable Housing Deficit by Income & Household size 2021
@@ -164,5 +277,12 @@ class Section8DataPrep:
         "Runs all Section 8 methods and returns {name:df}"
         return {
             "8.1": self.table_8_1(),
+            "8.3": self.table_8_3(),
+            "8.4": self.table_8_4(),
             "8.7": self.table_8_7(),
         }
+    
+if __name__ == '__main__':
+    t = Section8DataPrep()
+    t.table_8_3()
+    t.table_8_4()

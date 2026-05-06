@@ -520,6 +520,122 @@ TABLE_8_1_COL_MAP = strip_map({
     for indicator, year_map in _T8_1_INDICATOR_PREFIX.items()
 })
 
+_T8_3_8_4_CALC_COLS = ["Rate of CHN (%)", "% of HHs in CHN who rent", "Rate of Extreme CHN (%)", "% of HHs in Extreme CHN who rent"]
+
+_T8_3_8_4_CALC_COL_PREFIXES = {
+    "renters": {
+        "examined": {
+            "2006": "  Household examined for core housing need_  Renter",
+            "2016": "  Household examined for core housing need_  Renter",
+            "2021": "  Household examined for core housing need_  Renter"
+        },
+        "chn": {
+            "2006": "In CHN or Extreme CHN_Renter",
+            "2016": "_Renter",
+            "2021": "In CHN or Extreme CHN_Renter"
+        },
+        "echn": {
+            "2006": "    In extreme core housing need_  Renter",
+            "2016": "    In extreme core housing need_  Renter",
+            "2021": "    In extreme core housing need_  Renter"
+        }
+    },
+    "total": {
+        "examined": {
+            "2006": "  Household examined for core housing need_Total – Housing tenure and presence of mortgage",
+            "2016": "  Household examined for core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+            "2021": "  Household examined for core housing need_Total - Tenure including presence of mortgage payment and subsidized housing"
+        },
+        "chn": { 
+            "2006": "In CHN or Extreme CHN_Total",
+            "2016": "In CHN or Extreme CHN_Total",
+            "2021": "In CHN or Extreme CHN_Total"
+        },
+        "echn": { 
+            "2006": "    In extreme core housing need_Total – Housing tenure and presence of mortgage",
+            "2016": "    In extreme core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+            "2021": "    In extreme core housing need_Total - Tenure including presence of mortgage payment and subsidized housing"
+        }
+    }
+}
+
+_T8_3_8_4_COL_MAP_PREFIXES = {
+    "HHs in Core Housing Need"        : { 
+        "2006": "In CHN or Extreme CHN_Total",
+        "2016": "In CHN or Extreme CHN_Total",
+        "2021": "In CHN or Extreme CHN_Total",
+    },
+    "Rate of CHN (%)"                 : None,
+    "% of HHs in CHN who rent"        : None,
+    "HHs in Extreme CHN"              : { 
+        "2006": "    In extreme core housing need_Total – Housing tenure and presence of mortgage",
+        "2016": "    In extreme core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+        "2021": "    In extreme core housing need_Total - Tenure including presence of mortgage payment and subsidized housing",
+    },
+    "Rate of Extreme CHN (%)"         : None,
+    "% of HHs in Extreme CHN who rent": None
+}
+
+_T8_3_8_4_SUFFIXES = {
+    "2006": {
+        "Non-Indigenous HHs": "Non-Aboriginal HH",
+        "Indigenous HHs": "Aboriginal HH",
+        "First Nations-led HH": "First Nations-led",
+        "Métis-led HH": "Metis-led",
+        "Inuit-led HH": "Inuit-led"
+    },
+    "2016": {
+        "Non-Indigenous HHs": "Non-Aboriginal household",
+        "Indigenous HHs": "Aboriginal household",
+        "First Nations-led HH": "First Nations-led",
+        "Métis-led HH": "Metis-led",
+        "Inuit-led HH": "Inuit-led"
+    },
+    "2021": {
+        "Non-Indigenous HHs": "Non-Indigenous household",
+        "Indigenous HHs": "Indigenous household",
+        "First Nations-led HH": "First Nations-led",
+        "Métis-led HH": "Metis-led",
+        "Inuit-led HH": "Inuit-led"
+    }
+}
+
+# column map to all the fields needed for calculations, but not necessarily direct output
+TABLE_8_3_8_4_CALC_COL_MAP = strip_map({
+    year: {
+        hh_type: {
+            tenure: {
+                statistic: f"{prefix_map[year]}_{suffix}"
+                for statistic, prefix_map in tenure_map.items()
+            }
+            for tenure, tenure_map in _T8_3_8_4_CALC_COL_PREFIXES.items()
+        }
+        for hh_type, suffix in hh_type_map.items()
+    }
+    for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+})
+
+TABLE_8_3_COL_MAP = strip_map({
+    statistic: {
+        year: {
+            hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
+            for hh_type in ["Non-Indigenous HHs", "Indigenous HHs"]
+        }
+        for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+    }
+    for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
+})
+
+TABLE_8_4_COL_MAP = strip_map({
+    statistic: {
+        year: {
+            hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
+            for hh_type in ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+        }
+        for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+    }
+    for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
+})
 
 _T8_7_INCOME = {
     "Very Low Income": "20% or under of area median household income (AMHI)",
