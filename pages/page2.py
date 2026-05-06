@@ -11,6 +11,7 @@ from dashboard_helpers.page2_helpers.section_5 import Section5Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.section_9 import Section9Prep
+from dashboard_helpers.page2_helpers.section_12 import Section12Prep
 
 from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
@@ -25,6 +26,7 @@ section_5_layout = Section5Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
+section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-7-1", "table-8-1"]
@@ -253,10 +255,16 @@ layout = html.Div([
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            html.Div(id='chart-9-1-container'),
-            html.Div(id='table-9-1-container'),
-            html.Div(id='table-9-2-container'),
-            html.Div(id='table-9-3-container'),
+            # html.Div(id='chart-9-1-container'),
+            # html.Div(id='table-9-1-container'),
+            # html.Div(id='table-9-2-container'),
+            # html.Div(id='table-9-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 12 - Housing Targets
+        html.Div([
+            html.Div(id='table-12-1-container'),
+            html.Div(id='table-12-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -460,6 +468,21 @@ def update_section_9(geo_name, scale):
         section_9_layout.create_table_9_1_layout(geocode),
         section_9_layout.create_table_9_2_layout(geocode),
         section_9_layout.create_table_9_3_layout(geocode)
+    )
+
+
+@callback(
+    Output('table-12-1-container', 'children'),
+    Output('table-12-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_12(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_9_layout.data_loader)
+
+    return (
+        section_12_layout.create_table_12_1_layout(),
+        section_12_layout.create_table_12_2_layout(geocode),
     )
 
 

@@ -16,6 +16,8 @@ TABLE_2_1_TITLE = "2.1 Indigenous Territory"
 TABLE_2_2_DESC = "The following Métis Chartered Community or Communities, organized within the Métis Nation Government in British Columbia, are located within the selected census boundary:"
 
 #-------------------- Section 3 descriptions --------------------
+SECTION_3_TITLE = '3. Demographics ("Who lives here?")'
+
 # Table 3.1 descriptions
 TABLE_3_1_TITLE = "3.1 Population and Age (2006-2021)"
 
@@ -41,6 +43,8 @@ It also takes up a lot of space and doesn't have any critical information.
 TABLE_3_6_NOTE = "*Note that total may not equal sum of categories due to data suppression of small counts"
 
 #-------------------- Section 4 descriptions --------------------
+SECTION_4_TITLE = '4. Households ("Who lives here?")'
+
 # Table 4.1 descriptions
 TABLE_4_1_TITLE = "4.1 Indigenous HHs by Tenure (2006-2021)"
 TABLE_4_1_DESC = "Some dummy description for table 4.1..."
@@ -55,6 +59,7 @@ TABLE_4_3_TITLE = "4.3 HHs by Household Size (Indigenous & non-Indigenous) (2006
 
 #-------------------- Section 5 descriptions --------------------
 SECTION_5_TITLE = '5. Income ("Who lives here?")'
+
 # Table 5.1 descriptions
 TABLE_5_1_TITLE = "5.1 HART income & shelter cost category table with percentage of Indigenous Households (2021)"
 
@@ -72,9 +77,10 @@ TABLE_7_3_TITLE = "7.3 CMHC Rental Market Survey data (number of rental units, a
 TABLE_7_3_1_TITLE = "7.3.1 Number of Primary and Secondary Rental Units"
 
 #-------------------- Section 8 descriptions --------------------
+SECTION_8_TITLE = '8. Housing Need Indicators ("Where does the system fail?")'
+
 # Table 8.1 descriptions
-TABLE_8_1_TITLE = "8.1 Housing Need Indicators"
-TABLE_8_1_DESC = "Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"
+TABLE_8_1_TITLE = "8.1 & 8.2 Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"
 
 # Table 8.7 descriptions
 TABLE_8_7_TITLE = "8.7 Indigenous Affordable Housing Deficit by Income & Household Size (2021)"
@@ -92,4 +98,11 @@ TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth
 TABLE_9_3_TITLE = "9.3 Indigenous Homelessness (2021, 2023, 2025)"
 
 #-------------------- Section 12 descriptions --------------------
+SECTION_12_TITLE = '12. Housing Targets ("What\'s needed?")'
+
+# Table 12.1 descriptions
+TABLE_12_1_TITLE = "12.1 AHMA's provincial results for 2034"
+
+# Table 12.2 descriptions
 TABLE_12_2_TITLE = "12.2 Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"
+TABLE_12_2_NOTE = "*FYI: Values are for City of Vancouver, and they are projected to have fewer Indigenous people in 2034 than 2024, hence the negative value under part 4."

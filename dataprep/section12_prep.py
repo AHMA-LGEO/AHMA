@@ -28,10 +28,25 @@ class Section12DataPrep:
 
         geo_columns = ["Geocode", "Geography"]
         housing_attrs = [attr for attr in df.columns if attr not in geo_columns]
+        # attr_order = [
+        #     "1. Indigenous HHs in CHN",
+        #     "2. LESS Indigenous HHs in CHN and subsidized housing",
+        #     "3. PLUS Indigenous PEH from 2023 (4541 people) distributed by CHN",
+        #     "4. PLUS New Indigenous households (2024 to 2034) times 15.5%",
+        #     "Total Indigenous Housing Need - 2034",
+        #     "Rent/affordability assistance (39%)",
+        #     "Supportive Housing (20%)",
+        #     "Affordable home ownership (4%)",
+        #     "Independent subsidized housing (37%)"
+        # ]
 
         df_pivot = pd.melt(df, id_vars=geo_columns, var_name="Calculation of Indigenous Housing Target",
                            value_vars=housing_attrs, value_name= "# of HHs (2034)"
-                           ).sort_values(geo_columns)
+                           )
+        # df_pivot['Calculation of Indigenous Housing Target'] = pd.Categorical(df_pivot['Calculation of Indigenous Housing Target'], 
+        #                                                                       categories=attr_order, ordered=True)
+        
+        # df_pivot = df_pivot.sort_values(geo_columns + ["Calculation of Indigenous Housing Target"])
         
         print("Table 12.2 is ready now...\n" + '=' * 60)
         return df_pivot
