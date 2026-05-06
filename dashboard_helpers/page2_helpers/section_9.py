@@ -12,16 +12,93 @@ from .table_styles import (
     generate_style_header_conditional,
     get_base_table_style,
     make_special_row_styles,
+    get_special_row_styles_9_3,
     make_style_cell,
     format_number,
-    format_percent,
+    format_percent
 )
-from .text_content import SECTION_9_TITLE, TABLE_9_1_TITLE, TABLE_9_2_TITLE
+from .text_content import SECTION_9_TITLE, TABLE_9_1_TITLE, TABLE_9_2_TITLE, TABLE_9_3_TITLE
 from .export_helpers import with_export_btn
-from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, PIT_YEARS
 
 _FY_YEARS = [f"FY{i:02d}" for i in range(9, 25)]
 AGE_GROUPS = ["Under 30", "30-49", "50+"]
+
+
+# ── Table 9.3 constants ──────────────────────────────────────────────────────
+_ATTR_RENAME_9_3 = {
+    "Total number of Indigenous people who experienced homelessness":                   "TOTAL",
+    "All Respondents Sheltered":                                                        "Sheltered",
+    "All Respondents Unsheltered":                                                      "Unsheltered",
+    "Length of time experiencing homelessness - 12+ months":                            "12+ months",
+    "Length of time experiencing homelessness - 6-12 months":                           "6-12 months",
+    "Length of time experiencing homelessness - <6 months":                             "<6 months",
+    "Length of time experiencing homelessness - Other/Unknown":                         "Other",
+    "Reason for housing loss - Not enough income %":                                    "Not enough income",
+    "Reason for housing loss - Substance use issue %":                                  "Substance use issue",
+    "Reason for housing loss - Conflict with landlord %":                               "Conflict with landlord",
+    "Reason for housing loss - Conflict with spouse/partner %":                         "Conflict with spouse/partner",
+    "Reason for housing loss - Mental health issue %":                                  "Mental health issue",
+    "Reason for housing loss - Other %":                                                "Other",
+    "% who experienced homelessness for the first time as a youth (Indigenous)":        "Indigenous respondents",
+    "% who experienced homelessness for the first time as a youth (Non-Indigenous)":    "Non-Indigenous respondents",
+    "% of youth who were in foster care (Indigenous)":                                  "Indigenous respondents",
+    "% of youth who were in foster care (Non-Indigenous)":                              "Non-Indigenous respondents",
+}
+
+_NUMBER_ATTRS_9_3 = {"Total number of Indigenous people who experienced homelessness"}
+
+# Ordered display structure: (section_header_or_None, [raw_attr_names])
+_ROW_STRUCTURE_9_3 = [
+    ("Number of Indigenous people who experienced homelessness (PEH)", [
+        ("None", [
+            "First Nations",
+            "Métis",
+            "Inuit",
+            "Other/Multiple Indigenous Communities",
+            "Total number of Indigenous people who experienced homelessness",
+        ]),
+        ("None", "% of PEH who were Indigenous"),
+    ]),
+    
+    ("All respondents", [
+        ("Where PEH stayed the night of the PIT count", [
+            "All Respondents Sheltered",
+            "All Respondents Unsheltered",
+        ]),
+
+        ("Length of time experiencing homelessness", [
+            "Length of time experiencing homelessness - 12+ months",
+            "Length of time experiencing homelessness - 6-12 months",
+            "Length of time experiencing homelessness - <6 months",
+            "Length of time experiencing homelessness - Other/Unknown",
+            ]),
+
+        ("Reason for housing loss", [
+            "Reason for housing loss - Not enough income %",
+            "Reason for housing loss - Substance use issue %",
+            "Reason for housing loss - Conflict with landlord %",
+            "Reason for housing loss - Conflict with spouse/partner %",
+            "Reason for housing loss - Mental health issue %",
+            "Reason for housing loss - Other %",
+            ]),
+
+        ("None", "% who identified eviction as cause of most recent housing loss"),
+
+        ("% who experienced homelessness for the first time as a youth", [
+            "% who experienced homelessness for the first time as a youth (Indigenous)",
+            "% who experienced homelessness for the first time as a youth (Non-Indigenous)",
+            ]),
+
+        ("% of youth who were in foster care, youth group home, or an independent Living Agreement as a youth", [
+            "% of youth who were in foster care (Indigenous)",
+            "% of youth who were in foster care (Non-Indigenous)",
+        ]),
+        
+        ("None", "% with acquired brain injury"),
+    ]),
+]
+
 
 class Section9Prep:
     """Prepare and format Section 9 schemas."""
@@ -194,4 +271,82 @@ class Section9Prep:
         return html.Div([
             html.H4(TABLE_9_2_TITLE, className='table-title'),
             with_export_btn(table, 'table-9-2'),
+        ], className='pg2-table-lgeo')
+    
+
+    def create_table_9_3_layout(self, geocode: int):
+        """Create Dash DataTable for Table 9.3: Indigenous Homelessness (2021, 2023, 2025)."""
+        df = self.data_loader.get_table('table_9_3_indig_homelessness', geocode)
+
+        if df.empty:
+            return html.Div([
+                html.H4(TABLE_9_3_TITLE, className='table-title'),
+                html.Div(
+                "No data for Indigenous Homelessness (2021, 2023, 2025).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        _LABEL_COL = 'Attribute'
+        attr_idx = df.set_index(_LABEL_COL)
+
+        def _attr_row(attr):
+            if attr not in attr_idx.index:
+                return None
+            raw = attr_idx.loc[attr]
+            fmt = format_number if attr in _NUMBER_ATTRS_9_3 else format_percent
+            return {_LABEL_COL: _ATTR_RENAME_9_3.get(attr, attr), **{y: fmt(raw[y]) for y in PIT_YEARS}}
+
+        rows = []
+        for top_header, top_items in _ROW_STRUCTURE_9_3:
+            rows.append(blank_row(_LABEL_COL, PIT_YEARS, top_header))
+
+            if top_items and isinstance(top_items[0], str):
+                # Flat list of attribute keys (first section)
+                for attr in top_items:
+                    r = _attr_row(attr)
+                    if r:
+                        rows.append(r)
+                rows.append(blank_row(_LABEL_COL, PIT_YEARS))
+            else:
+                # Nested: list of (sub_header, sub_content) tuples
+                for sub_header, sub_content in top_items:
+                    if sub_header != "None":
+                        rows.append(blank_row(_LABEL_COL, PIT_YEARS, sub_header))
+                    attrs = [sub_content] if isinstance(sub_content, str) else sub_content
+                    for attr in attrs:
+                        r = _attr_row(attr)
+                        if r:
+                            rows.append(r)
+                    rows.append(blank_row(_LABEL_COL, PIT_YEARS))
+
+        df_display = pd.DataFrame(rows, columns=[_LABEL_COL] + PIT_YEARS).fillna("NA")
+
+        columns = [{"name": [geo_name, ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y], "id": y} for y in PIT_YEARS
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-9-3',
+            columns=columns,
+            data=df_display.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(df_display)
+                + get_special_row_styles_9_3(df_display)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='30%'),
+            **base_style
+        )
+
+        return html.Div([
+            html.H4(TABLE_9_3_TITLE, className='table-title'),
+            with_export_btn(table, 'table-9-3'),
         ], className='pg2-table-lgeo')

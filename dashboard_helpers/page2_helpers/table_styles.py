@@ -306,9 +306,29 @@ def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
     )
 
 
-def style_cell_8_1(show_both: bool) -> list:
-    value_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
-    if show_both:
-        value_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-    return make_style_cell('Indicator', value_cols, label_min_width='200px')
+#-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
+############### Table 9.3 stylers ###############
 
+_T9_3_GEO_HEADERS = {
+    "Number of Indigenous people who experienced homelessness (PEH)",
+    "All respondents",
+}
+_T9_3_SECTION_HEADERS = {
+    "Where PEH stayed the night of the PIT count",
+    "Length of time experiencing homelessness",
+    "Reason for housing loss",
+    "% who experienced homelessness for the first time as a youth",
+    "% of youth who were in foster care, youth group home, or an independent Living Agreement as a youth",
+}
+_T9_3_RED_ATTRS = {"Indigenous respondents", "Non-Indigenous respondents", 
+                   "Sheltered", "Unsheltered", "% who identified eviction as cause of most recent housing loss",
+                   "First Nations", "Métis", "Inuit", "Other/Multiple Indigenous Communities"}
+
+def get_special_row_styles_9_3(data: pd.DataFrame) -> list:
+    return make_special_row_styles(
+        data, 'Attribute',
+        geo_headers=_T9_3_GEO_HEADERS,
+        section_headers=_T9_3_SECTION_HEADERS,
+        italic_labels=_T9_3_RED_ATTRS,
+        total_labels={"TOTAL"},
+    )

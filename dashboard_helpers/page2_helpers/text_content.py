@@ -88,3 +88,8 @@ TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by 
 # Table 9.2 descriptions
 TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"
 
+# Table 9.3 descriptions
+TABLE_9_3_TITLE = "9.3 Indigenous Homelessness (2021, 2023, 2025)"
+
+#-------------------- Section 12 descriptions --------------------
+TABLE_12_2_TITLE = "12.2 Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"

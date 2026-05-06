@@ -108,16 +108,16 @@ layout = html.Div([
 
         # Section 3 - Demographics
         html.Div([
-            html.Div(id='table-3-1-container'),
-            html.Div(id='chart-3-2-container'),
-            html.Div(id='chart-3-3-container'),
-            html.Div(id='table-3-3-container'),
-            html.Div(id='chart-3-4-container'),
-            html.Div(id='table-3-4-container'),
-            html.Div(id='table-3-5-container'),
-            html.Div(id='table-3-5-1-container'),
-            html.Div(id='chart-3-6-container'),
-            html.Div(id='table-3-6-container'),
+            # html.Div(id='table-3-1-container'),
+            # html.Div(id='chart-3-2-container'),
+            # html.Div(id='chart-3-3-container'),
+            # html.Div(id='table-3-3-container'),
+            # html.Div(id='chart-3-4-container'),
+            # html.Div(id='table-3-4-container'),
+            # html.Div(id='table-3-5-container'),
+            # html.Div(id='table-3-5-1-container'),
+            # html.Div(id='chart-3-6-container'),
+            # html.Div(id='table-3-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 4 - Housing Tenure
@@ -138,12 +138,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-4-1-container'),
-            html.Div(id='table-4-1-container'),
+            # html.Div(id='chart-4-1-container'),
+            # html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-4-2-container'),
+            # html.Div(id='table-4-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
@@ -164,19 +164,19 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-4-3-container'),
-            html.Div(id='table-4-3-container'),
+            # html.Div(id='chart-4-3-container'),
+            # html.Div(id='table-4-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-4-4-container'),
+            # html.Div(id='table-4-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         # Section 5 - Income
         html.Div([
-            html.Div(id='table-5-1-container'),
-            html.Div(id='table-5-4-container'),
+            # html.Div(id='table-5-1-container'),
+            # html.Div(id='table-5-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -196,7 +196,7 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-5-5-container'),
+            # html.Div(id='table-5-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 7 - Shelter Costs
@@ -217,12 +217,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-7-1-container'),
+            # html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='chart-7-3-1-container'),
-            html.Div(id='table-7-3-1-container'),
+            # html.Div(id='chart-7-3-1-container'),
+            # html.Div(id='table-7-3-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -243,12 +243,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-8-7-container'),
+            # html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
@@ -256,6 +256,7 @@ layout = html.Div([
             html.Div(id='chart-9-1-container'),
             html.Div(id='table-9-1-container'),
             html.Div(id='table-9-2-container'),
+            html.Div(id='table-9-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -447,6 +448,7 @@ def update_section_8(geo_name, scale, visibility):
     Output('chart-9-1-container', 'children'),
     Output('table-9-1-container', 'children'),
     Output('table-9-2-container', 'children'),
+    Output('table-9-3-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data')
 )
@@ -456,7 +458,8 @@ def update_section_9(geo_name, scale):
     return (
         section_9_layout.create_chart_9_1(geocode),
         section_9_layout.create_table_9_1_layout(geocode),
-        section_9_layout.create_table_9_2_layout(geocode)
+        section_9_layout.create_table_9_2_layout(geocode),
+        section_9_layout.create_table_9_3_layout(geocode)
     )
 
 

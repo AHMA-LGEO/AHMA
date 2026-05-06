@@ -1,4 +1,4 @@
-from utils import strip_map, YEARS, YEARS_MINUS_2011
+from utils import strip_map, YEARS, YEARS_MINUS_2011, PIT_YEARS
 
 
 TABLE_3_1_1_COL_MAP = strip_map({
@@ -568,3 +568,113 @@ TABLE_9_2_COL_MAP = strip_map({
         "Total Population": "Exited from their Youth Agreement_Total"
     },
 })
+
+
+
+def _pit_map(attrs: dict) -> dict:
+    return {attr: {y: cols.get(y) for y in PIT_YEARS} for attr, cols in attrs.items()}
+
+
+TABLE_9_3_COL_MAP = strip_map(_pit_map({
+    "First Nations": {
+        "2025": "2025_Indigenous_Indigenous distinction_First Nations",
+    },
+    "Métis": {
+        "2025": "2025_Indigenous_Indigenous distinction_Métis",
+    },
+    "Inuit": {
+        "2025": "2025_Indigenous_Indigenous distinction_Inuit",
+    },
+    "Other/Multiple Indigenous Communities": {
+        "2025": "2025_Indigenous_Indigenous distinction_Other Indigenous ancestry / Unknown",
+    },
+    "Total number of Indigenous people who experienced homelessness": {
+        "2021": "2021_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
+        "2023": "2023_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
+    },
+    "% of PEH who were Indigenous": {
+        "2021": "2021_All Respondents_% of respondents identified as Indigenous_(blank)",
+        "2023": "2023_All Respondents_% of respondents identified as Indigenous_(blank)",
+        "2025": "2025_All Respondents_% of respondents identified as Indigenous_(blank)",
+    },
+    "All Respondents Sheltered": {
+        "2021": "2021_All Respondents_Sheltered_% Sheltered",
+        "2023": "2023_All Respondents_Sheltered_(blank)",
+        "2025": "2025_All Respondents_Sheltered_(blank)",
+    },
+    "All Respondents Unsheltered": {
+        "2021": "2021_All Respondents_Unsheltered_% Unsheltered",
+        "2023": "2023_All Respondents_Unsheltered_(blank)",
+        "2025": "2025_All Respondents_Unsheltered_(blank)",
+    },
+    "Length of time experiencing homelessness - 12+ months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% One year or more",
+        "2023": "2023_All Respondents_Length of homelessness situation_% One year or more",
+        "2025": "2025_All Respondents_Length of homelessness situation_%One year or more",
+    },
+    "Length of time experiencing homelessness - 6-12 months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Six months to less than one year",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Six months to less than one year",
+        "2025": "2025_All Respondents_Length of homelessness situation_%6-12 months",
+    },
+    "Length of time experiencing homelessness - <6 months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Under six months",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Under six months",
+        "2025": "2025_All Respondents_Length of homelessness situation_%Under six months",
+    },
+    "Length of time experiencing homelessness - Other/Unknown": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Other length / unknown",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Unknown / no asnwer",
+        "2025": "2025_All Respondents_Length of homelessness situation_%Other/Unknown",
+    },
+    "Reason for housing loss - Not enough income %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Not enough income",
+        "2023": "2023_All Respondents_Reason for housing loss_% Not enough income",
+        "2025": "2025_All Respondents_Reason for housing loss_Not enough income",
+    },
+    "Reason for housing loss - Substance use issue %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Substance use issue",
+        "2023": "2023_All Respondents_Reason for housing loss_% Substance use issue",
+        "2025": "2025_All Respondents_Reason for housing loss_Substance use issue",
+    },
+    "Reason for housing loss - Conflict with landlord %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Conflict with landlord",
+        "2023": "2023_All Respondents_Reason for housing loss_% Landlord/tenant conflict",
+        "2025": "2025_All Respondents_Reason for housing loss_Conflict with landlord",
+    },
+    "Reason for housing loss - Conflict with spouse/partner %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Conflict with spouse/partner/family/other",
+        "2023": "2023_All Respondents_Reason for housing loss_%Conflict with spouse/partner/parent/guardian",
+        "2025": "2025_All Respondents_Reason for housing loss_Conflict with spouse/partner/parent/other",
+    },
+    "Reason for housing loss - Mental health issue %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Mental health issue",
+        "2023": "2023_All Respondents_Reason for housing loss_% Mental health issue",
+        "2025": "2025_All Respondents_Reason for housing loss_Mental/physical health issue",
+    },
+    "Reason for housing loss - Other %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Other",
+        "2023": "2023_All Respondents_Reason for housing loss_% Other",
+        "2025": "2025_All Respondents_Reason for housing loss_Other",
+    },
+    "% who identified eviction as cause of most recent housing loss": {
+        "2025": "2025_All Respondents_%Eviction as cause of most recent housing loss_(blank)",
+    },
+    "% who experienced homelessness for the first time as a youth (Indigenous)": {
+        "2025": "2025_Indigenous_Experienced homelessness for the first time as a youth_(blank)",
+    },
+    "% who experienced homelessness for the first time as a youth (Non-Indigenous)": {
+        "2025": "2025_Non-Indigenous_Experienced homelessness for the first time as a youth_(blank)",
+    },
+    "% of youth who were in foster care (Indigenous)": {
+        "2025": "2025_Indigenous_Foster care as a youth_(blank)",
+    },
+    "% of youth who were in foster care (Non-Indigenous)": {
+        "2025": "2025_Non-Indigenous_Foster care as a youth_(blank)",
+    },
+    "% with acquired brain injury": {
+        "2021": "2021_All Respondents_% Brain injury_(blank)",
+        "2023": "2023_All Respondents_% Brain injury_(blank)",
+        "2025": "2025_All Respondents_%Brain injury_(blank)",
+    },
+}))

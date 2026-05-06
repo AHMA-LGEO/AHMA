@@ -5,6 +5,7 @@ from sheet_registry import fetch_data
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+PIT_YEARS = ["2021", "2023", "2025"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
