@@ -1,14 +1,17 @@
 import pandas as pd
 import numpy as np
+from typing import Union
 from sheet_registry import fetch_data
 
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+YEARS_2016_TO_2023 = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+YEARLY_INTERVALS_2016_TO_2023 = ["2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
-NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx"]
+NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx", "#N/A", "#n/a", '**']
 POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
 
 pct_count = 0

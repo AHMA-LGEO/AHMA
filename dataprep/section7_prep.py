@@ -7,10 +7,12 @@ from utils import (
     get_val,
     sum_bands,
     pct,
+    growth_rate,
     clean_val,
     HH_TYPES,
-    YEARS_2016_2021)
-
+    YEARS_2016_2021,
+    YEARS_2016_TO_2023,
+    YEARLY_INTERVALS_2016_TO_2023)
 
 class Section7DataPrep:
 
@@ -118,11 +120,196 @@ class Section7DataPrep:
         print("Table 7.3.1 is ready now...\n" + '=' * 60)
         return result
 
+    def table_7_3_2_1(self) -> pd.DataFrame:
+        """
+        Table 7.3.2.1: Average Monthly Rents From 2016 to 2023
+        """
+        print("Processing Table 7.3.2.1...")
+
+        dfs = {
+            "df": fetch_data("7.3.2", sheets=["CMHC"])
+        }
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            row = {
+                "Geocode": geocode,
+                "Geography": geography,
+                "Statistic": "Avg Monthly Rent ($)",
+            }
+
+            df = dfs["df"]
+            match = df[df["Geocode"] == geocode]
+
+            if match.empty:
+                for year in YEARS_2016_TO_2023:
+                    row[year] = None
+                continue
+
+            for year, col_name in cm.TABLE_7_3_2_1_COL_MAP.items():
+                val = match[col_name].iloc[0]
+                row[year] = clean_val(val)
+
+            rows.append(row)
+        result = pd.DataFrame(rows)
+        print("Table 7.3.2.1 is ready now...\n" + '=' * 60)
+        return result
+
+    def table_7_3_2_2(self) -> pd.DataFrame:
+        """
+        Table 7.3.2.2: Annual Change in Average Monthly Rents Between 2016 and 2023
+        """
+        print("Processing Table 7.3.2.2...")
+
+        dfs = {
+            "df": fetch_data("7.3.2", sheets=["CMHC"])
+        }
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            row = {
+                "Geocode": geocode,
+                "Geography": geography,
+                "Statistic": "Change in Average Monthly Rent ($)",
+            }
+
+            df = dfs["df"]
+            match = df[df["Geocode"] == geocode]
+
+            if match.empty:
+                for interval in YEARLY_INTERVALS_2016_TO_2023:
+                    row[interval] = None
+                continue
+
+            for interval, year_map in cm.TABLE_7_3_2_2_COL_MAP.items():
+                # getting the value for the first year
+                col_name_y1 = year_map["year_1"]
+                val_y1 = get_val(match, col_name_y1)
+                
+                # getting the value for the second year
+                col_name_y2 = year_map["year_2"]
+                val_y2 = get_val(match, col_name_y2)
+
+                # calculate the growth rate between year 1 and year 2
+                row[interval] = growth_rate(val_y1, val_y2)
+
+            rows.append(row)
+
+        result = pd.DataFrame(rows)
+        print("Table 7.3.2.2 is ready now...\n" + '=' * 60)
+        return result
+
+    def table_7_3_3_1(self) -> pd.DataFrame:
+        """
+        Table 7.3.3.1: Vacancy Rates of Primary Rental Units From 2016 to 2023
+        """
+        print("Processing Table 7.3.3.1...")
+
+        dfs = {
+            "df": fetch_data("7.3.3", sheets=["CMHC"])
+        }
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            row = {
+                "Geocode": geocode,
+                "Geography": geography,
+                "Statistic": "Vacancy Rate (%)",
+            }
+
+            df = dfs["df"]
+            match = df[df["Geocode"] == geocode]
+
+            if match.empty:
+                for year in YEARS_2016_TO_2023:
+                    row[year] = None
+                continue
+
+            for year, col_name in cm.TABLE_7_3_3_1_COL_MAP.items():
+                val = match[col_name].iloc[0]
+                val_cleaned = clean_val(val)
+                # source data has vacancy rate (0-1). Multiplying by 100 to get percentage.
+                row[year] = val_cleaned*100 if val_cleaned is not None else None
+
+            rows.append(row)
+        result = pd.DataFrame(rows)
+        print("Table 7.3.3.1 is ready now...\n" + '=' * 60)
+        return result
+    
+    def table_7_3_3_2(self) -> pd.DataFrame:
+        """
+        Table 7.3.3.2: Annual Change in Vacancy Rate Between 2016 and 2023
+        """
+        print("Processing Table 7.3.3.2...")
+
+        dfs = {
+            "df": fetch_data("7.3.3", sheets=["CMHC"])
+        }
+        master = build_master(dfs)
+
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            row = {
+                "Geocode": geocode,
+                "Geography": geography,
+                "Statistic": "Change in Vacancy Rate (%)",
+            }
+
+            df = dfs["df"]
+            match = df[df["Geocode"] == geocode]
+
+            if match.empty:
+                for interval in YEARLY_INTERVALS_2016_TO_2023:
+                    row[interval] = None
+                continue
+
+            for interval, year_map in cm.TABLE_7_3_3_2_COL_MAP.items():
+                # getting the value for the first year
+                col_name_y1 = year_map["year_1"]
+                val_y1 = get_val(match, col_name_y1)
+                
+                # getting the value for the second year
+                col_name_y2 = year_map["year_2"]
+                val_y2 = get_val(match, col_name_y2)
+
+                # calculate the growth rate between year 1 and year 2
+                row[interval] = growth_rate(val_y1, val_y2)
+
+            rows.append(row)
+
+        result = pd.DataFrame(rows)
+        print("Table 7.3.2.2 is ready now...\n" + '=' * 60)
+        return result
+
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Table 7 methods and returns {name:df}"
         return {
             "7.1-7.2": self.table_7_1_7_2(),
             "7.3.1": self.table_7_3_1(),
+            "7.3.2.1": self.table_7_3_2_1(),
+            "7.3.2.2": self.table_7_3_2_2(),
+            "7.3.3.1": self.table_7_3_3_1(),
+            "7.3.3.2": self.table_7_3_3_2()
         }
 
-
+if __name__ == '__main__':
+    t = Section7DataPrep()
+    t.table_7_3_2_1()
+    t.table_7_3_2_2()
+    t.table_7_3_3_1()
+    t.table_7_3_3_2()

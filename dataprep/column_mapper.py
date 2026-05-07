@@ -1,5 +1,4 @@
-from utils import strip_map, YEARS, YEARS_MINUS_2011
-
+from utils import strip_map, YEARS, YEARS_MINUS_2011, YEARS_2016_TO_2023, YEARLY_INTERVALS_2016_TO_2023
 
 TABLE_3_1_1_COL_MAP = strip_map({
     "First Nations": {
@@ -466,6 +465,29 @@ TABLE_7_1_7_2_COL_MAP = strip_map({
     for tenure, prefix in _T7_DWELLING_PREFIX.items()
 })
 
+TABLE_7_3_2_1_COL_MAP = strip_map({
+    year: f"Avg_Rent_{year}" for year in YEARS_2016_TO_2023
+})
+
+TABLE_7_3_2_2_COL_MAP = strip_map({
+    interval: {
+        "year_1": f"Avg_Rent_{interval.split('-')[0]}",
+        "year_2": f"Avg_Rent_{interval.split('-')[1]}"
+    }
+    for interval in YEARLY_INTERVALS_2016_TO_2023
+})
+
+TABLE_7_3_3_1_COL_MAP = strip_map({
+    year: f"Vacancy_{year}" for year in YEARS_2016_TO_2023
+})
+
+TABLE_7_3_3_2_COL_MAP = strip_map({
+    interval: {
+        "year_1": f"Vacancy_{interval.split('-')[0]}",
+        "year_2": f"Vacancy_{interval.split('-')[1]}"
+    }
+    for interval in YEARLY_INTERVALS_2016_TO_2023
+})
 
 _T8_1_HH_SUFFIX = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
