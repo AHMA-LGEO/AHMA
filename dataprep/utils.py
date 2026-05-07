@@ -74,6 +74,19 @@ def pct(numerator: int, denominator: int) -> float:
         return 100
     return pct
 
+def growth_rate(beginning: int , ending: int) -> Union[float, str]:
+    """
+    Safe growth rate (%) calculation. Undefined growth rates (beginning = 0) return 'No Rate'.
+    If either value is 'None', 'None' is returned.
+    """
+    if beginning is None or ending is None:
+        return None
+    elif beginning == 0:
+        return "No Rate"
+    else:
+        delta = ending - beginning
+        return round((delta / beginning) * 100, 1)
+
 def transform_geocode_master() -> pd.DataFrame:
     """
     Transform master geocode file from nested format to flat structure.
