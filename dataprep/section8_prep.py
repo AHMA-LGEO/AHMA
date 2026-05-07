@@ -200,27 +200,23 @@ class Section8DataPrep:
                                 
                                 if statistic == "Rate of CHN (%)":
                                     chn = get_val(match, total_cols["chn"])
-                                    pct_chn = pct(chn, examined)
-                                    row[year] = min(pct_chn, 100.0) if pct_chn is not None else None # limit percentages to 100
+                                    row[year] = pct(chn, examined)
 
                                 elif statistic == "Rate of Extreme CHN (%)":
                                     echn = get_val(match, total_cols["echn"])
-                                    pct_echn = pct(echn, examined)
-                                    row[year] = min(pct_echn, 100.0) if pct_echn is not None else None # limit percentages to 100
+                                    row[year] = pct(echn, examined)
 
                             elif statistic in ["% of HHs in CHN who rent", "% of HHs in Extreme CHN who rent"]:
                                 
                                 if statistic == "% of HHs in CHN who rent":
                                     chn_renters = get_val(match, renters_cols["chn"])
                                     chn_total = get_val(match, total_cols["chn"])
-                                    pct_chn_renters = pct(chn_renters, chn_total)
-                                    row[year] = min(pct_chn_renters, 100.0) if pct_chn_renters is not None else None # limit percentages to 100
+                                    row[year] = pct(chn_renters, chn_total)
                             
                                 elif statistic == "% of HHs in Extreme CHN who rent":
                                     echn_renters = get_val(match, renters_cols["echn"])
                                     echn_total = get_val(match, total_cols["echn"])
-                                    pct_echn_renters = pct(echn_renters, echn_total)
-                                    row[year] = min(pct_echn_renters, 100.0) if pct_echn_renters is not None else None # limit percentages to 100
+                                    row[year] = pct(echn_renters, echn_total)
                         else:
                             row[year] = None
 

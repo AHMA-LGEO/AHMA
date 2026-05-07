@@ -11,6 +11,9 @@ INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
 NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx"]
 POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
 
+pct_count = 0
+over_100_count = 0
+
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""
     return {
@@ -58,11 +61,18 @@ def sum_bands(df: pd.DataFrame, cols: list) -> int:
 
 
 def pct(numerator: int, denominator: int) -> float:
-    """Safe percentage calculation."""
+    """Safe percentage calculation. Limits any calculated percentage over 100 to 100"""
+    global pct_count
+    global over_100_count
+
+    pct_count += 1
     if numerator is None or denominator is None or denominator == 0:
         return None
-    return round((numerator / denominator) * 100, 1)
-
+    pct = round((numerator / denominator) * 100, 1)
+    if pct > 100:
+        over_100_count += 1
+        return 100
+    return pct
 
 def transform_geocode_master() -> pd.DataFrame:
     """
