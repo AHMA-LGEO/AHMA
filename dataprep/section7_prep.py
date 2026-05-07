@@ -104,7 +104,7 @@ class Section7DataPrep:
         df_7_3_1_long = df_7_3_1_long.drop(columns='temp')
 
         #pivot years back out into columns
-        result = df_7_3_1_long.pivot_table(
+        result = df_7_3_1_long.pivot(
             index=['Geocode', 'Geography', 'Rental Type'],
             columns='Year',
             values='Value'
@@ -121,3 +121,6 @@ class Section7DataPrep:
         }
 
 
+if __name__ == '__main__':
+    t = Section7DataPrep()
+    t.table_7_3_1()
