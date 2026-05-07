@@ -198,8 +198,11 @@ class Section7DataPrep:
                 col_name_y2 = year_map["year_2"]
                 val_y2 = get_val(match, col_name_y2)
 
-                # calculate the growth rate between year 1 and year 2
-                row[interval] = growth_rate(val_y1, val_y2)
+                # calculate the change between year 1 and year 2
+                if val_y1 is None or val_y2 is None:
+                    row[interval] = None
+                else: 
+                    row[interval] = val_y2 - val_y1
 
             rows.append(row)
 
@@ -287,8 +290,11 @@ class Section7DataPrep:
                 col_name_y2 = year_map["year_2"]
                 val_y2 = get_val(match, col_name_y2)
 
-                # calculate the growth rate between year 1 and year 2
-                row[interval] = growth_rate(val_y1, val_y2)
+                # calculate the change between year 1 and year 2
+                if val_y1 is None or val_y2 is None:
+                    row[interval] = None
+                else: 
+                    row[interval] = (val_y2 - val_y1) * 100 # Multiplying by 100 to go form (0-1) to percentage.
 
             rows.append(row)
 
