@@ -41,11 +41,19 @@ class Section7Prep:
 
         df = self.data_loader.get_table('table_7_1_7_2_dwelllings', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(SECTION_7_TITLE, className='table-title'),
+                html.H6(TABLE_7_1_TITLE, className='table-title'),
+                html.Div(
+                "No data for median shelter cost (2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
+        df= df.fillna("NA")
+        
         _LABEL_COL = 'Households by Tenure:'
         _SECTION_HEADER = 'Median Shelter Cost of Dwelling'
 
@@ -110,8 +118,8 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H3(SECTION_7_TITLE, className='table-title'),
-            html.H4(TABLE_7_1_TITLE, className='table-title'),
+            html.H4(SECTION_7_TITLE, className='table-title'),
+            html.H6(TABLE_7_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-7-1'),
         ], className='pg2-table-lgeo')
     
@@ -121,8 +129,15 @@ class Section7Prep:
         df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
         labels = "Rental Type"
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_7_3_TITLE, className='table-title'),
+                html.H6(TABLE_7_3_1_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Primary and Secondary Rental Units (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -150,8 +165,8 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H3(TABLE_7_3_TITLE, className='table-title'),
-            html.H4(TABLE_7_3_1_TITLE, className='table-title'),
+            html.H4(TABLE_7_3_TITLE, className='table-title'),
+            html.H6(TABLE_7_3_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -162,10 +177,16 @@ class Section7Prep:
 
         df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Primary and Secondary Rental Units (2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         _LABEL_COL = 'Number of primary and secondary rental units'
         _SUB_COL = 'sub_type'

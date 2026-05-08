@@ -40,6 +40,9 @@ class Section2Prep:
     def prepare_table_2_1_layout(self, geocode: int):
         """Build the Table 2.1 layout: count badge + nations DataTable."""
         nations = self._get_nations(geocode)
+
+        nation_links = self.data_loader.get_table('table_2_1_1_nation_links')
+
         count = len(nations)
 
         count_badge = html.Div(
@@ -53,10 +56,20 @@ class Section2Prep:
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
             )
         else:
-            body = html.Div(
-                f"{', '.join(nations)}",
-                style={'fontFamily': TABLE_FONT, 'color': '#000000'}
+            url_map = (
+                dict(zip(nation_links['Nation'], nation_links['Nation URL']))
+                if not nation_links.empty else {}
             )
+            children = []
+            for i, nation in enumerate(nations):
+                url = url_map.get(nation)
+                if url and pd.notna(url) and str(url).strip():
+                    children.append(html.A(nation, href=str(url).strip(), target='_blank'))
+                else:
+                    children.append(html.Span(nation))
+                if i < len(nations) - 1:
+                    children.append(', ')
+            body = html.Div(children, style={'fontFamily': TABLE_FONT, 'color': '#000000'})
 
         return html.Div([
             html.H4(TABLE_2_1_TITLE, className='table-title'),

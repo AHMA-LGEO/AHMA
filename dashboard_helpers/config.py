@@ -11,6 +11,7 @@ DB_PATH = os.path.join(DB_DIR, "ahma.db")
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+PIT_YEARS = ["2021", "2023", "2025"]
 
 COMMUNITIES = ['First Nations', 'Métis', 'Inuit']
 

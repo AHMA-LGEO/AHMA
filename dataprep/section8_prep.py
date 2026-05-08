@@ -13,6 +13,16 @@ from utils import (
     HH_TYPES,
     INDIGENOUS_HH_DISTINCTIONS)
 
+_UNACCEPTABLE_KEYS = [
+    "Affordability (Households paying >30% of income on shelter)",
+    "Adequacy (Households living in dwellings needing Major Repairs)",
+    "Suitability (Households living in overcrowded dwellings)",
+    "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)",
+]
+_ACCEPTABLE_KEY = "Acceptable Housing (Affordable, Adequate, and Suitable)"
+_TOTAL_KEY = "Total households (for reference)"
+
+
 class Section8DataPrep:
 
     def table_8_1(self) -> pd.DataFrame:
@@ -36,22 +46,19 @@ class Section8DataPrep:
 
             for indicator, metric_map in cm.TABLE_8_1_COL_MAP.items():
                 for hh_type in HH_TYPES:
-                    # Number of households row
                     row_count = {
                         "Geocode": geocode,
                         "Geography": geography,
                         "Indicator": indicator,
                         "Metric": "Number of households",
-                        "Household Type": hh_type
+                        "Household Type": hh_type,
                     }
-
-                    # % of households row
                     row_pct = {
                         "Geocode": geocode,
                         "Geography": geography,
                         "Indicator": indicator,
                         "Metric": "% of households",
-                        "Household Type": hh_type
+                        "Household Type": hh_type,
                     }
 
                     for year in ["2006", "2016", "2021"]:
@@ -65,38 +72,36 @@ class Section8DataPrep:
 
                         col_name = metric_map["Number of households"].get(year, {}).get(hh_type)
 
-                        # Get the count value
+                        unaccept_vals = [
+                            get_val(match, cm.TABLE_8_1_COL_MAP[k]["Number of households"].get(year, {}).get(hh_type))
+                            for k in _UNACCEPTABLE_KEYS
+                        ]
+                        sum_of_unacceptable = (
+                            sum(v for v in unaccept_vals if v is not None)
+                            if any(v is not None for v in unaccept_vals) else None
+                        )
+
+                        
+                        raw_total = get_val(
+                            match,
+                            cm.TABLE_8_1_COL_MAP[_TOTAL_KEY]["Number of households"].get(year, {}).get(hh_type),
+                        )
+
+                        # If total is less than sum of unacceptable categories, reassign the total = sum of unacceptable
+                        if raw_total is not None and sum_of_unacceptable is not None:
+                            total_val = max(raw_total, sum_of_unacceptable)
+                        else:
+                            total_val = raw_total if raw_total is not None else sum_of_unacceptable
+
                         if col_name and col_name in df.columns:
                             count_val = clean_val(match[col_name].iloc[0])
+                            # Use corrected total (max of raw vs sum of below categories)
+                            if indicator == _TOTAL_KEY:
+                                count_val = total_val
                             row_count[year] = count_val
-                        elif indicator == "Acceptable Housing (Affordable, Adequate, and Suitable)":
-                            # Calculate acceptable: Total - Below Adequacy - Below Suitability - Below Affordability - Below Multiple
-                            # Reuse existing mappings
-                            total_col = cm.TABLE_8_1_COL_MAP["Total households (for reference)"][
-                                "Number of households"].get(year, {}).get(hh_type)
-                            adequacy_col = \
-                            cm.TABLE_8_1_COL_MAP["Adequacy (Households living in dwellings needing Major Repairs)"][
-                                "Number of households"].get(year, {}).get(hh_type)
-                            suitability_col = \
-                            cm.TABLE_8_1_COL_MAP["Suitability (Households living in overcrowded dwellings)"][
-                                "Number of households"].get(year, {}).get(hh_type)
-                            affordability_col = \
-                            cm.TABLE_8_1_COL_MAP["Affordability (Households paying >30% of income on shelter)"][
-                                "Number of households"].get(year, {}).get(hh_type)
-                            multiple_col = cm.TABLE_8_1_COL_MAP[
-                                "Below multiple indicators (Affordability and/or Adequacy and/or Suitability)"][
-                                "Number of households"].get(year, {}).get(hh_type)
-
-                            total = get_val(match, total_col)
-                            below_adequacy = get_val(match, adequacy_col)
-                            below_suitability = get_val(match, suitability_col)
-                            below_affordability = get_val(match, affordability_col)
-                            below_multiple = get_val(match, multiple_col)
-
-                            # All values must be present to calculate
-                            if all(v is not None for v in
-                                   [total, below_adequacy, below_suitability, below_affordability, below_multiple]):
-                                count_val = total - below_adequacy - below_suitability - below_affordability - below_multiple
+                        elif indicator == _ACCEPTABLE_KEY:
+                            if total_val is not None and all(v is not None for v in unaccept_vals):
+                                count_val = max(0, total_val - sum_of_unacceptable)
                                 row_count[year] = count_val
                             else:
                                 count_val = None
@@ -105,10 +110,6 @@ class Section8DataPrep:
                             count_val = None
                             row_count[year] = None
 
-                        # Calculate percentage
-                        total_col = cm.TABLE_8_1_COL_MAP["Total households (for reference)"]["Number of households"].get(
-                            year, {}).get(hh_type)
-                        total_val = get_val(match, total_col)
                         row_pct[year] = pct(count_val, total_val)
 
                     rows.append(row_count)
