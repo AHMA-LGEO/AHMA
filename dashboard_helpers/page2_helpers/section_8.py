@@ -14,13 +14,12 @@ from .table_styles import (
     make_special_row_styles,
     make_style_cell,
     get_special_row_styles_8_1,
-    style_cell_8_1,
     format_number,
     format_percent,
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import TABLE_8_1_TITLE, TABLE_8_1_DESC, TABLE_8_7_TITLE
+from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_7_TITLE
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
 
@@ -51,6 +50,7 @@ _PIE_ACCEPTABLE_COLOR = "#9CA37A"
 _PIE_OUTER_COLORS = ["#D89A86", "#C97A63", "#b55438", "#5b2a1c"]
 
 
+
 class Section8Prep:
     """Prepare and format Section 8 schemas."""
 
@@ -65,13 +65,14 @@ class Section8Prep:
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         non_indg = filtered[filtered['Household Type'] == 'Non-Indigenous HHs']
+        _LABEL_COL = 'Indicator'
 
         indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
 
-        indg_idx = indg.set_index(['Indicator', 'Metric'])
-        non_indg_idx = non_indg.set_index(['Indicator', 'Metric'])
+        indg_idx = indg.set_index([_LABEL_COL, 'Metric'])
+        non_indg_idx = non_indg.set_index([_LABEL_COL, 'Metric'])
 
         def _fmt_vals(idx_df, indicator, metric, fmt_fn, prefix):
             try:
@@ -86,23 +87,23 @@ class Section8Prep:
             non_indg_count_vals = _fmt_vals(non_indg_idx, indicator, 'Number of households', format_number, 'non_indg')
 
             if indicator == _T8_TOTAL:
-                rows.append({'Indicator': indicator, **indg_count_vals, **non_indg_count_vals})
-                rows.append(blank_row('Indicator'))
+                rows.append({_LABEL_COL: indicator, **indg_count_vals, **non_indg_count_vals})
+                rows.append(blank_row(_LABEL_COL))
                 continue
 
             indg_pct_vals = _fmt_vals(indg_idx, indicator, '% of households', format_percent, 'indg')
             non_indg_pct_vals = _fmt_vals(non_indg_idx, indicator, '% of households', format_percent, 'non_indg')
 
             # Section header row
-            rows.append(blank_row('Indicator', all_val_cols, indicator))
+            rows.append(blank_row(_LABEL_COL, all_val_cols, indicator))
 
             count_label = '__below_count__' if indicator == _T8_BELOW_MULTIPLE else 'Number of households'
-            rows.append({'Indicator': count_label, **indg_count_vals, **non_indg_count_vals})
+            rows.append({_LABEL_COL: count_label, **indg_count_vals, **non_indg_count_vals})
 
             pct_label = '__below_pct__' if indicator == _T8_BELOW_MULTIPLE else '% of households'
-            rows.append({'Indicator': pct_label, **indg_pct_vals, **non_indg_pct_vals})
+            rows.append({_LABEL_COL: pct_label, **indg_pct_vals, **non_indg_pct_vals})
 
-            rows.append(blank_row('Indicator'))
+            rows.append(blank_row(_LABEL_COL))
 
         return pd.DataFrame(rows, dtype=object)
 
@@ -114,13 +115,21 @@ class Section8Prep:
             Level 2 - census year
         """
         df = self.prepare_table_8_1_data(geocode)
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Core Housing Needs indicators (2006, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+
+        _LABEL_COL = "Indicator"
 
         columns = [
-            {"name": ["", "Indicator", ""], "id": "Indicator"}
+            {"name": ["", _LABEL_COL, ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -131,18 +140,19 @@ class Section8Prep:
                 for y in YEARS_MINUS_2011
             ]
 
-        data_cols = ['Indicator'] + [f'indg_{y}' for y in YEARS_MINUS_2011]
+        data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS_MINUS_2011]
         if show_both:
             data_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
 
         # Replace internal tags with display text
         df_display = df[data_cols].copy()
-        df_display['Indicator'] = df_display['Indicator'].replace({
+        df_display[_LABEL_COL] = df_display[_LABEL_COL].replace({
             '__below_count__': 'Number of households',
             '__below_pct__': '% of households',
         })
 
         base_style = get_base_table_style()
+        data_cols.remove(_LABEL_COL)
 
         table = dash_table.DataTable(
             id='table-8-1',
@@ -154,9 +164,9 @@ class Section8Prep:
                 + get_special_row_styles_8_1(df)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Indicator'
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
-            style_cell_conditional=style_cell_8_1(show_both),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='200px'),
             **base_style
         )
 
@@ -169,8 +179,15 @@ class Section8Prep:
         """Sunburst (nested-pie) chart for for Table 8.1 2021 Indigenous Core Housing Need."""
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
-        if filtered.empty:
-            return go.Figure()
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H4(SECTION_8_TITLE, className='table-title'),
+                html.H6(TABLE_8_1_TITLE, className='table-desc'),
+                html.Div(
+                "No chart for 2021 Indigenous Core Housing Need.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
@@ -231,8 +248,8 @@ class Section8Prep:
         fig.update_traces(leaf=dict(opacity=0.9))
 
         return html.Div([
-            html.H4(TABLE_8_1_TITLE, className='table-title'),
-            html.H6(TABLE_8_1_DESC, className='table-desc'),
+            html.H4(SECTION_8_TITLE, className='table-title'),
+            html.H6(TABLE_8_1_TITLE, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -241,10 +258,17 @@ class Section8Prep:
         """Create pie chart for Table 8.7 Housing Deficit by Income and HH size (2021)."""
         df = self.data_loader.get_table('table_8_7_housing_deficit', geocode)
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H4(TABLE_8_7_TITLE, className='table-title'),
+                html.Div(
+                "No data for Housing Deficit by Income and HH size (2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
 
         hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
 

@@ -17,6 +17,7 @@ from section5_prep import Section5DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
+from section12_prep import Section12DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -31,6 +32,7 @@ class DBUploader:
     TABLE_CONFIGS = {
         # Section 2 - Indigenous Communities
         'table_2_1': 'table_2_1_indigenous_territory',
+        'table_2_1_1': 'table_2_1_1_nation_links',
         'table_2_2': 'table_2_2_metis_community',
 
         # Section 3 - Indigenous Population
@@ -67,6 +69,10 @@ class DBUploader:
         'table_9_1': 'table_9_1_number_corrections',
         'table_9_1_1': 'table_9_1_1_percent_corrections',
         'table_9_2': 'table_9_2_ageing_out_of_care',
+        'table_9_3': 'table_9_3_indig_homelessness',
+
+        # Section 12 - Housing Targets
+        'table_12_2': 'table_12_2_indigenous_housing_target'
     }
 
     def __init__(self, db_path):
@@ -92,6 +98,7 @@ class DBUploader:
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
+        self.section_12_prep = Section12DataPrep()
 
         # Store table classes
         self.table_classes = {}
@@ -145,7 +152,7 @@ class DBUploader:
         self.table_data['geocode_master'] = self.prepare_geocode_master()
 
         # Section 2
-        self.table_data['table_2_1'] = self.section_2_prep.table_2_1()
+        self.table_data['table_2_1'], self.table_data['table_2_1_1'] = self.section_2_prep.table_2_1()
         self.table_data['table_2_2'] = self.section_2_prep.table_2_2()
 
         # Section 3
@@ -181,6 +188,10 @@ class DBUploader:
         self.table_data['table_9_1'] = self.section_9_prep.table_9_1()
         self.table_data['table_9_1_1'] = self.section_9_prep.table_9_1_1()
         self.table_data['table_9_2'] = self.section_9_prep.table_9_2()
+        self.table_data['table_9_3'] = self.section_9_prep.table_9_3()
+
+        # Section 12
+        self.table_data['table_12_2'] = self.section_12_prep.table_12_2()
 
         print("\n" + "=" * 60)
         print("All tables prepared successfully!")

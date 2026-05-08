@@ -17,9 +17,7 @@ from utils import (
 class Section7DataPrep:
 
     def table_7_1_7_2(self) -> pd.DataFrame:
-        """
-        Table 7.1: Households Median Shelter Cost for Owned & Rented dwellings (Indigenous & non-Indigenous) (2016, 2021)
-        """
+        """Table 7.1: Households Median Shelter Cost for Owned & Rented dwellings (Indigenous & non-Indigenous) (2016, 2021)"""
         print("Processing Table 7.1 and 7.2...")
         dfs_7_1_7_2 = {
             "2016": fetch_data("7.1-7.2", sheets=["2016_Indig_Profile"]),
@@ -80,9 +78,7 @@ class Section7DataPrep:
         return result
 
     def table_7_3_1(self) -> pd.DataFrame:
-        """
-        Table 7.3.1: Number of Primary and Secondary Rental Units
-        """
+        """Table 7.3.1: Number of Primary and Secondary Rental Units"""
         print("Processing Table 7.3.1...")
 
         df_7_3_1 = fetch_data("7.3.1", sheets=["CMHC"])
@@ -93,9 +89,8 @@ class Section7DataPrep:
 
         #calculating secondary renters and dropping all renters columns
         for year in YEARS_2016_2021:
-            df_7_3_1[f"{year}_Secondary_Renters"] = (
-                df_7_3_1[f"{year}_All_Renters"] - df_7_3_1[f"{year}_Primary_Renters"]
-            )
+            df_7_3_1[f"{year}_Secondary_Renters"] = np.maximum(
+                df_7_3_1[f"{year}_All_Renters"] - df_7_3_1[f"{year}_Primary_Renters"], 0)
         df_7_3_1 = df_7_3_1.drop(columns=[f"{year}_All_Renters" for year in YEARS_2016_2021])
 
         # melt to long format
@@ -111,7 +106,7 @@ class Section7DataPrep:
         df_7_3_1_long = df_7_3_1_long.drop(columns='temp')
 
         #pivot years back out into columns
-        result = df_7_3_1_long.pivot_table(
+        result = df_7_3_1_long.pivot(
             index=['Geocode', 'Geography', 'Rental Type'],
             columns='Year',
             values='Value'
@@ -303,7 +298,7 @@ class Section7DataPrep:
         return result
 
     def run_all(self) -> dict[str, pd.DataFrame]:
-        "Runs all Table 7 methods and returns {name:df}"
+        "Runs all Section 7 methods and returns {name:df}"
         return {
             "7.1-7.2": self.table_7_1_7_2(),
             "7.3.1": self.table_7_3_1(),
@@ -313,9 +308,7 @@ class Section7DataPrep:
             "7.3.3.2": self.table_7_3_3_2()
         }
 
+
 if __name__ == '__main__':
     t = Section7DataPrep()
-    t.table_7_3_2_1()
-    t.table_7_3_2_2()
-    t.table_7_3_3_1()
-    t.table_7_3_3_2()
+    t.table_7_3_1()
