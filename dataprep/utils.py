@@ -1,16 +1,22 @@
 import pandas as pd
 import numpy as np
+from typing import Union
 from sheet_registry import fetch_data
 
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+YEARS_2016_TO_2023 = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+YEARLY_INTERVALS_2016_TO_2023 = ["2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023"]
 PIT_YEARS = ["2021", "2023", "2025"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
-NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx"]
+NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx", "#N/A", "#n/a", '**']
 POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
+
+pct_count = 0
+over_100_count = 0
 
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""
@@ -59,11 +65,31 @@ def sum_bands(df: pd.DataFrame, cols: list) -> int:
 
 
 def pct(numerator: int, denominator: int) -> float:
-    """Safe percentage calculation."""
+    """Safe percentage calculation. Limits any calculated percentage over 100 to 100"""
+    global pct_count
+    global over_100_count
+
+    pct_count += 1
     if numerator is None or denominator is None or denominator == 0:
         return None
-    return round((numerator / denominator) * 100, 1)
+    pct = round((numerator / denominator) * 100, 1)
+    if pct > 100:
+        over_100_count += 1
+        return 100
+    return pct
 
+def growth_rate(beginning: int , ending: int) -> Union[float, str]:
+    """
+    Safe growth rate (%) calculation. Undefined growth rates (beginning = 0) return 'No Rate'.
+    If either value is 'None', 'None' is returned.
+    """
+    if beginning is None or ending is None:
+        return None
+    elif beginning == 0:
+        return "No Rate"
+    else:
+        delta = ending - beginning
+        return round((delta / beginning) * 100, 1)
 
 def transform_geocode_master() -> pd.DataFrame:
     """
