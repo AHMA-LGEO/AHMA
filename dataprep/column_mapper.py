@@ -659,6 +659,103 @@ TABLE_8_4_COL_MAP = strip_map({
     for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
 })
 
+_T8_5_8_6_PREFIXES = {
+    "chn": "    In core housing need, but Not in extreme core housing need",
+    "echn": "    In extreme core housing need",
+    "examined": "  Household examined for core housing need",
+}
+
+_T8_5_8_6_BASES = {
+    "Youth-led (under 30)" : {
+        "2006": "  29 years or less",
+        "2016": "  29 years or less",
+        "2021": "  29 years or less",
+    },
+    "Senior-led (65+)" : {
+        "2006": "  65 years and over",
+        "2016": "  65 years and over",
+        "2021": "  65 years and over",
+    },
+    "Single-mother-led" : {
+        "2006": "  With a lone parent that is a female",
+        "2016": "  With a lone parent that is a female",
+        "2021": "  With a one-parent that is a woman+",
+    },
+    "Single-father-led" : {
+        "2006": "  With a lone parent that is a male",
+        "2016": "  With a lone parent that is a male",
+        "2021": "  With a one-parent that is a man+",
+    },
+    "HH with physical limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues",
+        "2021": "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues",
+    },
+    "HH with cognitive limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(d)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18d only",
+    },
+    "HH with mental or addictions limitations" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(e)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18e only",
+    },
+    "HH is gender diverse" : {
+        "2006": None,
+        "2016": None,
+        "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)",
+    },
+}
+
+_T8_5_8_6_SUFFIX_2006_2016 = {
+    "Non-Indigenous HHs": "Non-Aboriginal household",
+    "Indigenous HHs": "Aboriginal household",
+    "First Nations-led HH": "First Nations-led",
+    "Métis-led HH": "Metis-led",
+    "Inuit-led HH": "Inuit-led"
+}
+
+_T8_5_8_6_SUFFIXES = {
+    "2006": _T8_5_8_6_SUFFIX_2006_2016,
+    "2016": _T8_5_8_6_SUFFIX_2006_2016,
+    "2021": {
+        "Non-Indigenous HHs": "Non-Indigenous household",
+        "Indigenous HHs": "Indigenous household",
+        "First Nations-led HH": "First Nations-led",
+        "Métis-led HH": "Metis-led",
+        "Inuit-led HH": "Inuit-led"
+    }
+}
+
+TABLE_8_5_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in ["Non-Indigenous HHs", "Indigenous HHs"]
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
+
+TABLE_8_6_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
+
 _T8_7_INCOME = {
     "Very Low Income": "20% or under of area median household income (AMHI)",
     "Low":             "21% to 50% of AMHI",
