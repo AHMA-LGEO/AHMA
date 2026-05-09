@@ -90,35 +90,61 @@ class Section9DataPrep:
         print("Processing Table 9.3...")
 
         df = fetch_data("9.3", sheets=["PiT Count"])
+
+        _COMMUNITY_ATTRS = {"First Nations", "Métis", "Inuit", "Other/Multiple Indigenous Communities"}
+
         
-        percent_attrs = ["First Nations",
-                         "Métis",
-                         "Inuit",
-                         "Other/Multiple Indigenous Communities",
-                        "All Respondents Sheltered",
-                        "All Respondents Unsheltered",
-                        "Length of time experiencing homelessness - 12+ months",
-                        "Length of time experiencing homelessness - 6-12 months",
-                        "Length of time experiencing homelessness - <6 months",
-                        "Length of time experiencing homelessness - Other/Unknown"
-                        ]
+        _PERCENT_ATTRS = {
+            "All Respondents Sheltered",
+            "All Respondents Unsheltered",
+            "Length of time experiencing homelessness - 12+ months",
+            "Length of time experiencing homelessness - 6-12 months",
+            "Length of time experiencing homelessness - <6 months",
+            "Length of time experiencing homelessness - Other/Unknown",
+        }
+
+        
+        total_all_2025_col = cm.TABLE_9_3_COL_MAP["Total number of Indigenous people who experienced homelessness"]["2025"]
+        pct_indig_2025_col = cm.TABLE_9_3_COL_MAP["% of PEH who were Indigenous"]["2025"]
+
+        def _get(geo_row, col):
+            return clean_val(geo_row[col]) if col and col in df.columns else None
 
         rows = []
         for _, geo_row in df.iterrows():
-            geocode = geo_row["Geocode"]
+            geocode   = geo_row["Geocode"]
             geography = geo_row["Name"]
 
+            # Pre-compute 2025 total Indigenous PEH: total all respondents × % Indigenous
+            total_all_2025   = _get(geo_row, total_all_2025_col)
+            pct_indig_2025   = _get(geo_row, pct_indig_2025_col)
+            total_indig_2025 = (
+                round(total_all_2025 * pct_indig_2025)
+                if total_all_2025 is not None and pct_indig_2025 is not None
+                else None
+            )
+
             for attribute, year_map in cm.TABLE_9_3_COL_MAP.items():
-                row = {
-                    "Geocode": geocode,
-                    "Geography": geography,
-                    "Attribute": attribute,
-                }
+                row = {"Geocode": geocode, 
+                       "Geography": geography, 
+                       "Attribute": attribute}
+
                 for year in PIT_YEARS:
                     col_name = year_map.get(year)
-                    val = (clean_val(geo_row[col_name]) if col_name and col_name in df.columns else None)
-                    
-                    if val is not None and (("%" in attribute) or (attribute in percent_attrs)):
+                    val = _get(geo_row, col_name)
+
+                    if attribute == "Total number of Indigenous people who experienced homelessness" and year == "2025":
+                        val = total_indig_2025
+
+                    # Calculate # of communities from percent
+                    elif attribute in _COMMUNITY_ATTRS and year == "2025":
+                        val = (
+                            round(total_indig_2025 * val)
+                            if total_indig_2025 is not None and val is not None
+                            else None
+                        )
+
+                    elif val is not None and ("%" in attribute or attribute in _PERCENT_ATTRS):
                         val *= 100
 
                     row[year] = val

@@ -60,9 +60,17 @@ class DBUploader:
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
         'table_7_3_1': 'table_7_3_1_rental_units',
+        
+        'table_7_3_2_1': 'table_7_3_2_1_average_rent',
+        'table_7_3_2_2': 'table_7_3_2_2_change_in_average_rent',
+        'table_7_3_3_1': 'table_7_3_3_1_vacancy_rate',
+        'table_7_3_3_2': 'table_7_3_3_2_change_in_vacancy_rate',
+        
 
         # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
+        'table_8_3': 'table_8_3_hhs_in_chn',
+        'table_8_4': 'table_8_4_hhs_in_chn_breakdown',
         'table_8_7': 'table_8_7_housing_deficit',
 
         # Section 9 - Systemic Pathways and Indigenous Homelessness
@@ -180,8 +188,15 @@ class DBUploader:
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
         self.table_data['table_7_3_1'] = self.section_7_prep.table_7_3_1()
 
+        self.table_data['table_7_3_2_1'] = self.section_7_prep.table_7_3_2_1()
+        self.table_data['table_7_3_2_2'] = self.section_7_prep.table_7_3_2_2()
+        self.table_data['table_7_3_3_1'] = self.section_7_prep.table_7_3_3_1()
+        self.table_data['table_7_3_3_2'] = self.section_7_prep.table_7_3_3_2()
+
         # Section 8
         self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
+        self.table_data['table_8_3'] = self.section_8_prep.table_8_3()
+        self.table_data['table_8_4'] = self.section_8_prep.table_8_4()
         self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
 
         # Section 9

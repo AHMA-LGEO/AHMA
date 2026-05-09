@@ -46,7 +46,8 @@ _ATTR_RENAME_9_3 = {
     "% of youth who were in foster care (Non-Indigenous)":                              "Non-Indigenous respondents",
 }
 
-_NUMBER_ATTRS_9_3 = {"Total number of Indigenous people who experienced homelessness"}
+_NUMBER_ATTRS_9_3 = {"First Nations", "Métis", "Inuit", "Other/Multiple Indigenous Communities", 
+                     "Total number of Indigenous people who experienced homelessness"}
 
 # Ordered display structure: (section_header_or_None, [raw_attr_names])
 _ROW_STRUCTURE_9_3 = [

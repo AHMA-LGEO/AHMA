@@ -20,7 +20,8 @@ SECTION_PREPS = [
     Section5DataPrep(),
     Section7DataPrep(),
     Section8DataPrep(),
-    Section9DataPrep()
+    Section9DataPrep(),
+    Section12DataPrep()
     #...
 ]
 

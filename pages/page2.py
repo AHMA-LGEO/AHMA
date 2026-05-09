@@ -255,10 +255,10 @@ layout = html.Div([
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            # html.Div(id='chart-9-1-container'),
-            # html.Div(id='table-9-1-container'),
-            # html.Div(id='table-9-2-container'),
-            # html.Div(id='table-9-3-container'),
+            html.Div(id='chart-9-1-container'),
+            html.Div(id='table-9-1-container'),
+            html.Div(id='table-9-2-container'),
+            html.Div(id='table-9-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 12 - Housing Targets
