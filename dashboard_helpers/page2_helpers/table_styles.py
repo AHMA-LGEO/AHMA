@@ -253,13 +253,13 @@ def format_number(value, decimals: int = 0):
         return value
 
 
-def format_percent(value, multiply: bool = False):
+def format_percent(value, multiply: bool = False, precision: int = 0):
     """Format value as percentage."""
     if pd.isna(value) or value == 'n/a':
         return value
     try:
         v = float(value) * 100 if multiply else float(value)
-        return f'{v:.0f}%'
+        return f'{v:.{precision}f}%'
     except (ValueError, TypeError):
         return value
 

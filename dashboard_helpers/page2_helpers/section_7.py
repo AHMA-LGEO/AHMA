@@ -20,12 +20,14 @@ from .table_styles import (
 )
 from .text_content import (
     SECTION_7_TITLE, TABLE_7_1_TITLE,
-    TABLE_7_3_TITLE, TABLE_7_3_1_TITLE
+    TABLE_7_3_TITLE, TABLE_7_3_1_TITLE,
+    TABLE_7_3_2_TITLE, TABLE_7_3_3_TITLE
     )
 
 from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_2016_2021, COMMUNITIES, TABLE_COLORS, TABLE_FONT)
+    CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_2016_TO_2023,
+    YEARS_2016_2021, YEARLY_INTERVALS_2016_TO_2023,
+    COMMUNITIES, TABLE_COLORS, TABLE_FONT)
 
 from .export_helpers import with_export_btn
 
@@ -234,6 +236,212 @@ class Section7Prep:
         return html.Div([
             with_export_btn(table, 'table-7-3-1'),
         ], className='pg2-table-lgeo')
+    
+
+    def create_chart_7_3_2(self, geocode: int):
+        """Create bar chart for Table 7.3.2 Change in Average Rents."""
+        df = self.data_loader.get_table('table_7_3_2_2_change_in_average_rent', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H6(TABLE_7_3_2_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Change in Average Rents between 2016 and 2023.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        fig = go.Figure()
+        change_in_rent = df[YEARLY_INTERVALS_2016_TO_2023].values.tolist()[0]
+
+        fig.add_trace(go.Bar(
+            x=YEARLY_INTERVALS_2016_TO_2023,
+            y=change_in_rent,
+            marker_color=CHART_COLORS[0],
+            customdata= df[YEARLY_INTERVALS_2016_TO_2023].applymap(format_dollar).values.flatten(),
+            hovertemplate='<b>Year: %{x}</b><br>Rent Delta: %{customdata}<extra></extra>'
+        ))
+
+        fig.update_layout(
+            title=dict(text=f'Change in Average Monthly Rent($) (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
+            xaxis_title='Year',
+            yaxis=dict(
+                title='Change in Average Monthly Rent',
+                tickprefix='$',
+                tickformat=',.0f',
+                gridcolor='#E5E5E5',
+            ),
+            height=500,
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            font=dict(family=TABLE_FONT),
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+        )
+
+        return html.Div([
+            html.H6(TABLE_7_3_2_TITLE, className='table-desc'),
+            dcc.Graph(id='chart-7-3-2', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+    
+
+    def create_table_7_3_2_layout(self, geocode: int):
+        """Create Dash DataTable for Table 7.3.2: Change in average rents between 2016 and 2023."""
+
+        df = self.data_loader.get_table('table_7_3_2_1_average_rent', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Average rents between 2016 and 2023.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+        _LABEL_COL = 'Statistic'
+
+        rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()
+
+        for col in YEARS_2016_TO_2023:
+            rows[col] = rows[col].map(format_dollar)
+
+        # rows.insert(0, _LABEL_COL, '')
+
+        table_df = rows.reset_index(drop=True)
+
+        columns = [
+            {"name": ["", ""], "id": _LABEL_COL}
+        ] + [
+            {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-7-3-2',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_TO_2023, label_width='40%', label_min_width='200px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-7-3-2'),
+        ], className='pg2-table-lgeo')
+
+
+    def create_chart_7_3_3(self, geocode: int):
+        """Create bar chart for Table 7.3.3 Change in Vacancy Rates."""
+        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.H6(TABLE_7_3_3_TITLE, className='table-title'),
+                html.Div(
+                "No chart for Change in Vacancy Rates between 2016 and 2023.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+
+        fig = go.Figure()
+        change_in_vacancy = df[YEARS_2016_TO_2023].values.tolist()[0]
+
+        fig.add_trace(go.Bar(
+            x=YEARS_2016_TO_2023,
+            y=change_in_vacancy,
+            marker_color=CHART_COLORS[0],
+            customdata= df[YEARS_2016_TO_2023].applymap(lambda x: format_percent(x, precision=1)).values.flatten(),
+            hovertemplate='<b>Year: %{x}</b><br>Vacancy Rate: %{customdata}<extra></extra>'
+        ))
+
+        fig.update_layout(
+            title=dict(text=f'Vacancy Rate (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
+            xaxis_title='Year',
+            yaxis=dict(
+                title='Vacancy Rate (%)',
+                ticksuffix='%',
+                tickformat='.0f',
+                dtick=1,
+                gridcolor='#E5E5E5',
+            ),
+            height=500,
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            font=dict(family=TABLE_FONT),
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+        )
+
+        return html.Div([
+            html.H6(TABLE_7_3_3_TITLE, className='table-desc'),
+            dcc.Graph(id='chart-7-3-3', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+    
+
+    def create_table_7_3_3_layout(self, geocode: int):
+        """Create Dash DataTable for Table 7.3.3: Change in vacancy rates between 2016 and 2023."""
+
+        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Vacancy rates between 2016 and 2023.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+        _LABEL_COL = 'Statistic'
+
+        rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()
+
+        for col in YEARS_2016_TO_2023:
+            rows[col] = rows[col].map(lambda x: format_percent(x, precision=1))
+
+        # rows.insert(0, _LABEL_COL, '')
+
+        table_df = rows.reset_index(drop=True)
+
+        columns = [
+            {"name": ["", ""], "id": _LABEL_COL}
+        ] + [
+            {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-7-3-3',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_TO_2023, label_width='40%', label_min_width='200px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-7-3-3'),
+        ], className='pg2-table-lgeo')
+
 
 
 if __name__ == '__main__':

@@ -29,7 +29,8 @@ section_9_layout = Section9Prep()
 section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-7-1", "table-8-1"]
+TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", 
+             "table-7-1", "table-8-1", "table-8-3"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -225,6 +226,10 @@ layout = html.Div([
         html.Div([
             # html.Div(id='chart-7-3-1-container'),
             # html.Div(id='table-7-3-1-container'),
+            # html.Div(id='chart-7-3-2-container'),
+            # html.Div(id='table-7-3-2-container'),
+            # html.Div(id='chart-7-3-3-container'),
+            # html.Div(id='table-7-3-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
@@ -245,26 +250,47 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='chart-8-1-container'),
-            # html.Div(id='table-8-1-container'),
+            html.Div(id='chart-8-1-container'),
+            html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            # html.Div(id='table-8-7-container'),
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-8-3"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='table-8-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-8-4-container'),
+            html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            html.Div(id='chart-9-1-container'),
-            html.Div(id='table-9-1-container'),
-            html.Div(id='table-9-2-container'),
-            html.Div(id='table-9-3-container'),
+            # html.Div(id='chart-9-1-container'),
+            # html.Div(id='table-9-1-container'),
+            # html.Div(id='table-9-2-container'),
+            # html.Div(id='table-9-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 12 - Housing Targets
         html.Div([
-            html.Div(id='table-12-1-container'),
-            html.Div(id='table-12-2-container'),
+            # html.Div(id='table-12-1-container'),
+            # html.Div(id='table-12-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
@@ -383,15 +409,16 @@ def update_section_3(geo_name, scale):
     Input('table-visibility-store', 'data'),
 )
 def update_section_4(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-4-1", False)
+    show_both_4_1 = (visibility or {}).get("table-4-1", False)
+    show_both_4_3 = (visibility or {}).get("table-4-3", False)
     geocode = _resolve_geocode(geo_name, scale, section_4_layout.data_loader)
 
     return (
         section_4_layout.create_chart_4_1(geocode),
-        section_4_layout.create_table_4_1_layout(geocode, show_both),
+        section_4_layout.create_table_4_1_layout(geocode, show_both_4_1),
         section_4_layout.create_table_4_2_layout(geocode),
         section_4_layout.create_chart_4_3(geocode),
-        section_4_layout.create_table_4_3_layout(geocode, show_both),
+        section_4_layout.create_table_4_3_layout(geocode, show_both_4_3),
         section_4_layout.create_table_4_4_layout(geocode),
     )
 
@@ -419,6 +446,10 @@ def update_section_5(geo_name, scale, visibility):
     Output('table-7-1-container', 'children'),
     Output('chart-7-3-1-container', 'children'),
     Output('table-7-3-1-container', 'children'),
+    Output('chart-7-3-2-container', 'children'),
+    Output('table-7-3-2-container', 'children'),
+    Output('chart-7-3-3-container', 'children'),
+    Output('table-7-3-3-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -429,25 +460,34 @@ def update_section_7(geo_name, scale, visibility):
     return (
         section_7_layout.create_table_7_1_layout(geocode, show_both),
         section_7_layout.create_chart_7_3_1(geocode),
-        section_7_layout.create_table_7_3_1_layout(geocode)
+        section_7_layout.create_table_7_3_1_layout(geocode),
+        section_7_layout.create_chart_7_3_2(geocode),
+        section_7_layout.create_table_7_3_2_layout(geocode),
+        section_7_layout.create_chart_7_3_3(geocode),
+        section_7_layout.create_table_7_3_3_layout(geocode),
         )
 
 
 @callback(
     Output('chart-8-1-container', 'children'),
     Output('table-8-1-container', 'children'),
+    Output('table-8-3-container', 'children'),
+    Output('table-8-4-container', 'children'),
     Output('table-8-7-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
 )
 def update_section_8(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-8-1", False)
+    show_both_8_1 = (visibility or {}).get("table-8-1", False)
+    show_both_8_3 = (visibility or {}).get("table-8-3", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
     return (
         section_8_layout.create_chart_8_1(geocode),
-        section_8_layout.create_table_8_1_layout(geocode, show_both),
+        section_8_layout.create_table_8_1_layout(geocode, show_both_8_1),
+        section_8_layout.create_table_8_3_layout(geocode, show_both_8_3),
+        section_8_layout.create_table_8_4_layout(geocode),
         section_8_layout.create_table_8_7_layout(geocode)
     )
 

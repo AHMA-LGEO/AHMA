@@ -19,9 +19,9 @@ from .table_styles import (
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_7_TITLE
+from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_3_TITLE, TABLE_8_7_TITLE
 from .export_helpers import with_export_btn
-from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011
+from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011, COMMUNITIES
 
 
 
@@ -252,6 +252,188 @@ class Section8Prep:
             html.H6(TABLE_8_1_TITLE, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
+    
+
+    def create_table_8_3_layout(self, geocode: int, show_both: bool = False) -> pd.DataFrame:
+        """Create Dash DataTable for Table 8.3 with Households in CHN or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)."""
+        df = self.data_loader.get_table('table_8_3_hhs_in_chn', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                html.H6(TABLE_8_3_TITLE, className='table-title'),
+                "No data for Households in CHN or Extreme CHN (2006, 2016, 2021).",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        filtered = df.copy()
+        _LABEL_COL = 'Census Year'
+
+        pct_mask = filtered[_LABEL_COL].str.contains('%', na=False)
+        for year in YEARS_MINUS_2011:
+            filtered.loc[pct_mask, year] = filtered.loc[pct_mask, year].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            filtered.loc[~pct_mask, year] = filtered.loc[~pct_mask, year].apply(
+                lambda v: format_number(v, decimals=0)
+            )
+
+        # Split by household type and prefix year columns
+        indg = (
+            filtered[filtered['Household Type'] == 'Indigenous HHs'][[_LABEL_COL] + YEARS_MINUS_2011]
+            .rename(columns={y: f'indg_{y}' for y in YEARS_MINUS_2011})
+        )
+        non_indg = (
+            filtered[filtered['Household Type'] == 'Non-Indigenous HHs'][[_LABEL_COL] + YEARS_MINUS_2011]
+            .rename(columns={y: f'non_indg_{y}' for y in YEARS_MINUS_2011})
+        )
+
+        result = indg.merge(non_indg, on=_LABEL_COL, how='left')
+
+        non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
+        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+
+        indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
+        all_val_cols = indg_cols + non_indg_cols
+
+        # rows = [blank_row(_LABEL_COL, all_val_cols, _LABEL_COL)]
+        rows = []
+        for _, row in result.iterrows():
+            rows.append(row.to_dict())
+            tenure = row[_LABEL_COL]
+            if tenure == '% of HHs in CHN who rent' in str(tenure):
+                rows.append(blank_row(_LABEL_COL))
+        
+        
+        table_df = pd.DataFrame(rows, dtype=object)
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        table_df = table_df.fillna("NA")
+
+        columns = [
+            {"name": ["", "", _LABEL_COL], "id": _LABEL_COL}
+        ] + [
+            {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
+            for y in YEARS_MINUS_2011
+        ]
+        if show_both:
+            columns += [
+                {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
+                for y in YEARS_MINUS_2011
+            ]
+
+        data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS_MINUS_2011]
+        if show_both:
+            data_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
+        df_display = table_df[data_cols]
+
+        base_style = get_base_table_style()
+        data_cols.remove(_LABEL_COL)
+
+        table = dash_table.DataTable(
+            id='table-8-3',
+            columns=columns,
+            data=df_display.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(df_display)
+                + make_special_row_styles(df_display, _LABEL_COL, geo_headers={_LABEL_COL})
+            ),
+            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
+            **base_style
+        )
+
+        return html.Div([
+            html.H6(TABLE_8_3_TITLE, className='table-title'),
+            with_export_btn(table, 'table-8-3'),
+        ], className='pg2-table-lgeo')
+
+
+    def create_table_8_4_layout(self, geocode: int):
+        """Create Dash DataTable for Table 8.4 with Households in CHN by Indigenous communities."""
+        df = self.data_loader.get_table('table_8_4_hhs_in_chn_breakdown', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Households in CHN by Indigenous communities.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+
+        _LABEL_COL = 'Census Year'
+        communities = [comm + "-led HH"  for comm in COMMUNITIES]
+
+        community_df = []
+        for community in communities:
+            indig_df = (
+                df[df['Household Type'] == community]
+                .set_index(_LABEL_COL)[YEARS_MINUS_2011]
+                .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+            )
+            community_df.append(indig_df)
+
+        table_df = (
+            pd.concat(community_df, axis=1)
+            .reset_index()
+        )
+
+        # Column order: year, community (2006_f, 2006_m, 2006_i, 2016_f, ...)
+        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in COMMUNITIES]
+
+        pct_mask = table_df[_LABEL_COL].str.contains('%', na=False)
+        for col in val_cols:
+            table_df.loc[pct_mask, col] = table_df.loc[pct_mask, col].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            table_df.loc[~pct_mask, col] = table_df.loc[~pct_mask, col].apply(format_number)
+
+        # Prepend section header row
+
+        # rows = [blank_row(_LABEL_COL, val_cols, _LABEL_COL)]
+        rows = []
+        for _, row in table_df.iterrows():
+            rows.append(row.to_dict())
+            tenure = row[_LABEL_COL]
+            if tenure == '% of HHs in CHN who rent' in str(tenure):
+                rows.append(blank_row(_LABEL_COL))
+
+        formatted_df = pd.DataFrame(rows, dtype=object)
+
+        # 3-level columns: [geo_name, year, community]
+        columns = [{"name": ["", _LABEL_COL, ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
+            for y in YEARS_MINUS_2011
+            for community in COMMUNITIES
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-8-4',
+            columns=columns,
+            data=formatted_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(formatted_df)
+                + make_special_row_styles(formatted_df, _LABEL_COL, geo_headers={_LABEL_COL})
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-8-4'),
+        ], className='pg2-table-lgeo')
+    
+
     
     
     def create_table_8_7_layout(self, geocode: int):
