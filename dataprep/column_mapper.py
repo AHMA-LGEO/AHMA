@@ -914,3 +914,36 @@ TABLE_9_3_COL_MAP = strip_map(_pit_map({
         "2025": "2025_All Respondents_%Brain injury_(blank)",
     },
 }))
+
+_T10_1_TOTAL_COL = "Number of Indigenous people in selected geography (for reference)"
+_T10_1_BUFFER_COLS = ["Pharmacies (within 3 km buffer)", "Pharmacies (within 5 km buffer)",
+                      "Friendship Centres (within 10 km buffer)", "Friendship Centres (within 20 km buffer)"]
+_T10_1_TRANSPORT_TYPES = ["Walking", "Transit", "Biking"]
+
+TABLE_10_1_COL_MAP = strip_map({
+    "Health Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Health_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Health_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Health_Care"
+    },
+    "Recreation Centres": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Recreation",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Recreation",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Recreation"
+    },
+    "Primary or Secondary Education": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Primary_or_Secondary",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Primary_or_Secondary",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Primary_or_Secondary"
+    },
+    "Child Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Child_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Child_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Child_Care"
+    },
+    "Pharmacies (within 3 km buffer)": "Indigenous_Pop_w_3k_Pharm_Acc",
+    "Pharmacies (within 5 km buffer)": "Indigenous_Pop_w_5k_Pharm_Acc",
+    "Friendship Centres (within 10 km buffer)": "Indigenous_Pop_w_10k_FC_Access",
+    "Friendship Centres (within 20 km buffer)": "Indigenous_Pop_w_20k_FC_Access",
+    "Number of Indigenous people in selected geography (for reference)": "Indigenous_Population"
+})
