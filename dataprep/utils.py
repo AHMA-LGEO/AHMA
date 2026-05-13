@@ -13,8 +13,8 @@ PROJECTION_YEARS = ["2021", "2026", "2031", "2046"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
-INDIGENOUS_HH_DISTINCTIONS = ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
-NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx", "#N/A", "#n/a", '**']
+NO_INFO_VALUES = ["x", "..", "...", "....", "n/a", "N/A", "--", 
+                  "xx", "xxx", "xxxx", "xxxxx", "#N/A", "#n/a", '**']
 POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
 
 pct_count = 0

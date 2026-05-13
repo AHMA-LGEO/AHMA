@@ -5,9 +5,6 @@ from sheet_registry import fetch_data
 from utils import (
     build_master,
     get_val,
-    sum_bands,
-    pct,
-    growth_rate,
     clean_val,
     HH_TYPES,
     YEARS_2016_2021,

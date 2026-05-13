@@ -14,6 +14,7 @@ from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
 from section5_prep import Section5DataPrep
+from section6_prep import Section6DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
@@ -57,12 +58,28 @@ class DBUploader:
         'table_5_4': 'table_5_4_median_income',
         'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
 
+        # Section 6 - Dwellings
+        'table_6_1': 'table_6_1_hhs_bedroom',
+        'table_6_2': 'table_6_2_hhs_bedroom_breakdown',
+        'table_6_3': 'table_6_3_hhs_construction_period',
+        'table_6_4': 'table_6_4_hhs_construction_period_breakdown',
+        'table_6_5': 'table_6_5_hhs_structure_type',
+        'table_6_6': 'table_6_6_hhs_structure_type_breakdown',
+
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
         'table_7_3_1': 'table_7_3_1_rental_units',
+        
+        'table_7_3_2_1': 'table_7_3_2_1_average_rent',
+        'table_7_3_2_2': 'table_7_3_2_2_change_in_average_rent',
+        'table_7_3_3_1': 'table_7_3_3_1_vacancy_rate',
+        'table_7_3_3_2': 'table_7_3_3_2_change_in_vacancy_rate',
+        
 
         # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
+        'table_8_3': 'table_8_3_hhs_in_chn',
+        'table_8_4': 'table_8_4_hhs_in_chn_breakdown',
         'table_8_7': 'table_8_7_housing_deficit',
 
         # Section 9 - Systemic Pathways and Indigenous Homelessness
@@ -95,6 +112,7 @@ class DBUploader:
         self.section_3_prep = Section3DataPrep()
         self.section_4_prep = Section4DataPrep()
         self.section_5_prep = Section5DataPrep()
+        self.section_6_prep = Section6DataPrep()
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
@@ -176,12 +194,27 @@ class DBUploader:
         self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
         self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
 
+        # Section 6
+        self.table_data['table_6_1'] = self.section_6_prep.table_6_1_6_6("6.1")
+        self.table_data['table_6_2'] = self.section_6_prep.table_6_1_6_6("6.2")
+        self.table_data['table_6_3'] = self.section_6_prep.table_6_1_6_6("6.3")
+        self.table_data['table_6_4'] = self.section_6_prep.table_6_1_6_6("6.4")
+        self.table_data['table_6_5'] = self.section_6_prep.table_6_1_6_6("6.5")
+        self.table_data['table_6_6'] = self.section_6_prep.table_6_1_6_6("6.6")
+
         # Section 7
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
         self.table_data['table_7_3_1'] = self.section_7_prep.table_7_3_1()
 
+        self.table_data['table_7_3_2_1'] = self.section_7_prep.table_7_3_2_1()
+        self.table_data['table_7_3_2_2'] = self.section_7_prep.table_7_3_2_2()
+        self.table_data['table_7_3_3_1'] = self.section_7_prep.table_7_3_3_1()
+        self.table_data['table_7_3_3_2'] = self.section_7_prep.table_7_3_3_2()
+
         # Section 8
         self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
+        self.table_data['table_8_3'] = self.section_8_prep.table_8_3()
+        self.table_data['table_8_4'] = self.section_8_prep.table_8_4()
         self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
 
         # Section 9

@@ -4,7 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data, get_sheet
 from utils import (
     build_master, 
-    get_val, 
+    get_val,
     pct, 
     clean_val,
     HH_TYPES,

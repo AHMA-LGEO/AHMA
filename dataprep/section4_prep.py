@@ -4,8 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
-    get_val, 
-    sum_bands, 
+    get_val,
     pct, 
     clean_val,
     YEARS,
@@ -256,7 +255,7 @@ class Section4DataPrep:
     
 
     def run_all(self) -> dict[str, pd.DataFrame]:
-        "Runs all Table 4 methods and returns {name:df}"
+        "Runs all Section 4 methods and returns {name:df}"
         return {
             "4.1": self.table_4_1(),
             "4.2": self.table_4_2(),

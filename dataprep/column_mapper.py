@@ -7,6 +7,8 @@ from utils import (
     PIT_YEARS, 
     PROJECTION_YEARS)
 
+#-------------------- Section 3 – Indigenous Population --------------------
+
 TABLE_3_1_1_COL_MAP = strip_map({
     "First Nations": {
         "2006": "      North American Indian - single response",
@@ -202,6 +204,7 @@ def _build_3_5_1_map():
 TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 
+#-------------------- Section 4 – Housing Tenure --------------------
 
 _HH_SUFFIX_4_1_4_2 = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
@@ -391,6 +394,8 @@ TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
 ))
 
 
+#-------------------- Section 5 – Income --------------------
+
 TABLE_5_1_COL_MAP = {
     'Total - Private Households by core housing need status  _  Households with household income 20% or under of area median household income (AMHI)_  Indigenous household': 'Very Low Income (20% or under of AMHI)',
     'Total - Private Households by core housing need status  _  Households with household income 21% to 50% of AMHI_  Indigenous household': 'Low Income (21% or 50% of AMHI)',
@@ -454,6 +459,283 @@ TABLE_5_5_5_6_COL_MAP = strip_map({
 })
 TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
 
+
+#-------------------- Section 6 – Dwelling --------------------
+
+_T6_BEDROOM_KEYS = {
+    "No bedrooms (studio)": "No bedroom",
+    "1 bedroom": "1 bedroom",
+    "2 bedrooms": "2 bedrooms",
+    "3 bedrooms": "3 bedrooms",
+    "4 or more bedrooms": "4 or more bedrooms",
+}
+
+def _bedroom_label_6_1(display_name, year):
+    """Handles No bedroom(s) singular/plural shift"""
+    base = _T6_BEDROOM_KEYS[display_name]
+
+    if display_name == "No bedrooms (studio)" and year in {"2016", "2021"}:
+        return "No bedrooms"
+
+    return base
+
+
+# def _total_label(year):
+#     if year == "2006":
+#         return "Total - Number of bedrooms"
+#     return "Total - Occupied private dwellings by number of bedrooms - 25% sample data"
+
+
+def _build_bedroom_map_6_1_6_2(groups):
+    rows = {}
+
+    # for bedroom in [*_T6_BEDROOM_KEYS.keys(), "Total"]:
+    for bedroom in [*_T6_BEDROOM_KEYS.keys()]:
+        rows[bedroom] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[bedroom][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if bedroom == "Total":
+                #     col = f"{_total_label(year)}_{suffix}"
+                # else:
+                col = f"{_bedroom_label_6_1(bedroom, year)}_{suffix}"
+
+                rows[bedroom][grp_name][year] = col
+
+    return strip_map(rows)
+
+
+TABLE_6_1_COL_MAP = _build_bedroom_map_6_1_6_2({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Aboriginal household",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_2_COL_MAP = _build_bedroom_map_6_1_6_2({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+_T6_PERIOD_BUCKETS = {
+    "Before 1960": {
+        "2006": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+        "2016": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+        "2021": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+    },
+    "1960-1980": {
+        "2006": ["1961 to 1970", "1971 to 1980"],
+        "2016": ["1961 to 1970", "1971 to 1980"],
+        "2021": ["1961 to 1970", "1971 to 1980"],
+    },
+    "1980-2000": {
+        "2006": ["1981 to 1985", "1986 to 1990", "1991 to 1995", "1996 to 2000"],
+        "2016": ["1981 to 1990", "1991 to 1995", "1996 to 2000"],
+        "2021": ["1981 to 1990", "1991 to 1995", "1996 to 2000"],
+    },
+    "After 2000": {
+        "2006": ["2001 to 2006"],
+        "2016": ["2001 to 2005", "2006 to 2010", "2011 to 2016"],
+        "2021": ["2001 to 2005", "2006 to 2010", "2011 to 2015", "2016 to 2021"],
+    },
+}
+
+
+def _build_period_map_6_3_6_4(groups):
+    rows = {}
+
+    # for bucket in [* _T6_PERIOD_BUCKETS.keys(), "Total"]:
+    for bucket in [* _T6_PERIOD_BUCKETS.keys()]:
+        rows[bucket] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[bucket][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if bucket == "Total":
+                #     rows[bucket][grp_name][year] = (
+                #         f"Total - Period of construction_{suffix}"
+                #     )
+                # else:
+                rows[bucket][grp_name][year] = [
+                    f"{label}_{suffix}"
+                    for label in _T6_PERIOD_BUCKETS[bucket][year]
+                ]
+
+    return strip_map(rows)
+
+
+TABLE_6_3_COL_MAP = _build_period_map_6_3_6_4({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Aboriginal household",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_4_COL_MAP = _build_period_map_6_3_6_4({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+_T6_STRUCTURE_LABELS = {
+    "Single-detached house": {
+        "2006": "Single-detached house",
+        "2016": "Single-detached house",
+        "2021": "Single-detached house",
+    },
+    "Semi-detatched": {
+        "2006": "Semi-detached house",
+        "2016": "Semi-detached house",
+        "2021": "Semi-detached house",
+    },
+    "Row house": {
+        "2006": "Row house",
+        "2016": "Row house",
+        "2021": "Row house",
+    },
+    "Apartment or flat in a duplex": {
+        "2006": "Apartment, duplex",
+        "2016": "Apartment or flat in a duplex",
+        "2021": "Apartment or flat in a duplex",
+    },
+    "Apartment in building with fewer than 5 storeys": {
+        "2006": "Apartment, building that has fewer than five storeys",
+        "2016": "Apartment in a building that has fewer than five storeys",
+        "2021": "Apartment in a building that has fewer than five storeys",
+    },
+    "Apartment in building with 5+ storeys": {
+        "2006": "Apartment, building that has five or more storeys",
+        "2016": "Apartment in a building that has five or more storeys",
+        "2021": "Apartment in a building that has five or more storeys",
+    },
+    "Other single-attached house": {
+        "2006": "Other single-attached house",
+        "2016": "Other single-attached house",
+        "2021": "Other single-attached house",
+    },
+    "Moveable dwelling": {
+        "2006": "Movable dwelling",
+        "2016": "Movable dwelling",
+        "2021": "Movable dwelling",
+    },
+}
+
+
+# def _structure_total_label_6_5(year, suffix):
+#     if year == "2016":
+#         return (
+#             "Total - Occupied private dwellings by structural type "
+#             f"of dwelling - 25% sample data_{suffix}"
+#         )
+#     return f"Total - Structural type of dwelling_{suffix}"
+
+
+def _build_structure_map_6_5_6_6(groups):
+    rows = {}
+
+    # for structure in [*_T6_STRUCTURE_LABELS.keys(), "Total"]:
+    for structure in [*_T6_STRUCTURE_LABELS.keys()]:
+        rows[structure] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[structure][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if structure == "Total":
+                #     rows[structure][grp_name][year] = _structure_total_label(
+                #         year, suffix
+                #     )
+                # else:
+                label = _T6_STRUCTURE_LABELS[structure][year]
+                rows[structure][grp_name][year] = f"{label}_{suffix}"
+
+    return strip_map(rows)
+
+
+TABLE_6_5_COL_MAP = _build_structure_map_6_5_6_6({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Total - Aboriginal household status",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_6_COL_MAP = _build_structure_map_6_5_6_6({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+#-------------------- Section 7 – Shelter Costs and Rental Market --------------------
 
 _T7_HH_SUFFIX = {
     "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
@@ -535,6 +817,8 @@ _T8_1_INDICATOR_PREFIX = {
         "2021": "Total - Housing indicators",
     },
 }
+
+#-------------------- Section 8 – Core Housing Need --------------------
 
 TABLE_8_1_COL_MAP = strip_map({
     indicator: {
@@ -788,6 +1072,8 @@ TABLE_8_7_COL_MAP = strip_map({
 })
 
 
+#-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
+
 _T9_FY_YEARS  = [f"FY{i:02d}" for i in range(9, 25)]   # FY09 … FY24
 _T9_AGE_GROUPS = ["Under 30", "30-49", "50+"]
 
@@ -833,6 +1119,7 @@ TABLE_9_3_COL_MAP = strip_map(_pit_map({
     "Total number of Indigenous people who experienced homelessness": {
         "2021": "2021_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
         "2023": "2023_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
+        "2025": "2025_All Respondents_Number of individuals who experienced homelessness _(blank)" # calculating indigenous number using this field * 2025_All Respondents_% of respondents identified as Indigenous_(blank)
     },
     "% of PEH who were Indigenous": {
         "2021": "2021_All Respondents_% of respondents identified as Indigenous_(blank)",
