@@ -1,5 +1,11 @@
-from utils import strip_map, YEARS, YEARS_MINUS_2011, YEARS_2016_TO_2023, YEARLY_INTERVALS_2016_TO_2023, PIT_YEARS
-
+from utils import (
+    strip_map, 
+    YEARS, 
+    YEARS_MINUS_2011, 
+    YEARS_2016_TO_2023, 
+    YEARLY_INTERVALS_2016_TO_2023, 
+    PIT_YEARS, 
+    PROJECTION_YEARS)
 
 TABLE_3_1_1_COL_MAP = strip_map({
     "First Nations": {
@@ -947,3 +953,43 @@ TABLE_10_1_COL_MAP = strip_map({
     "Friendship Centres (within 20 km buffer)": "Indigenous_Pop_w_20k_FC_Access",
     "Number of Indigenous people in selected geography (for reference)": "Indigenous_Population"
 })
+
+_T11_1_DISTINCTIONS = ["First Nations", "Métis", "Inuit", "Other Indigenous", "Total"]
+_T11_1_1_PREFIXES = {
+    pop: "Indigenous"
+    for pop in _T11_1_DISTINCTIONS
+}
+_T11_1_1_PREFIXES["Full population for comparison"] = "Full"
+
+_T11_1_1_SUFFIXES = {
+    "First Nations": {year: " - FN" for year in PROJECTION_YEARS},
+    "Métis": {year: " - Metis" for year in PROJECTION_YEARS},
+    "Inuit": {year: " - Inuit" for year in PROJECTION_YEARS},
+    "Other Indigenous": {"2021": " - Other Indigenous",
+                         "2026": " - Other Indigenous",
+                         "2031": " - Other Indigenous",
+                         "2046": " - Other"},
+    "Total": {year: " - All Indigenous" for year in PROJECTION_YEARS},
+    "Full population for comparison": {year: "" for year in PROJECTION_YEARS}
+}
+
+TABLE_11_1_1_COL_MAP = strip_map({
+    pop: {
+        year: f"{_T11_1_1_PREFIXES[pop]} Pop in {year}{suffix_map[year]}"
+        for year in PROJECTION_YEARS
+    }
+    for pop, suffix_map in _T11_1_1_SUFFIXES.items()
+})
+
+TABLE_11_1_2_COL_MAP = {
+    pop: {
+        col: name for col, name in col_map.items()
+    }
+    for pop, col_map in TABLE_11_1_1_COL_MAP.items()
+}
+TABLE_11_1_2_COL_MAP["First Nations"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_First Nations"
+TABLE_11_1_2_COL_MAP["Métis"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Metis"
+TABLE_11_1_2_COL_MAP["Inuit"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Inuit"
+TABLE_11_1_2_COL_MAP["Other Indigenous"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Indigenous"
+TABLE_11_1_2_COL_MAP["Total"]["Avg. Indigenous HH size (Province, 2021)"] = None
+TABLE_11_1_2_COL_MAP["Full population for comparison"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_non-Indigenous"
