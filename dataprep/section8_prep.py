@@ -4,15 +4,13 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
-    get_val, 
-    sum_bands, 
+    get_val,
     pct, 
     clean_val,
     HH_TYPES,
     POP_SIZES,
     YEARS_MINUS_2011,
-    HH_TYPES,
-    INDIGENOUS_COMMUNITIES)
+    HH_TYPES)
 
 _UNACCEPTABLE_KEYS = [
     "Affordability (Households paying >30% of income on shelter)",

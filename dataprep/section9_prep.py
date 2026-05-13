@@ -2,12 +2,7 @@ import pandas as pd
 import numpy as np
 import column_mapper as cm
 from sheet_registry import fetch_data, get_sheet
-from utils import (build_master, 
-                   get_val, 
-                   sum_bands, 
-                   pct, 
-                   clean_val,
-                   HH_TYPES,
+from utils import (clean_val,
                    PIT_YEARS)
 
 class Section9DataPrep:

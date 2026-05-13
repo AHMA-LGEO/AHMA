@@ -4,12 +4,10 @@ from sheet_registry import fetch_data
 from utils import (
     build_master,
     clean_val,
-    YEARS_2016_2021,
     YEARS_MINUS_2011,
     INDIGENOUS_COMMUNITIES,
-    HH_TYPES,
-    get_val,
-    pct)
+    HH_TYPES
+    )
 
 
 class Section6DataPrep:
@@ -126,9 +124,7 @@ class Section6DataPrep:
         # #calculate totals for "Total" rows by summing the non-total hh_size rows per group
          #rows that should be summed
 
-        # total_frames= []
-        # for year in YEARS_MINUS_2011:
-            #for each (Geocode, Household type) group, sum the size rows and assign to "total"
+        #for each (Geocode, Household type) group, sum the size rows and assign to "total"
         if process_table == "6.1" or process_table == "6.2":
             cat_rows = list(cm._T6_BEDROOM_KEYS.keys())
             totals = (
@@ -161,24 +157,13 @@ class Section6DataPrep:
         # append to original dataframe
         result = pd.concat([result, total_rows], ignore_index=True)
 
+        # Keep total tags at the bottom of geography subgroup
         result["_is_total"] = (result[topic] == "Total").astype(int)
-        result = result.sort_values(
-            by=["Geocode", "_is_total", distinction_type]
-        ).reset_index(drop=True)
+        result = result.sort_values(by=["Geocode", "_is_total", distinction_type]).reset_index(drop=True)
 
         result = result.drop(columns=["_is_total"])
 
-        # print(total_frames)
 
-            #build a mask for the "Total" rows
-            # total_mask = result[topic] == "Total"
-
-            # #map the summed values back using (Geocode, Houshold Type) as the key
-            # result.loc[total_mask, year] = result[total_mask].apply(
-            #     lambda row: totals.get((row["Geocode"], row[distinction_type])),
-            #     axis=1
-            # )
-            
         if process_table == "6.1":
             print("Table 6.1 is ready now...\n" + '=' * 60)
         elif process_table == "6.2":

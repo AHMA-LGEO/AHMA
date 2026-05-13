@@ -1,6 +1,8 @@
 from utils import strip_map, YEARS, YEARS_MINUS_2011, YEARS_2016_TO_2023, YEARLY_INTERVALS_2016_TO_2023, PIT_YEARS
 
 
+#-------------------- Section 3 – Indigenous Population --------------------
+
 TABLE_3_1_1_COL_MAP = strip_map({
     "First Nations": {
         "2006": "      North American Indian - single response",
@@ -196,6 +198,7 @@ def _build_3_5_1_map():
 TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 
+#-------------------- Section 4 – Housing Tenure --------------------
 
 _HH_SUFFIX_4_1_4_2 = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
@@ -385,6 +388,8 @@ TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
 ))
 
 
+#-------------------- Section 5 – Income --------------------
+
 TABLE_5_1_COL_MAP = {
     'Total - Private Households by core housing need status  _  Households with household income 20% or under of area median household income (AMHI)_  Indigenous household': 'Very Low Income (20% or under of AMHI)',
     'Total - Private Households by core housing need status  _  Households with household income 21% to 50% of AMHI_  Indigenous household': 'Low Income (21% or 50% of AMHI)',
@@ -449,6 +454,7 @@ TABLE_5_5_5_6_COL_MAP = strip_map({
 TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
 
 
+#-------------------- Section 6 – Dwelling --------------------
 
 _T6_BEDROOM_KEYS = {
     "No bedrooms (studio)": "No bedroom",
@@ -723,6 +729,8 @@ TABLE_6_6_COL_MAP = _build_structure_map_6_5_6_6({
 })
 
 
+#-------------------- Section 7 – Shelter Costs and Rental Market --------------------
+
 _T7_HH_SUFFIX = {
     "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
     "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
@@ -803,6 +811,8 @@ _T8_1_INDICATOR_PREFIX = {
         "2021": "Total - Housing indicators",
     },
 }
+
+#-------------------- Section 8 – Core Housing Need --------------------
 
 TABLE_8_1_COL_MAP = strip_map({
     indicator: {
@@ -958,6 +968,8 @@ TABLE_8_7_COL_MAP = strip_map({
     for hh_size, size in _T8_7_HH_SIZE.items()
 })
 
+
+#-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
 
 _T9_FY_YEARS  = [f"FY{i:02d}" for i in range(9, 25)]   # FY09 … FY24
 _T9_AGE_GROUPS = ["Under 30", "30-49", "50+"]

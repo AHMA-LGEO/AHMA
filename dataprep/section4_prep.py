@@ -4,8 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
-    get_val, 
-    sum_bands, 
+    get_val,
     pct, 
     clean_val,
     YEARS,
