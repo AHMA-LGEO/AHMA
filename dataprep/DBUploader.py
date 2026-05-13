@@ -14,6 +14,7 @@ from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
 from section5_prep import Section5DataPrep
+from section6_prep import Section6DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
@@ -56,6 +57,14 @@ class DBUploader:
         'table_5_1': 'table_5_1_income_shelter_cost',
         'table_5_4': 'table_5_4_median_income',
         'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
+
+        # Section 6 - Dwellings
+        'table_6_1': 'table_6_1_hhs_bedroom',
+        'table_6_2': 'table_6_2_hhs_bedroom_breakdown',
+        'table_6_3': 'table_6_3_hhs_construction_period',
+        'table_6_4': 'table_6_4_hhs_construction_period_breakdown',
+        'table_6_5': 'table_6_5_hhs_structure_type',
+        'table_6_6': 'table_6_6_hhs_structure_type_breakdown',
 
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
@@ -103,6 +112,7 @@ class DBUploader:
         self.section_3_prep = Section3DataPrep()
         self.section_4_prep = Section4DataPrep()
         self.section_5_prep = Section5DataPrep()
+        self.section_6_prep = Section6DataPrep()
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
@@ -183,6 +193,14 @@ class DBUploader:
         self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
         self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
         self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
+
+        # Section 6
+        self.table_data['table_6_1'] = self.section_6_prep.table_6_1_6_6("6.1")
+        self.table_data['table_6_2'] = self.section_6_prep.table_6_1_6_6("6.2")
+        self.table_data['table_6_3'] = self.section_6_prep.table_6_1_6_6("6.3")
+        self.table_data['table_6_4'] = self.section_6_prep.table_6_1_6_6("6.4")
+        self.table_data['table_6_5'] = self.section_6_prep.table_6_1_6_6("6.5")
+        self.table_data['table_6_6'] = self.section_6_prep.table_6_1_6_6("6.6")
 
         # Section 7
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
