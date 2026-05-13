@@ -1,5 +1,11 @@
-from utils import strip_map, YEARS, YEARS_MINUS_2011, YEARS_2016_TO_2023, YEARLY_INTERVALS_2016_TO_2023, PIT_YEARS
-
+from utils import (
+    strip_map, 
+    YEARS, 
+    YEARS_MINUS_2011, 
+    YEARS_2016_TO_2023, 
+    YEARLY_INTERVALS_2016_TO_2023, 
+    PIT_YEARS, 
+    PROJECTION_YEARS)
 
 #-------------------- Section 3 – Indigenous Population --------------------
 
@@ -944,6 +950,103 @@ TABLE_8_4_COL_MAP = strip_map({
     for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
 })
 
+_T8_5_8_6_PREFIXES = {
+    "chn": "    In core housing need, but Not in extreme core housing need",
+    "echn": "    In extreme core housing need",
+    "examined": "  Household examined for core housing need",
+}
+
+_T8_5_8_6_BASES = {
+    "Youth-led (under 30)" : {
+        "2006": "  29 years or less",
+        "2016": "  29 years or less",
+        "2021": "  29 years or less",
+    },
+    "Senior-led (65+)" : {
+        "2006": "  65 years and over",
+        "2016": "  65 years and over",
+        "2021": "  65 years and over",
+    },
+    "Single-mother-led" : {
+        "2006": "  With a lone parent that is a female",
+        "2016": "  With a lone parent that is a female",
+        "2021": "  With a one-parent that is a woman+",
+    },
+    "Single-father-led" : {
+        "2006": "  With a lone parent that is a male",
+        "2016": "  With a lone parent that is a male",
+        "2021": "  With a one-parent that is a man+",
+    },
+    "HH with physical limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues",
+        "2021": "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues",
+    },
+    "HH with cognitive limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(d)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18d only",
+    },
+    "HH with mental or addictions limitations" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(e)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18e only",
+    },
+    "HH is gender diverse" : {
+        "2006": None,
+        "2016": None,
+        "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)",
+    },
+}
+
+_T8_5_8_6_SUFFIX_2006_2016 = {
+    "Non-Indigenous HHs": "Non-Aboriginal household",
+    "Indigenous HHs": "Aboriginal household",
+    "First Nations-led HH": "First Nations-led",
+    "Métis-led HH": "Metis-led",
+    "Inuit-led HH": "Inuit-led"
+}
+
+_T8_5_8_6_SUFFIXES = {
+    "2006": _T8_5_8_6_SUFFIX_2006_2016,
+    "2016": _T8_5_8_6_SUFFIX_2006_2016,
+    "2021": {
+        "Non-Indigenous HHs": "Non-Indigenous household",
+        "Indigenous HHs": "Indigenous household",
+        "First Nations-led HH": "First Nations-led",
+        "Métis-led HH": "Metis-led",
+        "Inuit-led HH": "Inuit-led"
+    }
+}
+
+TABLE_8_5_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in ["Non-Indigenous HHs", "Indigenous HHs"]
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
+
+TABLE_8_6_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
+
 _T8_7_INCOME = {
     "Very Low Income": "20% or under of area median household income (AMHI)",
     "Low":             "21% to 50% of AMHI",
@@ -1104,3 +1207,76 @@ TABLE_9_3_COL_MAP = strip_map(_pit_map({
         "2025": "2025_All Respondents_%Brain injury_(blank)",
     },
 }))
+
+_T10_1_TOTAL_COL = "Number of Indigenous people in selected geography (for reference)"
+_T10_1_BUFFER_COLS = ["Pharmacies (within 3 km buffer)", "Pharmacies (within 5 km buffer)",
+                      "Friendship Centres (within 10 km buffer)", "Friendship Centres (within 20 km buffer)"]
+_T10_1_TRANSPORT_TYPES = ["Walking", "Transit", "Biking"]
+
+TABLE_10_1_COL_MAP = strip_map({
+    "Health Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Health_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Health_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Health_Care"
+    },
+    "Recreation Centres": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Recreation",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Recreation",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Recreation"
+    },
+    "Primary or Secondary Education": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Primary_or_Secondary",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Primary_or_Secondary",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Primary_or_Secondary"
+    },
+    "Child Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Child_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Child_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Child_Care"
+    },
+    "Pharmacies (within 3 km buffer)": "Indigenous_Pop_w_3k_Pharm_Acc",
+    "Pharmacies (within 5 km buffer)": "Indigenous_Pop_w_5k_Pharm_Acc",
+    "Friendship Centres (within 10 km buffer)": "Indigenous_Pop_w_10k_FC_Access",
+    "Friendship Centres (within 20 km buffer)": "Indigenous_Pop_w_20k_FC_Access",
+    "Number of Indigenous people in selected geography (for reference)": "Indigenous_Population"
+})
+
+_T11_1_DISTINCTIONS = ["First Nations", "Métis", "Inuit", "Other Indigenous", "Total"]
+_T11_1_1_PREFIXES = {
+    pop: "Indigenous"
+    for pop in _T11_1_DISTINCTIONS
+}
+_T11_1_1_PREFIXES["Full population for comparison"] = "Full"
+
+_T11_1_1_SUFFIXES = {
+    "First Nations": {year: " - FN" for year in PROJECTION_YEARS},
+    "Métis": {year: " - Metis" for year in PROJECTION_YEARS},
+    "Inuit": {year: " - Inuit" for year in PROJECTION_YEARS},
+    "Other Indigenous": {"2021": " - Other Indigenous",
+                         "2026": " - Other Indigenous",
+                         "2031": " - Other Indigenous",
+                         "2046": " - Other"},
+    "Total": {year: " - All Indigenous" for year in PROJECTION_YEARS},
+    "Full population for comparison": {year: "" for year in PROJECTION_YEARS}
+}
+
+TABLE_11_1_1_COL_MAP = strip_map({
+    pop: {
+        year: f"{_T11_1_1_PREFIXES[pop]} Pop in {year}{suffix_map[year]}"
+        for year in PROJECTION_YEARS
+    }
+    for pop, suffix_map in _T11_1_1_SUFFIXES.items()
+})
+
+TABLE_11_1_2_COL_MAP = {
+    pop: {
+        col: name for col, name in col_map.items()
+    }
+    for pop, col_map in TABLE_11_1_1_COL_MAP.items()
+}
+TABLE_11_1_2_COL_MAP["First Nations"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_First Nations"
+TABLE_11_1_2_COL_MAP["Métis"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Metis"
+TABLE_11_1_2_COL_MAP["Inuit"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Inuit"
+TABLE_11_1_2_COL_MAP["Other Indigenous"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Indigenous"
+TABLE_11_1_2_COL_MAP["Total"]["Avg. Indigenous HH size (Province, 2021)"] = None
+TABLE_11_1_2_COL_MAP["Full population for comparison"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_non-Indigenous"
