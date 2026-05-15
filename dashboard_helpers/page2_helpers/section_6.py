@@ -238,7 +238,7 @@ class Section6Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
+        df = df.fillna("NA")
 
         community_df = []
         for community in COMMUNITIES:
