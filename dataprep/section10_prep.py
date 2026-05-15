@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 import column_mapper as cm
-from sheet_registry import source_dir
+from sheet_registry import ACCESS_DATA_PATH
 from utils import build_master, get_val, pct
 
-ACCESS_DATA_PATH = os.path.join(source_dir, r"2026-05-10 IHNAT Access Data v1.csv") # CHECK IN DROPBOX'S PROCESSED->DATA->EXCEL->CSV->Access Data (for source-data) FOR MOST
+
 
 class Section10DataPrep:
     def table_10_1(self) -> pd.DataFrame:

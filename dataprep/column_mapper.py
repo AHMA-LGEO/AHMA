@@ -5,7 +5,9 @@ from utils import (
     YEARS_2016_TO_2023, 
     YEARLY_INTERVALS_2016_TO_2023, 
     PIT_YEARS, 
-    PROJECTION_YEARS)
+    PROJECTION_YEARS,
+    INDIGENOUS_COMMUNITIES,
+    HH_TYPES)
 
 #-------------------- Section 3 – Indigenous Population --------------------
 
@@ -893,23 +895,23 @@ _T8_3_8_4_SUFFIXES = {
     "2006": {
         "Non-Indigenous HHs": "Non-Aboriginal HH",
         "Indigenous HHs": "Aboriginal HH",
-        "First Nations-led HH": "First Nations-led",
-        "Métis-led HH": "Metis-led",
-        "Inuit-led HH": "Inuit-led"
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
     },
     "2016": {
         "Non-Indigenous HHs": "Non-Aboriginal household",
         "Indigenous HHs": "Aboriginal household",
-        "First Nations-led HH": "First Nations-led",
-        "Métis-led HH": "Metis-led",
-        "Inuit-led HH": "Inuit-led"
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
     },
     "2021": {
         "Non-Indigenous HHs": "Non-Indigenous household",
         "Indigenous HHs": "Indigenous household",
-        "First Nations-led HH": "First Nations-led",
-        "Métis-led HH": "Metis-led",
-        "Inuit-led HH": "Inuit-led"
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
     }
 }
 
@@ -932,7 +934,7 @@ TABLE_8_3_COL_MAP = strip_map({
     statistic: {
         year: {
             hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
-            for hh_type in ["Non-Indigenous HHs", "Indigenous HHs"]
+            for hh_type in HH_TYPES
         }
         for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
     }
@@ -943,7 +945,7 @@ TABLE_8_4_COL_MAP = strip_map({
     statistic: {
         year: {
             hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
-            for hh_type in ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+            for hh_type in INDIGENOUS_COMMUNITIES
         }
         for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
     }
@@ -1002,9 +1004,9 @@ _T8_5_8_6_BASES = {
 _T8_5_8_6_SUFFIX_2006_2016 = {
     "Non-Indigenous HHs": "Non-Aboriginal household",
     "Indigenous HHs": "Aboriginal household",
-    "First Nations-led HH": "First Nations-led",
-    "Métis-led HH": "Metis-led",
-    "Inuit-led HH": "Inuit-led"
+    "First Nations": "First Nations-led",
+    "Métis": "Metis-led",
+    "Inuit": "Inuit-led"
 }
 
 _T8_5_8_6_SUFFIXES = {
@@ -1013,9 +1015,9 @@ _T8_5_8_6_SUFFIXES = {
     "2021": {
         "Non-Indigenous HHs": "Non-Indigenous household",
         "Indigenous HHs": "Indigenous household",
-        "First Nations-led HH": "First Nations-led",
-        "Métis-led HH": "Metis-led",
-        "Inuit-led HH": "Inuit-led"
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
     }
 }
 
@@ -1026,7 +1028,7 @@ TABLE_8_5_COL_MAP = strip_map({
                 statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
                 for statistic, prefix in _T8_5_8_6_PREFIXES.items()
             }
-            for hh_type in ["Non-Indigenous HHs", "Indigenous HHs"]
+            for hh_type in HH_TYPES
         }
         for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
     }
@@ -1040,7 +1042,7 @@ TABLE_8_6_COL_MAP = strip_map({
                 statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
                 for statistic, prefix in _T8_5_8_6_PREFIXES.items()
             }
-            for hh_type in ["First Nations-led HH", "Métis-led HH", "Inuit-led HH"]
+            for hh_type in INDIGENOUS_COMMUNITIES
         }
         for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
     }
@@ -1208,6 +1210,9 @@ TABLE_9_3_COL_MAP = strip_map(_pit_map({
     },
 }))
 
+
+#-------------------- Section 10 – Access to Services --------------------
+
 _T10_1_TOTAL_COL = "Number of Indigenous people in selected geography (for reference)"
 _T10_1_BUFFER_COLS = ["Pharmacies (within 3 km buffer)", "Pharmacies (within 5 km buffer)",
                       "Friendship Centres (within 10 km buffer)", "Friendship Centres (within 20 km buffer)"]
@@ -1240,6 +1245,10 @@ TABLE_10_1_COL_MAP = strip_map({
     "Friendship Centres (within 20 km buffer)": "Indigenous_Pop_w_20k_FC_Access",
     "Number of Indigenous people in selected geography (for reference)": "Indigenous_Population"
 })
+
+
+
+#-------------------- Section 11 – Population and Household Growth --------------------
 
 _T11_1_DISTINCTIONS = ["First Nations", "Métis", "Inuit", "Other Indigenous", "Total"]
 _T11_1_1_PREFIXES = {

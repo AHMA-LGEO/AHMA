@@ -11,7 +11,7 @@ from utils import (
     POP_SIZES,
     YEARS_MINUS_2011,
     HH_TYPES,
-    INDIGENOUS_HH_DISTINCTIONS)
+    INDIGENOUS_COMMUNITIES)
 
 _UNACCEPTABLE_KEYS = [
     "Affordability (Households paying >30% of income on shelter)",
@@ -137,7 +137,7 @@ class Section8DataPrep:
         """
         print("Processing Table 8.4...")
 
-        result = self.create_table_8_3_8_4(cm.TABLE_8_4_COL_MAP, INDIGENOUS_HH_DISTINCTIONS)
+        result = self.create_table_8_3_8_4(cm.TABLE_8_4_COL_MAP, INDIGENOUS_COMMUNITIES)
 
         print("Table 8.4 is ready now...\n" + '=' * 60)
         return result
@@ -242,7 +242,9 @@ class Section8DataPrep:
         """
         print("Processing Table 8.6...")
 
-        result = self.create_table_8_5_8_6(cm.TABLE_8_6_COL_MAP, INDIGENOUS_HH_DISTINCTIONS)
+        # INDIGENOUS_HH_DISTINCTIONS = [comm + "-led HH" for comm in INDIGENOUS_COMMUNITIES]
+
+        result = self.create_table_8_5_8_6(cm.TABLE_8_6_COL_MAP, INDIGENOUS_COMMUNITIES)
 
         print("Table 8.6 is ready now...\n" + '=' * 60)
         return result
@@ -360,12 +362,12 @@ class Section8DataPrep:
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Section 8 methods and returns {name:df}"
         return {
-            "8.1": self.table_8_1(),
-            "8.3": self.table_8_3(),
+            # "8.1": self.table_8_1(),
+            "8.3": self.table_8_3(), # check in dashboard as well
             "8.4": self.table_8_4(),
-            "8.5": self.table_8_5(),
-            "8.6": self.table_8_6(),
-            "8.7": self.table_8_7(),
+            # "8.5": self.table_8_5(),
+            # "8.6": self.table_8_6(),
+            # "8.7": self.table_8_7(),
         }
     
 if __name__ == '__main__':

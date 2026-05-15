@@ -18,6 +18,8 @@ from section6_prep import Section6DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
+from section10_prep import Section10DataPrep
+from section11_prep import Section11DataPrep
 from section12_prep import Section12DataPrep
 
 
@@ -80,6 +82,8 @@ class DBUploader:
         'table_8_1': 'table_8_1_core_housing_need',
         'table_8_3': 'table_8_3_hhs_in_chn',
         'table_8_4': 'table_8_4_hhs_in_chn_breakdown',
+        'table_8_5': 'table_8_5_hhs_in_chn_prior_pop',
+        'table_8_6': 'table_8_6_hhs_in_chn_prior_pop_breakdown',
         'table_8_7': 'table_8_7_housing_deficit',
 
         # Section 9 - Systemic Pathways and Indigenous Homelessness
@@ -87,6 +91,13 @@ class DBUploader:
         'table_9_1_1': 'table_9_1_1_percent_corrections',
         'table_9_2': 'table_9_2_ageing_out_of_care',
         'table_9_3': 'table_9_3_indig_homelessness',
+
+        # Section 10 - Access to Services
+        'table_10_1': 'table_10_1_access_services',
+
+        # Section 11 - Population and Household Growth
+        'table_11_1_1': 'table_11_1_1_projected_pop',
+        'table_11_1_2': 'table_11_1_2_projected_hh',
 
         # Section 12 - Housing Targets
         'table_12_2': 'table_12_2_indigenous_housing_target'
@@ -116,6 +127,8 @@ class DBUploader:
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
+        self.section_10_prep = Section10DataPrep()
+        self.section_11_prep = Section11DataPrep()
         self.section_12_prep = Section12DataPrep()
 
         # Store table classes
@@ -215,6 +228,8 @@ class DBUploader:
         self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
         self.table_data['table_8_3'] = self.section_8_prep.table_8_3()
         self.table_data['table_8_4'] = self.section_8_prep.table_8_4()
+        self.table_data['table_8_5'] = self.section_8_prep.table_8_5()
+        self.table_data['table_8_6'] = self.section_8_prep.table_8_6()
         self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
 
         # Section 9
@@ -223,6 +238,13 @@ class DBUploader:
         self.table_data['table_9_2'] = self.section_9_prep.table_9_2()
         self.table_data['table_9_3'] = self.section_9_prep.table_9_3()
 
+        # Section 10
+        self.table_data['table_10_1'] = self.section_10_prep.table_10_1()
+
+        # Section 11
+        self.table_data['table_11_1_1'] = self.section_11_prep.table_11_1_1()
+        self.table_data['table_11_1_2'] = self.section_11_prep.table_11_1_2()
+        
         # Section 12
         self.table_data['table_12_2'] = self.section_12_prep.table_12_2()
 
