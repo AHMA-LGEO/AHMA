@@ -32,7 +32,8 @@ section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
 TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-6-1",
-             "table-6-3", "table-6-5", "table-7-1", "table-8-1", "table-8-3"]
+             "table-6-3", "table-6-5", "table-7-1", "table-8-1", 
+             "table-8-3", "table-8-5"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -222,13 +223,13 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-6-1-container'),
-            html.Div(id='table-6-1-container'),
+            # html.Div(id='chart-6-1-container'),
+            # html.Div(id='table-6-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
-            html.Div(id='table-6-2-container'),
+            # html.Div(id='table-6-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -248,12 +249,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-6-3-container'),
-            html.Div(id='table-6-3-container'),
+            # html.Div(id='chart-6-3-container'),
+            # html.Div(id='table-6-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-6-4-container'),
+            # html.Div(id='table-6-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
@@ -274,11 +275,11 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-6-5-container'),
+            # html.Div(id='table-6-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-6-6-container'),
+            # html.Div(id='table-6-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 7 - Shelter Costs
@@ -329,8 +330,8 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='chart-8-1-container'),
-            # html.Div(id='table-8-1-container'),
+            html.Div(id='chart-8-1-container'),
+            html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -350,12 +351,39 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='table-8-3-container'),
+            html.Div(id='table-8-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            # html.Div(id='table-8-4-container'),
-            # html.Div(id='table-8-7-container'),
+            html.Div(id='table-8-4-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-8-5"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='chart-8-5-container'),
+            html.Div(id='table-8-5-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-8-6-container'),
+            html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
@@ -600,6 +628,9 @@ def update_section_7(geo_name, scale, visibility):
     Output('table-8-1-container', 'children'),
     Output('table-8-3-container', 'children'),
     Output('table-8-4-container', 'children'),
+    Output('chart-8-5-container', 'children'),
+    Output('table-8-5-container', 'children'),
+    Output('table-8-6-container', 'children'),
     Output('table-8-7-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
@@ -608,6 +639,7 @@ def update_section_7(geo_name, scale, visibility):
 def update_section_8(geo_name, scale, visibility):
     show_both_8_1 = (visibility or {}).get("table-8-1", False)
     show_both_8_3 = (visibility or {}).get("table-8-3", False)
+    show_both_8_5 = (visibility or {}).get("table-8-5", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
     return (
@@ -615,6 +647,9 @@ def update_section_8(geo_name, scale, visibility):
         section_8_layout.create_table_8_1_layout(geocode, show_both_8_1),
         section_8_layout.create_table_8_3_layout(geocode, show_both_8_3),
         section_8_layout.create_table_8_4_layout(geocode),
+        section_8_layout.create_chart_8_5(geocode),
+        section_8_layout.create_table_8_5_layout(geocode, show_both_8_5),
+        section_8_layout.create_table_8_6_layout(geocode),
         section_8_layout.create_table_8_7_layout(geocode)
     )
 

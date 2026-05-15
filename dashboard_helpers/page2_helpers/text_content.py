@@ -69,13 +69,13 @@ TABLE_5_4_TITLE = "5.4 Median Household & Per Person Income (2016, 2021)"
 #-------------------- Section 6 descriptions --------------------
 SECTION_6_TITLE = '6. Dwellings ("How are people housed?")'
 
-# Table 6.1 descriptions
+# Table 6.1 and 6.2 descriptions
 TABLE_6_1_TITLE = "6.1 & 6.2 Households by Number of Bedrooms in Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
-# Table 6.3 descriptions
+# Table 6.3 and 6.4 descriptions
 TABLE_6_3_TITLE = "6.3 & 6.4 Households by Period of Construction of Dwelling (Indigenous & non-Indigenous) (2006-2021)"
 
-# Table 6.5 descriptions
+# Table 6.5 and 6.6 descriptions
 TABLE_6_5_TITLE = "6.5 & 6.6 Households by Structural Type of Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 #-------------------- Section 7 descriptions --------------------
@@ -103,6 +103,9 @@ TABLE_8_1_TITLE = "8.1 & 8.2 Households in Acceptable & Unacceptable (unaffordab
 
 # Table 8.3 and 8.4 descriptions
 TABLE_8_3_TITLE = "8.3 & 8.4 Households in CHN or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+
+# Table 8.5 and 8.6 descriptions
+TABLE_8_5_TITLE = "8.5 & 8.6 Households in CHN by Priority Populations (Indigenous, non-Indigenous) (2006, 2016, 2021)"
 
 # Table 8.7 descriptions
 TABLE_8_7_TITLE = "8.7 Indigenous Affordable Housing Deficit by Income & Household Size (2021)"

@@ -19,7 +19,7 @@ from .table_styles import (
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_3_TITLE, TABLE_8_7_TITLE
+from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_3_TITLE, TABLE_8_5_TITLE, TABLE_8_7_TITLE
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011, COMMUNITIES
 
@@ -434,7 +434,218 @@ class Section8Prep:
         ], className='pg2-table-lgeo')
     
 
+    def create_table_8_5_layout(self, geocode: int, show_both: bool = False):
+        
+        """Create Dash DataTable for Table 8.5 with Households in CHN by Priority Population"""
+
+        df = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Households in CHN by Priority Population.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+
+        filtered = df.copy()
+        _LABEL_COL = 'Metric'
+        
+        for col in YEARS_MINUS_2011:
+            filtered[col] = filtered[col].map(format_percent)
+
+        # Split by household type and prefix year columns
+        indg = (
+            filtered[filtered['Household Type'] == 'Indigenous HHs']
+            [[_LABEL_COL] + YEARS_MINUS_2011]
+            .rename(columns={y: f'indg_{y}' for y in YEARS_MINUS_2011})
+        )
+        non_indg = (
+            filtered[filtered['Household Type'] == 'Non-Indigenous HHs']
+            [[_LABEL_COL] + YEARS_MINUS_2011]
+            .rename(columns={y: f'non_indg_{y}' for y in YEARS_MINUS_2011})
+        )
+
+        result = indg.merge(non_indg, on=_LABEL_COL, how='left')
+
+        non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
+        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+
+        # indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
+        # all_val_cols = indg_cols + non_indg_cols
     
+        columns = [
+            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+        ] + [
+            {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
+            for y in YEARS_MINUS_2011
+        ]
+        if show_both:
+            columns += [
+                {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
+                for y in YEARS_MINUS_2011
+            ]
+
+        data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS_MINUS_2011]
+        if show_both:
+            data_cols += [f'non_indg_{y}' for y in YEARS_MINUS_2011]
+        df_display = result[data_cols]
+
+        base_style = get_base_table_style()
+        data_cols.remove(_LABEL_COL)
+
+        table = dash_table.DataTable(
+            id='table-8-5',
+            columns=columns,
+            data=df_display.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(df_display)
+                + make_special_row_styles(df_display, _LABEL_COL, 
+                                          geo_headers={_LABEL_COL}, total_labels={'Total'})
+            ),
+            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-8-5'),
+        ], className='pg2-table-lgeo')
+    
+    
+    def create_chart_8_5(self, geocode: int):
+        """Create stacked bar chart for Table 8.5 households in CHN by Priority Population - 2021."""
+
+        filtered = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode)
+
+        if filtered.empty or filtered.isnull().values.all():
+            return html.Div([
+                html.H6(TABLE_8_5_TITLE, className='table-title'),
+                html.Div(
+                "No chart for households in CHN by Priority Population - 2021.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        indg = filtered[filtered['Household Type'] == 'Indigenous HHs'][['Metric', '2021']].copy()
+        _LABEL_COL = 'Metric'
+
+        
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        max_val = indg['2021'].max()
+
+        prior_pop_list = indg[_LABEL_COL].tolist()
+        colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(prior_pop_list)}
+
+        fig = go.Figure()
+  
+        fig.add_trace(go.Bar(
+            y=indg[_LABEL_COL],
+            x=indg['2021'],
+            orientation='h',
+            marker_color=[colors[t] for t in indg[_LABEL_COL]],
+            customdata=indg[_LABEL_COL],
+            # textposition='inside',
+            hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>')
+        ))
+
+        fig.update_layout(
+            title=dict(text=f'Indigenous Housing in Core Housing Need by Priority Population in 2021 - {geo_name}', x=0.5, xanchor='center'),
+            yaxis=dict(
+                title='',
+                categoryorder='array',
+                categoryarray=prior_pop_list[::-1]
+            ),
+            xaxis=dict(
+                title='Percentage of Households',
+                ticksuffix='%',
+                range=[0, max_val * 1.1],
+                dtick=10,
+                gridcolor='#E5E5E5',
+            ),
+            height=500,
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            font=dict(family="Bahnschrift"),
+            showlegend=False
+        )
+
+        return html.Div([
+            html.H6(TABLE_8_5_TITLE, className='table-title'),
+            dcc.Graph(id='chart-8-5', figure=fig, config=PLOT_CONFIG)
+        ], className='pg2-table-lgeo')
+    
+
+    def create_table_8_6_layout(self, geocode: int):
+        """Create Dash DataTable for Table 8.6 with Households in CHN by Priority Populations by Indigenous communities."""
+
+        df = self.data_loader.get_table('table_8_6_hhs_in_chn_prior_pop_breakdown', geocode)
+
+        if df.empty or df.isnull().values.all():
+            return html.Div([
+                html.Div(
+                "No data for Households in CHN by Priority Populations by Indigenous communities.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("NA")
+        _LABEL_COL = 'Metric'
+
+        community_df = []
+        for community in COMMUNITIES:
+            indig_df = (
+                df[df['Household Type'] == community]
+                .set_index(_LABEL_COL)[YEARS_MINUS_2011]
+                .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+            )
+            community_df.append(indig_df)
+
+        table_df = pd.concat(community_df, axis=1).reset_index()
+
+        # Column order: year, community (2006_f, 2006_m, 2006_i, 2016_f, ...)
+        val_cols = [f'{y}_{c[0]}' for y in YEARS_MINUS_2011 for c in COMMUNITIES]
+        # print(table_df)
+
+        for col in val_cols:
+            table_df[col] = table_df[col].map(format_percent)
+
+
+        # 3-level columns: [geo_name, year, community]
+        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
+            for y in YEARS_MINUS_2011
+            for community in COMMUNITIES
+        ]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-8-6',
+            columns=columns,
+            data=table_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table_df)
+                + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL
+            ),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-8-6'),
+        ], className='pg2-table-lgeo')
+    
+
     
     def create_table_8_7_layout(self, geocode: int):
         """Create pie chart for Table 8.7 Housing Deficit by Income and HH size (2021)."""
