@@ -66,6 +66,18 @@ TABLE_5_1_TITLE = "5.1 HART income & shelter cost category table with percentage
 # Table 5.4 descriptions
 TABLE_5_4_TITLE = "5.4 Median Household & Per Person Income (2016, 2021)"
 
+#-------------------- Section 6 descriptions --------------------
+SECTION_6_TITLE = '6. Dwellings ("How are people housed?")'
+
+# Table 6.1 descriptions
+TABLE_6_1_TITLE = "6.1 & 6.2 Households by Number of Bedrooms in Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+
+# Table 6.3 descriptions
+TABLE_6_3_TITLE = "6.3 & 6.4 Households by Period of Construction of Dwelling (Indigenous & non-Indigenous) (2006-2021)"
+
+# Table 6.5 descriptions
+TABLE_6_5_TITLE = "6.5 & 6.6 Households by Structural Type of Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+
 #-------------------- Section 7 descriptions --------------------
 SECTION_7_TITLE = '7. Shelter Costs and Rental Market ("How are people housed?")'
 

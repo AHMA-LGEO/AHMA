@@ -8,6 +8,7 @@ from dashboard_helpers.page2_helpers.section_2 import Section2Prep
 from dashboard_helpers.page2_helpers.section_3 import Section3Prep
 from dashboard_helpers.page2_helpers.section_4 import Section4Prep
 from dashboard_helpers.page2_helpers.section_5 import Section5Prep
+from dashboard_helpers.page2_helpers.section_6 import Section6Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.section_9 import Section9Prep
@@ -23,14 +24,15 @@ section_2_layout = Section2Prep()
 section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
 section_5_layout = Section5Prep()
+section_6_layout = Section6Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
 section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", 
-             "table-7-1", "table-8-1", "table-8-3"]
+TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-6-1",
+             "table-6-3", "table-6-5", "table-7-1", "table-8-1", "table-8-3"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -202,6 +204,83 @@ layout = html.Div([
             # html.Div(id='table-5-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        # Section 6- Dwellings
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-1"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='chart-6-1-container'),
+            html.Div(id='table-6-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-6-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-3"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='chart-6-3-container'),
+            html.Div(id='table-6-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-6-4-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-5"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='table-6-5-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-6-6-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
         # Section 7 - Shelter Costs
         html.Div([
             html.Div([
@@ -250,8 +329,8 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -271,12 +350,12 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-8-3-container'),
+            # html.Div(id='table-8-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-8-4-container'),
-            html.Div(id='table-8-7-container'),
+            # html.Div(id='table-8-4-container'),
+            # html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
@@ -439,6 +518,54 @@ def update_section_5(geo_name, scale, visibility):
         section_5_layout.create_table_5_1_layout(geocode),
         section_5_layout.create_table_5_4_layout(geocode),
         section_5_layout.create_table_5_5_layout(geocode, show_both),
+        )
+
+
+@callback(
+    Output('chart-6-1-container', 'children'),
+    Output('table-6-1-container', 'children'),
+    Output('table-6-2-container', 'children'),
+
+    Output('chart-6-3-container', 'children'),
+    Output('table-6-3-container', 'children'),
+    Output('table-6-4-container', 'children'),
+
+    Output('table-6-5-container', 'children'),
+    Output('table-6-6-container', 'children'),
+
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+    Input('table-visibility-store', 'data'),
+)
+def update_section_6(geo_name, scale, visibility):
+    show_both_6_1 = (visibility or {}).get("table-6-1", False)
+    show_both_6_3 = (visibility or {}).get("table-6-3", False)
+    show_both_6_5 = (visibility or {}).get("table-6-5", False)
+    geocode = _resolve_geocode(geo_name, scale, section_6_layout.data_loader)
+
+    table_6_1_name = 'table_6_1_hhs_bedroom'
+    table_6_2_name = 'table_6_2_hhs_bedroom_breakdown'
+    table_6_1_2_label = 'Households by Number of Bedrooms of Dwelling'
+
+    table_6_3_name = 'table_6_3_hhs_construction_period'
+    table_6_4_name = 'table_6_4_hhs_construction_period_breakdown'
+    table_6_3_4_label = 'Households by Period of Construction of Dwelling'
+
+    table_6_5_name = 'table_6_5_hhs_structure_type'
+    table_6_6_name = 'table_6_6_hhs_structure_type_breakdown'
+    table_6_5_6_label = 'Households by Structural Type of Dwelling'
+
+    return (
+        section_6_layout.create_chart_6(geocode, table_6_1_name, table_6_1_2_label),
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_1_name, table_6_1_2_label, show_both_6_1),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_2_name,table_6_1_2_label),
+
+        section_6_layout.create_chart_6(geocode, table_6_3_name, table_6_3_4_label),
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_3_name, table_6_3_4_label, show_both_6_3),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_4_name, table_6_3_4_label),
+
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_5_name, table_6_5_6_label, show_both_6_5),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_6_name, table_6_5_6_label),                                                
         )
 
 
