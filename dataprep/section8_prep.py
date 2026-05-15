@@ -362,12 +362,12 @@ class Section8DataPrep:
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Section 8 methods and returns {name:df}"
         return {
-            # "8.1": self.table_8_1(),
-            "8.3": self.table_8_3(), # check in dashboard as well
+            "8.1": self.table_8_1(),
+            "8.3": self.table_8_3(),
             "8.4": self.table_8_4(),
-            # "8.5": self.table_8_5(),
-            # "8.6": self.table_8_6(),
-            # "8.7": self.table_8_7(),
+            "8.5": self.table_8_5(),
+            "8.6": self.table_8_6(),
+            "8.7": self.table_8_7(),
         }
     
 if __name__ == '__main__':

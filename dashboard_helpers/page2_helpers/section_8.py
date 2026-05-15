@@ -366,10 +366,10 @@ class Section8Prep:
         df = df.fillna("NA")
 
         _LABEL_COL = 'Census Year'
-        communities = [comm + "-led HH"  for comm in COMMUNITIES]
+        # communities = [comm + "-led HH"  for comm in COMMUNITIES]
 
         community_df = []
-        for community in communities:
+        for community in COMMUNITIES:
             indig_df = (
                 df[df['Household Type'] == community]
                 .set_index(_LABEL_COL)[YEARS_MINUS_2011]
