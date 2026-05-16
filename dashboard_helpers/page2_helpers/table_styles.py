@@ -210,6 +210,88 @@ def generate_style_header_conditional(
     return styles
 
 
+def merge_columns(
+    df: pd.DataFrame,
+    rows: list[int],
+    value_cols: list[str],
+) -> pd.DataFrame:
+    """
+    Keep values only in the middle column for selected rows.
+
+    Example:
+        200 200 200  ->  '' 200 ''
+    """
+    out = df.copy()
+
+    middle_col = value_cols[len(value_cols) // 2]
+
+    side_cols = [c for c in value_cols if c != middle_col]
+
+    for row_idx in rows:
+        out.loc[row_idx, side_cols] = ''
+
+    return out
+
+
+def make_centered_merged_row_styles(
+    rows: list[int],
+    value_cols: list[str],
+) -> list:
+    """
+    Style rows so the middle value column appears visually merged.
+
+    - hides vertical borders between value columns
+    - centers the middle value
+    - removes text from side columns visually
+    """
+
+    styles = []
+
+    # middle_idx = len(value_cols) // 2
+    # middle_col = value_cols[middle_idx]
+
+    # left_cols = value_cols[:middle_idx]
+    # right_cols = value_cols[middle_idx + 1:]
+
+    for row_idx in rows:
+
+        # left cell
+        styles.append({
+            'if': {
+                'row_index': row_idx,
+                'column_id': value_cols[0]
+            },
+            'borderRight': 'none',
+            'textAlign': 'center',
+            'color': 'transparent',
+        })
+
+        # right cell
+        styles.append({
+            'if': {
+                'row_index': row_idx,
+                'column_id': value_cols[2]
+            },
+            'borderLeft': 'none',
+            'textAlign': 'center',
+            'color': 'transparent',
+        })
+
+        # middle cell
+        styles.append({
+            'if': {
+                'row_index': row_idx,
+                'column_id': value_cols[1]
+            },
+            'textAlign': 'center',
+            # 'fontWeight': 'bold',
+            'borderLeft': 'none',
+            'borderRight': 'none',
+        })
+
+    return styles
+
+
 def get_base_table_style() -> dict:
     """Get base styling shared by all tables."""
     return {

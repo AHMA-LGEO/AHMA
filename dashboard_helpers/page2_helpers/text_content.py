@@ -122,6 +122,20 @@ TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth
 # Table 9.3 descriptions
 TABLE_9_3_TITLE = "9.3 Indigenous Homelessness (2021, 2023, 2025)"
 
+
+#-------------------- Section 10 descriptions --------------------
+SECTION_10_TITLE = '10. Access to Services ("What\'s needed?")'
+
+# Table 10.1 descriptions
+TABLE_10_1_TITLE = "10.1. Access to Health Care, Sports & Rec facilities, Primary & Secondary education, Child Care by Public Transit (2021)"
+
+#-------------------- Section 11 descriptions --------------------
+SECTION_11_TITLE = '11. Population & Household Growth ("What\'s needed?")'
+
+# Table 11.1 descriptions
+TABLE_11_1_TITLE = "11.1. Projected Population of Indigenous People & Households (First Nations, Metis, Inuit, or Other) 2021-2046"
+
+
 #-------------------- Section 12 descriptions --------------------
 SECTION_12_TITLE = '12. Housing Targets ("What\'s needed?")'
 

@@ -12,6 +12,7 @@ from dashboard_helpers.page2_helpers.section_6 import Section6Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.section_9 import Section9Prep
+from dashboard_helpers.page2_helpers.section_10 import Section10Prep
 from dashboard_helpers.page2_helpers.section_12 import Section12Prep
 
 from dashboard_helpers.page2_helpers.text_content import (
@@ -28,6 +29,7 @@ section_6_layout = Section6Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
+section_10_layout = Section10Prep()
 section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
@@ -330,8 +332,8 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-1-container'),
-            html.Div(id='table-8-1-container'),
+            # html.Div(id='chart-8-1-container'),
+            # html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -351,11 +353,11 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='table-8-3-container'),
+            # html.Div(id='table-8-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
-            html.Div(id='table-8-4-container'),
+            # html.Div(id='table-8-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
@@ -376,14 +378,14 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            html.Div(id='chart-8-5-container'),
-            html.Div(id='table-8-5-container'),
+            # html.Div(id='chart-8-5-container'),
+            # html.Div(id='table-8-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
-            html.Div(id='table-8-6-container'),
-            html.Div(id='table-8-7-container'),
+            # html.Div(id='table-8-6-container'),
+            # html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
@@ -392,6 +394,12 @@ layout = html.Div([
             # html.Div(id='table-9-1-container'),
             # html.Div(id='table-9-2-container'),
             # html.Div(id='table-9-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        # Section 10 - Access to Services
+        html.Div([
+            html.Div(id='table-10-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 12 - Housing Targets
@@ -671,6 +679,17 @@ def update_section_9(geo_name, scale):
         section_9_layout.create_table_9_2_layout(geocode),
         section_9_layout.create_table_9_3_layout(geocode)
     )
+
+
+@callback(
+    Output('table-10-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_10(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_10_layout.data_loader)
+
+    return section_10_layout.create_table_10_1_layout(geocode)
 
 
 @callback(
