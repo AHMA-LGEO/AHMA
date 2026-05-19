@@ -13,6 +13,7 @@ from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.section_9 import Section9Prep
 from dashboard_helpers.page2_helpers.section_10 import Section10Prep
+from dashboard_helpers.page2_helpers.section_11 import Section11Prep
 from dashboard_helpers.page2_helpers.section_12 import Section12Prep
 
 from dashboard_helpers.page2_helpers.text_content import (
@@ -30,6 +31,7 @@ section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
 section_10_layout = Section10Prep()
+section_11_layout = Section11Prep()
 section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
@@ -402,6 +404,12 @@ layout = html.Div([
             html.Div(id='table-10-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        # Section 11 - Population & Household Growth
+        html.Div([
+            html.Div(id='table-11-1-1-container'),
+            html.Div(id='table-11-1-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
         # Section 12 - Housing Targets
         html.Div([
             # html.Div(id='table-12-1-container'),
@@ -690,6 +698,22 @@ def update_section_10(geo_name, scale):
     geocode = _resolve_geocode(geo_name, scale, section_10_layout.data_loader)
 
     return section_10_layout.create_table_10_1_layout(geocode)
+
+
+@callback(
+    Output('table-11-1-1-container', 'children'),
+    Output('table-11-1-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_11(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_11_layout.data_loader)
+
+    return (
+        section_11_layout.create_table_11_1_1_layout(geocode),
+        section_11_layout.create_table_11_1_2_layout(geocode),
+        )
+
 
 
 @callback(

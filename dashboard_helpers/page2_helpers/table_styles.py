@@ -327,10 +327,21 @@ def format_number(value, decimals: int = 0):
     """Format number with commas and specified decimals."""
     if pd.isna(value) or value == 'n/a':
         return value
+    
+    # handle strings
+    if isinstance(value, str):
+        value = value.strip().replace(',', '')
+
+        if value == '':
+            return value
+        
     try:
+        num = float(value)
         if decimals == 0:
-            return f'{int(value):,}'
-        return f'{float(value):,.{decimals}f}'
+            return f'{int(num):,}'
+        
+        return f'{float(num):,.{decimals}f}'
+    
     except (ValueError, TypeError):
         return value
 
