@@ -5,7 +5,9 @@ from utils import (
     build_master,
     clean_val,
     YEARS_2016_2021,
+    YEARS_MINUS_2011,
     HH_TYPES,
+    INDIGENOUS_COMMUNITIES,
     get_val,
     pct)
 
@@ -69,10 +71,186 @@ class Section5DataPrep:
         return result
     
 
+    def table_5_2(self) -> pd.DataFrame:
+        """Table 5.2: Households by AMHI Income (2006, 2016, 2021)"""
+        print("Processing Table 5.2...")
+
+        dfs = {
+            "2006": fetch_data("5.2-5.3", sheets=["2006_IHNAT_T6"]),
+            "2016": fetch_data("5.2-5.3", sheets=["2016_IHNAT_T4"]),
+            "2021": fetch_data("5.2-5.3", sheets=["2021_IHNAT_T2"])
+        }
+
+        dfs_amhi = {
+            "2006": fetch_data("5.1", sheets=["2006_HART"]),
+            "2016": fetch_data("5.1", sheets=["2016_HART"]),
+            "2021": fetch_data("5.1", sheets=["2021_HART"])
+        }
+
+        master = build_master(dfs)
+        rows = []
+        CATEGORY_LABEL = "Households by Income"
+        categories = list(cm._T5_2_INCOME_BASE.keys())
+
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for income_type, year_map in cm.TABLE_5_2_COL_MAP.items():
+                for hh_type in HH_TYPES:
+                    output_row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        CATEGORY_LABEL: income_type,
+                        "Household Type": hh_type
+                    }
+
+                    #third for loop to get values from column names
+                    for year in YEARS_MINUS_2011:
+                        if income_type not in categories:
+                            df = dfs_amhi[year]
+                        else:
+                            df = dfs[year]
+                        
+                        match = df[df["Geocode"] == geocode]
+            
+                        #checking if there is no value and saying continue with logic
+                        if match.empty:
+                            output_row[year] = None
+                            continue
+            
+                        #creating col_name variable that gets filled in with the column name from the excel that matches the year and hh_type
+                        # {} added to make sure we dont get none when a column name does not exist for a specific year
+                        col_name = year_map.get(hh_type, {}).get(year)
+            
+                        # Direct value if column exists
+                        if col_name and col_name in df.columns:
+                            val = match[col_name].iloc[0]
+                            output_row[year] = clean_val(val)
+                        else:
+                            output_row[year] = None
+                    
+                    rows.append(output_row)
+
+        result = pd.DataFrame(rows)
+
+            #for each (Geocode, Household type) group, sum the size rows and assign to "total"
+        totals = (
+            result[result[CATEGORY_LABEL].isin(categories)]
+            .groupby(["Geocode", "Geography", "Household Type"])[YEARS_MINUS_2011]
+            .sum(min_count=1)
+        )
+
+        total_rows = totals.reset_index()
+        total_rows[CATEGORY_LABEL] = "Total"
+        
+        total_rows = total_rows[result.columns]
+        # append to original dataframe
+        result = pd.concat([result, total_rows], ignore_index=True)
+
+        result["_is_total"] = (result[CATEGORY_LABEL] == "Total").astype(int)
+        result = result.sort_values(by=["Geocode", "_is_total", "Household Type"]).reset_index(drop=True)
+
+        result = result.drop(columns=["_is_total"])
+        
+        print("Table 5.2 is ready now...\n" + '=' * 60)
+        return result
+    
+
+    def table_5_3(self) -> pd.DataFrame:
+        """Table 5.3: Households by AMHI Income by Indigenous communities (2006, 2016, 2021)"""
+        print("Processing Table 5.3...")
+
+        dfs = {
+            "2006": fetch_data("5.2-5.3", sheets=["2006_IHNAT_T6"]),
+            "2016": fetch_data("5.2-5.3", sheets=["2016_IHNAT_T4"]),
+            "2021": fetch_data("5.2-5.3", sheets=["2021_IHNAT_T2"])
+        }
+
+        dfs_amhi = {
+            "2006": fetch_data("5.1", sheets=["2006_HART"]),
+            "2016": fetch_data("5.1", sheets=["2016_HART"]),
+            "2021": fetch_data("5.1", sheets=["2021_HART"])
+        }
+
+        master = build_master(dfs)
+        CATEGORY_LABEL = "Households by Income"
+        categories = list(cm._T5_2_INCOME_BASE.keys())
+        
+        rows = []
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for community in INDIGENOUS_COMMUNITIES:
+                for income_type, year_map in cm.TABLE_5_3_COL_MAP.items():
+                # if income_type == "Area Median Household income (all HHs)":
+                
+                    output_row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        CATEGORY_LABEL: income_type,
+                        "Distinction": community
+                    }
+
+                    df_source = dfs_amhi if income_type == "Area Median Household income (all HHs)" else dfs
+
+                    for year in YEARS_MINUS_2011:
+                        df = df_source[year]
+
+                        match = df[df["Geocode"] == geocode]
+                        if match.empty:
+                            output_row[year] = None
+                            continue
+
+                        col_name = year_map.get(community, {}).get(year)
+
+                        if col_name and col_name in df.columns:
+                            output_row[year] = clean_val(match[col_name].iloc[0])
+                        else:
+                            output_row[year] = None
+
+                    rows.append(output_row)
+
+        result = pd.DataFrame(rows)
+
+        # PATCH WORK - Removing duplicate categories from communities
+        # result = result[
+        #     ~((result[CATEGORY_LABEL] == "Area Median Household income (all HHs)") & 
+        #         (result["Distinction"].isin(["Métis", "Inuit"])))
+        # ]
+        
+        # PATCH WORK - Updating the First Nations to All Distinction Type
+        # result.loc[
+        #     (result[CATEGORY_LABEL] == "Area Median Household income (all HHs)") & 
+        #     (result["Distinction"] == "First Nations"),
+        #     "Distinction"
+        # ] = "All"
+
+        totals = (
+            result[result[CATEGORY_LABEL].isin(categories)]
+            .groupby(["Geocode", "Geography", "Distinction"])[YEARS_MINUS_2011]
+            .sum(min_count=1)
+        )
+
+        total_rows = totals.reset_index()
+        total_rows[CATEGORY_LABEL] = "Total"
+        
+        total_rows = total_rows[result.columns]
+        # append to original dataframe
+        result = pd.concat([result, total_rows], ignore_index=True)
+
+        result["_is_total"] = (result[CATEGORY_LABEL] == "Total").astype(int)
+        result = result.sort_values(by=["Geocode", "_is_total", "Distinction"]).reset_index(drop=True)
+
+        result = result.drop(columns=["_is_total"])
+
+        print("Table 5.3 is ready now...\n" + '=' * 60)
+        return result
+
+
     def table_5_4(self) -> pd.DataFrame:
-        """
-        Table 5.4: Median Household & Per Person Income (2016, 2021)
-        """
+        """Table 5.4: Median Household & Per Person Income (2016, 2021)"""
         print("Processing Table 5.4...")
 
         dfs = {
@@ -118,9 +296,7 @@ class Section5DataPrep:
     
     
     def table_5_5_5_6(self) -> pd.DataFrame:
-        """
-        Table 5.5-5.6: Number of Household Maintainers (Indigenous & non-Indigenous)
-        """
+        """Table 5.5-5.6: Number of Household Maintainers (Indigenous & non-Indigenous)"""
         print("Processing Tables 5.5 & 5.6...")
 
         dfs = {
@@ -198,6 +374,8 @@ class Section5DataPrep:
         "Runs all Section 5 methods and returns {name:df}"
         return {
             "5.1": self.table_5_1(),
+            "5.2": self.table_5_2(),
+            "5.3": self.table_5_3(),
             "5.4": self.table_5_4(),
             "5.5-5.6": self.table_5_5_5_6(),
         }
@@ -231,7 +409,7 @@ class Section5DataPrep:
 
 if __name__ == '__main__':
     t = Section5DataPrep()
-    t.table_5_5_5_6()
+    t.table_5_3()
 
 
 

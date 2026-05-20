@@ -35,7 +35,7 @@ section_11_layout = Section11Prep()
 section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-6-1",
+TABLE_IDS = ["table-4-1", "table-4-3", "table-5-2", "table-5-5", "table-6-1",
              "table-6-3", "table-6-5", "table-7-1", "table-8-1", 
              "table-8-3", "table-8-5"]
 
@@ -185,8 +185,34 @@ layout = html.Div([
 
         # Section 5 - Income
         html.Div([
-            # html.Div(id='table-5-1-container'),
-            # html.Div(id='table-5-4-container'),
+            html.Div(id='table-5-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-5-2"},
+                    value=False,
+                    label="",
+                    className="mb-0",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+               style={"borderBottom": "2px solid #002145"}),
+
+            html.Div(id='chart-5-2-container'),
+            html.Div(id='table-5-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-5-3-container'),
+            html.Div(id='table-5-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
@@ -206,7 +232,7 @@ layout = html.Div([
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
 
-            # html.Div(id='table-5-5-container'),
+            html.Div(id='table-5-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 6- Dwellings
@@ -548,6 +574,9 @@ def update_section_4(geo_name, scale, visibility):
 
 @callback(
     Output('table-5-1-container', 'children'),
+    Output('chart-5-2-container', 'children'),
+    Output('table-5-2-container', 'children'),
+    Output('table-5-3-container', 'children'),
     Output('table-5-4-container', 'children'),
     Output('table-5-5-container', 'children'),
     Input('main-area', 'data'),
@@ -555,13 +584,17 @@ def update_section_4(geo_name, scale, visibility):
     Input('table-visibility-store', 'data'),
 )
 def update_section_5(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-5-5", False)
+    show_both_5_2 = (visibility or {}).get("table-5-2", False)
+    show_both_5_5 = (visibility or {}).get("table-5-5", False)
     geocode = _resolve_geocode(geo_name, scale, section_5_layout.data_loader)
 
     return (
         section_5_layout.create_table_5_1_layout(geocode),
+        section_5_layout.create_chart_5_2(geocode),
+        section_5_layout.create_table_5_2_layout(geocode, show_both_5_2),
+        section_5_layout.create_table_5_3_layout(geocode),
         section_5_layout.create_table_5_4_layout(geocode),
-        section_5_layout.create_table_5_5_layout(geocode, show_both),
+        section_5_layout.create_table_5_5_layout(geocode, show_both_5_5),
         )
 
 

@@ -407,6 +407,131 @@ TABLE_5_1_COL_MAP = {
     }
 
 
+_T5_2_INCOME_BASE = {
+    "Very Low Income": "Very Low Income (20% or under of AMHI)",
+    "Low": "Low Income (21% to 50% of AMHI)",
+    "Moderate": "Moderate Income (51% to 80% of AMHI)",
+    "Median": "Median Income (81% to 120% of AMHI)",
+    "High": "High Income (121% and more of AMHI)",
+    # "Total": "Total"
+}
+
+_T5_2_INDIGENOUS_SUFFIX = {
+    "2006": "_Aboriginal household",
+    "2016": "_Aboriginal household",
+    "2021": "_Indigenous household",
+}
+
+_T5_2_NON_INDIGENOUS_SUFFIX = {
+    "2006": "_Non-Aboriginal household",
+    "2016": "_Non-Aboriginal household",
+    "2021": "_Non-Indigenous household",
+}
+
+
+_T5_2_VERY_LOW_BASE = {
+    "2006": "Households with  income 20% or under of area median household income (AMHI)",
+    "2016": "Households with  income 20% or under of area median household income (AMHI)",
+    "2021": "Households with  income 20% or under of AMHI",
+}
+
+TABLE_5_2_COL_MAP = strip_map({
+    income: {
+        "Indigenous HHs": {
+            year: (
+                _T5_2_VERY_LOW_BASE[year] + _T5_2_INDIGENOUS_SUFFIX[year]
+                if income == "Very Low Income"
+                else TABLE_5_1_COL_MAP.get(
+                    f"{_T5_2_INCOME_BASE}_{_T5_2_INDIGENOUS_SUFFIX[year]}",
+                    f"{prefix}{_T5_2_INDIGENOUS_SUFFIX[year]}"
+                )
+                if income != "Area Median Household income (all HHs)"
+                else f"AMHI ({int(year)-1}$)"
+            )
+            for year in _T5_2_INDIGENOUS_SUFFIX
+        },
+        "Non-Indigenous HHs": {
+            year: (
+                _T5_2_VERY_LOW_BASE[year] + _T5_2_NON_INDIGENOUS_SUFFIX[year]
+                if income == "Very Low Income"
+                else TABLE_5_1_COL_MAP.get(
+                    f"{_T5_2_INCOME_BASE}_{_T5_2_NON_INDIGENOUS_SUFFIX[year]}",
+                    f"{prefix}{_T5_2_NON_INDIGENOUS_SUFFIX[year]}"
+                )
+                if income != "Area Median Household income (all HHs)"
+                else f"AMHI ({int(year)-1}$)"
+            )
+            for year in _T5_2_NON_INDIGENOUS_SUFFIX
+        },
+    }
+    for income, prefix in {
+        "Area Median Household income (all HHs)": "AMHI",
+        "Very Low Income": None,
+        "Low": "Households with income 21% to 50% of AMHI",
+        "Moderate": "Households with income 51%  to 80% of AMHI",
+        "Median": "Households with income 81% to 120% of AMHI",
+        "High": "Households with income 121% or over of AMHI",
+        # "Total": "Total - Household income ranges as proportion to AMHI",
+    }.items()
+})
+
+
+_T5_3_COMMUNITY_SUFFIX = {
+    "First Nations": "First Nations-led",
+    "Métis":         "Metis-led",
+    "Inuit":         "Inuit-led",
+}
+
+_T5_3_INCOME_MAP = {
+    "Area Median Household income (all HHs)": None,
+    "Very Low Income": None,
+    "Low": "Households with income 21% to 50% of AMHI",
+    "Moderate": "Households with income 51%  to 80% of AMHI",
+    "Median": "Households with income 81% to 120% of AMHI",
+    "High": "Households with income 121% or over of AMHI",
+    # "Total": "Total - Household income ranges as proportion to AMHI",
+}
+
+
+def _get_suffix_5_3(year: str, comm: str) -> str:
+    if year == "2006":
+        return f"_{comm} HH"
+    return f"_{comm}"
+
+
+TABLE_5_3_COL_MAP = strip_map({
+    income: {
+        com: {
+            year: (
+                # AMHI row
+                f"AMHI ({int(year)-1}$)"
+                if income == "Area Median Household income (all HHs)"
+                
+                # Very Low Income special handling (INLINE)
+                else (
+                    (
+                        "Households with  income 20% or under of area median household income (AMHI)"
+                        if year in {"2006", "2016"}
+                        else "Households with  income 20% or under of AMHI"
+                    )
+                    + _get_suffix_5_3(year, com_long_name)
+                )
+                if income == "Very Low Income"
+                
+                # all other income categories
+                else (
+                    f"{_T5_3_INCOME_MAP[income]}"
+                    + _get_suffix_5_3(year, com_long_name)
+                )
+            )
+            for year in YEARS_MINUS_2011
+        }
+        for com, com_long_name in _T5_3_COMMUNITY_SUFFIX.items()
+    }
+    for income in _T5_3_INCOME_MAP.keys()
+})
+
+
 TABLE_5_4_COL_MAP = strip_map({
     'Median Annual Household Income': {
         '2016': {

@@ -63,6 +63,9 @@ SECTION_5_TITLE = '5. Income ("Who lives here?")'
 # Table 5.1 descriptions
 TABLE_5_1_TITLE = "5.1 HART income & shelter cost category table with percentage of Indigenous Households (2021)"
 
+# Table 5.2 and 5.3 descriptions
+TABLE_5_2_TITLE = "5.2 & 5.3 Households by AMHI Income (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+
 # Table 5.4 descriptions
 TABLE_5_4_TITLE = "5.4 Median Household & Per Person Income (2016, 2021)"
 

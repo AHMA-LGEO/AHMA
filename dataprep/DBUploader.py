@@ -57,6 +57,8 @@ class DBUploader:
 
         # Section 5 - Income
         'table_5_1': 'table_5_1_income_shelter_cost',
+        'table_5_2': 'table_5_2_hh_amhi_income',
+        'table_5_3': 'table_5_3_hh_amhi_income_breakdown',
         'table_5_4': 'table_5_4_median_income',
         'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
 
@@ -204,6 +206,8 @@ class DBUploader:
 
         # Section 5
         self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
+        self.table_data['table_5_2'] = self.section_5_prep.table_5_2()
+        self.table_data['table_5_3'] = self.section_5_prep.table_5_3()
         self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
         self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
 
@@ -292,7 +296,8 @@ class DBUploader:
 
         try:
             # Replace '--' and similar placeholders with NaN
-            df = df.replace(['--', 'x', 'X', '..', '#N/A', '...', 'n/a'], np.nan)
+            df = df.replace(["x", "..", "...", "....", "n/a", "N/A", "--", 
+                  "xx", "xxx", "xxxx", "xxxxx", "#N/A", "#n/a", '**'], np.nan)
 
             # Convert DataFrame to list of dictionaries
             records = []

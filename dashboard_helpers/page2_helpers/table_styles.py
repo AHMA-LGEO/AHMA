@@ -214,28 +214,53 @@ def merge_columns(
     df: pd.DataFrame,
     rows: list[int],
     value_cols: list[str],
+    group_size: int = 3,
 ) -> pd.DataFrame:
     """
     Keep values only in the middle column for selected rows.
 
     Example:
-        200 200 200  ->  '' 200 ''
+        For 3 communities per year:
+    [col1, col2, col3] -> ['', col2, '']
+    [col4, col5, col6] -> ['', col5, '']
+
+    Args:
+        df: DataFrame to process
+        rows: Row indices to merge
+        value_cols: All value column IDs
+        group_size: Number of columns per group (1 for original, 3 for communities)
     """
     out = df.copy()
-
-    middle_col = value_cols[len(value_cols) // 2]
-
-    side_cols = [c for c in value_cols if c != middle_col]
-
-    for row_idx in rows:
-        out.loc[row_idx, side_cols] = ''
-
+    
+    # If group_size is 1, use original logic
+    if group_size == 1:
+        middle_col = value_cols[len(value_cols) // 2]
+        side_cols = [c for c in value_cols if c != middle_col]
+        
+        for row_idx in rows:
+            out.loc[row_idx, side_cols] = ''
+    else:
+        # Process groups of columns
+        middle_idx = group_size // 2
+        
+        for row_idx in rows:
+            for group_num in range(len(value_cols) // group_size):
+                group_start = group_num * group_size
+                group_end = group_start + group_size
+                
+                group_cols = value_cols[group_start:group_end]
+                middle_col = group_cols[middle_idx]
+                side_cols = [c for c in group_cols if c != middle_col]
+                
+                out.loc[row_idx, side_cols] = ''
+    
     return out
 
 
 def make_centered_merged_row_styles(
     rows: list[int],
     value_cols: list[str],
+    group_size: int = 1,
 ) -> list:
     """
     Style rows so the middle value column appears visually merged.
@@ -247,47 +272,84 @@ def make_centered_merged_row_styles(
 
     styles = []
 
-    # middle_idx = len(value_cols) // 2
-    # middle_col = value_cols[middle_idx]
-
-    # left_cols = value_cols[:middle_idx]
-    # right_cols = value_cols[middle_idx + 1:]
-
-    for row_idx in rows:
-
-        # left cell
-        styles.append({
-            'if': {
-                'row_index': row_idx,
-                'column_id': value_cols[0]
-            },
-            'borderRight': 'none',
-            'textAlign': 'center',
-            'color': 'transparent',
-        })
-
-        # right cell
-        styles.append({
-            'if': {
-                'row_index': row_idx,
-                'column_id': value_cols[2]
-            },
-            'borderLeft': 'none',
-            'textAlign': 'center',
-            'color': 'transparent',
-        })
-
-        # middle cell
-        styles.append({
-            'if': {
-                'row_index': row_idx,
-                'column_id': value_cols[1]
-            },
-            'textAlign': 'center',
-            # 'fontWeight': 'bold',
-            'borderLeft': 'none',
-            'borderRight': 'none',
-        })
+    # If group_size is 1, use original logic
+    if group_size == 1:
+        for row_idx in rows:
+            # left cell
+            styles.append({
+                'if': {
+                    'row_index': row_idx,
+                    'column_id': value_cols[0]
+                },
+                'borderRight': 'none',
+                'textAlign': 'center',
+                'color': 'transparent',
+            })
+ 
+            # right cell
+            styles.append({
+                'if': {
+                    'row_index': row_idx,
+                    'column_id': value_cols[2]
+                },
+                'borderLeft': 'none',
+                'textAlign': 'center',
+                'color': 'transparent',
+            })
+ 
+            # middle cell
+            styles.append({
+                'if': {
+                    'row_index': row_idx,
+                    'column_id': value_cols[1]
+                },
+                'textAlign': 'center',
+                'borderLeft': 'none',
+                'borderRight': 'none',
+            })
+    else:
+        # Process groups of columns
+        middle_idx = group_size // 2
+        
+        for row_idx in rows:
+            for group_num in range(len(value_cols) // group_size):
+                group_start = group_num * group_size
+                group_end = group_start + group_size
+                
+                group_cols = value_cols[group_start:group_end]
+                
+                # Left cell
+                styles.append({
+                    'if': {
+                        'row_index': row_idx,
+                        'column_id': group_cols[0]
+                    },
+                    'borderRight': 'none',
+                    'textAlign': 'center',
+                    'color': 'transparent',
+                })
+                
+                # Middle cell
+                styles.append({
+                    'if': {
+                        'row_index': row_idx,
+                        'column_id': group_cols[middle_idx]
+                    },
+                    'textAlign': 'center',
+                    'borderLeft': 'none',
+                    'borderRight': 'none',
+                })
+                
+                # Right cell
+                styles.append({
+                    'if': {
+                        'row_index': row_idx,
+                        'column_id': group_cols[2]
+                    },
+                    'borderLeft': 'none',
+                    'textAlign': 'center',
+                    'color': 'transparent',
+                })
 
     return styles
 
