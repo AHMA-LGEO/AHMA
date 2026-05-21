@@ -53,7 +53,7 @@ class Section6Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         filtered = df.copy()
 
@@ -76,7 +76,7 @@ class Section6Prep:
         result = indg.merge(non_indg, on=label_col_name, how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
@@ -238,7 +238,7 @@ class Section6Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         community_df = []
         for community in COMMUNITIES:

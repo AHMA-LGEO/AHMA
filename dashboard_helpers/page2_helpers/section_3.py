@@ -74,7 +74,7 @@ class Section3Prep:
         rows.append(blank_row('Indicator', YEARS, label_col_1))
         for pop_type in ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']:
             rows.append({'Indicator': pop_type, **get_values(df_3_1_1, label_col_1, pop_type)})
-        rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_1, label_col_1, 'TOTAL')})
+        rows.append({'Indicator': 'Total', **get_values(df_3_1_1, label_col_1, 'Total')})
         rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 2: Age Profile #####
@@ -89,7 +89,7 @@ class Section3Prep:
         rows.append(blank_row('Indicator', YEARS, label_col_3))
         for hh_type in ['On Reserve', 'Off Reserve']:
             rows.append({'Indicator': hh_type, **get_values(df_3_1_3, label_col_3, hh_type)})
-        rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_3, label_col_3, 'TOTAL')})
+        rows.append({'Indicator': 'Total', **get_values(df_3_1_3, label_col_3, 'Total')})
         rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 4: Indigenous-led HH moves (by CD) #####
@@ -116,7 +116,7 @@ class Section3Prep:
                 )
             ], className='pg2-table-lgeo')
     
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -192,12 +192,20 @@ class Section3Prep:
 
         fig = go.Figure()
         for i, (label, indg_pct, non_indg_pct) in enumerate(zip(age_labels, indg_pcts, non_indg_pcts)):
+            
+            color = CHART_COLORS[i % len(CHART_COLORS)]
+            # Build hoverlabel dict conditionally
+            hoverlabel = dict(namelength=-1)
+            if color == '#80875C':
+                hoverlabel['font'] = dict(color='white')
+
             fig.add_trace(go.Bar(
                 name=label,
                 x=['Indigenous', 'Non-Indigenous'],
                 y=[indg_pct, non_indg_pct],
-                marker_color=CHART_COLORS[i % len(CHART_COLORS)],
+                marker_color=color,
                 legendrank=len(age_labels) - i,
+                hoverlabel=hoverlabel,
                 hovertemplate=f'<b>{label}</b><br>%{{x}}<br>%{{y:.1f}}%<extra></extra>'
             ))
 
@@ -287,7 +295,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
         display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
@@ -400,7 +408,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
         
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         value_cols = ['Indigenous', 'Men+', 'Women+']
 
@@ -462,7 +470,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of Indigenous HHs'
 
@@ -527,7 +535,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of HHs'
 
@@ -708,6 +716,7 @@ class Section3Prep:
             ),
             style_cell_conditional=make_style_cell(index_col, [value_col],
                                                    label_width='25%', label_min_width='120px'),
+            style_table={'maxWidth': '600px'},
             **base_style
         )
 

@@ -50,7 +50,7 @@ class Section12Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = "Calculation of Indigenous Housing Target"
         _VAL_COL = "# of HHs (2034)"

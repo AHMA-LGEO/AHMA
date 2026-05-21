@@ -5,6 +5,29 @@ import pandas as pd
 from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011, YEARS_2016_2021
 
 
+#-------------------- Global Comparison Button Style --------------------
+
+COLOR_SCHEME = {
+    "all_on": {
+        "bg": "#6b7280",      # Light gray background
+        "border": "#6b7280",  # Gray border
+        "text": "#ffffff",    # Gray text
+        "label": "○ Hide Comparison",
+    },
+    "all_off": {
+        "bg": "#9CA37A",      # Green background
+        "border": "#9CA37A",  # Green border
+        "text": "#ffffff",    # Green text
+        "label": "● Show Comparison",
+    },
+    "mixed": {
+        "bg": "#f59e0b",      # Amber background
+        "border": "#f59e0b",  # Amber border
+        "text": "#ffffff",    # Amber text
+        "label": "◐ Mixed",
+    },
+}
+
 #-------------------- Shared blank-separator style --------------------
 _BLANK_ROW_STYLE = {
     'backgroundColor': '#FFFFFF',
@@ -50,9 +73,15 @@ def make_style_cell(
         'textAlign': 'left',
         'width': label_width,
         'minWidth': label_min_width,
+        'paddingRight': '12px',
     }]
     for col_id in value_col_ids:
-        styles.append({'if': {'column_id': col_id}, 'textAlign': 'right', 'width': value_width})
+        styles.append({
+            'if': {'column_id': col_id}, 
+            'textAlign': 'right', 
+            'width': value_width,
+            'paddingRight': '12px',
+            })
     return styles
 
 
@@ -63,7 +92,7 @@ def make_special_row_styles(
     geo_headers: set = frozenset(),
     section_headers: set = frozenset(),
     warning_headers: set = frozenset(),
-    total_labels: set = frozenset({'TOTAL'}),
+    total_labels: set = frozenset({'Total'}),
     italic_labels: set = frozenset(),
     total_col: bool = False,
     warning_color: str = '#b55438',
@@ -87,7 +116,7 @@ def make_special_row_styles(
         geo_headers:        Label values that render as geography-colour header rows.
         section_headers:    Label values that render as headings-colour section rows.
         warning_headers:    Label values that render in warning_color bold.
-        total_labels:       Label values that render bold only (default: {'TOTAL'}).
+        total_labels:       Label values that render bold only (default: {'Total'}).
         italic_labels:      Label values that render italic in warning_color.
         total_col:          If True, bold all cells in columns whose ID contains 'total'.
         warning_color:      CSS colour for warning/below-multiple rows.
@@ -110,7 +139,7 @@ def make_special_row_styles(
     styles = []
     for i, (_, row) in enumerate(data.iterrows()):
         val = row.get(label_col, '')
-        rule = {'if': {'row_index': i}}
+        rule = {'if': {'row_index': i}, 'paddingRight': '12px'}
 
         if val in geo_headers:
             styles.append({**rule, **_GEO})
@@ -128,7 +157,7 @@ def make_special_row_styles(
     if total_col:
         for col in data.columns:
             if 'total' in str(col).lower():
-                styles.append({'if': {'column_id': col}, 'fontWeight': 'bold'})
+                styles.append({'if': {'column_id': col}, 'fontWeight': 'bold', 'paddingRight': '12px'})
 
     return styles
 
@@ -151,6 +180,7 @@ def generate_style_data_conditional(data: pd.DataFrame) -> list:
             'backgroundColor': TABLE_COLORS['row_alt_1'] if i % 2 == 0 else TABLE_COLORS['row_alt_2'],
             'color': TABLE_COLORS['text'],
             'border': f"1px solid {TABLE_COLORS['border']}",
+            'paddingRight': '12px',
         }
         for i in range(len(data))
     ]
@@ -485,5 +515,5 @@ def get_special_row_styles_9_3(data: pd.DataFrame) -> list:
         geo_headers=_T9_3_GEO_HEADERS,
         section_headers=_T9_3_SECTION_HEADERS,
         italic_labels=_T9_3_RED_ATTRS,
-        total_labels={"TOTAL"},
+        total_labels={"Total"},
     )

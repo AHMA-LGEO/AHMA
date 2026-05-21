@@ -68,7 +68,7 @@ layout = html.Div(
                                     title='A provincially-legislated area at the municipal scale',
                                     id='to-geography-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -80,7 +80,7 @@ layout = html.Div(
                                     title='A provincially legislated area like counties or regional districts',
                                     id='to-region-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -92,7 +92,7 @@ layout = html.Div(
                                     title='Province of British Columbia',
                                     id='to-province-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -116,7 +116,12 @@ layout = html.Div(
                         # Reset button
                         html.Div(
                             children=[
-                                html.Button('Reset Map', id='reset-map', n_clicks=0),
+                                html.Button('Reset Map', 
+                                            id='reset-map', 
+                                            n_clicks=0,
+                                            className='button-lgeo'
+                                            ),
+                                
                             ],
                             className='reset-button-lgeo'
                         ),

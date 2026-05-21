@@ -49,7 +49,7 @@ class Section10Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         _LABEL_COL = 'Mode of Transport'
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         value_cols = ['Transit', 'Walking', 'Biking']
         # service_mapping = {

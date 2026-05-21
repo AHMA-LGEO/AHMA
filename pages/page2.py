@@ -20,6 +20,7 @@ from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
 from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG, TABLE_FONT
+from dashboard_helpers.page2_helpers.table_styles import COLOR_SCHEME
 
 # Initialize helpers
 section_2_layout = Section2Prep()
@@ -67,7 +68,11 @@ def global_toggle_ui():
                         outline=True,
                         size="sm",
                         className="d-flex align-items-center gap-2",
-                        style={"minWidth": "170px", "justifyContent": "center"},
+                        style={"minWidth": "170px", 
+                               "justifyContent": "center",
+                               "backgroundColor": "#9CA37A",
+                               "color": "#ffffff",
+                               "cursor": "pointer"},
                     ),
                 ], className="d-flex align-items-center"),
             ], className="d-flex justify-content-between align-items-center"),
@@ -87,12 +92,14 @@ layout = html.Div([
     dcc.Store(id="table-visibility-store", data={tid: False for tid in TABLE_IDS}),
 
     # Export button
-    dbc.Button("Export to PDF", id="export-button", className="export-pdf"),
+    dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
     html.Div(id='dummy-output', style={'display': 'none'}),
+    
 
     # Page content
     html.Div([
         # Global toggle card (top of page)
+        html.Br(),
         global_toggle_ui(),
 
         # Introduction
@@ -100,9 +107,9 @@ layout = html.Div([
         html.Div([
             html.H6([
                 INTRO_TEXT,
-                html.Br(), html.Br(),
+                # html.Br(), html.Br(),
                 # INTRO_PARAGRAPH,
-                html.Br(), html.Br(),
+                # html.Br(), html.Br(),
                 # html.Ul([
                 #     html.Li([html.I([note])]) for note in NOTES
                 # ])
@@ -143,7 +150,7 @@ layout = html.Div([
                     value=False,
                     label="",
                     className="mb-0",
-                    style={"transform": "scale(1.2)"},
+                    style={"transform": "scale(1.2)", "accentColor": "#80875C"},
                 ),
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
                style={"borderBottom": "2px solid #002145"}),
@@ -189,9 +196,10 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div(id='chart-5-2-container'),
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
                     html.Span('Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
@@ -199,13 +207,19 @@ layout = html.Div([
                     id={"type": "table-toggle", "index": "table-5-2"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle",
                     style={"transform": "scale(1.2)"},
                 ),
             ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
-
-            html.Div(id='chart-5-2-container'),
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+            
             html.Div(id='table-5-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
@@ -418,10 +432,10 @@ layout = html.Div([
 
         # Section 9 - Systematic Pathways and Indigenous Homelessness
         html.Div([
-            # html.Div(id='chart-9-1-container'),
-            # html.Div(id='table-9-1-container'),
-            # html.Div(id='table-9-2-container'),
-            # html.Div(id='table-9-3-container'),
+            html.Div(id='chart-9-1-container'),
+            html.Div(id='table-9-1-container'),
+            html.Div(id='table-9-2-container'),
+            html.Div(id='table-9-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
@@ -443,9 +457,9 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
-        html.Footer([
-            html.Img(src='./assets/Footer for HNR Calc.png', className='footer-image')
-        ], className='footer')
+        # html.Footer([
+        #     html.Img(src='./assets/Footer for HNR Calc.png', className='footer-image')
+        # ], className='footer')
 
     ], id='page-content-to-print', className='dashboard-pg2-lgeo')
 
@@ -456,7 +470,8 @@ layout = html.Div([
 @callback(
     Output("table-visibility-store", "data"),
     Output("global-toggle-btn", "children"),
-    Output("global-toggle-btn", "color"),
+    # Output("global-toggle-btn", "color"),
+    Output("global-toggle-btn", "style"),
     Output("global-intent-store", "data"),
     Input({"type": "table-toggle", "index": ALL}, "value"),
     prevent_initial_call=True,
@@ -466,20 +481,36 @@ def local_toggle_state(toggle_values):
     global_state = derive_global_state(new_store)
 
     if global_state == "all_on":
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_on"
+        # btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_on"
+        state_key, new_intent = "all_on", "all_on"
     elif global_state == "all_off":
-        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_off"
+        # btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_off"
+        state_key, new_intent = "all_off", "all_off"
     else:  # mixed — next global click will turn all on
-        btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
+        # btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
+        state_key, new_intent = "mixed", "all_on"
 
-    return new_store, btn_label, btn_color, new_intent
+    colors =  COLOR_SCHEME[state_key]
+    btn_style = {
+        "minWidth": "170px",
+        "justifyContent": "center",
+        "backgroundColor": colors["bg"],
+        "borderColor": colors["border"],
+        "color": colors["text"],
+        "cursor": "pointer",
+        "border": f"2px solid {colors['border']}",
+    }
+
+    # return new_store, btn_label, btn_color, new_intent
+    return new_store, colors['label'], btn_style, new_intent
 
 
 # Global button click → set all switches + update store + button state
 @callback(
     Output("table-visibility-store", "data", allow_duplicate=True),
     Output("global-toggle-btn", "children", allow_duplicate=True),
-    Output("global-toggle-btn", "color", allow_duplicate=True),
+    # Output("global-toggle-btn", "color", allow_duplicate=True),
+    Output("global-toggle-btn", "style", allow_duplicate=True),
     Output("global-intent-store", "data", allow_duplicate=True),
     Output({"type": "table-toggle", "index": ALL}, "value"),
     Input("global-toggle-btn", "n_clicks"),
@@ -491,11 +522,26 @@ def global_toggle_click(_, current_intent):
     new_store = {tid: turn_on for tid in TABLE_IDS}
 
     if turn_on:
-        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_on"
+        # btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_on"
+        state_key, new_intent = "all_on", "all_off"
     else:
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_off"
+        # btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_off"
+        state_key, new_intent = "all_off", "all_on"
 
-    return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
+    colors = COLOR_SCHEME[state_key]
+    
+    btn_style = {
+        "minWidth": "170px",
+        "justifyContent": "center",
+        "backgroundColor": colors["bg"],
+        "borderColor": colors["border"],
+        "color": colors["text"],
+        "cursor": "pointer",
+        "border": f"2px solid {colors['border']}",
+    }
+
+    # return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
+    return new_store, colors['label'], btn_style, new_intent, [turn_on] * len(TABLE_IDS)
 
 
 # Section 2 - Nations / Territories + Métis Communities

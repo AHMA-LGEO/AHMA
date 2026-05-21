@@ -237,4 +237,4 @@ def transform_geocode_master() -> pd.DataFrame:
         })
 
     result_df = pd.DataFrame(rows)
-    return result_df
+    return result_df.sort_values('Geography')

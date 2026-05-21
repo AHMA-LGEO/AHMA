@@ -22,8 +22,8 @@ PROVINCE_CODE = 59
 PROVINCE_NAME = "British Columbia"
 
 # Default selection
-DEFAULT_GEOGRAPHY = 'Vancouver CY (CSD, BC)'
-DEFAULT_GEOCODE = 5915022  # Vancouver
+DEFAULT_GEOGRAPHY = 'Saanich (CSD, BC)'
+DEFAULT_GEOCODE = 5917021  # Saanich
 
 # Map configuration
 MAP_COLORS_WO_BLACK = [
@@ -36,8 +36,8 @@ MAP_COLORS_W_BLACK = [
     '#78cb80', '#ffe6d6', '#e98098', '#a480bb', '#490076', '#008481', '#74d3f9'
 ]
 
-MAP_COLORS_HIGHLIGHT = ['#37BB31', '#74D3F9']
-MAP_COLORS_HIGHLIGHT_W_BLACK = ['#000000', '#37BB31', '#74D3F9']
+MAP_COLORS_HIGHLIGHT = ['#80875C', '#D89A86']
+MAP_COLORS_HIGHLIGHT_W_BLACK = ['#000000', '#80875C', '#D89A86']
 
 OPACITY_VALUE = 0.2
 
@@ -54,7 +54,8 @@ PLOT_CONFIG = {
 
 # Page 2 - Table styling
 TABLE_COLORS = {
-    'geography': '#80875C',
+    'geography': '#4D5137',
+    # 'geography': '#80875C',
     'headings': '#B5BA9A',
     'row_alt_1': '#E6E8DD',
     'row_alt_2': '#CDD0BB',

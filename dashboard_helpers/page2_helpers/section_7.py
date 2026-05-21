@@ -54,7 +54,7 @@ class Section7Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df= df.fillna("NA")
+        df= df.fillna("N/A")
         
         _LABEL_COL = 'Households by Tenure:'
         _SECTION_HEADER = 'Median Shelter Cost of Dwelling'
@@ -188,7 +188,7 @@ class Section7Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of primary and secondary rental units'
         _SUB_COL = 'sub_type'
@@ -300,7 +300,7 @@ class Section7Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
         _LABEL_COL = 'Statistic'
 
         rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()
@@ -403,7 +403,7 @@ class Section7Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
         _LABEL_COL = 'Statistic'
 
         rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()

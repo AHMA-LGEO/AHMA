@@ -79,7 +79,7 @@ class Section8Prep:
                 row = idx_df.loc[(indicator, metric)]
                 return {f'{prefix}_{y}': fmt_fn(row[y]) for y in YEARS_MINUS_2011}
             except KeyError:
-                return {f'{prefix}_{y}': 'NA' for y in YEARS_MINUS_2011}
+                return {f'{prefix}_{y}': 'N/A' for y in YEARS_MINUS_2011}
 
         rows = []
         for indicator in INDICATOR_ORDER:
@@ -124,7 +124,7 @@ class Section8Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = "Indicator"
 
@@ -292,7 +292,7 @@ class Section8Prep:
         result = indg.merge(non_indg, on=_LABEL_COL, how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
@@ -308,7 +308,7 @@ class Section8Prep:
         
         table_df = pd.DataFrame(rows, dtype=object)
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        table_df = table_df.fillna("NA")
+        table_df = table_df.fillna("N/A")
 
         columns = [
             {"name": ["", "", _LABEL_COL], "id": _LABEL_COL}
@@ -363,7 +363,7 @@ class Section8Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Census Year'
         # communities = [comm + "-led HH"  for comm in COMMUNITIES]
@@ -449,7 +449,7 @@ class Section8Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         filtered = df.copy()
         _LABEL_COL = 'Metric'
@@ -472,7 +472,7 @@ class Section8Prep:
         result = indg.merge(non_indg, on=_LABEL_COL, how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         # indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         # all_val_cols = indg_cols + non_indg_cols
@@ -594,7 +594,7 @@ class Section8Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
         _LABEL_COL = 'Metric'
 
         community_df = []
@@ -661,7 +661,7 @@ class Section8Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
 

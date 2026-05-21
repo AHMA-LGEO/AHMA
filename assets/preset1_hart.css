@@ -56,8 +56,8 @@
         width: 100%;
         height: 20%;
         text-align: left;
-        background-color: transparent; /* Ensure it doesn't overlap with content */
-        padding-top: 120px; /* Add some padding if needed */
+        background-color: transparent; 
+        padding-top: 120px; 
     }
 }
 @media print {
@@ -152,6 +152,41 @@
 /* <div class="dashboardWrapper" style="position: relative;">
 <embed style="border: none;" src="https://hartdashboard-kook-lgeo.koyeb.app/page2" dpi="300" width="100%" height="3200vh">
 </div> */
+.export-pdf {
+  background-color: #C97A63;
+  border-color: #C97A63;
+  color: white;
+}
+
+.export-pdf:hover {
+  color: black !important;
+  background-color: transparent !important;
+  cursor: pointer;
+  border-color: #C97A63 !important;
+  box-shadow: none !important;
+}
+
+.green-toggle .form-check-input:checked {
+        background-color: #80875C !important;
+        border-color: #80875C !important;
+    }
+    .green-toggle .form-check-input:checked:focus {
+        border-color: #80875C !important;
+        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+    }
+
+
+.export-xlsx-btn {
+  background-color: #C97A63;
+  border-color: #C97A63;
+  color: white;
+}
+
+.export-xlsx-btn:hover {
+  color: black;
+  cursor: pointer;
+  border-color: #C97A63;
+}
 
 
 .background-lgeo {
@@ -367,16 +402,22 @@
   padding-top: 1%;
 }
 
-.region-button-lgeo {
+.button-lgeo {
   width: 270px;
+  border-radius: 0px !important;
+}
+
+.button-lgeo:hover {
+  color: #9CA37A;
+  cursor: pointer;
 }
 
 
 .reset-button-lgeo {
   display: block;
   padding-top: 10px;
-
 }
+
 
 .map-lgeo {
   display: inline;
@@ -815,17 +856,6 @@ input[type="button"].button-primary:focus {
   background-color: #1EAEDB;
   border-color: #1EAEDB; }
 
-.export-pdf {
-  background-color: #5b2a1c;
-  border-color: #5b2a1c;
-  color: white;
-}
-
-.export-xlsx-btn {
-  background-color: #5b2a1c;
-  border-color: #5b2a1c;
-  color: white;
-}
 
 /* Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */

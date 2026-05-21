@@ -307,11 +307,11 @@ class Section5DataPrep:
         def calc_total(df, year, hh_type):
             """
             Calculates the total number of households for all numbers of maintainers for a given year and household type,
-            necessary for calculating the percentage columns and the TOTAL rows.
+            necessary for calculating the percentage columns and the Total rows.
             """
             total = 0
             for num_maintainers, year_hh_map in cm.TABLE_5_5_5_6_COL_MAP.items():
-                if num_maintainers != 'TOTAL':
+                if num_maintainers != 'Total':
                     col_name = year_hh_map.get(year, {}).get(hh_type)
                     val = get_val(df, col_name)
                     total += val
@@ -350,12 +350,12 @@ class Section5DataPrep:
                         # calculate the total hhs for the number of maintainers, year, and hh type, we need it once for every row
                         total = calc_total(match, year, hh_type)
 
-                        # for TOTAL rows we just need the total, no need to calculate percent, we know it is 100%
-                        if num_maintainers == 'TOTAL':
+                        # for Total rows we just need the total, no need to calculate percent, we know it is 100%
+                        if num_maintainers == 'Total':
                             row[num_hhs] = total
                             row[percent_hhs] = '100' if total else None
                         
-                        # for all rows other than TOTALs, we access the hh value, and calculate the percent 
+                        # for all rows other than Totals, we access the hh value, and calculate the percent 
                         else:
                             col_name = year_hh_map.get(year, {}).get(hh_type)
                             val = get_val(match, col_name)

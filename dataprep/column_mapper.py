@@ -73,7 +73,7 @@ TABLE_3_1_2_COL_MAP = strip_map({
         "2011": ["  65 to 69 years", "  70 to 74 years", "  75 to 79 years",
                  "  80 to 84 years", "  85 years and over"],
     },
-    "total": {
+    "Total": {
             "2006": "Total Aboriginal identity population by age and sex groups - 20% sample data",
             "2011": "  Total Aboriginal identity population in private households by age groups",
             "2016": "  Total - Age groups",
@@ -92,7 +92,7 @@ TABLE_3_1_3_COL_MAP = strip_map({
         "2016": "Total – Mobility status 5 years ago of the PHM_  Off reserve_Aboriginal household",
         "2021": "Total – Mobility status 5 years ago of the PHM_  Off reserve_  Indigenous household",
     },
-    "TOTAL": {
+    "Total": {
         "2006": "Total - Private households by area of residence _ Aboriginal household",
         "2016": "Total – Mobility status 5 years ago of the PHM_Total - Private households by area of residence of primary household maintainers_Aboriginal household",
         "2021": "Total – Mobility status 5 years ago of the PHM_Total - Residence on or off reserve_  Indigenous household",
@@ -229,7 +229,7 @@ _T4_1_TENURE_PREFIX = {
         "2016": "Dwelling provided by the local government, First Nation or Indian band",
         "2021": "Dwelling provided by the local government, First Nation or Indian band",
     },
-    "TOTAL": {
+    "Total": {
         "2006": "Total – Housing tenure and presence of mortgage",
         "2011": "Total number of private Aboriginal households by tenure",
         "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
@@ -584,7 +584,7 @@ TABLE_5_5_5_6_COL_MAP = strip_map({
     }
     for maintainers, year_map in _T5_5_5_6_MAINTAINER_PREFIX.items()
 })
-TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
+TABLE_5_5_5_6_COL_MAP['Total'] = None
 
 
 #-------------------- Section 6 – Dwelling --------------------

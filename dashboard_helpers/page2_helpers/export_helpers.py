@@ -25,8 +25,13 @@ def with_export_btn(table_component, table_id: str):
                 outline=True,
                 className="export-xlsx-btn",
             ),
-
+            style={
+                "display": "flex",
+                "justifyContent": "flex-end",
+                "paddingBottom": "10px",
+            }
         ),
+        # html.Br(),
         table_component,
     ])
 

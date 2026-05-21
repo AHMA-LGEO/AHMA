@@ -9,32 +9,32 @@ census division, and the province of British Columbia. The tool will only includ
 
 
 #-------------------- Section 2 descriptions --------------------
-TABLE_2_1_TITLE = "2.1 Indigenous Territory"
+TABLE_2_1_TITLE = "Indigenous Territory"
 # TABLE_2_1_DESC = "Indigenous nations and territories associated with the selected geography."
 
 # TABLE_2_2_TITLE = "2.2 Métis Communities"
 TABLE_2_2_DESC = "The following Métis Chartered Community or Communities, organized within the Métis Nation Government in British Columbia, are located within the selected census boundary:"
 
 #-------------------- Section 3 descriptions --------------------
-SECTION_3_TITLE = '3. Demographics ("Who lives here?")'
+SECTION_3_TITLE = 'Demographics ("Who lives here?")'
 
 # Table 3.1 descriptions
-TABLE_3_1_TITLE = "3.1 Population and Age (2006-2021)"
+TABLE_3_1_TITLE = "Population and Age (2006-2021)"
 
 # Table 3.2 descriptions
-CHART_3_2_TITLE = "3.2 Population by Age Groups, Indigenous vs Non-Indigenous (2021)"
+CHART_3_2_TITLE = "Population by Age Groups, Indigenous vs Non-Indigenous (2021)"
 
 # Table 3.3 descriptions
-TABLE_3_3_TITLE = "3.3 Population by Indigenous Identity & Age Group"
+TABLE_3_3_TITLE = "Population by Indigenous Identity & Age Group"
 
 # Table 3.4 descriptions
-TABLE_3_4_TITLE = "3.4 Population by Gender & Age Group"
+TABLE_3_4_TITLE = "Population by Gender & Age Group"
 
 # Table 3.5 descriptions
-TABLE_3_5_TITLE = "3.5 Priority Population (2006, 2016, 2021)"
+TABLE_3_5_TITLE = "Priority Population (2006, 2016, 2021)"
 
 # Table 3.6 descriptions
-TABLE_3_6_TITLE = "3.6 Population by Indigenous Ancestry 2021"
+TABLE_3_6_TITLE = "Population by Indigenous Ancestry 2021"
 CHART_3_6_DESC = """
 *This output might get removed down the road, potentially during user testing, if it's 
 thought to be undermining the right of communities to control information about them and their members. 
@@ -43,108 +43,108 @@ It also takes up a lot of space and doesn't have any critical information.
 TABLE_3_6_NOTE = "*Note that total may not equal sum of categories due to data suppression of small counts"
 
 #-------------------- Section 4 descriptions --------------------
-SECTION_4_TITLE = '4. Households ("Who lives here?")'
+SECTION_4_TITLE = 'Households ("Who lives here?")'
 
 # Table 4.1 descriptions
-TABLE_4_1_TITLE = "4.1 Indigenous HHs by Tenure (2006-2021)"
+TABLE_4_1_TITLE = "Indigenous HHs by Tenure (2006-2021)"
 TABLE_4_1_DESC = "Some dummy description for table 4.1..."
 
 # Table 4.2 descriptions
-TABLE_4_2_TITLE = "4.2 Indigenous HHs by Communities by Tenure (2006-2021)"
+TABLE_4_2_TITLE = "Indigenous HHs by Communities by Tenure (2006-2021)"
 TABLE_4_2_DESC = "Some dummy description for table 4.2..."
 
 # Table 4.3 descriptions
-TABLE_4_3_TITLE = "4.3 HHs by Household Size (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+TABLE_4_3_TITLE = "HHs by Household Size (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 
 #-------------------- Section 5 descriptions --------------------
-SECTION_5_TITLE = '5. Income ("Who lives here?")'
+SECTION_5_TITLE = 'Income ("Who lives here?")'
 
 # Table 5.1 descriptions
-TABLE_5_1_TITLE = "5.1 HART income & shelter cost category table with percentage of Indigenous Households (2021)"
+TABLE_5_1_TITLE = "HART income & shelter cost category table with percentage of Indigenous Households (2021)"
 
 # Table 5.2 and 5.3 descriptions
-TABLE_5_2_TITLE = "5.2 & 5.3 Households by AMHI Income (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+TABLE_5_2_TITLE = "Households by AMHI Income (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 # Table 5.4 descriptions
-TABLE_5_4_TITLE = "5.4 Median Household & Per Person Income (2016, 2021)"
+TABLE_5_4_TITLE = "Median Household & Per Person Income (2016, 2021)"
 
 #-------------------- Section 6 descriptions --------------------
-SECTION_6_TITLE = '6. Dwellings ("How are people housed?")'
+SECTION_6_TITLE = 'Dwellings ("How are people housed?")'
 
 # Table 6.1 and 6.2 descriptions
-TABLE_6_1_TITLE = "6.1 & 6.2 Households by Number of Bedrooms in Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+TABLE_6_1_TITLE = "Households by Number of Bedrooms in Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 # Table 6.3 and 6.4 descriptions
-TABLE_6_3_TITLE = "6.3 & 6.4 Households by Period of Construction of Dwelling (Indigenous & non-Indigenous) (2006-2021)"
+TABLE_6_3_TITLE = "Households by Period of Construction of Dwelling (Indigenous & non-Indigenous) (2006-2021)"
 
 # Table 6.5 and 6.6 descriptions
-TABLE_6_5_TITLE = "6.5 & 6.6 Households by Structural Type of Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+TABLE_6_5_TITLE = "Households by Structural Type of Dwelling (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 #-------------------- Section 7 descriptions --------------------
-SECTION_7_TITLE = '7. Shelter Costs and Rental Market ("How are people housed?")'
+SECTION_7_TITLE = 'Shelter Costs and Rental Market ("How are people housed?")'
 
 # Table 7.1 descriptions
-TABLE_7_1_TITLE = "7.1 & 7.2 Households Median Shelter Cost for Owned & Rented dwellings (Indigenous & non-Indigenous) (2016, 2021)"
+TABLE_7_1_TITLE = "Households Median Shelter Cost for Owned & Rented dwellings (Indigenous & non-Indigenous) (2016, 2021)"
 
-TABLE_7_3_TITLE = "7.3 CMHC Rental Market Survey data (number of rental units, average rent, vacancy rate) (2016-2023)"
+TABLE_7_3_TITLE = "CMHC Rental Market Survey data (number of rental units, average rent, vacancy rate) (2016-2023)"
 
 # Table 7.3.1 descriptions
-TABLE_7_3_1_TITLE = "7.3.1 Number of Primary and Secondary Rental Units"
+TABLE_7_3_1_TITLE = "Number of Primary and Secondary Rental Units"
 
 # Table 7.3.2 descriptions
-TABLE_7_3_2_TITLE = "7.3.2 Change in Average Rents Between 2016 and 2023"
+TABLE_7_3_2_TITLE = "Change in Average Rents Between 2016 and 2023"
 
 # Table 7.3.3 descriptions
-TABLE_7_3_3_TITLE = "7.3.3 Change in Vacancy Rates Between 2016 and 2023"
+TABLE_7_3_3_TITLE = "Change in Vacancy Rates Between 2016 and 2023"
 
 #-------------------- Section 8 descriptions --------------------
-SECTION_8_TITLE = '8. Housing Need Indicators ("Where does the system fail?")'
+SECTION_8_TITLE = 'Housing Need Indicators ("Where does the system fail?")'
 
 # Table 8.1 and 8.2 descriptions
-TABLE_8_1_TITLE = "8.1 & 8.2 Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"
+TABLE_8_1_TITLE = "Households in Acceptable & Unacceptable (unaffordable, need major repairs, overcrowded, multiple) housing"
 
 # Table 8.3 and 8.4 descriptions
-TABLE_8_3_TITLE = "8.3 & 8.4 Households in CHN or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)"
+TABLE_8_3_TITLE = "Households in CHN or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
 # Table 8.5 and 8.6 descriptions
-TABLE_8_5_TITLE = "8.5 & 8.6 Households in CHN by Priority Populations (Indigenous, non-Indigenous) (2006, 2016, 2021)"
+TABLE_8_5_TITLE = "Households in CHN by Priority Populations (Indigenous, non-Indigenous) (2006, 2016, 2021)"
 
 # Table 8.7 descriptions
-TABLE_8_7_TITLE = "8.7 Indigenous Affordable Housing Deficit by Income & Household Size (2021)"
+TABLE_8_7_TITLE = "Indigenous Affordable Housing Deficit by Income & Household Size (2021)"
 
 #-------------------- Section 9 descriptions --------------------
-SECTION_9_TITLE = '9. Systemic Pathways and Indigenous Homelessness ("Where does the system fail?")'
+SECTION_9_TITLE = 'Systemic Pathways and Indigenous Homelessness ("Where does the system fail?")'
 
 # Table 9.1 descriptions
-TABLE_9_1_TITLE = "9.1 Number of Indigenous People Released from Corrections by Age Group (2008-2024)(Region)"
+TABLE_9_1_TITLE = "Number of Indigenous People Released from Corrections by Age Group (2008-2024)(Region)"
 
 # Table 9.2 descriptions
-TABLE_9_2_TITLE = "9.2 Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"
+TABLE_9_2_TITLE = "Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"
 
 # Table 9.3 descriptions
-TABLE_9_3_TITLE = "9.3 Indigenous Homelessness (2021, 2023, 2025)"
+TABLE_9_3_TITLE = "Indigenous Homelessness (2021, 2023, 2025)"
 
 
 #-------------------- Section 10 descriptions --------------------
-SECTION_10_TITLE = '10. Access to Services ("What\'s needed?")'
+SECTION_10_TITLE = 'Access to Services ("What\'s needed?")'
 
 # Table 10.1 descriptions
-TABLE_10_1_TITLE = "10.1. Access to Health Care, Sports & Rec facilities, Primary & Secondary education, Child Care by Public Transit (2021)"
+TABLE_10_1_TITLE = "Access to Health Care, Sports & Rec facilities, Primary & Secondary education, Child Care by Public Transit (2021)"
 
 #-------------------- Section 11 descriptions --------------------
-SECTION_11_TITLE = '11. Population & Household Growth ("What\'s needed?")'
+SECTION_11_TITLE = 'Population & Household Growth ("What\'s needed?")'
 
 # Table 11.1 descriptions
-TABLE_11_1_TITLE = "11.1. Projected Population of Indigenous People & Households (First Nations, Metis, Inuit, or Other) 2021-2046"
+TABLE_11_1_TITLE = "Projected Population of Indigenous People & Households (First Nations, Metis, Inuit, or Other) 2021-2046"
 
 
 #-------------------- Section 12 descriptions --------------------
-SECTION_12_TITLE = '12. Housing Targets ("What\'s needed?")'
+SECTION_12_TITLE = 'Housing Targets ("What\'s needed?")'
 
 # Table 12.1 descriptions
-TABLE_12_1_TITLE = "12.1 AHMA's provincial results for 2034"
+TABLE_12_1_TITLE = "AHMA's provincial results for 2034"
 
 # Table 12.2 descriptions
-TABLE_12_2_TITLE = "12.2 Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"
+TABLE_12_2_TITLE = "Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"
 TABLE_12_2_NOTE = "*FYI: Values are for City of Vancouver, and they are projected to have fewer Indigenous people in 2034 than 2024, hence the negative value under part 4."

@@ -64,7 +64,7 @@ class Section4Prep:
         result = indg.merge(non_indg, on='Households by Tenure', how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         indg_cols = [f'indg_{y}' for y in YEARS]
         all_val_cols = indg_cols + non_indg_cols
@@ -73,7 +73,7 @@ class Section4Prep:
         for _, row in result.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
-            if tenure == 'TOTAL' or 'without a mortgage' in str(tenure):
+            if tenure == 'Total' or 'without a mortgage' in str(tenure):
                 rows.append(blank_row('Households by Tenure'))
 
         return pd.DataFrame(rows, dtype=object)
@@ -97,7 +97,7 @@ class Section4Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = "Households by Tenure"
 
@@ -181,10 +181,10 @@ class Section4Prep:
             derived = (owner_counts * pcts / 100).round().astype(int)
             return {'Households by Tenure': label, **derived.to_dict()}
 
-        # Count rows: exclude % rows, TOTAL, and 'Owner' (split into two derived rows)
+        # Count rows: exclude % rows, Total, and 'Owner' (split into two derived rows)
         count_rows = indg[
             ~indg['Households by Tenure'].str.contains('%', na=False) &
-            (indg['Households by Tenure'] != 'TOTAL') &
+            (indg['Households by Tenure'] != 'Total') &
             (indg['Households by Tenure'] != 'Owner')
         ].copy()
 
@@ -194,7 +194,7 @@ class Section4Prep:
         ])
         count_rows = pd.concat([derived, count_rows], ignore_index=True)
 
-        total_rows = indg[indg['Households by Tenure'] == 'TOTAL'].copy()
+        total_rows = indg[indg['Households by Tenure'] == 'Total'].copy()
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
         count_indexed = count_rows.set_index('Households by Tenure')[YEARS]
@@ -263,7 +263,7 @@ class Section4Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Households by Tenure'
 
@@ -297,7 +297,7 @@ class Section4Prep:
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
-            if tenure == 'TOTAL' or 'without a mortgage' in str(tenure):
+            if tenure == 'Total' or 'without a mortgage' in str(tenure):
                 rows.append(blank_row('Households by Tenure'))
 
         formatted_df = pd.DataFrame(rows, dtype=object)
@@ -345,7 +345,7 @@ class Section4Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         filtered = df.copy()
         _LABEL_COL = 'Households by Size (number of people)'
@@ -374,7 +374,7 @@ class Section4Prep:
         result = indg.merge(non_indg, on=_LABEL_COL, how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols

@@ -1,6 +1,7 @@
 """
 Section 2 preparation and layout - Indigenous Nations / Territories and Métis Communities.
 """
+import re
 import pandas as pd
 from dash import dash_table, html
 import dash_bootstrap_components as dbc
@@ -87,9 +88,9 @@ class Section2Prep:
             return []
 
         return sorted({
-            str(v).strip()
+            re.sub(r',\s*', ', ', str(v)).strip()
             for v in filtered['Metis Community']
-            if pd.notna(v) and str(v).strip() != ''
+            if pd.notna(v) and str(v).strip()
         })
 
     def prepare_table_2_2_layout(self, geocode: int):
@@ -103,7 +104,8 @@ class Section2Prep:
             )
         else:
             body = html.Div(
-                f"{', '.join(communities)}",
+                # f"{', '.join(communities)}",
+                ', '.join(map(str.strip, communities)),
                 style={'fontFamily': TABLE_FONT, 'color': '#000000'}
             )
 

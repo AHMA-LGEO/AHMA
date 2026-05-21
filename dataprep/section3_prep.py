@@ -61,7 +61,7 @@ class Section3DataPrep:
             total_row = {
                 "Geocode": geocode,
                 "Geography": group["Geography"].iloc[0],
-                "Indigenous Population (by CSD)": "TOTAL",
+                "Indigenous Population (by CSD)": "Total",
             }
             for year in YEARS:
                 total_row[year] = pd.to_numeric(group[year], errors="coerce").sum()
@@ -109,7 +109,7 @@ class Section3DataPrep:
                 derived["Median Age (years)"][year] = get_val(df, median_col) if median_col else None
 
                 # Total population for pct denominator
-                total_col = col_map["total"].get(year)
+                total_col = col_map["Total"].get(year)
                 total = get_val(df, total_col)
 
                 # Under 15

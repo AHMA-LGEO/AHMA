@@ -55,7 +55,7 @@ app.clientside_callback(
     }
     """,
     Output('dummy-output', 'children'),
-    Input('export-button', 'n_clicks'),
+    Input('export-btn', 'n_clicks'),
     State('main-area', 'data')
 )
 

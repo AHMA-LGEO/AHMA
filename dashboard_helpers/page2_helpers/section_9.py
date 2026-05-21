@@ -27,7 +27,7 @@ AGE_GROUPS = ["Under 30", "30-49", "50+"]
 
 # ── Table 9.3 constants ──────────────────────────────────────────────────────
 _ATTR_RENAME_9_3 = {
-    "Total number of Indigenous people who experienced homelessness":                   "TOTAL",
+    "Total number of Indigenous people who experienced homelessness":                   "Total",
     "All Respondents Sheltered":                                                        "Sheltered",
     "All Respondents Unsheltered":                                                      "Unsheltered",
     "Length of time experiencing homelessness - 12+ months":                            "12+ months",
@@ -122,8 +122,8 @@ class Section9Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df_9_1 = df_9_1.fillna("NA")
-        df_9_1_1 = df_9_1_1.fillna("NA")
+        df_9_1 = df_9_1.fillna("N/A")
+        df_9_1_1 = df_9_1_1.fillna("N/A")
         
         # _AGE_GROUPS = ["Under 30", "30-49", "50+", "Total"]
 
@@ -213,11 +213,22 @@ class Section9Prep:
                 x=0.5, xanchor="center",
                 font=dict(size=15, family=TABLE_FONT),
             ),
-            xaxis_title='Fiscal Year',
-            yaxis_title='# Indigenous People',
+            xaxis=dict(
+        title='Fiscal Year',
+        tickson='labels',
+        automargin=True,
+        range=[-0.5, len(_FY_YEARS) - 1.0],  # adds left/right padding
+    ),
+
+    yaxis=dict(
+        title='# Indigenous People',
+        gridcolor='#E5E5E5',
+        automargin=True,
+        rangemode='tozero',
+    ),
+            plot_bgcolor='white',
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),
-            margin=dict(t=90, b=40, l=20, r=20),
             height=550,
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
@@ -323,7 +334,7 @@ class Section9Prep:
                             rows.append(r)
                     rows.append(blank_row(_LABEL_COL, PIT_YEARS))
 
-        df_display = pd.DataFrame(rows, columns=[_LABEL_COL] + PIT_YEARS).fillna("NA")
+        df_display = pd.DataFrame(rows, columns=[_LABEL_COL] + PIT_YEARS).fillna("N/A")
 
         columns = [{"name": [geo_name, ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y], "id": y} for y in PIT_YEARS

@@ -51,7 +51,7 @@ class Section5Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         value_cols = ['% of Total Indigenous HHs', 'Annual HH Income', 
                       'Affordable Shelter Cost (2020 CAD$)']
@@ -60,7 +60,7 @@ class Section5Prep:
 
         table_df['% of Total Indigenous HHs'] = table_df['% of Total Indigenous HHs'].apply(format_percent)
 
-        # Not assigning "NA" to Area Median Household Income row
+        # Not assigning "N/A" to Area Median Household Income row
         table_df.at[0, "% of Total Indigenous HHs"] = ""
 
         columns = [{"name": [geo_name, "Income Category"], "id": "Income Category"}] + [
@@ -107,7 +107,7 @@ class Section5Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         filtered = df.copy()
         _LABEL_COL = 'Households by Income'
@@ -136,7 +136,7 @@ class Section5Prep:
         result = indg.merge(non_indg, on=_LABEL_COL, how='left')
 
         non_indg_cols = [f'non_indg_{y}' for y in YEARS_MINUS_2011]
-        result[non_indg_cols] = result[non_indg_cols].fillna('NA')
+        result[non_indg_cols] = result[non_indg_cols].fillna('N/A')
 
         indg_cols = [f'indg_{y}' for y in YEARS_MINUS_2011]
         all_val_cols = indg_cols + non_indg_cols
@@ -374,7 +374,7 @@ class Section5Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         result = (df.set_index('Household/person identity')[YEARS_2016_2021]
                   .reset_index()
@@ -441,7 +441,7 @@ class Section5Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Households by Number of Household Maintainers'
         _HH_TYPES = [('Indigenous HHs', 'indg'), ('Non-Indigenous HHs', 'non_indg')]
@@ -468,7 +468,7 @@ class Section5Prep:
         rows = [blank_row(_LABEL_COL, all_val_cols, _LABEL_COL)]
         for _, row in result.iterrows():
             rows.append(row.to_dict())
-            if row[_LABEL_COL] == 'TOTAL':
+            if row[_LABEL_COL] == 'Total':
                 rows.append(blank_row(_LABEL_COL, all_val_cols))
 
         df_display = pd.DataFrame(rows, dtype=object)
