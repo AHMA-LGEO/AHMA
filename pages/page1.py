@@ -234,13 +234,15 @@ def update_map(click_data, reset_clicks, selected_geo, *args):
             )['Geography'].iloc[0]
             return fig, geo_name
 
-        else:  # csd
-            fig = map_generator.create_subregion_map(subregion_code=clicked_code, highlight=True)
+        else:  # csd            
             match = data_loader.geocode_master[
-                data_loader.geocode_master['Geo_Code'] == int(clicked_code)
+                data_loader.geocode_master['Geo_Code'] == clicked_code
                 ]
             if not match.empty:
                 geo_name = match['Geography'].iloc[0]
+
+                fig = map_generator.create_subregion_map(subregion_code=clicked_code, 
+                                                     highlight=True, selected_geography=geo_name)
                 return fig, geo_name
 
     # Default: show region map

@@ -67,7 +67,7 @@ class Section2DataPrep:
         return {
             "2.1": df_2_1,
             "2.1.1": df_2_1_1,
-            # "2.2": self.table_2_2()
+            "2.2": self.table_2_2()
         }
     
 
