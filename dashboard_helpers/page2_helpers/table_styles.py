@@ -2,28 +2,28 @@
 Styling utilities for Dash DataTables.
 """
 import pandas as pd
-from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, YEARS, YEARS_MINUS_2011, YEARS_2016_2021
+from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT
 
 
 #-------------------- Global Comparison Button Style --------------------
 
 COLOR_SCHEME = {
     "all_on": {
-        "bg": "#6b7280",      # Light gray background
-        "border": "#6b7280",  # Gray border
-        "text": "#ffffff",    # Gray text
+        "bg": "#6b7280",      
+        "border": "#6b7280",  
+        "text": "#ffffff",    
         "label": "○ Hide Comparison",
     },
     "all_off": {
-        "bg": "#9CA37A",      # Green background
-        "border": "#9CA37A",  # Green border
-        "text": "#ffffff",    # Green text
+        "bg": "#9CA37A",     
+        "border": "#9CA37A", 
+        "text": "#ffffff",   
         "label": "● Show Comparison",
     },
     "mixed": {
-        "bg": "#f59e0b",      # Amber background
-        "border": "#f59e0b",  # Amber border
-        "text": "#ffffff",    # Amber text
+        "bg": "#f59e0b",     
+        "border": "#f59e0b", 
+        "text": "#ffffff",   
         "label": "◐ Mixed",
     },
 }
@@ -73,7 +73,7 @@ def make_style_cell(
         'textAlign': 'left',
         'width': label_width,
         'minWidth': label_min_width,
-        'paddingRight': '12px',
+        'paddingLeft': '12px',
     }]
     for col_id in value_col_ids:
         styles.append({
@@ -90,6 +90,7 @@ def make_special_row_styles(
     label_col: str,
     *,
     geo_headers: set = frozenset(),
+    col_headers: set = frozenset(),
     section_headers: set = frozenset(),
     warning_headers: set = frozenset(),
     total_labels: set = frozenset({'Total'}),
@@ -103,6 +104,7 @@ def make_special_row_styles(
 
     Row classification (first match wins):
       geo_headers       → geography colour + white text + bold
+      col_headers       → columns colour + white text + bold
       warning_headers   → warning_color text + bold
       section_headers   → headings colour + body text + bold
       total_labels      → bold only (exact match on label column)
@@ -114,6 +116,7 @@ def make_special_row_styles(
         data:               DataFrame passed to the DataTable.
         label_col:          Name of the column holding row-type labels.
         geo_headers:        Label values that render as geography-colour header rows.
+        col_headers:        Label values that render as columns-colour header rows.
         section_headers:    Label values that render as headings-colour section rows.
         warning_headers:    Label values that render in warning_color bold.
         total_labels:       Label values that render bold only (default: {'Total'}).
@@ -130,6 +133,12 @@ def make_special_row_styles(
         'color': '#FFFFFF',
         'fontWeight': 'bold',
     }
+    _COLUMNS = {
+        'backgroundColor': TABLE_COLORS['columns'],
+        'color': '#FFFFFF',
+        'fontWeight': 'bold',
+        'borderRight': 'none',
+    }
     _SECTION = {
         'backgroundColor': TABLE_COLORS['headings'],
         'color': TABLE_COLORS['text'],
@@ -143,12 +152,14 @@ def make_special_row_styles(
 
         if val in geo_headers:
             styles.append({**rule, **_GEO})
+        elif val in col_headers:
+            styles.append({**rule, **_COLUMNS})
         elif val in warning_headers:
             styles.append({**rule, 'color': warning_color, 'fontWeight': 'bold'})
         elif val in section_headers:
             styles.append({**rule, **_SECTION})
         elif val in total_labels:
-            styles.append({**rule, 'fontWeight': 'bold'})
+            styles.append({**rule, 'fontWeight': 'bold', 'backgroundColor': TABLE_COLORS['headings']})  # assigning headings color to "Total" rows
         elif val in italic_labels:
             styles.append({**rule, 'color': warning_color, 'fontStyle': 'italic'})
         elif val == blank_label:
@@ -212,31 +223,56 @@ def generate_style_header_conditional(
         return [
             {
                 'if': {'header_index': 0, 'column_id': col['id']},
-                'backgroundColor': TABLE_COLORS['geography'] if i == 0 else TABLE_COLORS['headings'],
-                'color': TABLE_COLORS['text'],
+                'backgroundColor': TABLE_COLORS['geography'] if i == 0 else TABLE_COLORS['columns'],
+                'color': '#FFFFFF',
                 'fontWeight': 'bold',
                 'border': f"1px solid {TABLE_COLORS['border']}",
+                'padding': '6px',
             }
             for i, col in enumerate(columns)
         ]
+ 
+    base = {
+        'fontWeight': 'bold',
+        'border': f"1px solid {TABLE_COLORS['border']}",
+        'padding': '6px',
+        'color': '#FFFFFF',
+    }
+    
+    styles = []
+    
+    # Header row 0: Geography level - spans entire row (no internal borders)
+    styles.append({
+        **base,
+        'if': {'header_index': 0},
+        'backgroundColor': TABLE_COLORS['geography'],
+        
+    })
 
-    base = {'fontWeight': 'bold', 'border': f"1px solid {TABLE_COLORS['border']}"}
-    last = n_header_rows - 1
-    styles = [
-        {**base, 'if': {'header_index': 0},
-         'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'},
-    ]
+    # Header rows 1+: Columns level (household type and year)
     for i in range(1, n_header_rows):
-        styles.append({**base, 'if': {'header_index': i},
-                       'backgroundColor': TABLE_COLORS['headings'], 'color': TABLE_COLORS['text']})
-    for i in range(1, n_header_rows):
-        styles.append({**base, 'if': {'header_index': i, 'column_id': first_col_id},
-                       'backgroundColor': TABLE_COLORS['geography'], 'color': '#FFFFFF'})
-    styles.append({'if': {'header_index': 0, 'column_id': first_col_id}, 'borderBottom': 'none'})
-    for i in range(1, last):
-        styles.append({'if': {'header_index': i, 'column_id': first_col_id},
-                       'borderTop': 'none', 'borderBottom': 'none'})
-    styles.append({'if': {'header_index': last, 'column_id': first_col_id}, 'borderTop': 'none'})
+        styles.append({
+            **base,
+            'if': {'header_index': i},
+            'backgroundColor': TABLE_COLORS['columns'],
+        })
+
+    # Add borders between geography and label column rows
+    styles.append({
+        'if': {'header_index': 0, 'column_id': first_col_id},
+        'borderBottom': f"1px solid {TABLE_COLORS['border']}",
+    })
+    for i in range(1, n_header_rows - 1):
+        styles.append({
+            'if': {'header_index': i, 'column_id': first_col_id},
+            'borderTop': 'none',
+            'borderBottom': 'none',
+        })
+    styles.append({
+        'if': {'header_index': n_header_rows - 1, 'column_id': first_col_id},
+        'borderBottom': 'none',
+    })
+    
     return styles
 
 
@@ -481,17 +517,52 @@ _T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
 
 
 def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
-    return make_special_row_styles(
+    base_styles = make_special_row_styles(
         data, 'Indicator',
-        geo_headers=_T8_GEO_HEADERS,
+        col_headers=_T8_GEO_HEADERS,
         warning_headers={_T8_BELOW_MULTIPLE},
         section_headers={_T8_TOTAL},
-        total_labels=frozenset(),           # no plain TOTAL rows in 8.1
+        total_labels=frozenset(), 
         italic_labels={'__below_count__', '__below_pct__'},
     )
+    
+    # Override col_headers styling to semi-bold
+    # styles = []
+    # for style in base_styles:
+    #     if style.get('if', {}).get('column_id') in _T8_GEO_HEADERS:
+    #         # Semi-bold for col_headers (600 instead of 700)
+    #         style['fontWeight'] = '300'
+    #     styles.append(style)
+    for style in base_styles:
+        rule = style.get('if', {})
+        if 'row_index' in rule:
+            # Check if this row contains col_headers
+            row_idx = rule['row_index']
+            if data.iloc[row_idx]['Indicator'] in _T8_GEO_HEADERS:
+                style['fontWeight'] = '600'  # Semi-bold
+    
+    return base_styles
 
 
 #-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
+
+############### Table 9.1 stylers ###############
+_T9_1_LABEL_COL_2 = 'Percentage of people released who identify as indigenous'
+def get_special_row_styles_9_1(data: pd.DataFrame) -> list:
+    styles = make_special_row_styles(data, 'Age',
+                                    total_labels={'Total'},
+                                    col_headers={_T9_1_LABEL_COL_2})
+
+    # Find rows with col_headers and add textAlign
+    for i, val in enumerate(data['Age']):
+        if val == _T9_1_LABEL_COL_2:
+            styles.append({
+                'if': {'row_index': i},
+                'textAlign': 'center',
+            })
+    return styles
+
+
 ############### Table 9.3 stylers ###############
 
 _T9_3_GEO_HEADERS = {

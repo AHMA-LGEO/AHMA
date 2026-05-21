@@ -14,7 +14,7 @@ map_generator = MapGenerator()
 dropdown_options = data_loader.dropdown_options['Geography'].unique()
 
 # Create default map
-default_map = map_generator.create_region_map(region_code=str(PROVINCE_CODE))
+default_map = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
 
 # Layout
 layout = html.Div(
@@ -244,5 +244,5 @@ def update_map(click_data, reset_clicks, selected_geo, *args):
                 return fig, geo_name
 
     # Default: show region map
-    fig = map_generator.create_region_map(region_code=str(PROVINCE_CODE))
+    fig = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
     return fig, DEFAULT_GEOGRAPHY

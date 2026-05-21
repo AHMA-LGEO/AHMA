@@ -1,6 +1,7 @@
 """
 Section 8 preparation and layout - Core Housing Need Indicators.
 """
+import math
 import pandas as pd
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
@@ -129,7 +130,7 @@ class Section8Prep:
         _LABEL_COL = "Indicator"
 
         columns = [
-            {"name": ["", _LABEL_COL, ""], "id": _LABEL_COL}
+            {"name": [geo_name, _LABEL_COL, ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -179,16 +180,6 @@ class Section8Prep:
         """Sunburst (nested-pie) chart for for Table 8.1 2021 Indigenous Core Housing Need."""
         filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
 
-        if filtered.empty or filtered.isnull().values.all():
-            return html.Div([
-                html.H4(SECTION_8_TITLE, className='table-title'),
-                html.H6(TABLE_8_1_TITLE, className='table-desc'),
-                html.Div(
-                "No chart for 2021 Indigenous Core Housing Need.",
-                style={'fontFamily': TABLE_FONT, 'color': '#666'}
-                )
-            ], className='pg2-table-lgeo')
-
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs']
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -201,6 +192,17 @@ class Section8Prep:
                 return 0.0
 
         acceptable_pct = _pct("Acceptable Housing (Affordable, Adequate, and Suitable)")
+
+        if math.isnan(acceptable_pct):
+            return html.Div([
+                html.H4(SECTION_8_TITLE, className='table-title'),
+                html.H6(TABLE_8_1_TITLE, className='table-desc'),
+                html.Div(
+                "No chart for 2021 Indigenous Core Housing Need.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+        
         unacceptable_pct = max(0.0, 100.0 - acceptable_pct)
 
         raw_details = [_pct(ind) for ind in CHART_DETAIL_INDICATORS]
@@ -210,10 +212,10 @@ class Section8Prep:
             if total_raw > 0 else [unacceptable_pct / 4] * 4
         )
 
-        labels  = ["Housing", "Acceptable", "Unacceptable"] + CHART_DETAIL_LABELS
+        labels  = ["Housing", "Unacceptable", "Acceptable"] + CHART_DETAIL_LABELS
         parents = ["", "Housing", "Housing"] + ["Unacceptable"] * len(CHART_DETAIL_LABELS)
-        values  = [acceptable_pct + unacceptable_pct, acceptable_pct, unacceptable_pct] + scaled_details
-        colors  = ["#FFFFFF", _PIE_ACCEPTABLE_COLOR, "#5e2a1c"] + _PIE_OUTER_COLORS
+        values  = [acceptable_pct + unacceptable_pct, unacceptable_pct, acceptable_pct] + scaled_details
+        colors  = ["#FFFFFF", "#5e2a1c", _PIE_ACCEPTABLE_COLOR] + _PIE_OUTER_COLORS
 
         text = [
             lbl if lbl == "Housing"
@@ -227,11 +229,14 @@ class Section8Prep:
             parents=parents,
             values=values,
             branchvalues="total",
-            marker=dict(colors=colors, line=dict(color="white")),
+            marker=dict(colors=colors, line=dict(color="white", width=2)),
             text=text,
             texttemplate="%{text}",
-            insidetextorientation="radial",
+            textfont=dict(size=12, color="white"),
+            insidetextorientation="horizontal",
             hovertemplate="<b>%{label}</b><br>%{value:.0f}% of total HHs<extra></extra>",
+            sort=False,
+            rotation=-90
         ))
 
         fig.update_layout(
@@ -244,6 +249,8 @@ class Section8Prep:
             font=dict(family=TABLE_FONT),
             margin=dict(t=90, b=40, l=20, r=20),
             height=550,
+            # Prevents text from sizing down into tiny unreadable fonts if slices shrink
+            uniformtext=dict(minsize=9, mode="hide") 
         )
         fig.update_traces(leaf=dict(opacity=0.9))
 

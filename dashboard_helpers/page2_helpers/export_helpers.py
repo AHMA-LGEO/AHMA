@@ -7,7 +7,14 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 
-def with_export_btn(table_component, table_id: str):
+def with_export_btn(table_component, table_id: str, max_width: str = None):
+
+    # Base layout styles
+    wrapper_style = {"width": "100%"}
+    
+    # Dynamically adjust maximum width restriction if provided
+    if max_width:
+        wrapper_style["maxWidth"] = max_width
 
     return html.Div([
         dcc.Store(
@@ -33,7 +40,8 @@ def with_export_btn(table_component, table_id: str):
         ),
         # html.Br(),
         table_component,
-    ])
+        
+    ], style=wrapper_style)
 
 
 

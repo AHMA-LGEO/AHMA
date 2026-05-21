@@ -12,6 +12,7 @@ from .table_styles import (
     generate_style_header_conditional,
     get_base_table_style,
     make_special_row_styles,
+    get_special_row_styles_9_1,
     get_special_row_styles_9_3,
     make_style_cell,
     format_number,
@@ -135,8 +136,9 @@ class Section9Prep:
         label_col_2 = 'Percentage of people released who identify as indigenous'
 
         rows = (
-            [blank_row('Age', _FY_YEARS, label_col_1)]
-            + df_9_1[['Age'] + _FY_YEARS].to_dict('records')
+            # [blank_row('Age', _FY_YEARS, label_col_1)]
+            # + 
+            df_9_1[['Age'] + _FY_YEARS].to_dict('records')
             + [blank_row('Age', _FY_YEARS)]
             + [blank_row('Age', _FY_YEARS, label_col_2)]
             + df_9_1_1[['Age'] + _FY_YEARS].to_dict('records')
@@ -144,7 +146,7 @@ class Section9Prep:
 
         df_display = pd.DataFrame(rows, columns=['Age'] + _FY_YEARS)
 
-        columns = [{"name": ["", ""], "id": "Age"}] + [
+        columns = [{"name": [geo_name, label_col_1], "id": "Age"}] + [
             {"name": [geo_name, y], "id": y} for y in _FY_YEARS
         ]
 
@@ -157,9 +159,7 @@ class Section9Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + make_special_row_styles(df_display, 'Age',
-                                          total_labels={'Total'},
-                                          section_headers={label_col_1, label_col_2})
+                + get_special_row_styles_9_1(df_display)
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Age'
@@ -214,18 +214,18 @@ class Section9Prep:
                 font=dict(size=15, family=TABLE_FONT),
             ),
             xaxis=dict(
-        title='Fiscal Year',
-        tickson='labels',
-        automargin=True,
-        range=[-0.5, len(_FY_YEARS) - 1.0],  # adds left/right padding
-    ),
+                title='Fiscal Year',
+                tickson='labels',
+                automargin=True,
+                range=[-0.5, len(_FY_YEARS) - 1.0],  # adds left/right padding
+            ),
 
-    yaxis=dict(
-        title='# Indigenous People',
-        gridcolor='#E5E5E5',
-        automargin=True,
-        rangemode='tozero',
-    ),
+            yaxis=dict(
+                title='# Indigenous People',
+                gridcolor='#E5E5E5',
+                automargin=True,
+                rangemode='tozero',
+            ),
             plot_bgcolor='white',
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),

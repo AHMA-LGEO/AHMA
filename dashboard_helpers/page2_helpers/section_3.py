@@ -131,7 +131,7 @@ class Section3Prep:
             '__cd_header__': cd_name,
         })
 
-        columns = [{"name": ["", ""], "id": "Indicator"}] + [
+        columns = [{"name": [geo_name, "Census Year"], "id": "Indicator"}] + [
             {"name": [geo_name, y], "id": y} for y in YEARS
         ]
 
@@ -150,7 +150,7 @@ class Section3Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df, 'Indicator',
-                                          geo_headers={'__geo_header__', '__cd_header__'},
+                                          col_headers={'__geo_header__', '__cd_header__'},
                                           section_headers=t_3_1_section_headers)
             ),
             style_header_conditional=generate_style_header_conditional(
@@ -333,8 +333,7 @@ class Section3Prep:
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Age Group'
             ),
-            style_cell_conditional=make_style_cell('Age Group', display_cols, 
-                                                   label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='15%'),
             **base_style
         )
 
@@ -616,22 +615,27 @@ class Section3Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        top_labels = (df.nlargest(10, "# of People")[labels].tolist())
+        
+
+        # to assign the largest portion the first chart color and so on
+        df_sorted = df.sort_values("# of People", ascending=False) 
+        top_labels = (df_sorted.nlargest(10, "# of People")[labels].tolist())
 
         text = [
             lbl if lbl in top_labels else ""
-            for lbl in df[labels]
+            for lbl in df_sorted[labels]
         ]
 
         fig = go.Figure(go.Pie(
-            labels=df[labels],
-            values=df["# of People"],
+            labels=df_sorted[labels],
+            values=df_sorted["# of People"],
             marker=dict(colors=CHART_COLORS, line=dict(color="white")),
             hole=0.3,
             text=text,
             textinfo="text",
             insidetextorientation="radial",
             hovertemplate="<b>%{label}</b><br>Count of people: %{value:,}<br>% of people: %{percent}<extra></extra>",
+            sort=False
         ))
 
         fig.update_layout(
@@ -715,13 +719,18 @@ class Section3Prep:
                 columns, is_multiindex=True, first_col_id=index_col
             ),
             style_cell_conditional=make_style_cell(index_col, [value_col],
-                                                   label_width='25%', label_min_width='120px'),
-            style_table={'maxWidth': '600px'},
-            **base_style
+                                                   label_width='65%'),
+            # style_table={'maxWidth': '600px'},
+            # **base_style
+            style_table={
+                **base_style.get('style_table', {}), 
+                'maxWidth': '600px'
+            },
+             **{k: v for k, v in base_style.items() if k != 'style_table'}
         )
 
         return html.Div([
-            with_export_btn(table, 'table-3-6'),
+            with_export_btn(table, 'table-3-6', max_width='600px'),
             html.I(TABLE_3_6_NOTE),
         ], className='pg2-table-lgeo')
     

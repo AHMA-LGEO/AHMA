@@ -102,7 +102,7 @@ class Section4Prep:
         _LABEL_COL = "Households by Tenure"
 
         columns = [
-            {"name": ["", "Census Year", ""], "id": "Households by Tenure"}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS
@@ -112,6 +112,7 @@ class Section4Prep:
                 {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
                 for y in YEARS
             ]
+        
 
         data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS]
         if show_both:
@@ -120,6 +121,7 @@ class Section4Prep:
 
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
+        # print(data_cols)
 
         table = dash_table.DataTable(
             id='table-4-1',
@@ -128,9 +130,12 @@ class Section4Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + make_special_row_styles(df_display, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(df_display, _LABEL_COL, section_headers={_LABEL_COL}, 
+                                          geo_headers={"Indigenous HHs", "Non-Indigenous HHs"}
+                                          )
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
+            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True,
+                                                                       first_col_id=_LABEL_COL, n_header_rows=3),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )

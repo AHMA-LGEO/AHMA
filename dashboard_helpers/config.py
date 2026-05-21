@@ -55,7 +55,7 @@ PLOT_CONFIG = {
 # Page 2 - Table styling
 TABLE_COLORS = {
     'geography': '#4D5137',
-    # 'geography': '#80875C',
+    'columns': '#80875C',
     'headings': '#B5BA9A',
     'row_alt_1': '#E6E8DD',
     'row_alt_2': '#CDD0BB',
