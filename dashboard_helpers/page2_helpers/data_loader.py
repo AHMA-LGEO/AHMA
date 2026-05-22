@@ -19,17 +19,47 @@ class DataLoader:
             self._geocode_master = pd.read_sql_table('geocode_master', self.engine)
         return self._geocode_master
 
-    def get_table(self, table_name: str, geocode: str = None) -> pd.DataFrame:
-        """Load table from database with caching."""
+    def get_table(self, table_name: str, geocode: str = None, check_columns: list = None) -> pd.DataFrame:
+        """Load table from database with caching.
+        Args:
+            table_name: Name of the table to load
+            geocode: Optional geocode to filter by
+            check_columns: Optional list of columns to check for empty/missing data.
+                      If all values in these columns are missing/empty/N/A, returns empty DataFrame.
+                      If None (default), no empty check is performed.
+    
+        Returns:
+            Filtered DataFrame, or empty DataFrame if check_columns contains all missing values.
+        """
         if table_name not in self._table_cache:
             self._table_cache[table_name] = pd.read_sql_table(table_name, self.engine)
 
         if geocode:
             mask = (self._table_cache[table_name]['Geocode'] == geocode
                     ) | (self._table_cache[table_name]['Geocode'] == int(geocode))
-            return self._table_cache[table_name][mask]
+            df = self._table_cache[table_name][mask]
     
-        return self._table_cache[table_name].copy()
+        else:
+            df = self._table_cache[table_name].copy()
+
+        # Check if specified columns are all empty/missing
+        if check_columns:
+            all_missing = (
+                df[check_columns]
+                .apply(
+                    lambda col:
+                        col.isna()
+                        | (col.astype(str).str.strip() == '')
+                        | (col.astype(str).str.strip().str.upper() == 'N/A')
+                )
+                .all(axis=1)
+            )
+            
+            # Return empty DataFrame if all rows have missing data in check_columns
+            if all_missing.all():
+                return pd.DataFrame()
+        
+        return df
 
     def get_geography_name(self, geocode: int) -> str:
         """Get geography name from geocode."""

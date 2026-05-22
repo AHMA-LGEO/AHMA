@@ -33,7 +33,7 @@ class Section4Prep:
         self.data_loader = get_data_loader()
 
     def prepare_table_4_1_data(self, geocode: int) -> pd.DataFrame:
-        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
+        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode, check_columns=YEARS)
 
         if filtered.empty:
             return pd.DataFrame()
@@ -88,7 +88,7 @@ class Section4Prep:
         """
         df = self.prepare_table_4_1_data(geocode)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households by Tenure (2006, 2011, 2016, 2021).",
@@ -98,8 +98,8 @@ class Section4Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
         _LABEL_COL = "Households by Tenure"
+        
 
         columns = [
             {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
@@ -147,9 +147,9 @@ class Section4Prep:
 
     def create_chart_4_1(self, geocode: int):
         """Create stacked bar chart for Table 4.1 for housing tenure over time."""
-        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode)
-
-        if filtered.empty or filtered.isnull().values.all():
+        filtered = self.data_loader.get_table('table_4_1_housing_tenure', geocode, check_columns=YEARS)
+        
+        if filtered.empty:
             return html.Div([
                 html.H3(SECTION_4_TITLE, className='table-title'),
                 html.H4(TABLE_4_1_TITLE, className='table-title'),
@@ -161,16 +161,17 @@ class Section4Prep:
             ], className='pg2-table-lgeo')
 
         indg = filtered[filtered['Household Type'] == 'Indigenous HHs'].copy()
+        _LABEL_COL = "Households by Tenure"
 
         # Pull owner count and the two mortgage % rows for derivation
-        owner_raw = indg[indg['Households by Tenure'] == 'Owner']
+        owner_raw = indg[indg[_LABEL_COL] == 'Owner']
         pct_with = indg[
-            indg['Households by Tenure'].str.contains('with mortgage', na=False) &
-            indg['Households by Tenure'].str.contains('%', na=False)
+            indg[_LABEL_COL].str.contains('with mortgage', na=False) &
+            indg[_LABEL_COL].str.contains('%', na=False)
         ]
         pct_without = indg[
-            indg['Households by Tenure'].str.contains('without a mortgage', na=False) &
-            indg['Households by Tenure'].str.contains('%', na=False)
+            indg[_LABEL_COL].str.contains('without a mortgage', na=False) &
+            indg[_LABEL_COL].str.contains('%', na=False)
         ]
 
         def _derive(label, pct_df):
@@ -184,13 +185,13 @@ class Section4Prep:
                 if not pct_df.empty else pd.Series(0.0, index=YEARS)
             )
             derived = (owner_counts * pcts / 100).round().astype(int)
-            return {'Households by Tenure': label, **derived.to_dict()}
+            return {_LABEL_COL: label, **derived.to_dict()}
 
         # Count rows: exclude % rows, Total, and 'Owner' (split into two derived rows)
         count_rows = indg[
-            ~indg['Households by Tenure'].str.contains('%', na=False) &
-            (indg['Households by Tenure'] != 'Total') &
-            (indg['Households by Tenure'] != 'Owner')
+            ~indg[_LABEL_COL].str.contains('%', na=False) &
+            (indg[_LABEL_COL] != 'Total') &
+            (indg[_LABEL_COL] != 'Owner')
         ].copy()
 
         derived = pd.DataFrame([
@@ -199,16 +200,16 @@ class Section4Prep:
         ])
         count_rows = pd.concat([derived, count_rows], ignore_index=True)
 
-        total_rows = indg[indg['Households by Tenure'] == 'Total'].copy()
+        total_rows = indg[indg[_LABEL_COL] == 'Total'].copy()
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        count_indexed = count_rows.set_index('Households by Tenure')[YEARS]
+        count_indexed = count_rows.set_index(_LABEL_COL)[YEARS]
         totals_series = (
             pd.to_numeric(total_rows[YEARS].iloc[0], errors='coerce').fillna(0)
             if not total_rows.empty else pd.Series(0.0, index=YEARS)
         )
 
-        tenure_list = count_rows['Households by Tenure'].unique()
+        tenure_list = count_rows[_LABEL_COL].unique()
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(tenure_list)}
 
         fig = go.Figure()
@@ -257,9 +258,9 @@ class Section4Prep:
 
     def create_table_4_2_layout(self, geocode: int):
         """Create Dash DataTable for Table 4.2 with housing tenure over time by Indigenous communities."""
-        df = self.data_loader.get_table('table_4_2_housing_tenure_breakdown', geocode)
+        df = self.data_loader.get_table('table_4_2_housing_tenure_breakdown', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for housing tenure over time by Indigenous communities.",
@@ -269,8 +270,8 @@ class Section4Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
         _LABEL_COL = 'Households by Tenure'
+        
 
         community_df = []
         for community in COMMUNITIES:
@@ -339,9 +340,9 @@ class Section4Prep:
 
     def create_table_4_3_layout(self, geocode: int, show_both: bool = False):
         """Create Dash DataTable for Table 4.3 with households by household size"""
-        df = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode)
+        df = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for households by household size.",
@@ -435,9 +436,9 @@ class Section4Prep:
 
     def create_chart_4_3(self, geocode: int):
         """Create stacked bar chart for Table 4.3 households by household size."""
-        filtered = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode)
+        filtered = self.data_loader.get_table('table_4_3_hh_by_household_size', geocode, check_columns=YEARS_MINUS_2011)
 
-        if filtered.empty or filtered.isnull().values.all():
+        if filtered.empty:
             return html.Div([
                 html.H4(TABLE_4_3_TITLE, className='table-title'),
                 html.Div(
@@ -507,9 +508,9 @@ class Section4Prep:
 
     def create_table_4_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 4.4 with households by household size by Indigenous communities."""
-        df = self.data_loader.get_table('table_4_4_hh_by_household_size_breakdown', geocode)
+        df = self.data_loader.get_table('table_4_4_hh_by_household_size_breakdown', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for households by household size by Indigenous communities.",
@@ -518,6 +519,7 @@ class Section4Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Households by Size (number of people)'
         communities = [comm + "-led Households by Size (number of people)"  for comm in COMMUNITIES]

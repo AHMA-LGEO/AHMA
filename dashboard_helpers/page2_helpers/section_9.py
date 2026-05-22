@@ -111,10 +111,10 @@ class Section9Prep:
     def create_table_9_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 9.1 and 9.1.1: Indigenous People Released from Corrections (2008-2024)."""
 
-        df_9_1 = self.data_loader.get_table('table_9_1_number_corrections', geocode)
+        df_9_1 = self.data_loader.get_table('table_9_1_number_corrections', geocode, check_columns=_FY_YEARS)
         df_9_1_1 = self.data_loader.get_table('table_9_1_1_percent_corrections', geocode)
 
-        if df_9_1.empty or df_9_1.isnull().values.all():
+        if df_9_1.empty:
             return html.Div([
                 html.Div(
                 "No data for Indigenous People Released from Corrections (2008-2024).",
@@ -288,7 +288,7 @@ class Section9Prep:
 
     def create_table_9_3_layout(self, geocode: int):
         """Create Dash DataTable for Table 9.3: Indigenous Homelessness (2021, 2023, 2025)."""
-        df = self.data_loader.get_table('table_9_3_indig_homelessness', geocode)
+        df = self.data_loader.get_table('table_9_3_indig_homelessness', geocode, check_columns=PIT_YEARS)
 
         if df.empty:
             return html.Div([

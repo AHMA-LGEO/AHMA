@@ -25,6 +25,10 @@ PROVINCE_NAME = "British Columbia"
 DEFAULT_GEOGRAPHY = 'Saanich (CSD, BC)'
 DEFAULT_GEOCODE = 5917021  # Saanich
 
+# None Data testing
+# DEFAULT_GEOGRAPHY = 'Stequmwhulpa 5 (CSD, BC)'
+# DEFAULT_GEOCODE = 5933892 
+
 # Map configuration
 MAP_COLORS_WO_BLACK = [
     '#7480dd', '#1a3758', '#7480dd', '#b6657c', '#622637', '#80c2c0',

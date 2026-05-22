@@ -59,7 +59,7 @@ class Section8Prep:
         self.data_loader = get_data_loader()
 
     def prepare_table_8_1_data(self, geocode: int) -> pd.DataFrame:
-        filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode)
+        filtered = self.data_loader.get_table('table_8_1_core_housing_need', geocode, check_columns=YEARS_MINUS_2011)
 
         if filtered.empty:
             return pd.DataFrame()
@@ -116,7 +116,8 @@ class Section8Prep:
             Level 2 - census year
         """
         df = self.prepare_table_8_1_data(geocode)
-        if df.empty or df.isnull().values.all():
+
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Core Housing Needs indicators (2006, 2016, 2021).",
@@ -263,12 +264,12 @@ class Section8Prep:
 
     def create_table_8_3_layout(self, geocode: int, show_both: bool = False) -> pd.DataFrame:
         """Create Dash DataTable for Table 8.3 with Households in CHN or Extreme CHN, by Tenure (Indigenous & non-Indigenous) (2006, 2016, 2021)."""
-        df = self.data_loader.get_table('table_8_3_hhs_in_chn', geocode)
+        df = self.data_loader.get_table('table_8_3_hhs_in_chn', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
-                html.Div(
                 html.H6(TABLE_8_3_TITLE, className='table-title'),
+                html.Div(
                 "No data for Households in CHN or Extreme CHN (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
@@ -359,9 +360,9 @@ class Section8Prep:
 
     def create_table_8_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 8.4 with Households in CHN by Indigenous communities."""
-        df = self.data_loader.get_table('table_8_4_hhs_in_chn_breakdown', geocode)
+        df = self.data_loader.get_table('table_8_4_hhs_in_chn_breakdown', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households in CHN by Indigenous communities.",
@@ -445,9 +446,9 @@ class Section8Prep:
         
         """Create Dash DataTable for Table 8.5 with Households in CHN by Priority Population"""
 
-        df = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode)
+        df = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households in CHN by Priority Population.",
@@ -590,9 +591,9 @@ class Section8Prep:
     def create_table_8_6_layout(self, geocode: int):
         """Create Dash DataTable for Table 8.6 with Households in CHN by Priority Populations by Indigenous communities."""
 
-        df = self.data_loader.get_table('table_8_6_hhs_in_chn_prior_pop_breakdown', geocode)
+        df = self.data_loader.get_table('table_8_6_hhs_in_chn_prior_pop_breakdown', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households in CHN by Priority Populations by Indigenous communities.",
