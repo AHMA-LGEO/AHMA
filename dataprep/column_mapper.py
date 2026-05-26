@@ -92,11 +92,11 @@ TABLE_3_1_3_COL_MAP = strip_map({
         "2016": "Total – Mobility status 5 years ago of the PHM_  Off reserve_Aboriginal household",
         "2021": "Total – Mobility status 5 years ago of the PHM_  Off reserve_  Indigenous household",
     },
-    "Total": {
-        "2006": "Total - Private households by area of residence _ Aboriginal household",
-        "2016": "Total – Mobility status 5 years ago of the PHM_Total - Private households by area of residence of primary household maintainers_Aboriginal household",
-        "2021": "Total – Mobility status 5 years ago of the PHM_Total - Residence on or off reserve_  Indigenous household",
-    },
+    # "Total": {
+    #     "2006": "Total - Private households by area of residence _ Aboriginal household",
+    #     "2016": "Total – Mobility status 5 years ago of the PHM_Total - Private households by area of residence of primary household maintainers_Aboriginal household",
+    #     "2021": "Total – Mobility status 5 years ago of the PHM_Total - Residence on or off reserve_  Indigenous household",
+    # },
 })
 
 TABLE_3_1_4_COL_MAP = strip_map({
@@ -131,7 +131,7 @@ TABLE_3_4_COL_MAP = {
         '45 to 54 years': '45 - 54',
         '55 to 64 years': '55 - 64',
         '65 years and over': '65+',
-        'Total - Age groups': 'Total'
+        # 'Total - Age groups': 'Total'
     }
 
 
@@ -229,12 +229,12 @@ _T4_1_TENURE_PREFIX = {
         "2016": "Dwelling provided by the local government, First Nation or Indian band",
         "2021": "Dwelling provided by the local government, First Nation or Indian band",
     },
-    "Total": {
-        "2006": "Total – Housing tenure and presence of mortgage",
-        "2011": "Total number of private Aboriginal households by tenure",
-        "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
-        "2021": "Total - Tenure including presence of mortgage payment and subsidized housing",
-    },
+    # "Total": {
+    #     "2006": "Total – Housing tenure and presence of mortgage",
+    #     "2011": "Total number of private Aboriginal households by tenure",
+    #     "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
+    #     "2021": "Total - Tenure including presence of mortgage payment and subsidized housing",
+    # },
 }
 
 _T4_1_PCT_DIRECT = {
@@ -344,7 +344,7 @@ _T4_3_SIZE_PREFIX = {
     "3 pp":   {"2006": "  3 persons",            "2016": "3 persons",         "2021": "3 persons"},
     "4 pp":   {"2006": "  4 persons",            "2016": "4 persons",         "2021": "4 persons"},
     "5+ pp": {"2006": "  5 or more",            "2016": "5 or more persons", "2021": "5 or more persons"},
-    "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
+    # "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
 }
 _T4_3_AVG_PREFIX = {
     "2006": "Average number of persons",

@@ -90,7 +90,29 @@ class Section4DataPrep:
 
                     rows.append(row)
 
-        result = pd.DataFrame(rows)
+        result_df = pd.DataFrame(rows)
+
+        total_rows = []
+        for (geocode, hh_type), group in result_df.groupby(["Geocode", "Household Type"]):
+
+            filtered_group = group[group["Households by Tenure"].isin(['Owner', 'Renter', 
+                                                                       'Dwelling provided by local government or First Nation'])]
+            
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Households by Tenure": "Total",
+                "Household Type": hh_type,
+            }
+            for year in YEARS:
+                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        result = (
+            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+            .sort_values(["Geocode", "Household Type", "Households by Tenure"])
+            .reset_index(drop=True)
+        )
 
         print("Table 4.1 is ready now...\n" + '=' * 60)
         return result
@@ -170,7 +192,29 @@ class Section4DataPrep:
 
                     rows.append(row)
 
-        result = pd.DataFrame(rows)
+        result_df = pd.DataFrame(rows)
+
+        total_rows = []
+        for (geocode, community), group in result_df.groupby(["Geocode", "Indigenous Community"]):
+            
+            filtered_group = group[group["Households by Tenure"].isin(['Owner', 'Renter', 
+                                                                       'Dwelling provided by local government or First Nation'])]
+
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Households by Tenure": "Total",
+                "Indigenous Community": community,
+            }
+            for year in YEARS_MINUS_2011:
+                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        result = (
+            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+            .sort_values(["Geocode", "Indigenous Community", "Households by Tenure"])
+            .reset_index(drop=True)
+        )
 
         print("Table 4.2 is ready now...\n" + '=' * 60)
         return result

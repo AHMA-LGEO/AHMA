@@ -163,8 +163,27 @@ class Section3DataPrep:
                     row[year] = clean_val(raw)
                 rows.append(row)
 
+        result_df = pd.DataFrame(rows)
+
+        total_rows = []
+        for geocode, group in result_df.groupby("Geocode"):
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Regional Indigenous Households (by CD)": "Total",
+            }
+            for year in YEARS:
+                total_row[year] = pd.to_numeric(group[year], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        result = (
+            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+            .sort_values(["Geocode", "Regional Indigenous Households (by CD)"])
+            .reset_index(drop=True)
+        )
+
         print("Table 3.1.3 is ready now...\n" + '=' * 60)
-        return pd.DataFrame(rows)
+        return result
 
     def table_3_1_4(self):
         print("Processing Table 3.1.4...")
@@ -298,8 +317,25 @@ class Section3DataPrep:
 
         result_df = pd.DataFrame(result)
 
+        total_rows = []
+        for geocode, group in result_df.groupby("Geocode"):
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Age Group - Census 2021": "Total",
+            }
+            for col in list(GENDER_MAPPING.values()):
+                total_row[col] = pd.to_numeric(group[col], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        result = (
+            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+            .sort_values(["Geocode", "Age Group - Census 2021"])
+            .reset_index(drop=True)
+        )
+
         print("Table 3.4 is ready now...\n" + '=' * 60)
-        return result_df
+        return result
     
 
     def table_3_5_3_5_1(self) -> tuple[pd.DataFrame, pd.DataFrame]:
