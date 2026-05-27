@@ -2,13 +2,13 @@
 
 ## Introduction
 
-The Indigenous-led Housing Needs Assessment Tool (IHNAT), developed in collaboration with HART researchers and Statistics Canada, is designed to support Indigenous communities across British Columbia in assessing local housing needs.
+The Indigenous-led Housing Needs Assessment Tool (IHNAT), developed in collaboration with HART and LGeo team is designed to support Indigenous communities across British Columbia in assessing local housing needs.
 
-The tool is powered by custom census data built by Statistics Canada in collaboration with HART researchers, and covers all census subdivisions (CSDs) in British Columbia, including reserves.
+The tool is powered by custom census data built by Statistics Canada in collaboration with HART team, and covers all census subdivisions (CSDs) in British Columbia, including reserves.
 
 The dashboard allows users to select a census geography comprising any census subdivision (CSD), census division (CD), or the province of British Columbia as a whole, and explore a range of housing, population, income, and shelter indicators for Indigenous and non-Indigenous households.
 
-The dashboard was created in collaboration with Licker Geospatial, who can be reached for further questions regarding dashboard functionality and design.
+The dashboard was created in collaboration with [Licker Geospatial Consulting Ltd](https://lgeo.co), who can be reached for further questions regarding dashboard functionality and design.
 
 ## Features
 
@@ -28,6 +28,7 @@ The IHNAT dashboard provides the following features:
 - Indigenous affordable housing deficit by income and household size
 - Systemic pathway data (corrections releases, youth aging out of care)
 - Export to Excel for all tables
+- Export to PDF for the full dashboard view
 
 ## Getting Started In Your Local Environment
 
@@ -35,7 +36,7 @@ The IHNAT dashboard provides the following features:
 
 Please make sure you have the following installed (a `requirements.txt` is provided in the repository):
 
-- Python 3.10+
+- Python 3.9+
 - Dash 2.17+
 - Pandas
 - Plotly
@@ -53,7 +54,8 @@ pip install -r requirements.txt
 
 1. Git clone or download the code package from the repository.
 2. Ensure the database connection is configured and `throughputs/` data is in place.
-3. Run the application from the project root:
+3. Ensure the customized Census and Access Analysis data is in `source/` folder.
+4. Run the application from the project root:
 
 ```bash
 python app.py
@@ -62,6 +64,7 @@ python app.py
 4. Open your browser and navigate to:
 
 ```
+http://localhost:8050/page1
 http://localhost:8050/page2
 ```
 

@@ -4,6 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
+    get_original_geocode,
     get_val,
     pct, 
     clean_val,
@@ -46,7 +47,8 @@ class Section4DataPrep:
 
                     for year in YEARS:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
 
                         if match.empty:
                             row[year] = None
@@ -148,7 +150,8 @@ class Section4DataPrep:
 
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
 
                         if match.empty:
                             row[year] = None
@@ -257,7 +260,8 @@ class Section4DataPrep:
 
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
             
                         if match.empty:
                             output_row[year] = None

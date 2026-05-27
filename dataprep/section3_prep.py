@@ -4,6 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
+    get_original_geocode,
     get_val, 
     sum_bands, 
     pct, 
@@ -49,7 +50,8 @@ class Section3DataPrep:
                 }
                 for year, col_name in year_col_map.items():
                     df = dfs[year]
-                    match = df[df["Geocode"] == geocode]
+                    original_geocode = get_original_geocode(geocode, year)
+                    match = df[df["Geocode"] == original_geocode]
                     row[year] = match[col_name].iloc[0] if col_name in df.columns and not match.empty else None
                 rows.append(row)
 
@@ -93,37 +95,43 @@ class Section3DataPrep:
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
 
-            # filter each year df to this geocode
-            year_dfs = {yr: df[df["Geocode"] == geocode].reset_index(drop=True)
-                        for yr, df in dfs.items()}
-
-            derived = {metric: {"Geocode": geocode, "Geography": geography,
+            derived = {metric: {"Geocode":  geocode, "Geography": geography,
                                 "Age Profile": metric}
                        for metric in metrics}
 
-            for year, df in year_dfs.items():
-                col_map = cm.TABLE_3_1_2_COL_MAP
+            for year, df in dfs.items():
 
+                original_geocode = get_original_geocode(geocode, year)
+                year_df = df[df["Geocode"] == original_geocode].reset_index(drop=True)
+                        
+                
+                if year_df.empty:
+                    # All metrics for this year are None
+                    for metric in metrics:
+                        derived[metric][year] = None
+                    continue
+                
+                col_map = cm.TABLE_3_1_2_COL_MAP
                 # Median Age
                 median_col = col_map["Median Age"].get(year)
-                derived["Median Age (years)"][year] = get_val(df, median_col) if median_col else None
+                derived["Median Age (years)"][year] = get_val(year_df, median_col) if median_col else None
 
                 # Total population for pct denominator
                 total_col = col_map["Total"].get(year)
-                total = get_val(df, total_col)
+                total = get_val(year_df, total_col)
 
                 # Under 15
                 if year in col_map["under_15_direct"]:
-                    under_15 = get_val(df, col_map["under_15_direct"][year])
+                    under_15 = get_val(year_df, col_map["under_15_direct"][year])
                 else:
-                    under_15 = sum_bands(df, col_map["under_15_bands"].get(year, []))
+                    under_15 = sum_bands(year_df, col_map["under_15_bands"].get(year, []))
                 derived["% Under 15 years old"][year] = pct(under_15, total)
 
                 # 65 or older
                 if year in col_map["over_65_direct"]:
-                    over_65 = get_val(df, col_map["over_65_direct"][year])
+                    over_65 = get_val(year_df, col_map["over_65_direct"][year])
                 else:
-                    over_65 = sum_bands(df, col_map["over_65_bands"].get(year, []))
+                    over_65 = sum_bands(year_df, col_map["over_65_bands"].get(year, []))
                 derived["% 65 years or older"][year] = pct(over_65, total)
 
             rows.extend(derived.values())
@@ -157,7 +165,11 @@ class Section3DataPrep:
                     if dfs[year] is None:
                         row[year] = None  # no data for 2011
                         continue
-                    df = dfs[year][dfs[year]["Geocode"] == geocode].reset_index(drop=True)
+
+                    original_geocode = get_original_geocode(geocode, year)
+                    df = dfs[year][dfs[year]["Geocode"] == original_geocode].reset_index(drop=True)
+                    
+                    
                     col = year_col_map.get(year)
                     raw = get_val(df, col) if col else None
                     row[year] = clean_val(raw)
@@ -212,7 +224,9 @@ class Section3DataPrep:
                     if dfs[year] is None:
                         row[year] = None
                         continue
-                    df = dfs[year][dfs[year]["Geocode"] == geocode].reset_index(drop=True)
+                    
+                    original_geocode = get_original_geocode(geocode, year)
+                    df = dfs[year][dfs[year]["Geocode"] == original_geocode].reset_index(drop=True)
                     col = year_col_map.get(year)
                     raw = get_val(df, col) if col else None
                     row[year] = clean_val(raw)
@@ -251,6 +265,7 @@ class Section3DataPrep:
         for _, geo_row in df_2021.iterrows():
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
+
             geo_df = df_2021[df_2021["Geocode"] == geocode].reset_index(drop=True)
 
             indg_total = 0
@@ -363,7 +378,8 @@ class Section3DataPrep:
                     "Metric": metric,
                 }
                 for year in YEARS_MINUS_2011:
-                    df = dfs[year][dfs[year]["Geocode"] == geocode].reset_index(drop=True)
+                    original_geocode = get_original_geocode(geocode, year)
+                    df = dfs[year][dfs[year]["Geocode"] == original_geocode].reset_index(drop=True)
                     col = year_col_map.get(year)
                     raw = get_val(df, col) if col else None
                     row[year] = clean_val(raw)

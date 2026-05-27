@@ -3,6 +3,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master,
+    get_original_geocode,
     clean_val,
     YEARS_MINUS_2011,
     INDIGENOUS_COMMUNITIES,
@@ -85,7 +86,8 @@ class Section6DataPrep:
                     #third for loop to get values from column names
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
             
                         #checking if there is no value and saying continue with logic
                         if match.empty:

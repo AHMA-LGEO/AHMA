@@ -26,7 +26,7 @@ class Section11DataPrep:
         for _, geo_row in master.iterrows():
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode] #  Geocode mapping not required, only 2021 data
 
             # for a given geography, initialize a new dict in order to store pop values
             pop_vals = { year: {} for year in PROJECTION_YEARS }
@@ -119,7 +119,7 @@ class Section11DataPrep:
         for _, geo_row in master.iterrows():
             geocode = geo_row["Geocode"]
             geography = geo_row["Geography"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode]  # Geocode mapping not required, only 2021 data
 
             # for a given geography, initialize a new dict in order to efficiently calculate totals and growth rates
             num_hhs = { year: {} for year in PROJECTION_YEARS }
