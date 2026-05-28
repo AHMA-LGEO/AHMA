@@ -44,9 +44,9 @@ class Section6Prep:
         # TODO: This optimization can be applied across dashboard, 
         # fetch all heterogenous views at one place and adjust as required per view
 
-        df = self.data_loader.get_table(sql_table_name, geocode)
+        df = self.data_loader.get_table(sql_table_name, geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 f"No data for {label_col_name}.",
@@ -141,7 +141,7 @@ class Section6Prep:
         """Create stacked bar chart for Table 6.1 households by number of bedrooms."""
         """Create stacked bar chart for Table 6.3 households by period of construction."""
 
-        filtered = self.data_loader.get_table(sql_table_name, geocode)
+        filtered = self.data_loader.get_table(sql_table_name, geocode, check_columns=YEARS_MINUS_2011)
 
         chart_id_regex = re.search(r'(table)_([0-9]+)_([0-9]+)', sql_table_name)
         chart_id = f"chart-{chart_id_regex.group(2)}-{chart_id_regex.group(3)}"
@@ -157,7 +157,7 @@ class Section6Prep:
             ])
 
 
-        if filtered.empty or filtered.isnull().values.all():
+        if filtered.empty:
             return html.Div([
                 title_tags,
                 html.Div(
@@ -229,9 +229,9 @@ class Section6Prep:
         """Create Dash DataTable for Table 6.4 with Households by Period of Construction of Dwelling by Indigenous communities."""
         """Create Dash DataTable for Table 6.6 with Households by Structural Type of Dwelling by Indigenous communities."""
 
-        df = self.data_loader.get_table(sql_table_name, geocode)
+        df = self.data_loader.get_table(sql_table_name, geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 f"No data for {label_col_name} by Indigenous communities.",

@@ -32,9 +32,12 @@ class Section10Prep:
 
     def create_table_10_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 10.1: Access to Services."""
-        df = self.data_loader.get_table('table_10_1_access_services', geocode)
+        
+        value_cols = ['Transit', 'Walking', 'Biking']
+        
+        df = self.data_loader.get_table('table_10_1_access_services', geocode, check_columns=value_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_10_TITLE, className='table-title'),
                 html.H6(TABLE_10_1_TITLE, className='table-title'),
@@ -48,7 +51,7 @@ class Section10Prep:
         _LABEL_COL = 'Mode of Transport'
         df = df.fillna("N/A")
 
-        value_cols = ['Transit', 'Walking', 'Biking']
+        
         # service_mapping = {
         #     'Health Care'                               : 'Health Care*',
         #     'Recreation Centres'                        : 'Recreation Centres*',

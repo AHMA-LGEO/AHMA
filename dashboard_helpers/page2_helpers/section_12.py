@@ -36,9 +36,10 @@ class Section12Prep:
     def create_table_12_2_layout(self, geocode: int):
         """Create Dash DataTable for Table 12.2: Indigenous Housing Target."""
 
-        df = self.data_loader.get_table('table_12_2_indigenous_housing_target', geocode)
+        df = self.data_loader.get_table('table_12_2_indigenous_housing_target', geocode, 
+                                        check_columns=['# of HHs (2034)'])
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_12_2_TITLE, className='table-title'),
                 html.Div(

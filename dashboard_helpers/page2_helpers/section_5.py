@@ -40,9 +40,13 @@ class Section5Prep:
 
     def create_table_5_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 5.1: HART income & shelter cost of Indigenous Households."""
-        df = self.data_loader.get_table('table_5_1_income_shelter_cost', geocode)
+        
+        value_cols = ['% of Total Indigenous HHs', 'Annual HH Income', 
+                      'Affordable Shelter Cost (2020 CAD$)']
+        
+        df = self.data_loader.get_table('table_5_1_income_shelter_cost', geocode, check_columns=value_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_5_TITLE, className='table-title'),
                 html.H6(TABLE_5_1_TITLE, className='table-title'),
@@ -55,9 +59,6 @@ class Section5Prep:
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
         df = df.fillna("N/A")
-
-        value_cols = ['% of Total Indigenous HHs', 'Annual HH Income', 
-                      'Affordable Shelter Cost (2020 CAD$)']
 
         table_df = df.set_index('Income Category')[value_cols].reset_index()
 
@@ -98,9 +99,9 @@ class Section5Prep:
 
     def create_table_5_2_layout(self, geocode: int, show_both: bool = False):
         """Create Dash DataTable for Table 5.2: Households by AMHI Income (2006, 2016, 2021)."""
-        df = self.data_loader.get_table('table_5_2_hh_amhi_income', geocode)
+        df = self.data_loader.get_table('table_5_2_hh_amhi_income', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households by AMHI Income (2006, 2016, 2021).",
@@ -203,9 +204,9 @@ class Section5Prep:
 
     def create_chart_5_2(self, geocode: int):
         """Create stacked bar chart for Table 5.2 Households by AMHI Income."""
-        filtered = self.data_loader.get_table('table_5_2_hh_amhi_income', geocode)
+        filtered = self.data_loader.get_table('table_5_2_hh_amhi_income', geocode, check_columns=YEARS_MINUS_2011)
 
-        if filtered.empty or filtered.isnull().values.all():
+        if filtered.empty:
             return html.Div([
                 html.H4(TABLE_5_2_TITLE, className='table-title'),
                 html.Div(
@@ -276,9 +277,9 @@ class Section5Prep:
     
     def create_table_5_3_layout(self, geocode: int):
         """Create Dash DataTable for Table 5.3 with households by income by Indigenous communities."""
-        df = self.data_loader.get_table('table_5_3_hh_amhi_income_breakdown', geocode)
+        df = self.data_loader.get_table('table_5_3_hh_amhi_income_breakdown', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for households by income by Indigenous communities.",
@@ -366,9 +367,9 @@ class Section5Prep:
     
     def create_table_5_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 5.4: Median Household & Per Person Income (2016, 2021)."""
-        df = self.data_loader.get_table('table_5_4_median_income', geocode)
+        df = self.data_loader.get_table('table_5_4_median_income', geocode, check_columns=YEARS_2016_2021)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_5_4_TITLE, className='table-title'),
                 html.Div(
@@ -434,9 +435,9 @@ class Section5Prep:
 
     def create_table_5_5_layout(self, geocode: int, show_both: bool = False):
         """Create Dash DataTable for Table 5.5: Households by Number of Household Maintainers (2016, 2021)."""
-        df = self.data_loader.get_table('table_5_5_5_6_number_hh_maintainers', geocode)
+        df = self.data_loader.get_table('table_5_5_5_6_number_hh_maintainers', geocode, check_columns=YEARS_2016_2021)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Households by Number of Household Maintainers (2016, 2021).",

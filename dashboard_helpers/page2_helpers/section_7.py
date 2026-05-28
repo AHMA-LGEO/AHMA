@@ -41,9 +41,9 @@ class Section7Prep:
     def create_table_7_1_layout(self, geocode: int, show_both: bool = False):
         """Create Dash DataTable for Table 7.1 and 7.2: median shelter cost (2016, 2021)."""
 
-        df = self.data_loader.get_table('table_7_1_7_2_dwelllings', geocode)
+        df = self.data_loader.get_table('table_7_1_7_2_dwelllings', geocode, check_columns=YEARS_2016_2021)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_7_TITLE, className='table-title'),
                 html.H6(TABLE_7_1_TITLE, className='table-title'),
@@ -128,10 +128,10 @@ class Section7Prep:
 
     def create_chart_7_3_1(self, geocode: int):
         """Create pie chart for Table 7.3.1 Primary and Secondary Rental Units (2021)."""
-        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
+        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode, check_columns=['2021'])
         labels = "Rental Type"
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_7_3_TITLE, className='table-title'),
                 html.H6(TABLE_7_3_1_TITLE, className='table-title'),
@@ -177,7 +177,7 @@ class Section7Prep:
     def create_table_7_3_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 7.3.1: Primary and Secondary Rental Units (2016, 2021)."""
 
-        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode)
+        df = self.data_loader.get_table('table_7_3_1_rental_units', geocode, check_columns=YEARS_2016_2021)
 
         if df.empty or df.isnull().values.all():
             return html.Div([
@@ -240,9 +240,10 @@ class Section7Prep:
 
     def create_chart_7_3_2(self, geocode: int):
         """Create bar chart for Table 7.3.2 Change in Average Rents."""
-        df = self.data_loader.get_table('table_7_3_2_2_change_in_average_rent', geocode)
+        df = self.data_loader.get_table('table_7_3_2_2_change_in_average_rent', geocode, 
+                                        check_columns=YEARLY_INTERVALS_2016_TO_2023)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H6(TABLE_7_3_2_TITLE, className='table-title'),
                 html.Div(
@@ -289,9 +290,10 @@ class Section7Prep:
     def create_table_7_3_2_layout(self, geocode: int):
         """Create Dash DataTable for Table 7.3.2: Change in average rents between 2016 and 2023."""
 
-        df = self.data_loader.get_table('table_7_3_2_1_average_rent', geocode)
+        df = self.data_loader.get_table('table_7_3_2_1_average_rent', geocode, 
+                                        check_columns=YEARS_2016_TO_2023)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Average rents between 2016 and 2023.",
@@ -342,9 +344,10 @@ class Section7Prep:
 
     def create_chart_7_3_3(self, geocode: int):
         """Create bar chart for Table 7.3.3 Change in Vacancy Rates."""
-        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode)
+        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode, 
+                                        check_columns=YEARLY_INTERVALS_2016_TO_2023)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H6(TABLE_7_3_3_TITLE, className='table-title'),
                 html.Div(
@@ -393,9 +396,10 @@ class Section7Prep:
     def create_table_7_3_3_layout(self, geocode: int):
         """Create Dash DataTable for Table 7.3.3: Change in vacancy rates between 2016 and 2023."""
 
-        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode)
+        df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode, 
+                                        check_columns=YEARS_2016_TO_2023)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Vacancy rates between 2016 and 2023.",

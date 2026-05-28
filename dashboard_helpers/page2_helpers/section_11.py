@@ -32,9 +32,10 @@ class Section11Prep:
 
     def create_table_11_1_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 11.1.1: Projected Population of Indigenous People."""
-        df = self.data_loader.get_table('table_11_1_1_projected_pop', geocode)
+        
+        df = self.data_loader.get_table('table_11_1_1_projected_pop', geocode, check_columns=SECTION_11_YEARS)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_11_TITLE, className='table-title'),
                 html.H6(TABLE_11_1_TITLE, className='table-title'),
@@ -128,9 +129,9 @@ class Section11Prep:
 
     def create_table_11_1_2_layout(self, geocode: int):
         """Create Dash DataTable for Table 11.1.2: Projected Population of Indigenous Households."""
-        df = self.data_loader.get_table('table_11_1_2_projected_hh', geocode)
+        df = self.data_loader.get_table('table_11_1_2_projected_hh', geocode, check_columns=SECTION_11_YEARS)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for projected households for indigenous population.",
