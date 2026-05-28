@@ -435,7 +435,8 @@ class Section5Prep:
 
     def create_table_5_5_layout(self, geocode: int, show_both: bool = False):
         """Create Dash DataTable for Table 5.5: Households by Number of Household Maintainers (2016, 2021)."""
-        df = self.data_loader.get_table('table_5_5_5_6_number_hh_maintainers', geocode, check_columns=YEARS_2016_2021)
+        df = self.data_loader.get_table('table_5_5_5_6_number_hh_maintainers', geocode, 
+                                        check_columns=['HHs', '% of Total'])
 
         if df.empty:
             return html.Div([

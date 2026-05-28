@@ -345,7 +345,7 @@ class Section7Prep:
     def create_chart_7_3_3(self, geocode: int):
         """Create bar chart for Table 7.3.3 Change in Vacancy Rates."""
         df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode, 
-                                        check_columns=YEARLY_INTERVALS_2016_TO_2023)
+                                        check_columns=YEARS_2016_TO_2023)
 
         if df.empty:
             return html.Div([
