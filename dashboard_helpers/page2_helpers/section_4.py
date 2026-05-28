@@ -626,9 +626,10 @@ class Section4Prep:
         return pd.DataFrame(rows, dtype=object)
 
     def create_table_4_5_layout(self, geocode: int, show_both: bool=True) -> html.Div:
+        """techinically starts out life as table 4.5.1 and 4.5.2"""
         # TODO: CR WIP
         #  -> Establish for sure that we don't need "show_both" arg
-        #  -> Figure out why the numbers don't load into dashboard view
+        #
 
         df = self.prepare_table_4_5_data(geocode)
 
@@ -682,10 +683,47 @@ class Section4Prep:
             with_export_btn(table, 'table-4-5'),
         ], className='pg2-table-lgeo')
 
+    def prepare_table_4_6_data(self, geocode):
+        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, check_columns=YEARS_MINUS_2011)
+
+        _LABEL_COL = 'Family Type'
+
+        pct_mask = df[_LABEL_COL].str.contains('%', na=False)
+        for year in YEARS_MINUS_2011:
+            df.loc[pct_mask, year] = df.loc[pct_mask, year].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            df.loc[~pct_mask, year] = df.loc[~pct_mask, year].apply(
+                lambda v: format_number(v, decimals=0)
+            )
+
+        community_df = []
+        for community in COMMUNITIES:
+            indig_df = (
+                df[df['Household Type'] == f"{community}-led"]
+                .set_index(_LABEL_COL)[YEARS_MINUS_2011]
+                .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+            )
+            community_df.append(indig_df)
+
+        all_val_cols = [f'{y}_{community[0]}' for y in YEARS_MINUS_2011 for community in COMMUNITIES]
+        table_df = (
+            pd.concat(community_df, axis=1)
+            .reset_index()
+        )
+
+        rows = [blank_row(_LABEL_COL, all_val_cols, f"Households by {_LABEL_COL}")]
+        for _, row in table_df.iterrows():
+            rows.append(row.to_dict())
+            famtype = row[_LABEL_COL]
+            if '%' in str(famtype):
+                rows.append(blank_row(_LABEL_COL))
+
+        return pd.DataFrame(rows, dtype=object), all_val_cols
+
     def create_table_4_6_layout(self, geocode: int) -> html.Div:
         # TODO CR - techinically starts out life as table 4.5.3
-
-        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, check_columns=YEARS_MINUS_2011)
+        df, data_cols = self.prepare_table_4_6_data(geocode)
 
         if df.empty:
             return html.Div([
@@ -699,15 +737,22 @@ class Section4Prep:
         df = df.fillna("N/A")
         _LABEL_COL = 'Family Type'
 
+        # 3-level columns: [geo_name, year, community]
+        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+            {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
+            for y in YEARS_MINUS_2011
+            for community in COMMUNITIES
+        ]
+
         base_style = get_base_table_style()
         table = dash_table.DataTable(
             id='table-4-5',
             columns=columns,
-            data=df_display.to_dict('records'),
+            data=df.to_dict('records'),
             merge_duplicate_headers=True,
             style_data_conditional=(
-                generate_style_data_conditional(df_display)
-                + make_special_row_styles(df_display, _LABEL_COL,
+                generate_style_data_conditional(df)
+                + make_special_row_styles(df, _LABEL_COL,
                                           geo_headers={'Households by Family Type'}, total_labels={'Total Households for reference'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),

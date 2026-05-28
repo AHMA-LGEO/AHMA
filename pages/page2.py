@@ -203,6 +203,10 @@ layout = html.Div([
             html.Div(id='table-4-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        html.Div([
+            html.Div(id='table-4-6-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
         # Section 5 - Income
         html.Div([
             # html.Div(id='table-5-1-container'),
@@ -613,6 +617,7 @@ def update_section_3(geo_name, scale):
     Output('table-4-3-container', 'children'),
     Output('table-4-4-container', 'children'),
     Output('table-4-5-container', 'children'),
+    Output('table-4-6-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -630,6 +635,7 @@ def update_section_4(geo_name, scale, visibility):
         section_4_layout.create_table_4_3_layout(geocode, show_both_4_3),
         section_4_layout.create_table_4_4_layout(geocode),
         section_4_layout.create_table_4_5_layout(geocode, True),
+        section_4_layout.create_table_4_6_layout(geocode),
     )
 
 
