@@ -2,7 +2,6 @@
 Section 5 preparation and layout - Income.
 """
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -20,11 +19,15 @@ from .table_styles import (
     format_dollar,
     format_percent
 )
-from .text_content import SECTION_5_TITLE, TABLE_5_1_TITLE, TABLE_5_2_TITLE, TABLE_5_4_TITLE
+from .text_content import (
+    SECTION_5_TITLE, TABLE_5_1_TITLE, 
+    TABLE_5_2_TITLE, TABLE_5_4_TITLE
+    )
 
 from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_2016_2021,
-    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
+    CHART_COLORS, PLOT_CONFIG, YEARS_2016_2021,
+    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT
+    )
 
 from .export_helpers import with_export_btn
 
@@ -284,6 +287,7 @@ class Section5Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Households by Income'
 
@@ -513,6 +517,7 @@ class Section5Prep:
         ], className='pg2-table-lgeo')
 
 
-if __name__ == "__main__":
-    t = Section5Prep()
-    t.create_table_5_1_layout(5915022)
+# For testing
+# if __name__ == "__main__":
+#     t = Section5Prep()
+#     t.create_table_5_1_layout(5915022)

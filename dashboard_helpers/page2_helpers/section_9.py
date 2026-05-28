@@ -18,9 +18,15 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import SECTION_9_TITLE, TABLE_9_1_TITLE, TABLE_9_2_TITLE, TABLE_9_3_TITLE
+from .text_content import (
+    SECTION_9_TITLE, TABLE_9_1_TITLE, 
+    TABLE_9_2_TITLE, TABLE_9_3_TITLE
+    )
 from .export_helpers import with_export_btn
-from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, PIT_YEARS
+from dashboard_helpers.config import (
+    CHART_COLORS, TABLE_FONT, 
+    PLOT_CONFIG, PIT_YEARS
+    )
 
 _FY_YEARS = [f"FY{i:02d}" for i in range(9, 25)]
 AGE_GROUPS = ["Under 30", "30-49", "50+"]
@@ -249,6 +255,7 @@ class Section9Prep:
             return html.Div("No data available", className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         value_cols = ['Indigenous',	'Total Population', '% Indigenous']
 
@@ -300,6 +307,7 @@ class Section9Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Attribute'
         attr_idx = df.set_index(_LABEL_COL)

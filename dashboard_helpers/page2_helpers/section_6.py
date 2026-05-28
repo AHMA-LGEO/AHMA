@@ -3,7 +3,6 @@ Section 6 preparation and layout - Dwellings.
 """
 import re
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -15,14 +14,17 @@ from .table_styles import (
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    format_number,
-    format_percent
+    format_number
 )
-from .text_content import SECTION_6_TITLE, TABLE_6_1_TITLE, TABLE_6_3_TITLE, TABLE_6_5_TITLE
+from .text_content import (
+    SECTION_6_TITLE, TABLE_6_1_TITLE, 
+    TABLE_6_3_TITLE, TABLE_6_5_TITLE
+    )
 
 from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
+    CHART_COLORS, PLOT_CONFIG,
+    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT
+    )
 
 from .export_helpers import with_export_btn
 

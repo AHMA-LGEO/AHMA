@@ -3,8 +3,7 @@ import column_mapper as cm
 from sheet_registry import get_sheet, fetch_data
 from utils import (
     build_master, 
-    get_val, 
-    pct, 
+    get_val,
     PROJECTION_YEARS, 
     growth_rate)
 

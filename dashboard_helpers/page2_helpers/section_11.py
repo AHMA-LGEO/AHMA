@@ -8,22 +8,17 @@ import plotly.graph_objects as go
 
 from .data_loader import get_data_loader
 from .table_styles import (
-    blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    merge_columns,
-    make_centered_merged_row_styles,
     format_number,
     format_percent
 )
 from .text_content import SECTION_11_TITLE, TABLE_11_1_TITLE
 
-from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
+from dashboard_helpers.config import TABLE_FONT
 
 from .export_helpers import with_export_btn
 
@@ -50,6 +45,8 @@ class Section11Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
+
         _LABEL_COL = 'Population Count'
         metrics = ['Estimate', 'Projection', '% Change from 2021']
         # communities = [comm + "-led Households by Size (number of people)"  for comm in COMMUNITIES]
@@ -142,6 +139,8 @@ class Section11Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
+
         _LABEL_COL = 'Household Count'
         metrics = ['Estimate', 'Projection', '% Change from 2021']
         years_plus_avg = ['Avg. Indigenous HH size (Province, 2021)'] + SECTION_11_YEARS

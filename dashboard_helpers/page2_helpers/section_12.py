@@ -2,8 +2,7 @@
 Section 12 preparation and layout - Housing Targets.
 """
 import pandas as pd
-from dash import dash_table, html, dcc
-import plotly.graph_objects as go
+from dash import dash_table, html
 
 from .data_loader import get_data_loader
 from .table_styles import (
@@ -13,12 +12,11 @@ from .table_styles import (
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    format_number,
-    format_percent
+    format_number
 )
 from .text_content import SECTION_12_TITLE, TABLE_12_1_TITLE, TABLE_12_2_TITLE, TABLE_12_2_NOTE
 from .export_helpers import with_export_btn
-from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, PIT_YEARS
+from dashboard_helpers.config import TABLE_FONT
 
 class Section12Prep:
     """Prepare and format Section 12 schemas."""

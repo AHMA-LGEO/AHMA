@@ -3,8 +3,7 @@ Section 2 preparation and layout - Indigenous Nations / Territories and Métis C
 """
 import re
 import pandas as pd
-from dash import dash_table, html
-import dash_bootstrap_components as dbc
+from dash import html
 
 from .data_loader import get_data_loader
 from .text_content import (

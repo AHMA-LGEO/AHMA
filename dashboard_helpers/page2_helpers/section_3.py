@@ -2,7 +2,6 @@
 Section 3 preparation and layout - Demographics.
 """
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -610,12 +609,7 @@ class Section3Prep:
         labels = "Indigenous Ancestry, 2021"
         df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
-
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        
 
         # to assign the largest portion the first chart color and so on
         df_sorted = df.sort_values("# of People", ascending=False) 
@@ -681,6 +675,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         value_col = '# of People'
         index_col = 'Indigenous Ancestry, 2021'
@@ -735,6 +730,7 @@ class Section3Prep:
         ], className='pg2-table-lgeo')
     
 
-if __name__ == "__main__":
-    t = Section3Prep()
-    t.create_table_3_6_layout(5915022)
+# For testing
+# if __name__ == "__main__":
+#     t = Section3Prep()
+#     t.create_table_3_6_layout(5915022)

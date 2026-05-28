@@ -20,9 +20,15 @@ from .table_styles import (
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
 )
-from .text_content import SECTION_8_TITLE, TABLE_8_1_TITLE, TABLE_8_3_TITLE, TABLE_8_5_TITLE, TABLE_8_7_TITLE
+from .text_content import (
+    SECTION_8_TITLE, TABLE_8_1_TITLE, 
+    TABLE_8_3_TITLE, TABLE_8_5_TITLE, 
+    TABLE_8_7_TITLE
+    )
 from .export_helpers import with_export_btn
-from dashboard_helpers.config import CHART_COLORS, TABLE_FONT, PLOT_CONFIG, YEARS, YEARS_MINUS_2011, COMMUNITIES
+from dashboard_helpers.config import (
+    CHART_COLORS, TABLE_FONT, PLOT_CONFIG, 
+    YEARS_MINUS_2011, COMMUNITIES)
 
 
 

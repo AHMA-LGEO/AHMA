@@ -2,7 +2,6 @@
 Section 7 preparation and layout - Shelter Costs and Rental Market
 """
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -25,9 +24,10 @@ from .text_content import (
     )
 
 from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS, YEARS_2016_TO_2023,
+    CHART_COLORS, PLOT_CONFIG, YEARS_2016_TO_2023,
     YEARS_2016_2021, YEARLY_INTERVALS_2016_TO_2023,
-    COMMUNITIES, TABLE_COLORS, TABLE_FONT)
+    TABLE_FONT
+    )
 
 from .export_helpers import with_export_btn
 
@@ -354,6 +354,7 @@ class Section7Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         fig = go.Figure()
         change_in_vacancy = df[YEARS_2016_TO_2023].values.tolist()[0]
@@ -443,7 +444,7 @@ class Section7Prep:
         ], className='pg2-table-lgeo')
 
 
-
-if __name__ == '__main__':
-    s = Section7Prep()
-    s.create_table_7_1_layout(5915022)
+# For testing
+# if __name__ == '__main__':
+#     s = Section7Prep()
+#     s.create_table_7_1_layout(5915022)
