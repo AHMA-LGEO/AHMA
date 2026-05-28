@@ -227,7 +227,7 @@ class Section4Prep:
                 x=YEARS,
                 y=percentages,
                 marker_color=colors[tenure],
-                legendrank=len(tenure) - i,
+                legendrank=-(i + 1),
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
