@@ -7,6 +7,7 @@ from utils import (
     get_val,
     pct, 
     clean_val,
+    resolve_op,
     YEARS,
     YEARS_MINUS_2011,
     POP_SIZES,
@@ -252,7 +253,237 @@ class Section4DataPrep:
             print("Table 4.4 is ready now...\n" + '=' * 60)
 
         return result
-    
+
+    def table_4_5_1_4_5_2(self) -> pd.DataFrame:
+        """Table 4.5.1 and 4.5.2: HHs by Family Type (becomes externally labelled as 4.5)
+        """
+        print("Processing Table 4.5.1-4.5.2...")
+        # ---- SETUP ----
+        dfs_4_5 = {
+            "2006": fetch_data("4.5", sheets=["2006_IHNAT_T5"]),
+            "2016": fetch_data("4.5", sheets=["2016_IHNAT_T3"]),
+            "2021": fetch_data("4.5", sheets=["2021_IHNAT_T1"])
+        }
+        master_4_5 = build_master(dfs_4_5)
+
+        # ---- TABLE LOGIC ----
+        org_df = dfs_4_5
+        master = master_4_5
+        COL_MAP = cm.TABLE_4_5_1_4_5_2_COL_MAP
+        PCT_REF = cm.PCT_REFS_4_5
+        OP_MAP = cm.OP_MAP_4_5
+
+        rows = []
+        YEARS = ["2006", "2016", "2021"]
+        HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
+
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for category, hh_type_map in COL_MAP.items():
+                for hh_type in HH_TYPES:
+                    output_row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        "Family Type": category,
+                        "Household Type": hh_type
+                    }
+
+                    # third for loop to get values from column names
+                    for year in YEARS:
+                        df = org_df[year]
+                        match = df[df["Geocode"] == geocode]
+
+                        if match.empty:
+                            output_row[year] = None
+                            continue
+
+                        col_entry = hh_type_map.get(hh_type, {}).get(year)
+                        op = OP_MAP.get(category)
+
+                        if col_entry is None:
+                            output_row[year] = None
+
+                        # check if values in COL_MAP are a list
+                        elif isinstance(col_entry, list):
+                            # multi-column: pull all values, apply op
+                            raw_vals = [
+                                match[c].iloc[0] if c in df.columns else None
+                                for c in col_entry
+                            ]
+                            output_row[year] = resolve_op(op, raw_vals)
+                        else:
+                            # original single-column path - untouched
+                            if col_entry in df.columns:
+                                output_row[year] = clean_val(match[col_entry].iloc[0])
+                            else:
+                                output_row[year] = None
+                    rows.append(output_row)
+                    # if geocode == 59:
+                    #     print(rows)
+        result = pd.DataFrame(rows)
+
+        #### Recalculate totals
+        # #calculate totals for "Total" rows by summing the non-total hh_size rows per group
+        CAT_ROWS = ["Households with children",
+                    "Households led by a single-parent",
+                    "Number of multigenerational households",
+                    "Number of non-family households (i.e. single or roomates)",
+                    "Apartment in building with fewer than 5 storeys",
+                    "Apartment in building with 5+ storeys",
+                    "Other single-attached house",
+                    "Moveable dwelling"
+                    ]  # rows that should be summed
+        CAT = "Family Type"
+        TYPE = "Household Type"
+        TOTAL_ROW = "Total Households for reference"
+
+        for year in YEARS:
+            # for each (Geocode, Household type) group, sum the size rows and assign to "total"
+            totals = (
+                result[result[CAT].isin(CAT_ROWS)]
+                .groupby(["Geocode", TYPE])[year]
+                .sum(min_count=1)
+            )
+
+            # build a mask for the "Total" rows
+            # B - not totally sure how to use this in the future
+            total_mask = result[CAT] == TOTAL_ROW
+
+            # map the summed values back using (Geocode, Houshold Type) as the key
+            # B - not totally sure how to use this in the future
+            result.loc[total_mask, year] = result[total_mask].apply(
+                lambda row: totals.get((row["Geocode"], row[TYPE])),
+                axis=1
+            )
+
+        #### APPLY PERCENTAGE CALCULATION AFTER FILLING IN VALUE FIELDS IN DATAFRAME
+
+        # pass 2 - fill in % rows
+        for pct_category, (num_label, den_label) in PCT_REF.items():
+            for year in YEARS:
+                num_lookup = (
+                    result[result["Family Type"] == num_label]
+                    .set_index(["Geocode", "Household Type"])[year]
+                )
+                den_lookup = (
+                    result[result["Family Type"] == den_label]
+                    .set_index(["Geocode", "Household Type"])[year]
+                )
+
+                pct_mask = result["Family Type"] == pct_category
+
+                # calculate all values first, then write once
+                result.loc[pct_mask, year] = result[pct_mask].apply(
+                    lambda row: resolve_op("pct", [
+                        num_lookup.get((row["Geocode"], row["Household Type"])),
+                        den_lookup.get((row["Geocode"], row["Household Type"]))
+                    ]),
+                    axis=1
+                )
+
+        print("Table 4.5 is ready now...\n" + '=' * 60)
+        return result
+
+    def table_4_5_3(self) -> pd.DataFrame:
+        """Table 4.5.3 : HHs by Family Type and Community (becomes externally labelled as 4.6)
+        """
+
+        print("Processing Table 4.5.3...")
+        # ---- SETUP ----
+        dfs_4_5 = {
+            "2006": fetch_data("4.5", sheets=["2006_IHNAT_T5"]),
+            "2016": fetch_data("4.5", sheets=["2016_IHNAT_T3"]),
+            "2021": fetch_data("4.5", sheets=["2021_IHNAT_T1"])
+        }
+        master_4_5 = build_master(dfs_4_5)
+
+        # ---- TABLE LOGIC ----
+        org_df = dfs_4_5
+        master = master_4_5
+        COL_MAP = cm.TABLE_4_5_3_COL_MAP
+        PCT_REF = cm.PCT_REFS_4_5
+        OP_MAP = cm.OP_MAP_4_5
+
+        rows = []
+        YEARS = ["2006", "2016", "2021"]
+        SUB_TYPES = ["First Nations-led", "Metis-led", "Inuit-led"]
+
+        for _, geo_row in master.iterrows():
+            geocode = geo_row["Geocode"]
+            geography = geo_row["Geography"]
+
+            for category, hh_type_map in COL_MAP.items():
+                for sub_type in SUB_TYPES:
+                    output_row = {
+                        "Geocode": geocode,
+                        "Geography": geography,
+                        "Family Type": category,
+                        "Household Type": sub_type
+                    }
+
+                    # third for loop to get values from column names
+                    for year in YEARS:
+                        df = org_df[year]
+                        match = df[df["Geocode"] == geocode]
+
+                        if match.empty:
+                            output_row[year] = None
+                            continue
+
+                        col_entry = hh_type_map.get(sub_type, {}).get(year)
+                        op = OP_MAP.get(category)
+
+                        if col_entry is None:
+                            output_row[year] = None
+
+                        # check if values in COL_MAP are a list
+                        elif isinstance(col_entry, list):
+                            # multi-column: pull all values, apply op
+                            raw_vals = [
+                                match[c].iloc[0] if c in df.columns else None
+                                for c in col_entry
+                            ]
+                            output_row[year] = resolve_op(op, raw_vals)
+                        else:
+                            # original single-column path - untouched
+                            if col_entry in df.columns:
+                                output_row[year] = clean_val(match[col_entry].iloc[0])
+                            else:
+                                output_row[year] = None
+                    rows.append(output_row)
+                    # if geocode == 59:
+                    #     print(rows)
+        result = pd.DataFrame(rows)
+
+        #### APPLY PERCENTAGE CALCULATION AFTER FILLING IN VALUE FIELDS IN DATAFRAME
+
+        # pass 2 - fill in % rows
+        for pct_category, (num_label, den_label) in PCT_REF.items():
+            for year in YEARS:
+                num_lookup = (
+                    result[result["Family Type"] == num_label]
+                    .set_index(["Geocode", "Household Type"])[year]
+                )
+                den_lookup = (
+                    result[result["Family Type"] == den_label]
+                    .set_index(["Geocode", "Household Type"])[year]
+                )
+
+                pct_mask = result["Family Type"] == pct_category
+
+                # calculate all values first, then write once
+                result.loc[pct_mask, year] = result[pct_mask].apply(
+                    lambda row: resolve_op("pct", [
+                        num_lookup.get((row["Geocode"], row["Household Type"])),
+                        den_lookup.get((row["Geocode"], row["Household Type"]))
+                    ]),
+                    axis=1
+                )
+
+        print("Table 4.6 is ready now...\n" + '=' * 60)
+        return result
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Section 4 methods and returns {name:df}"
@@ -261,8 +492,11 @@ class Section4DataPrep:
             "4.2": self.table_4_2(),
             "4.3": self.table_4_3_4_4("4.3"),
             "4.4": self.table_4_3_4_4("4.4"),
+            "4.5": self.table_4_5_1_4_5_2(),
+            "4.6": self.table_4_5_3(),
         }
 
 if __name__ == '__main__':
     t = Section4DataPrep()
-    t.table_4_2()
+    t.table_4_5_3()
+    print('Done')

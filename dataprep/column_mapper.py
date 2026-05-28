@@ -395,6 +395,203 @@ TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
     _T4_3_1_COMMUNITY_SUFFIX,
 ))
 
+# TODO CR - confirm these should go here?
+PCT_REFS_4_5 = {
+    "% of households with children": ("Households with children", "Total Households for reference"),
+    "% of households led by a single-parent": ("Households led by a single-parent", "Total Households for reference"),
+    "% Multigenerational households": ("Number of multigenerational households", "Total Households for reference"),
+    "% Non-family households (i.e. single or roomates)": ("Number of non-family households (i.e. single or roomates)", "Total Households for reference")
+}
+
+OP_MAP_4_5 = {
+    "Households with children": "direct",
+    "Households led by a single-parent": "sum",
+    "Number of multigenerational households": "direct",
+    "Number of non-family households (i.e. single or roomates)": "sum",
+    "Total Households for reference": "direct",
+    "% of households with children": "pct",
+    "% of households led by a single-parent": "pct",
+    "% Multigenerational households": "pct",
+    "% Non-family households (i.e. single or roomates)": "pct",
+}
+
+TABLE_4_5_1_4_5_2_COL_MAP = strip_map({
+    "Households with children": {
+        "Indigenous HHs": {
+            "2006": "With children _Aboriginal household",
+            "2016": "With children_Aboriginal household",
+            "2021": "With children _Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": "With children _Non-Aboriginal household",
+            "2016": "With children_Non-Aboriginal household",
+            "2021": "With children _Non-Indigenous household",
+        },
+    },
+    "% of households with children": {},  # empty — just a placeholder to reserve the row position
+
+    "Households led by a single-parent": {
+        "Indigenous HHs": {
+            "2006": ["With a lone parent that is a male_Aboriginal household",
+                     "With a lone parent that is a female_Aboriginal household"],
+            "2016": ["With a lone parent that is a male_Aboriginal household",
+                     "With a lone parent that is a female_Aboriginal household"],
+            "2021": ["With a one-parent that is a man+_Indigenous household",
+                     "With a one-parent that is a woman+_Indigenous household"],
+        },
+        "Non-Indigenous HHs": {
+            "2006": ["With a lone parent that is a male_Non-Aboriginal household",
+                     "With a lone parent that is a female_Non-Aboriginal household"],
+            "2016": ["With a lone parent that is a male_Non-Aboriginal household",
+                     "With a lone parent that is a female_Non-Aboriginal household"],
+            "2021": ["With a one-parent that is a man+_Non-Indigenous household",
+                     "With a one-parent that is a woman+_Non-Indigenous household"],
+        },
+    },
+    "% of households led by a single-parent": {},  # empty — just a placeholder to reserve the row position
+
+    "Number of multigenerational households": {
+        "Indigenous HHs": {
+            "2006": None,
+            "2016": "Multigenerational household_Aboriginal household",
+            "2021": "Multigenerational households_Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": None,
+            "2016": "Multigenerational household_Non-Aboriginal household",
+            "2021": "Multigenerational households_Non-Indigenous household",
+        },
+    },
+    "% Multigenerational households": {},  # empty — just a placeholder to reserve the row position
+
+    "Number of non-family households (i.e. single or roomates)": {
+        "Indigenous HHs": {
+            "2006": ["Other family households_Aboriginal household", "One person households_Aboriginal household"],
+            "2016": ["Two or more person non-census-family household_Aboriginal household",
+                     "One person household_Aboriginal household"],
+            "2021": ["Two-or-more-person non-census-family households_Indigenous household",
+                     "One-person households_Indigenous household"],
+        },
+        "Non-Indigenous HHs": {
+            "2006": ["Other family households_Non-Aboriginal household",
+                     "One person households_Non-Aboriginal household"],
+            "2016": ["Two or more person non-census-family household_Non-Aboriginal household",
+                     "One person household_Non-Aboriginal household"],
+            "2021": ["Two-or-more-person non-census-family households_Non-Indigenous household",
+                     "One-person households_Non-Indigenous household"],
+        },
+    },
+    "% Non-family households (i.e. single or roomates)": {},  # empty — just a placeholder to reserve the row position
+
+    "Total Households for reference": {
+        "Indigenous HHs": {
+            "2006": "Total - Presence of children_Aboriginal household",
+            "2016": "Total - Presence of children _Aboriginal household",
+            "2021": "Total - Presence of children _Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": "Total - Presence of children_Non-Aboriginal household",
+            "2016": "Total - Presence of children _Non-Aboriginal household",
+            "2021": "Total - Presence of children _Non-Indigenous household",
+        },
+    }
+})
+
+TABLE_4_5_3_COL_MAP = strip_map({
+    "Households with children":{
+        "First Nations-led":{
+            "2006": "With children _First Nations-led",
+            "2016": "With children_First Nations-led",
+            "2021": "With children _First Nations-led",
+        },
+        "Metis-led":{
+            "2006": "With children _Metis-led",
+            "2016": "With children_Metis-led",
+            "2021": "With children _Metis-led",
+        },
+        "Inuit-led":{
+            "2006": "With children _Inuit-led",
+            "2016": "With children_Inuit-led",
+            "2021": "With children _Inuit-led",
+        },
+    },
+    "% of households with children":{}, # empty — just a placeholder to reserve the row position
+
+    "Households led by a single-parent":{
+        "First Nations-led":{
+            "2006": ["With a lone parent that is a male_First Nations-led", "With a lone parent that is a female_First Nations-led"],
+            "2016": ["With a lone parent that is a male_First Nations-led", "With a lone parent that is a female_First Nations-led"],
+            "2021": ["With a one-parent that is a man+_First Nations-led", "With a one-parent that is a woman+_First Nations-led"],
+        },
+        "Metis-led":{
+            "2006": ["With a lone parent that is a male_Metis-led", "With a lone parent that is a female_Metis-led"],
+            "2016": ["With a lone parent that is a male_Metis-led", "With a lone parent that is a female_Metis-led"],
+            "2021": ["With a one-parent that is a man+_Metis-led", "With a one-parent that is a woman+_Metis-led"],
+        },
+        "Inuit-led":{
+            "2006": ["With a lone parent that is a male_Inuit-led", "With a lone parent that is a female_Inuit-led"],
+            "2016": ["With a lone parent that is a male_Inuit-led", "With a lone parent that is a female_Inuit-led"],
+            "2021": ["With a one-parent that is a man+_Inuit-led", "With a one-parent that is a woman+_Inuit-led"],
+        },
+    },
+    "% of households led by a single-parent":{}, # empty — just a placeholder to reserve the row position
+
+    "Number of multigenerational households":{
+        "First Nations-led":{
+            "2006": None,
+            "2016": "Multigenerational household_First Nations-led",
+            "2021": "Multigenerational households_First Nations-led",
+        },
+        "Metis-led":{
+            "2006": None,
+            "2016": "Multigenerational household_Metis-led",
+            "2021": "Multigenerational households_Metis-led",
+        },
+        "Inuit-led":{
+            "2006": None,
+            "2016": "Multigenerational household_Inuit-led",
+            "2021": "Multigenerational households_Inuit-led",
+        },
+    },
+    "% Multigenerational households":{}, # empty — just a placeholder to reserve the row position
+
+    "Number of non-family households (i.e. single or roomates)":{
+        "First Nations-led":{
+            "2006": ["Other family households_First Nations-led", "One person households_First Nations-led"],
+            "2016": ["Two or more person non-census-family household_First Nations-led", "One person household_First Nations-led"],
+            "2021": ["Two-or-more-person non-census-family households_First Nations-led", "One-person households_First Nations-led"],
+        },
+        "Metis-led":{
+            "2006": ["Other family households_Metis-led", "One person households_Metis-led"],
+            "2016": ["Two or more person non-census-family household_Metis-led", "One person household_Metis-led"],
+            "2021": ["Two-or-more-person non-census-family households_Metis-led", "One-person households_Metis-led"],
+        },
+        "Inuit-led":{
+            "2006": ["Other family households_Inuit-led", "One person households_Inuit-led"],
+            "2016": ["Two or more person non-census-family household_Inuit-led", "One person household_Inuit-led"],
+            "2021": ["Two-or-more-person non-census-family households_Inuit-led", "One-person households_Inuit-led"],
+        },
+    },
+    "% Non-family households (i.e. single or roomates)":{}, # empty — just a placeholder to reserve the row position
+
+    "Total Households for reference":{
+        "First Nations-led":{
+            "2006": "Total - Presence of children_First Nations-led",
+            "2016": "Total - Presence of children _First Nations-led",
+            "2021": "Total - Presence of children _First Nations-led",
+        },
+        "Metis-led":{
+            "2006": "Total - Presence of children_Metis-led",
+            "2016": "Total - Presence of children _Metis-led",
+            "2021": "Total - Presence of children _Metis-led",
+        },
+        "Inuit-led":{
+            "2006": "Total - Presence of children_Inuit-led",
+            "2016": "Total - Presence of children _Inuit-led",
+            "2021": "Total - Presence of children _Inuit-led",
+        },
+    }
+})
 
 #-------------------- Section 5 – Income --------------------
 

@@ -238,3 +238,29 @@ def transform_geocode_master() -> pd.DataFrame:
 
     result_df = pd.DataFrame(rows)
     return result_df.sort_values('Geography')
+
+
+def resolve_op(op, values):
+    """
+    op: string key from OP_MAP (e.g. "sum", "pct")
+    values: list of raw numeric values pulled from source columns, in the same order as the oclumn list in COL_MAP
+    Added by CR from BF's Table4DataPrep.BF.ipynb
+    """
+
+    vals = [clean_val(v) for v in values]
+
+    if op == "sum":
+        if all(v is None for v in vals):
+            return None
+        return sum(v for v in vals if v is not None)
+
+    elif op == "pct":
+        # expects [numerator, denominator]
+        num, den = vals[0], vals[1]
+        if num is None or den is None or den == 0:
+            return None
+        return round((num / den) * 100, 1)
+
+    elif op == "direct":
+        # just return the first value (direct lookup behaviour)
+        return vals[0] if vals else None

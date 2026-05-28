@@ -1,6 +1,7 @@
 """
 Section 4 preparation and layout - Housing Tenure.
 """
+
 import pandas as pd
 import numpy as np
 from dash import dash_table, html, dcc
@@ -585,4 +586,143 @@ class Section4Prep:
         return html.Div([
             with_export_btn(table, 'table-4-4'),
         ], className='pg2-table-lgeo')
-    
+
+    def prepare_table_4_5_data(self, geocode: int):
+        df = self.data_loader.get_table('table_4_5_1_4_5_2_hh_by_family_type', geocode, check_columns=YEARS_MINUS_2011)
+
+        _LABEL_COL = 'Family Type'
+
+        pct_mask = df[_LABEL_COL].str.contains('%', na=False)
+        for year in YEARS_MINUS_2011:
+            df.loc[pct_mask, year] = df.loc[pct_mask, year].apply(
+                lambda v: format_percent(v, multiply=False)
+            )
+            df.loc[~pct_mask, year] = df.loc[~pct_mask, year].apply(
+                lambda v: format_number(v, decimals=0)
+            )
+
+        indg = (
+            df[df['Household Type'] == 'Indigenous HHs'].copy()
+            .reset_index(drop=True)
+            .rename(columns={y: f'indg_{y}' for y in YEARS_MINUS_2011})
+        )
+        non_indg = (
+            df[df['Household Type'] == 'Non-Indigenous HHs'].copy()
+            .reset_index(drop=True)
+            .rename(columns={y: f'non_indg_{y}' for y in YEARS_MINUS_2011})
+        )
+
+        drop_cols = ['pk','Geocode','Geography','Household Type']
+        result = indg.drop(columns=drop_cols).merge(non_indg.drop(columns=drop_cols), on=_LABEL_COL, how='left')
+        all_val_cols = [c for c in result if c != _LABEL_COL]
+
+        rows = [blank_row(_LABEL_COL, all_val_cols, f"Households by {_LABEL_COL}")]
+        for _, row in result.iterrows():
+            rows.append(row.to_dict())
+            famtype = row[_LABEL_COL]
+            if '%' in str(famtype):
+                rows.append(blank_row(_LABEL_COL))
+
+        return pd.DataFrame(rows, dtype=object)
+
+    def create_table_4_5_layout(self, geocode: int, show_both: bool=True) -> html.Div:
+        # TODO: CR WIP
+        #  -> Establish for sure that we don't need "show_both" arg
+        #  -> Figure out why the numbers don't load into dashboard view
+
+        df = self.prepare_table_4_5_data(geocode)
+
+        if df.empty:
+            return html.Div([
+                html.Div(
+                    "No data for households by family type by Indigenous communities.",
+                    style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
+        _LABEL_COL = 'Family Type'
+
+        if show_both: # TODO - we probably won't need this switch, but keeping for now in case
+            hh_types = ["Indigenous HHs", "Non-Indigenous HHs"]
+            prefixes = ['indg', 'non_indg']
+            # df_display = pd.concat([indg[YEARS_MINUS_2011], non_indg[YEARS_MINUS_2011]], axis=1, ignore_index=True)
+        else:
+            hh_types = ["Indigenous HHs"]
+            prefixes = ['indg']
+
+        columns = [
+                      {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
+                  ] + [
+                      {"name": [geo_name, y, hh_type], "id": f"{pref}_{y}"}
+                      for y in YEARS_MINUS_2011
+                      for hh_type, pref in zip(hh_types, prefixes)
+                  ]
+        data_cols = [f"{pref}_{y}" for y in YEARS_MINUS_2011 for pref in prefixes]
+        df_display = df[[_LABEL_COL] + data_cols]
+
+        base_style = get_base_table_style()
+
+        table = dash_table.DataTable(
+            id='table-4-5',
+            columns=columns,
+            data=df_display.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(df_display)
+                + make_special_row_styles(df_display, _LABEL_COL,
+                                          geo_headers={'Households by Family Type'}, total_labels={'Total Households for reference'})
+            ),
+            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
+            **base_style
+        )
+        return html.Div([
+            with_export_btn(table, 'table-4-5'),
+        ], className='pg2-table-lgeo')
+
+    def create_table_4_6_layout(self, geocode: int) -> html.Div:
+        # TODO CR - techinically starts out life as table 4.5.3
+
+        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, check_columns=YEARS_MINUS_2011)
+
+        if df.empty:
+            return html.Div([
+                html.Div(
+                "No data for households by family type by Indigenous community.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
+
+        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
+        _LABEL_COL = 'Family Type'
+
+        base_style = get_base_table_style()
+        table = dash_table.DataTable(
+            id='table-4-5',
+            columns=columns,
+            data=df_display.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(df_display)
+                + make_special_row_styles(df_display, _LABEL_COL,
+                                          geo_headers={'Households by Family Type'}, total_labels={'Total Households for reference'})
+            ),
+            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
+            **base_style
+        )
+
+        return html.Div([
+            with_export_btn(table, 'table-4-6'),
+        ], className='pg2-table-lgeo')
+
+
+if __name__ == "__main__":
+    t = Section4Prep()
+    # t.create_table_4_1_layout(5915022)
+    # t.create_table_4_3_layout(5915022)
+    # t.create_table_4_5_layout(5915022)
+    t.create_table_4_6_layout(5915022)
