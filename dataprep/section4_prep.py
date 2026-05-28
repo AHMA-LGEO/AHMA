@@ -110,11 +110,25 @@ class Section4DataPrep:
                 total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
             total_rows.append(total_row)
 
-        result = (
-            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
-            .sort_values(["Geocode", "Household Type", "Households by Tenure"])
-            .reset_index(drop=True)
-        )
+        attr_order = [
+            "Owner",
+            "Renter",
+            "Dwelling provided by local government or First Nation",
+            "Total",
+            "% of Owners with mortgage",
+            "% of Owners without a mortgage",
+            "% of Renters in subsidized housing",
+            "% of Renters not in subsidized housing"
+        ]
+
+        result = pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+
+        result["Households by Tenure"] = pd.Categorical(result["Households by Tenure"],
+                                                        categories=attr_order, ordered=True)
+
+        result = (result.sort_values(
+            ["Geocode", "Household Type", "Households by Tenure"],
+            na_position="last").reset_index(drop=True))
 
         print("Table 4.1 is ready now...\n" + '=' * 60)
         return result
@@ -213,11 +227,30 @@ class Section4DataPrep:
                 total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
             total_rows.append(total_row)
 
-        result = (
-            pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
-            .sort_values(["Geocode", "Indigenous Community", "Households by Tenure"])
-            .reset_index(drop=True)
-        )
+        # result = (
+        #     pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+        #     .sort_values(["Geocode", "Indigenous Community", "Households by Tenure"])
+        #     .reset_index(drop=True)
+        # )
+        attr_order = [
+            "Owner",
+            "Renter",
+            "Dwelling provided by local government or First Nation",
+            "Total",
+            "% of Owners with mortgage",
+            "% of Owners without a mortgage",
+            "% of Renters in subsidized housing",
+            "% of Renters not in subsidized housing"
+        ]
+
+        result = pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+
+        result["Households by Tenure"] = pd.Categorical(result["Households by Tenure"],
+                                                        categories=attr_order, ordered=True)
+
+        result = (result.sort_values(
+            ["Geocode", "Indigenous Community", "Households by Tenure"],
+            na_position="last").reset_index(drop=True))
 
         print("Table 4.2 is ready now...\n" + '=' * 60)
         return result
@@ -311,6 +344,7 @@ class Section4DataPrep:
             "4.4": self.table_4_3_4_4("4.4"),
         }
 
-if __name__ == '__main__':
-    t = Section4DataPrep()
-    t.table_4_2()
+# For testing
+# if __name__ == '__main__':
+#     t = Section4DataPrep()
+#     t.table_4_3_4_4("4.3")

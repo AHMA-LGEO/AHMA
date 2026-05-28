@@ -344,7 +344,7 @@ _T4_3_SIZE_PREFIX = {
     "3 pp":   {"2006": "  3 persons",            "2016": "3 persons",         "2021": "3 persons"},
     "4 pp":   {"2006": "  4 persons",            "2016": "4 persons",         "2021": "4 persons"},
     "5+ pp": {"2006": "  5 or more",            "2016": "5 or more persons", "2021": "5 or more persons"},
-    # "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
+    "Total": {"2006": "Total - Household size", "2016": "Total - Household size", "2021": "Total - Household size"},
 }
 _T4_3_AVG_PREFIX = {
     "2006": "Average number of persons",
