@@ -70,8 +70,10 @@ def global_toggle_ui():
                         className="d-flex align-items-center gap-2",
                         style={"minWidth": "170px", 
                                "justifyContent": "center",
-                               "backgroundColor": "#9CA37A",
+                               "backgroundColor": "#80875C",
+                               "borderColor": "#80875C",
                                "color": "#ffffff",
+                               "fontFamily": "Open Sans",
                                "cursor": "pointer"},
                     ),
                 ], className="d-flex align-items-center"),
@@ -105,15 +107,15 @@ layout = html.Div([
         # Introduction
         html.H3(html.Strong(INTRO_TITLE), id='intro-title'),
         html.Div([
-            html.H6([
-                INTRO_TEXT,
+            html.Div([
+                INTRO_TEXT, 
                 # html.Br(), html.Br(),
                 # INTRO_PARAGRAPH,
                 # html.Br(), html.Br(),
                 # html.Ul([
                 #     html.Li([html.I([note])]) for note in NOTES
                 # ])
-            ], style={'fontFamily': TABLE_FONT})
+            ], style={"fontFamily": TABLE_FONT})
         ], className='muni-reg-text-lgeo'),
 
         # Section 2 - Nations / Territories and Métis Communities
@@ -146,20 +148,23 @@ layout = html.Div([
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-4-1"},
                     value=False,
                     label="",
-                    className="mb-0 green-toggle",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+            # ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+            ], className="d-flex align-items-center",
                style={
                 #    "borderBottom": "2px solid #002145"
                     "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
                     "paddingLeft": "12px",
                     "paddingRight": "12px",
                     "paddingTop": "8px",
@@ -217,7 +222,7 @@ layout = html.Div([
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(

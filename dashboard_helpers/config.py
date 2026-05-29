@@ -40,10 +40,10 @@ MAP_COLORS_W_BLACK = [
     '#78cb80', '#ffe6d6', '#e98098', '#a480bb', '#490076', '#008481', '#74d3f9'
 ]
 
-MAP_COLORS_HIGHLIGHT = ['#80875C', '#D89A86']
+MAP_COLORS_HIGHLIGHT = ['#80875C', '#b55438']
 MAP_COLORS_HIGHLIGHT_W_BLACK = ['#000000', '#80875C', '#D89A86']
 
-OPACITY_VALUE = 0.2
+OPACITY_VALUE = 0.3
 
 # Modebar colors
 MODEBAR_COLOR = '#099DD7'
@@ -71,7 +71,8 @@ CHART_COLORS = ['#D0B46A', '#9CA37A', '#C97A63', '#85A7B2',
                 '#D89A86', '#4B6470', '#80875C', '#b55438',
                 '#1d353d', '#5b2a1c', '#7d6c40', '#4d5137', '#000000']
 
-TABLE_FONT = 'Bahnschrift'
+TABLE_FONT = 'Open Sans'
+HEADER_FONT = 'Bahnschrift'
 
 # Map data paths
 MAP_DATA_DIR = Path(__file__).parent.parent / "source" / "mapdata_simplified"

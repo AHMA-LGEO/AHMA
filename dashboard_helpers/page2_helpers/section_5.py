@@ -264,7 +264,7 @@ class Section5Prep:
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
-            font=dict(family="Bahnschrift"),
+            font=dict(family=TABLE_FONT),
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
 

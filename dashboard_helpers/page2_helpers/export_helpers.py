@@ -5,7 +5,7 @@ from io import BytesIO
 import pandas as pd
 from dash import html, dcc
 import dash_bootstrap_components as dbc
-
+from dashboard_helpers.config import TABLE_FONT
 
 def with_export_btn(table_component, table_id: str, max_width: str = None):
 
@@ -36,6 +36,7 @@ def with_export_btn(table_component, table_id: str, max_width: str = None):
                 "display": "flex",
                 "justifyContent": "flex-end",
                 "paddingBottom": "10px",
+                "fontFamily": TABLE_FONT
             }
         ),
         # html.Br(),

@@ -152,10 +152,23 @@
 /* <div class="dashboardWrapper" style="position: relative;">
 <embed style="border: none;" src="https://hartdashboard-kook-lgeo.koyeb.app/page2" dpi="300" width="100%" height="3200vh">
 </div> */
+
+Strong, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bahnschrift'
+}
+
+div { font-size: 18px; }
+
+.text-muted {
+  font-size: 16px;
+  font-family: 'Open Sans'
+}
+
 .export-pdf {
   background-color: #C97A63;
   border-color: #C97A63;
   color: white;
+  font-family: 'Open Sans';
 }
 
 .export-pdf:hover {
@@ -166,13 +179,14 @@
   box-shadow: none !important;
 }
 
+/*#80875C*/
 .green-toggle .form-check-input:checked {
-        background-color: #80875C !important;
-        border-color: #80875C !important;
+        background-color: #D0B46A !important;
+        border-color: #D0B46A !important;
     }
     .green-toggle .form-check-input:checked:focus {
-        border-color: #80875C !important;
-        box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25) !important;
+        border-color: #D0B46A !important;
+        box-shadow: 0 0 0 0.25rem rgba(128, 135, 92, 1) !important;
     }
 
 

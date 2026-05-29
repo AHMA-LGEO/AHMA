@@ -15,14 +15,14 @@ COLOR_SCHEME = {
         "label": "○ Hide Comparison",
     },
     "all_off": {
-        "bg": "#9CA37A",     
-        "border": "#9CA37A", 
+        "bg": "#80875C",     
+        "border": "#80875C", 
         "text": "#ffffff",   
         "label": "● Show Comparison",
     },
     "mixed": {
-        "bg": "#f59e0b",     
-        "border": "#f59e0b", 
+        "bg": "#d0b46a",     
+        "border": "#d0b46a", 
         "text": "#ffffff",   
         "label": "◐ Mixed",
     },

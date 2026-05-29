@@ -71,6 +71,7 @@ class Section2DataPrep:
         }
     
 
-if __name__ == '__main__':
-    t = Section2DataPrep()
-    t.table_2_1()
+# For testing
+# if __name__ == '__main__':
+#     t = Section2DataPrep()
+#     t.table_2_1()

@@ -338,7 +338,7 @@ class Section4DataPrep:
     def table_4_5_1_4_5_2(self) -> pd.DataFrame:
         """Table 4.5.1 and 4.5.2: HHs by Family Type (becomes externally labelled as 4.5)
         """
-        print("Processing Table 4.5.1-4.5.2...")
+        print("Processing Table 4.5...")
         # ---- SETUP ----
         dfs_4_5 = {
             "2006": fetch_data("4.5", sheets=["2006_IHNAT_T5"]),
@@ -471,7 +471,7 @@ class Section4DataPrep:
         """Table 4.5.3 : HHs by Family Type and Community (becomes externally labelled as 4.6)
         """
 
-        print("Processing Table 4.5.3...")
+        print("Processing Table 4.6...")
         # ---- SETUP ----
         dfs_4_5 = {
             "2006": fetch_data("4.5", sheets=["2006_IHNAT_T5"]),

@@ -109,6 +109,7 @@ class Section2Prep:
             )
 
         return html.Div([
-            html.Div(TABLE_2_2_DESC, className='table-desc'),
+            html.Div(TABLE_2_2_DESC, className='table-desc', 
+                     style={'fontFamily': TABLE_FONT, 'color': '#000000'}),
             body,
         ], className='pg2-table-lgeo')
