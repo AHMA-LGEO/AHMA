@@ -3,7 +3,6 @@ Section 4 preparation and layout - Housing Tenure.
 """
 
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -18,11 +17,15 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import SECTION_4_TITLE, TABLE_4_1_TITLE, TABLE_4_1_DESC, TABLE_4_3_TITLE
+from .text_content import (
+    SECTION_4_TITLE, TABLE_4_1_TITLE, 
+    TABLE_4_1_DESC, TABLE_4_3_TITLE
+    )
 
 from dashboard_helpers.config import (
     CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
+    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT
+    )
 
 from .export_helpers import with_export_btn
 
@@ -225,7 +228,7 @@ class Section4Prep:
                 x=YEARS,
                 y=percentages,
                 marker_color=colors[tenure],
-                legendrank=len(tenure) - i,
+                legendrank=-(i + 1),
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'

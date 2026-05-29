@@ -2,7 +2,6 @@
 Section 3 preparation and layout - Demographics.
 """
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -52,10 +51,10 @@ class Section3Prep:
         is_csd = len(str(geocode)) == 7
         cd_geocode = self.data_loader.get_region_geocode(geocode) if is_csd else geocode
 
-        df_3_1_1 = self.data_loader.get_table('table_3_1_1_indigenous_pop', geocode)
-        df_3_1_2 = self.data_loader.get_table('table_3_1_2_indigenous_age', geocode)
-        df_3_1_3 = self.data_loader.get_table('table_3_1_3_indigenous_location', cd_geocode)
-        df_3_1_4 = self.data_loader.get_table('table_3_1_4_indigenous_move', cd_geocode)
+        df_3_1_1 = self.data_loader.get_table('table_3_1_1_indigenous_pop', geocode, check_columns=YEARS)
+        df_3_1_2 = self.data_loader.get_table('table_3_1_2_indigenous_age', geocode, check_columns=YEARS)
+        df_3_1_3 = self.data_loader.get_table('table_3_1_3_indigenous_location', cd_geocode, check_columns=YEARS)
+        df_3_1_4 = self.data_loader.get_table('table_3_1_4_indigenous_move', cd_geocode, check_columns=YEARS)
 
         def get_values(filtered_df, label_col, label_val, pct_row=False):
             """Extract year values for a specific label row with formatting."""
@@ -106,7 +105,7 @@ class Section3Prep:
         Create Dash DataTable layout for Table 3.1 with 2-level column headers"""
         df = self.prepare_table_3_1_data(geocode)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_3_TITLE, className='table-title'),
                 html.H6(TABLE_3_1_TITLE, className='table-title'),
@@ -168,9 +167,10 @@ class Section3Prep:
 
     def create_chart_3_2(self, geocode: int):
         """Create 100% stacked bar chart for Table 3.2 Indigenous vs Non-Indigenous population by age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, 
+                                        check_columns=['Indigenous %', 'Non-Indigenous %'])
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(CHART_3_2_TITLE, className='table-title'),
                 html.Div(
@@ -231,9 +231,13 @@ class Section3Prep:
 
     def create_chart_3_3(self, geocode: int):
         """Create stacked bar chart for Table 3.3 Indigenous population by identity and age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
-        if df.empty or df.isnull().values.all():
+        identity_cols = ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        identity_labels = ['First Nations', 'Métis', 'Inuk (Inuit)', 'Multiple/Other Indigenous responses']
+
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, check_columns=identity_cols)
+
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_3_3_TITLE, className='table-title'),
                 html.Div(
@@ -244,8 +248,7 @@ class Section3Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        identity_cols = ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
-        identity_labels = ['First Nations', 'Métis', 'Inuk (Inuit)', 'Multiple/Other Indigenous responses']
+        
 
         indexed = df.set_index('Age Group').reindex(_AGE_GROUPS_3_2_3_3)
 
@@ -284,7 +287,10 @@ class Section3Prep:
 
     def create_table_3_3_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.3: population by identity and age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
+        value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, check_columns=value_cols)
 
         if df.empty or df.isnull().values.all():
             return html.Div([
@@ -296,9 +302,6 @@ class Section3Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
-        value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
-        display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
 
         table_df = (
             df.set_index('Age Group')[value_cols]
@@ -344,9 +347,11 @@ class Section3Prep:
 
     def create_chart_3_4(self, geocode: int):
         """Create stacked bar chart for Table 3.4 Indigenous population by gender (2021)."""
-        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
+        identity_cols = ['Men+', 'Women+']
 
-        if df.empty or df.isnull().values.all():
+        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=identity_cols)
+
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_3_4_TITLE, className='table-title'),
                 html.Div(
@@ -356,8 +361,6 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        identity_cols = ['Men+', 'Women+']
 
         indexed = df.set_index('Age Group - Census 2021').reindex(_AGE_GROUPS_3_4)
 
@@ -396,9 +399,11 @@ class Section3Prep:
 
     def create_table_3_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.4: population by gender (2021)."""
-        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
+        value_cols = ['Indigenous', 'Men+', 'Women+']
+        
+        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=value_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for population by gender (2021).",
@@ -408,8 +413,6 @@ class Section3Prep:
         
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
-        value_cols = ['Indigenous', 'Men+', 'Women+']
 
         table_df = (
             df.set_index('Age Group - Census 2021')[value_cols]
@@ -457,9 +460,9 @@ class Section3Prep:
 
     def create_table_3_5_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.5: Priority Population (2006, 2016, 2021)."""
-        df = self.data_loader.get_table('table_3_5_indigenous_priority_pop', geocode)
+        df = self.data_loader.get_table('table_3_5_indigenous_priority_pop', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(TABLE_3_5_TITLE, className='table-title'),
                 html.Div(
@@ -523,9 +526,10 @@ class Section3Prep:
             Level 1 - census year
             Level 2 - Indigenous Community
         """
-        df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode)
+        df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode,
+                                        check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Priority Population by Indigenous Community (2006, 2016, 2021).",
@@ -610,12 +614,7 @@ class Section3Prep:
         labels = "Indigenous Ancestry, 2021"
         df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
-
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        
 
         # to assign the largest portion the first chart color and so on
         df_sorted = df.sort_values("# of People", ascending=False) 
@@ -681,6 +680,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         value_col = '# of People'
         index_col = 'Indigenous Ancestry, 2021'
@@ -735,6 +735,7 @@ class Section3Prep:
         ], className='pg2-table-lgeo')
     
 
-if __name__ == "__main__":
-    t = Section3Prep()
-    t.create_table_3_6_layout(5915022)
+# For testing
+# if __name__ == "__main__":
+#     t = Section3Prep()
+#     t.create_table_3_6_layout(5915022)

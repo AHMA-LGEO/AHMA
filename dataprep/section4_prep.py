@@ -4,6 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master, 
+    get_original_geocode,
     get_val,
     pct, 
     clean_val,
@@ -47,7 +48,8 @@ class Section4DataPrep:
 
                     for year in YEARS:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
 
                         if match.empty:
                             row[year] = None
@@ -91,7 +93,43 @@ class Section4DataPrep:
 
                     rows.append(row)
 
-        result = pd.DataFrame(rows)
+        result_df = pd.DataFrame(rows)
+
+        total_rows = []
+        for (geocode, hh_type), group in result_df.groupby(["Geocode", "Household Type"]):
+
+            filtered_group = group[group["Households by Tenure"].isin(['Owner', 'Renter', 
+                                                                       'Dwelling provided by local government or First Nation'])]
+            
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Households by Tenure": "Total",
+                "Household Type": hh_type,
+            }
+            for year in YEARS:
+                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        attr_order = [
+            "Owner",
+            "Renter",
+            "Dwelling provided by local government or First Nation",
+            "Total",
+            "% of Owners with mortgage",
+            "% of Owners without a mortgage",
+            "% of Renters in subsidized housing",
+            "% of Renters not in subsidized housing"
+        ]
+
+        result = pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+
+        result["Households by Tenure"] = pd.Categorical(result["Households by Tenure"],
+                                                        categories=attr_order, ordered=True)
+
+        result = (result.sort_values(
+            ["Geocode", "Household Type", "Households by Tenure"],
+            na_position="last").reset_index(drop=True))
 
         print("Table 4.1 is ready now...\n" + '=' * 60)
         return result
@@ -127,7 +165,8 @@ class Section4DataPrep:
 
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
 
                         if match.empty:
                             row[year] = None
@@ -171,7 +210,48 @@ class Section4DataPrep:
 
                     rows.append(row)
 
-        result = pd.DataFrame(rows)
+        result_df = pd.DataFrame(rows)
+
+        total_rows = []
+        for (geocode, community), group in result_df.groupby(["Geocode", "Indigenous Community"]):
+            
+            filtered_group = group[group["Households by Tenure"].isin(['Owner', 'Renter', 
+                                                                       'Dwelling provided by local government or First Nation'])]
+
+            total_row = {
+                "Geocode": geocode,
+                "Geography": group["Geography"].iloc[0],
+                "Households by Tenure": "Total",
+                "Indigenous Community": community,
+            }
+            for year in YEARS_MINUS_2011:
+                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
+            total_rows.append(total_row)
+
+        # result = (
+        #     pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+        #     .sort_values(["Geocode", "Indigenous Community", "Households by Tenure"])
+        #     .reset_index(drop=True)
+        # )
+        attr_order = [
+            "Owner",
+            "Renter",
+            "Dwelling provided by local government or First Nation",
+            "Total",
+            "% of Owners with mortgage",
+            "% of Owners without a mortgage",
+            "% of Renters in subsidized housing",
+            "% of Renters not in subsidized housing"
+        ]
+
+        result = pd.concat([result_df, pd.DataFrame(total_rows)], ignore_index=True)
+
+        result["Households by Tenure"] = pd.Categorical(result["Households by Tenure"],
+                                                        categories=attr_order, ordered=True)
+
+        result = (result.sort_values(
+            ["Geocode", "Indigenous Community", "Households by Tenure"],
+            na_position="last").reset_index(drop=True))
 
         print("Table 4.2 is ready now...\n" + '=' * 60)
         return result
@@ -214,7 +294,8 @@ class Section4DataPrep:
 
                     for year in YEARS_MINUS_2011:
                         df = dfs[year]
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
             
                         if match.empty:
                             output_row[year] = None
@@ -496,7 +577,7 @@ class Section4DataPrep:
             "4.6": self.table_4_5_3(),
         }
 
-if __name__ == '__main__':
-    t = Section4DataPrep()
-    t.table_4_5_3()
-    print('Done')
+# For testing
+# if __name__ == '__main__':
+#     t = Section4DataPrep()
+#     t.table_4_3_4_4("4.3")

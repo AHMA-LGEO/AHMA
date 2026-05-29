@@ -13,6 +13,8 @@ pages/Archive/*
 pages/__pycache__/*
 source/data/*
 source/Archive/*
+source/mapdata_simplified/region_data/Archive/*
+source/mapdata_simplified/subregion_data/Archive/*
 .idea
 .vscode/
 24095-HART-HICC.code-workspace

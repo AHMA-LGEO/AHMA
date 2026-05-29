@@ -4,7 +4,10 @@ Data loading utilities for dashboard.
 import pandas as pd
 import geopandas as gpd
 from sqlalchemy import create_engine
-from dashboard_helpers.config import DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, REGION_DATA_DIR, SUBREGION_DATA_DIR
+from dashboard_helpers.config import (
+    DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, 
+    REGION_DATA_DIR, SUBREGION_DATA_DIR
+    )
 
 
 class DataLoader:
@@ -83,6 +86,7 @@ class DataLoader:
         try:
             filepath = SUBREGION_DATA_DIR / f"{region_code}.shp"
             gdf = gpd.read_file(filepath)
+            # print(gdf.set_index('CSDUID'))
             return gdf.set_index('CSDUID')
         except Exception:
             # Fallback to province level if subregion data not available

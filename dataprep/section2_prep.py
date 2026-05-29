@@ -9,7 +9,7 @@ class Section2DataPrep:
 
         nation_links = get_sheet("Native Land_URLs")
 
-        # FOLLOWING LOGIC FOR GEOCODE = 59, PROVINCE WIDE DATE = EVERYTHING
+        # FOLLOWING LOGIC FOR GEOCODE = 59, PROVINCE WIDE DATA = EVERYTHING
 
         # get all unique non-empty nations across columns
         val_cols = [c for c in df.columns if c.startswith('Nation')]
@@ -41,7 +41,7 @@ class Section2DataPrep:
     def table_2_2(self) -> pd.DataFrame:
         df = fetch_data("2.2")
 
-        # FOLLOWING LOGIC FOR GEOCODE = 59, PROVINCE WIDE DATE = EVERYTHING
+        # FOLLOWING LOGIC FOR GEOCODE = 59, PROVINCE WIDE DATA = EVERYTHING
 
         # get all unique values from comma-separated strings
         unique_vals = (

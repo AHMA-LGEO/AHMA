@@ -4,6 +4,7 @@ import column_mapper as cm
 from sheet_registry import fetch_data
 from utils import (
     build_master,
+    get_original_geocode,
     get_val,
     clean_val,
     HH_TYPES,
@@ -48,7 +49,8 @@ class Section7DataPrep:
                         # creating df from dictionary of fetch data dataframes for each year
                         df = dfs_7_1_7_2[year]
                         # creating a datframe of the matched geocodes
-                        match = df[df["Geocode"] == geocode]
+                        original_geocode = get_original_geocode(geocode, year)
+                        match = df[df["Geocode"] == original_geocode]
 
                         # checking if there is no value saying continue with logic
                         if match.empty:
@@ -135,7 +137,7 @@ class Section7DataPrep:
             }
 
             df = dfs["df"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode] # Geocode mapping not required, only 2021 data
 
             if match.empty:
                 for year in YEARS_2016_TO_2023:
@@ -174,7 +176,7 @@ class Section7DataPrep:
             }
 
             df = dfs["df"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode] # Geocode mapping not required, only 2021 data
 
             if match.empty:
                 for interval in YEARLY_INTERVALS_2016_TO_2023:
@@ -225,7 +227,7 @@ class Section7DataPrep:
             }
 
             df = dfs["df"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode] # Geocode mapping not required, only 2021 data
 
             if match.empty:
                 for year in YEARS_2016_TO_2023:
@@ -266,7 +268,7 @@ class Section7DataPrep:
             }
 
             df = dfs["df"]
-            match = df[df["Geocode"] == geocode]
+            match = df[df["Geocode"] == geocode] # Geocode mapping not required, only 2021 data
 
             if match.empty:
                 for interval in YEARLY_INTERVALS_2016_TO_2023:

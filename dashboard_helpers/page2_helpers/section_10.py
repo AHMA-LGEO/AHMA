@@ -3,8 +3,7 @@ Section 10 preparation and layout - Access to Services.
 """
 import pandas as pd
 import numpy as np
-from dash import dash_table, html, dcc
-import plotly.graph_objects as go
+from dash import dash_table, html
 
 from .data_loader import get_data_loader
 from .table_styles import (
@@ -21,9 +20,7 @@ from .table_styles import (
 )
 from .text_content import SECTION_10_TITLE, TABLE_10_1_TITLE
 
-from dashboard_helpers.config import (
-    CHART_COLORS, PLOT_CONFIG, YEARS,
-    YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT)
+from dashboard_helpers.config import TABLE_FONT
 
 from .export_helpers import with_export_btn
 
@@ -35,9 +32,12 @@ class Section10Prep:
 
     def create_table_10_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 10.1: Access to Services."""
-        df = self.data_loader.get_table('table_10_1_access_services', geocode)
+        
+        value_cols = ['Transit', 'Walking', 'Biking']
+        
+        df = self.data_loader.get_table('table_10_1_access_services', geocode, check_columns=value_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.H4(SECTION_10_TITLE, className='table-title'),
                 html.H6(TABLE_10_1_TITLE, className='table-title'),
@@ -51,7 +51,7 @@ class Section10Prep:
         _LABEL_COL = 'Mode of Transport'
         df = df.fillna("N/A")
 
-        value_cols = ['Transit', 'Walking', 'Biking']
+        
         # service_mapping = {
         #     'Health Care'                               : 'Health Care*',
         #     'Recreation Centres'                        : 'Recreation Centres*',

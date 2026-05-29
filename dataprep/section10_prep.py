@@ -35,7 +35,7 @@ class Section10DataPrep:
                     "Service": service,
                 }
                 df = dfs["2021"]
-                match = df[df["Geocode"] == geocode]
+                match = df[df["Geocode"] == geocode] # Geocode mapping not required, only 2021 data
                 
                 # if the geography exists, get the total indigenous pop value since we need it to calculate %'s for every row of this geog.
                 total_val = get_val(match, cm.TABLE_10_1_COL_MAP[cm._T10_1_TOTAL_COL])
