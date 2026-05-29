@@ -54,6 +54,8 @@ class DBUploader:
         'table_4_2': 'table_4_2_housing_tenure_breakdown',
         'table_4_3': 'table_4_3_hh_by_household_size',
         'table_4_4': 'table_4_4_hh_by_household_size_breakdown',
+        'table_4_5': 'table_4_5_1_4_5_2_hh_by_family_type',
+        'table_4_6': 'table_4_5_3_hh_by_family_type_distinction',
 
         # Section 5 - Income
         'table_5_1': 'table_5_1_income_shelter_cost',
@@ -203,6 +205,8 @@ class DBUploader:
         self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
         self.table_data['table_4_3'] = self.section_4_prep.table_4_3_4_4("4.3")
         self.table_data['table_4_4'] = self.section_4_prep.table_4_3_4_4("4.4")
+        self.table_data['table_4_5'] = self.section_4_prep.table_4_5_1_4_5_2()
+        self.table_data['table_4_6'] = self.section_4_prep.table_4_5_3()
 
         # Section 5
         self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
