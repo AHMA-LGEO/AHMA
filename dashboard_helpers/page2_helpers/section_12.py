@@ -28,7 +28,7 @@ class Section12Prep:
         """Add static screenshots from AHMA's reports."""
         return html.Div([
             html.H4(SECTION_12_TITLE, className='table-title'),
-            html.H6(TABLE_12_1_TITLE, className='table-title'),
+            html.H5(TABLE_12_1_TITLE, className='table-title'),
             html.Img(src='./assets/Section 12.1 Table 4.png', className='footer-image'),
             html.Img(src='./assets/Section 12.1 Table 6.png', className='footer-image')
         ])
@@ -41,7 +41,7 @@ class Section12Prep:
 
         if df.empty:
             return html.Div([
-                html.H4(TABLE_12_2_TITLE, className='table-title'),
+                html.H5(TABLE_12_2_TITLE, className='table-title'),
                 html.Div(
                 "No data for Indigenous Housing Targets.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -102,7 +102,7 @@ class Section12Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_12_2_TITLE, className='table-title'),
+            html.H5(TABLE_12_2_TITLE, className='table-title'),
             with_export_btn(table, 'table-12-2'),
             html.I(TABLE_12_2_NOTE),
         ], className='pg2-table-lgeo')

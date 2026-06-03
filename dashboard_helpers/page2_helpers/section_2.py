@@ -47,7 +47,7 @@ class Section2Prep:
 
         count_badge = html.Div(
         f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
-        style={'fontFamily': TABLE_FONT, 'color': '#000000'}
+        style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}
         )
 
         if not nations:
@@ -110,6 +110,6 @@ class Section2Prep:
 
         return html.Div([
             html.Div(TABLE_2_2_DESC, className='table-desc', 
-                     style={'fontFamily': TABLE_FONT, 'color': '#000000'}),
+                     style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
             body,
         ], className='pg2-table-lgeo')

@@ -89,7 +89,7 @@ class Section6Prep:
         df_display = pd.concat([blank_df, result.astype(object)], ignore_index=True)
     
         columns = [
-            {"name": [geo_name, "Census Year", ""], "id": label_col_name}
+            {"name": [geo_name, "", "Census Year"], "id": label_col_name}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -120,7 +120,10 @@ class Section6Prep:
                 + make_special_row_styles(df_display, label_col_name, 
                                           section_headers={label_col_name}, total_labels={'Total'})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=label_col_name),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=label_col_name,
+                left_align_cells={'column_id': label_col_name, 'header_index': 2}
+                ),
             style_cell_conditional=make_style_cell(label_col_name, data_cols, label_min_width='160px'),
             **base_style
         )
@@ -149,11 +152,11 @@ class Section6Prep:
         if chart_id == "chart-6-1":
             title_tags = html.Div([
                 html.H4(SECTION_6_TITLE, className='table-title'),
-                html.H6(TABLE_6_1_TITLE, className='table-title')
+                html.H5(TABLE_6_1_TITLE, className='table-title')
             ])
         else:
             title_tags = html.Div([
-                html.H6(TABLE_6_3_TITLE, className='table-title')
+                html.H5(TABLE_6_3_TITLE, className='table-title')
             ])
 
 
@@ -289,7 +292,8 @@ class Section6Prep:
                                           section_headers={label_col_name}, total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=label_col_name
+                columns, is_multiindex=True, first_col_id=label_col_name,
+                left_align_cells={'column_id': label_col_name, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(label_col_name, val_cols, label_width='25%', label_min_width='120px'),
             **base_style

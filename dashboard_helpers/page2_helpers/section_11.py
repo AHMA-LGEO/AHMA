@@ -38,7 +38,7 @@ class Section11Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_11_TITLE, className='table-title'),
-                html.H6(TABLE_11_1_TITLE, className='table-title'),
+                html.H5(TABLE_11_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for projected population of indigenous population.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -114,7 +114,9 @@ class Section11Prep:
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
+                                  {'column_id':_LABEL_COL, 'header_index': 2}]
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='20%'),
             **base_style
@@ -122,7 +124,7 @@ class Section11Prep:
 
         return html.Div([
             html.H4(SECTION_11_TITLE, className='table-title'),
-            html.H6(TABLE_11_1_TITLE, className='table-title'),
+            html.H5(TABLE_11_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-11-1-1'),
         ], className='pg2-table-lgeo')
     
@@ -224,7 +226,9 @@ class Section11Prep:
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
+                                  {'column_id':_LABEL_COL, 'header_index': 2}]
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='15%'),
             **base_style

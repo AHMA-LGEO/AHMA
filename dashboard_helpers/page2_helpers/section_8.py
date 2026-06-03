@@ -172,7 +172,8 @@ class Section8Prep:
                 + get_special_row_styles_8_1(df)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='200px'),
             **base_style
@@ -203,7 +204,7 @@ class Section8Prep:
         if math.isnan(acceptable_pct):
             return html.Div([
                 html.H4(SECTION_8_TITLE, className='table-title'),
-                html.H6(TABLE_8_1_TITLE, className='table-desc'),
+                html.H5(TABLE_8_1_TITLE, className='table-desc'),
                 html.Div(
                 "No chart for 2021 Indigenous Core Housing Need.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -263,7 +264,7 @@ class Section8Prep:
 
         return html.Div([
             html.H4(SECTION_8_TITLE, className='table-title'),
-            html.H6(TABLE_8_1_TITLE, className='table-desc'),
+            html.H5(TABLE_8_1_TITLE, className='table-desc'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -274,7 +275,7 @@ class Section8Prep:
 
         if df.empty:
             return html.Div([
-                html.H6(TABLE_8_3_TITLE, className='table-title'),
+                html.H5(TABLE_8_3_TITLE, className='table-title'),
                 html.Div(
                 "No data for Households in CHN or Extreme CHN (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -351,15 +352,19 @@ class Section8Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + make_special_row_styles(df_display, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(df_display, _LABEL_COL, section_headers={_LABEL_COL},
+                                          geo_headers={"Indigenous HHs", "Non-Indigenous HHs"})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
 
         return html.Div([
-            html.H6(TABLE_8_3_TITLE, className='table-title'),
+            html.H5(TABLE_8_3_TITLE, className='table-title'),
             with_export_btn(table, 'table-8-3'),
         ], className='pg2-table-lgeo')
 
@@ -437,9 +442,11 @@ class Section8Prep:
                 + make_special_row_styles(formatted_df, _LABEL_COL, geo_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
+                                                   label_min_width='120px'),
             **base_style
         )
 
@@ -492,7 +499,7 @@ class Section8Prep:
         # all_val_cols = indg_cols + non_indg_cols
     
         columns = [
-            {"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -521,7 +528,10 @@ class Section8Prep:
                 + make_special_row_styles(df_display, _LABEL_COL, 
                                           geo_headers={_LABEL_COL}, total_labels={'Total'})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
@@ -538,7 +548,7 @@ class Section8Prep:
 
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
-                html.H6(TABLE_8_5_TITLE, className='table-title'),
+                html.H5(TABLE_8_5_TITLE, className='table-title'),
                 html.Div(
                 "No chart for households in CHN by Priority Population - 2021.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -589,7 +599,7 @@ class Section8Prep:
         )
 
         return html.Div([
-            html.H6(TABLE_8_5_TITLE, className='table-title'),
+            html.H5(TABLE_8_5_TITLE, className='table-title'),
             dcc.Graph(id='chart-8-5', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -649,9 +659,11 @@ class Section8Prep:
                 + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
+                                                   label_min_width='120px'),
             **base_style
         )
 
@@ -663,11 +675,13 @@ class Section8Prep:
     
     def create_table_8_7_layout(self, geocode: int):
         """Create pie chart for Table 8.7 Housing Deficit by Income and HH size (2021)."""
-        df = self.data_loader.get_table('table_8_7_housing_deficit', geocode)
+        hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
+        
+        df = self.data_loader.get_table('table_8_7_housing_deficit', geocode, check_columns=hh_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
-                html.H4(TABLE_8_7_TITLE, className='table-title'),
+                html.H5(TABLE_8_7_TITLE, className='table-title'),
                 html.Div(
                 "No data for Housing Deficit by Income and HH size (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -676,8 +690,6 @@ class Section8Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
-        hh_cols = ['1 pp', '2 pp', '3 pp', '4 pp', '5+ pp', 'Total']
 
         table_df = df.set_index('Income Type')[hh_cols].reset_index()
 
@@ -698,20 +710,15 @@ class Section8Prep:
                 generate_style_data_conditional(table_df)
                 + make_special_row_styles(table_df, 'Income Type', total_labels={'Total'}, total_col=True)
             ),
-            style_header_conditional=(generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Income Type'
-            )+ [
-                    {
-                        'if': {'column_id': 'Income Type'},
-                        'textAlign': 'left',
-                    }
-                ]
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id='Income Type',
+                left_align_cells={'column_id':'Income Type', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Income Type', hh_cols, label_width='25%', label_min_width='120px'),
             **base_style
         )
 
         return html.Div([
-            html.H4(TABLE_8_7_TITLE, className='table-title'),
+            html.H5(TABLE_8_7_TITLE, className='table-title'),
             with_export_btn(table, 'table-8-7'),
         ], className='pg2-table-lgeo')

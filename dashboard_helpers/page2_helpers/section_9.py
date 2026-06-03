@@ -167,15 +167,10 @@ class Section9Prep:
                 generate_style_data_conditional(df_display)
                 + get_special_row_styles_9_1(df_display)
             ),
-            style_header_conditional= (generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Age')
-                + [
-                    {
-                        'if': {'column_id': 'Age'},
-                        'textAlign': 'left',
-                    }
-                ]
-            ),
+            style_header_conditional= generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id='Age',
+                left_align_cells={'column_id': 'Age', 'header_index': 1}
+                ),
             style_cell_conditional=make_style_cell('Age', _FY_YEARS, label_width='20%'),
             **base_style
         )
@@ -192,7 +187,7 @@ class Section9Prep:
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
                 html.H4(SECTION_9_TITLE, className='table-title'),
-                html.H6(TABLE_9_1_TITLE, className='table-title'),
+                html.H5(TABLE_9_1_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Indigenous People Released from Corrections (2008-2024).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -247,7 +242,7 @@ class Section9Prep:
 
         return html.Div([
             html.H4(SECTION_9_TITLE, className='table-title'),
-            html.H6(TABLE_9_1_TITLE, className='table-title'),
+            html.H5(TABLE_9_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -255,15 +250,21 @@ class Section9Prep:
     def create_table_9_2_layout(self, geocode: int):
         """Create Dash DataTable for Table 9.2: Indigenous Children Ageing out of Care or Youth Agreements."""
 
-        df = self.data_loader.get_table('table_9_2_ageing_out_of_care', geocode)
+        value_cols = ['Indigenous',	'Total Population', '% Indigenous']
+
+        df = self.data_loader.get_table('table_9_2_ageing_out_of_care', geocode, check_columns=value_cols)
 
         if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
+            return html.Div([
+                html.H5(TABLE_9_2_TITLE, className='table-title'),
+                html.Div(
+                "No data for Indigenous Children Ageing out of Care or Youth Agreements.",
+                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                )
+            ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
-
-        value_cols = ['Indigenous',	'Total Population', '% Indigenous']
 
         table_df = df.set_index('Exit Reason')[value_cols].reset_index()
 
@@ -287,14 +288,15 @@ class Section9Prep:
                 + make_special_row_styles(table_df, 'Exit Reason', total_labels={'Total Children Ageing Out of Care'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Exit Reason'
+                columns, is_multiindex=True, first_col_id='Exit Reason',
+                left_align_cells={'column_id':'Exit Reason', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Exit Reason', value_cols, label_width='40%'),
             **base_style
         )
 
         return html.Div([
-            html.H4(TABLE_9_2_TITLE, className='table-title'),
+            html.H5(TABLE_9_2_TITLE, className='table-title'),
             with_export_btn(table, 'table-9-2'),
         ], className='pg2-table-lgeo')
     
@@ -305,7 +307,7 @@ class Section9Prep:
 
         if df.empty:
             return html.Div([
-                html.H4(TABLE_9_3_TITLE, className='table-title'),
+                html.H5(TABLE_9_3_TITLE, className='table-title'),
                 html.Div(
                 "No data for Indigenous Homelessness (2021, 2023, 2025).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -350,7 +352,7 @@ class Section9Prep:
 
         df_display = pd.DataFrame(rows, columns=[_LABEL_COL] + PIT_YEARS).fillna("N/A")
 
-        columns = [{"name": [geo_name, ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "PIT Count Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y], "id": y} for y in PIT_YEARS
         ]
 
@@ -366,13 +368,14 @@ class Section9Prep:
                 + get_special_row_styles_9_3(df_display)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='30%'),
             **base_style
         )
 
         return html.Div([
-            html.H4(TABLE_9_3_TITLE, className='table-title'),
+            html.H5(TABLE_9_3_TITLE, className='table-title'),
             with_export_btn(table, 'table-9-3'),
         ], className='pg2-table-lgeo')

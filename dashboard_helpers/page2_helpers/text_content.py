@@ -56,6 +56,8 @@ TABLE_4_2_DESC = "Some dummy description for table 4.2..."
 # Table 4.3 descriptions
 TABLE_4_3_TITLE = "HHs by Household Size (Indigenous & non-Indigenous) (2006, 2016, 2021)"
 
+# Table 4.5 descriptions
+TABLE_4_5_TITLE = "Households by Family Type (selected types) (2006, 2016, 2021)"
 
 #-------------------- Section 5 descriptions --------------------
 SECTION_5_TITLE = 'Income ("Who lives here?")'

@@ -40,7 +40,7 @@ class Section10Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_10_TITLE, className='table-title'),
-                html.H6(TABLE_10_1_TITLE, className='table-title'),
+                html.H5(TABLE_10_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for Access to Services.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -108,7 +108,8 @@ class Section10Prep:
                 + make_centered_merged_row_styles(rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, value_cols, 
                                                    label_width='25%', label_min_width='120px'),
@@ -117,6 +118,6 @@ class Section10Prep:
 
         return html.Div([
             html.H4(SECTION_10_TITLE, className='table-title'),
-            html.H6(TABLE_10_1_TITLE, className='table-title'),
+            html.H5(TABLE_10_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-10-1'),
         ], className='pg2-table-lgeo')

@@ -46,7 +46,7 @@ class Section7Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_7_TITLE, className='table-title'),
-                html.H6(TABLE_7_1_TITLE, className='table-title'),
+                html.H5(TABLE_7_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for median shelter cost (2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -112,7 +112,8 @@ class Section7Prep:
                                           )
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
             **base_style
@@ -120,7 +121,7 @@ class Section7Prep:
 
         return html.Div([
             html.H4(SECTION_7_TITLE, className='table-title'),
-            html.H6(TABLE_7_1_TITLE, className='table-title'),
+            html.H5(TABLE_7_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-7-1'),
         ], className='pg2-table-lgeo')
     
@@ -132,7 +133,7 @@ class Section7Prep:
 
         if df.empty:
             return html.Div([
-                html.H4(TABLE_7_3_TITLE, className='table-title'),
+                html.H5(TABLE_7_3_TITLE, className='table-title'),
                 html.H6(TABLE_7_3_1_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Primary and Secondary Rental Units (2021).",
@@ -166,7 +167,7 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_7_3_TITLE, className='table-title'),
+            html.H5(TABLE_7_3_TITLE, className='table-title'),
             html.H6(TABLE_7_3_1_TITLE, className='table-title'),
             dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
@@ -210,7 +211,7 @@ class Section7Prep:
 
         columns = [
             {"name": [geo_name, ""], "id": _LABEL_COL},
-            {"name": [geo_name, "Census Year"], "id": _SUB_COL},
+            {"name": [geo_name, ""], "id": _SUB_COL},
             {"name": [geo_name, "2016"], "id": "2016"},
             {"name": [geo_name, "2021"], "id": "2021"},
         ]

@@ -19,7 +19,8 @@ from .table_styles import (
 )
 from .text_content import (
     SECTION_4_TITLE, TABLE_4_1_TITLE, 
-    TABLE_4_1_DESC, TABLE_4_3_TITLE
+    TABLE_4_1_DESC, TABLE_4_3_TITLE,
+    TABLE_4_5_TITLE
     )
 
 from dashboard_helpers.config import (
@@ -138,8 +139,10 @@ class Section4Prep:
                                           geo_headers={"Indigenous HHs", "Non-Indigenous HHs"}
                                           )
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True,
-                                                                       first_col_id=_LABEL_COL, n_header_rows=3),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 2}
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
@@ -155,9 +158,9 @@ class Section4Prep:
         
         if filtered.empty:
             return html.Div([
-                html.H3(SECTION_4_TITLE, className='table-title'),
-                html.H4(TABLE_4_1_TITLE, className='table-title'),
-                html.H6(TABLE_4_1_DESC, className='table-desc'),
+                html.H4(SECTION_4_TITLE, className='table-title'),
+                html.H5(TABLE_4_1_TITLE, className='table-title'),
+                # html.Div(TABLE_4_1_DESC, className='table-desc'),
                 html.Div(
                 "No chart for housing tenure over time (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -253,9 +256,9 @@ class Section4Prep:
         )
 
         return html.Div([
-            html.H3(SECTION_4_TITLE, className='table-title'),
-            html.H4(TABLE_4_1_TITLE, className='table-title'),
-            html.H6(TABLE_4_1_DESC, className='table-desc'),
+            html.H4(SECTION_4_TITLE, className='table-title'),
+            html.H5(TABLE_4_1_TITLE, className='table-title'),
+            # html.Div(TABLE_4_1_DESC, className='table-desc'),
             dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -331,7 +334,8 @@ class Section4Prep:
                 + make_special_row_styles(formatted_df, _LABEL_COL, section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
             **base_style
@@ -429,7 +433,10 @@ class Section4Prep:
                                           section_headers={_LABEL_COL}, 
                                           total_labels={'Total', 'Average Household Size'})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 2}
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
@@ -445,7 +452,7 @@ class Section4Prep:
 
         if filtered.empty:
             return html.Div([
-                html.H4(TABLE_4_3_TITLE, className='table-title'),
+                html.H5(TABLE_4_3_TITLE, className='table-title'),
                 html.Div(
                 "No chart for households by household size.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -506,7 +513,7 @@ class Section4Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_4_3_TITLE, className='table-title'),
+            html.H5(TABLE_4_3_TITLE, className='table-title'),
             dcc.Graph(id='chart-4-3', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -582,7 +589,8 @@ class Section4Prep:
                                           total_labels={'Total', 'Average Household Size'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
             **base_style
@@ -640,6 +648,7 @@ class Section4Prep:
 
         if df.empty:
             return html.Div([
+                html.H5(TABLE_4_5_TITLE, className='table-title'),
                 html.Div(
                     "No data for households by family type by Indigenous communities.",
                     style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -681,13 +690,18 @@ class Section4Prep:
                                           section_headers={'Households by Family Type'}, 
                                           total_labels={'Total Households for reference'})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )
         return html.Div([
+            html.H5(TABLE_4_5_TITLE, className='table-title'),
             with_export_btn(table, 'table-4-5'),
         ], className='pg2-table-lgeo')
+    
 
     def prepare_table_4_6_data(self, geocode):
         df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, check_columns=YEARS_MINUS_2011)
@@ -762,7 +776,10 @@ class Section4Prep:
                                           section_headers={'Households by Family Type'}, 
                                           total_labels={'Total Households for reference'})
             ),
-            style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
+            style_header_conditional=generate_style_header_conditional(
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1},
+                ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
             **base_style
         )

@@ -4,7 +4,6 @@ Styling utilities for Dash DataTables.
 import pandas as pd
 from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT
 
-
 #-------------------- Global Comparison Button Style --------------------
 
 COLOR_SCHEME = {
@@ -205,6 +204,7 @@ def generate_style_header_conditional(
     is_multiindex: bool = False,
     first_col_id: str = 'Households by Tenure',
     n_header_rows: int = 3,
+    left_align_cells: dict = None,
 ) -> list:
     """
     Generate header styling for table columns.
@@ -218,10 +218,18 @@ def generate_style_header_conditional(
         is_multiindex:  Whether columns use multi-level (list) names.
         first_col_id:   Column ID of the first (label) column to visually merge across all rows.
         n_header_rows:  Number of header levels (default 3; use 4 for HHs + % of Total (tables like 5.5)).
+        left_align_cells: Column ID (string) and header index to left-align.
+                           Example: {'column_id': 'Income Type', 'header_index': 1}
 
     Returns:
         List of style dicts for DataTable style_header_conditional.
     """
+
+    if left_align_cells is not None and isinstance(left_align_cells, dict):
+        left_align_cells = [left_align_cells]
+    else:
+        left_align_cells = left_align_cells or []
+
     if not is_multiindex:
         return [
             {
@@ -249,7 +257,6 @@ def generate_style_header_conditional(
         **base,
         'if': {'header_index': 0},
         'backgroundColor': TABLE_COLORS['geography'],
-        
     })
 
     # Header rows 1+: Columns level (household type and year)
@@ -258,6 +265,13 @@ def generate_style_header_conditional(
             **base,
             'if': {'header_index': i},
             'backgroundColor': TABLE_COLORS['columns'],
+        })
+
+    # Apply left alignment to specified cells
+    for cell_spec in left_align_cells:
+        styles.append({
+            'if': cell_spec,
+            'textAlign': 'left',
         })
 
     # Add borders between geography and label column rows
