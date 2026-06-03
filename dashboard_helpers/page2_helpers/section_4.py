@@ -313,7 +313,7 @@ class Section4Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -328,7 +328,7 @@ class Section4Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
-                + make_special_row_styles(formatted_df, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(formatted_df, _LABEL_COL, section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
@@ -399,7 +399,7 @@ class Section4Prep:
         df_display = pd.DataFrame(rows, dtype=object)
     
         columns = [
-            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -426,7 +426,8 @@ class Section4Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df_display, _LABEL_COL, 
-                                          geo_headers={_LABEL_COL}, total_labels={'Total'})
+                                          section_headers={_LABEL_COL}, 
+                                          total_labels={'Total', 'Average Household Size'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
@@ -480,7 +481,7 @@ class Section4Prep:
                 x=YEARS_MINUS_2011,
                 y=percentages,
                 marker_color=colors[tenure],
-                legendrank=len(tenure) - i,
+                legendrank=-(i + 1),
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
@@ -561,7 +562,7 @@ class Section4Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -577,7 +578,8 @@ class Section4Prep:
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
                 + make_special_row_styles(formatted_df, _LABEL_COL, 
-                                          geo_headers={_LABEL_COL}, total_labels={'Total'})
+                                          section_headers={_LABEL_COL}, 
+                                          total_labels={'Total', 'Average Household Size'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
@@ -657,7 +659,7 @@ class Section4Prep:
             prefixes = ['indg']
 
         columns = [
-                      {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
+                      {"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}
                   ] + [
                       {"name": [geo_name, y, hh_type], "id": f"{pref}_{y}"}
                       for y in YEARS_MINUS_2011
@@ -676,7 +678,8 @@ class Section4Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df_display, _LABEL_COL,
-                                          geo_headers={'Households by Family Type'}, total_labels={'Total Households for reference'})
+                                          section_headers={'Households by Family Type'}, 
+                                          total_labels={'Total Households for reference'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
@@ -741,7 +744,7 @@ class Section4Prep:
         _LABEL_COL = 'Family Type'
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -756,7 +759,8 @@ class Section4Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df)
                 + make_special_row_styles(df, _LABEL_COL,
-                                          geo_headers={'Households by Family Type'}, total_labels={'Total Households for reference'})
+                                          section_headers={'Households by Family Type'}, 
+                                          total_labels={'Total Households for reference'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
@@ -768,9 +772,10 @@ class Section4Prep:
         ], className='pg2-table-lgeo')
 
 
-if __name__ == "__main__":
-    t = Section4Prep()
-    # t.create_table_4_1_layout(5915022)
-    # t.create_table_4_3_layout(5915022)
-    # t.create_table_4_5_layout(5915022)
-    t.create_table_4_6_layout(5915022)
+# For testing
+# if __name__ == "__main__":
+#     t = Section4Prep()
+#     # t.create_table_4_1_layout(5915022)
+#     # t.create_table_4_3_layout(5915022)
+#     # t.create_table_4_5_layout(5915022)
+#     t.create_table_4_6_layout(5915022)

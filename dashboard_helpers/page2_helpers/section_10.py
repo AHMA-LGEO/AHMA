@@ -103,7 +103,7 @@ class Section10Prep:
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
                 + make_special_row_styles(formatted_df, _LABEL_COL, 
-                                          geo_headers={title_row},
+                                          section_headers={title_row},
                                           total_labels={'Number of Indigenous people in selected geography (for reference)'})
                 + make_centered_merged_row_styles(rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
             ),

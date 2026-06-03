@@ -163,7 +163,7 @@ class Section5Prep:
         df_display = pd.DataFrame(rows, dtype=object)
     
         columns = [
-            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -190,7 +190,8 @@ class Section5Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df_display, _LABEL_COL, 
-                                          geo_headers={_LABEL_COL}, total_labels={'Total', 'Area Median Household income (all HHs)'})
+                                          section_headers={_LABEL_COL}, 
+                                          total_labels={'Total', 'Area Median Household income (all HHs)'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=_LABEL_COL),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
@@ -330,7 +331,7 @@ class Section5Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "Census Year", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -349,7 +350,8 @@ class Section5Prep:
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
                 + make_special_row_styles(formatted_df, _LABEL_COL, 
-                                          geo_headers={_LABEL_COL}, total_labels={'Total', 'Area Median Household income (all HHs)'})
+                                          section_headers={_LABEL_COL}, 
+                                          total_labels={'Total', 'Area Median Household income (all HHs)'})
                 + make_centered_merged_row_styles(rows=[8], value_cols=val_cols, group_size=3)
             ),
             style_header_conditional=generate_style_header_conditional(
@@ -481,7 +483,7 @@ class Section5Prep:
 
         # 4-level columns: [geo_name, HH type, year, metric]
         columns = [
-            {"name": [geo_name, "Census Year", "", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year", ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, ht, year, metric], "id": f"{prefix}_{year}_{suffix}"}
             for ht, prefix in _HH_TYPES
@@ -505,7 +507,7 @@ class Section5Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
-                + make_special_row_styles(df_display, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(df_display, _LABEL_COL, section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=4

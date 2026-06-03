@@ -137,7 +137,7 @@ class Section8Prep:
         _LABEL_COL = "Indicator"
 
         columns = [
-            {"name": [geo_name, _LABEL_COL, ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -325,7 +325,7 @@ class Section8Prep:
         table_df = table_df.fillna("N/A")
 
         columns = [
-            {"name": ["", "", _LABEL_COL], "id": _LABEL_COL}
+            {"name": [geo_name, "", _LABEL_COL], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -419,7 +419,7 @@ class Section8Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", _LABEL_COL, ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, _LABEL_COL, ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -492,7 +492,7 @@ class Section8Prep:
         # all_val_cols = indg_cols + non_indg_cols
     
         columns = [
-            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -631,7 +631,7 @@ class Section8Prep:
 
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -698,8 +698,14 @@ class Section8Prep:
                 generate_style_data_conditional(table_df)
                 + make_special_row_styles(table_df, 'Income Type', total_labels={'Total'}, total_col=True)
             ),
-            style_header_conditional=generate_style_header_conditional(
+            style_header_conditional=(generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Income Type'
+            )+ [
+                    {
+                        'if': {'column_id': 'Income Type'},
+                        'textAlign': 'left',
+                    }
+                ]
             ),
             style_cell_conditional=make_style_cell('Income Type', hh_cols, label_width='25%', label_min_width='120px'),
             **base_style

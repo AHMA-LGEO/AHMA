@@ -74,6 +74,7 @@ def make_style_cell(
         'width': label_width,
         'minWidth': label_min_width,
         'paddingLeft': '12px',
+        'verticalAlign': 'middle'
     }]
     for col_id in value_col_ids:
         styles.append({
@@ -159,7 +160,9 @@ def make_special_row_styles(
         elif val in section_headers:
             styles.append({**rule, **_SECTION})
         elif val in total_labels:
-            styles.append({**rule, 'fontWeight': 'bold', 'backgroundColor': TABLE_COLORS['headings']})  # assigning headings color to "Total" rows
+            styles.append({**rule, 'fontWeight': 'bold', 
+                           'backgroundColor': TABLE_COLORS['columns'],
+                           'color': "#FFFFFF"})  # assigning headings color to "Total" rows
         elif val in italic_labels:
             styles.append({**rule, 'color': warning_color, 'fontStyle': 'italic'})
         elif val == blank_label:
@@ -168,7 +171,7 @@ def make_special_row_styles(
     if total_col:
         for col in data.columns:
             if 'total' in str(col).lower():
-                styles.append({'if': {'column_id': col}, 'fontWeight': 'bold', 'paddingRight': '12px'})
+                styles.append({'if': {'column_id': col}, 'fontWeight': 'bold', 'paddingRight': '12px', 'verticalAlign': 'middle'})
 
     return styles
 
@@ -519,9 +522,9 @@ _T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
 def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
     base_styles = make_special_row_styles(
         data, 'Indicator',
-        col_headers=_T8_GEO_HEADERS,
+        section_headers=_T8_GEO_HEADERS,
         warning_headers={_T8_BELOW_MULTIPLE},
-        section_headers={_T8_TOTAL},
+        col_headers={_T8_TOTAL},
         total_labels=frozenset(), 
         italic_labels={'__below_count__', '__below_pct__'},
     )
@@ -548,6 +551,7 @@ def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
 
 ############### Table 9.1 stylers ###############
 _T9_1_LABEL_COL_2 = 'Percentage of people released who identify as indigenous'
+
 def get_special_row_styles_9_1(data: pd.DataFrame) -> list:
     styles = make_special_row_styles(data, 'Age',
                                     total_labels={'Total'},
@@ -558,7 +562,7 @@ def get_special_row_styles_9_1(data: pd.DataFrame) -> list:
         if val == _T9_1_LABEL_COL_2:
             styles.append({
                 'if': {'row_index': i},
-                'textAlign': 'center',
+                'textAlign': 'left',
             })
     return styles
 
@@ -583,7 +587,7 @@ _T9_3_RED_ATTRS = {"Indigenous respondents", "Non-Indigenous respondents",
 def get_special_row_styles_9_3(data: pd.DataFrame) -> list:
     return make_special_row_styles(
         data, 'Attribute',
-        geo_headers=_T9_3_GEO_HEADERS,
+        col_headers=_T9_3_GEO_HEADERS,
         section_headers=_T9_3_SECTION_HEADERS,
         italic_labels=_T9_3_RED_ATTRS,
         total_labels={"Total"},

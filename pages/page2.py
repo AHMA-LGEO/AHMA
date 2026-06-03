@@ -176,39 +176,42 @@ layout = html.Div([
 
         html.Div([
             html.Div(id='table-4-2-container'),
+            html.Div(id='chart-4-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-4-3"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                     "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px", 
+                      }),
 
-            html.Div(id='chart-4-3-container'),
             html.Div(id='table-4-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div(id='table-4-4-container'),
-        ], className='pg2-table-plot-box-lgeo'),
-
-        html.Div([
             html.Div(id='table-4-5-container'),
-        ], className='pg2-table-plot-box-lgeo'),
-
-        html.Div([
             html.Div(id='table-4-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
@@ -229,13 +232,15 @@ layout = html.Div([
                     id={"type": "table-toggle", "index": "table-5-2"},
                     value=False,
                     label="",
-                    className="mb-0 green-toggle",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+            ], className="d-flex align-items-center",
                style={
                 #    "borderBottom": "2px solid #002145"
                     "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
                     "paddingLeft": "12px",
                     "paddingRight": "12px",
                     "paddingTop": "8px",
@@ -254,68 +259,98 @@ layout = html.Div([
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-5-5"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-5-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 6- Dwellings
         html.Div([
+            html.Div(id='chart-6-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-6-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
-            html.Div(id='chart-6-1-container'),
             html.Div(id='table-6-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
             html.Div(id='table-6-2-container'),
+            html.Div(id='chart-6-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-6-3"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
-            html.Div(id='chart-6-3-container'),
             html.Div(id='table-6-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
@@ -323,23 +358,33 @@ layout = html.Div([
             html.Div(id='table-6-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
-
+        html.Br(),
+        html.Br(),
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-6-5"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-120px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-6-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -348,23 +393,36 @@ layout = html.Div([
             html.Div(id='table-6-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+        html.Br(),
+        html.Br(),
+        html.Br(),
+
         # Section 7 - Shelter Costs
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-7-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-170px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -380,69 +438,99 @@ layout = html.Div([
 
         # Section 8 - Housing Need Indicators
         html.Div([
+            html.Div(id='chart-8-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-8-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
-            html.Div(id='chart-8-1-container'),
             html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-8-3"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-120px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-8-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div(id='table-8-4-container'),
+            html.Div(id='chart-8-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-8-5"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
-            html.Div(id='chart-8-5-container'),
             html.Div(id='table-8-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
 

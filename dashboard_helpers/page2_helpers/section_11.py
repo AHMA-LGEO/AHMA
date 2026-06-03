@@ -87,7 +87,7 @@ class Section11Prep:
 
         # 3-level columns: [geo_name, year, community]
         columns = (
-            [{"name": ["", "Census Year", "Household Count"], "id": _LABEL_COL}]
+            [{"name": [geo_name, "Census Year", "Household Count"], "id": _LABEL_COL}]
             +
             [{"name": [geo_name, "2021", "Estimate"], "id": "2021_E"}]
             +
@@ -190,7 +190,7 @@ class Section11Prep:
 
         # 3-level columns: [geo_name, year, community]
         columns = (
-            [{"name": ["", "Census Year", "Population Count"], "id": _LABEL_COL}]
+            [{"name": [geo_name, "Census Year", "Population Count"], "id": _LABEL_COL}]
 
             # Avg column (blank top/year header)
             + [{

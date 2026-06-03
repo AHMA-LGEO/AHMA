@@ -89,7 +89,7 @@ class Section6Prep:
         df_display = pd.concat([blank_df, result.astype(object)], ignore_index=True)
     
         columns = [
-            {"name": ["", "Census Year", ""], "id": label_col_name}
+            {"name": [geo_name, "Census Year", ""], "id": label_col_name}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_MINUS_2011
@@ -118,7 +118,7 @@ class Section6Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df_display, label_col_name, 
-                                          geo_headers={label_col_name}, total_labels={'Total'})
+                                          section_headers={label_col_name}, total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(columns, is_multiindex=True, first_col_id=label_col_name),
             style_cell_conditional=make_style_cell(label_col_name, data_cols, label_min_width='160px'),
@@ -127,7 +127,7 @@ class Section6Prep:
 
         if table_id == 'table-6-5':
             return html.Div([
-                html.H6(TABLE_6_5_TITLE, className='table-title'),
+                html.Div([html.H6(TABLE_6_5_TITLE, className='table-title')]),
                 with_export_btn(table, table_id),
             ], className='pg2-table-lgeo')
 
@@ -268,7 +268,7 @@ class Section6Prep:
 
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": label_col_name}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": label_col_name}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -286,7 +286,7 @@ class Section6Prep:
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
                 + make_special_row_styles(formatted_df, label_col_name, 
-                                          geo_headers={label_col_name}, total_labels={'Total'})
+                                          section_headers={label_col_name}, total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=label_col_name

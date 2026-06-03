@@ -490,7 +490,7 @@ class Section3Prep:
         header = pd.DataFrame([blank_row(_LABEL_COL, YEARS_MINUS_2011, _LABEL_COL)])
         table_df = pd.concat([header, table_df], ignore_index=True)
 
-        columns = [{"name": ["", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y], "id": y} for y in YEARS_MINUS_2011
         ]
 
@@ -504,8 +504,7 @@ class Section3Prep:
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
                 + make_special_row_styles(table_df, _LABEL_COL,
-                                          geo_headers={_LABEL_COL},
-                                          total_labels={'Total'})
+                                          section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
@@ -569,7 +568,7 @@ class Section3Prep:
         table_df = pd.concat([header, table_df], ignore_index=True)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -584,7 +583,7 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(table_df, _LABEL_COL, section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
@@ -724,14 +723,21 @@ class Section3Prep:
             # **base_style
             style_table={
                 **base_style.get('style_table', {}), 
-                'maxWidth': '600px'
+                'maxWidth': '600px',
+                'width': '100%' 
             },
              **{k: v for k, v in base_style.items() if k != 'style_table'}
         )
 
         return html.Div([
+            html.Div(
             with_export_btn(table, 'table-3-6', max_width='600px'),
+            className="d-flex flex-column align-items-center w-100"
+            ),
+            html.Div(
             html.I(TABLE_3_6_NOTE),
+            className="d-flex flex-column align-items-center w-100"
+            ),
         ], className='pg2-table-lgeo')
     
 

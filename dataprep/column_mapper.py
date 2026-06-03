@@ -391,7 +391,7 @@ TABLE_4_3_4_4_COL_MAP = strip_map(_build_size_map_4_3_4_4(
 ))
 
 TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
-    {**_T4_3_SIZE_PREFIX, "Average": _T4_3_AVG_PREFIX},
+    {**_T4_3_SIZE_PREFIX, "Average Household Size": _T4_3_AVG_PREFIX},
     _T4_3_1_COMMUNITY_SUFFIX,
 ))
 

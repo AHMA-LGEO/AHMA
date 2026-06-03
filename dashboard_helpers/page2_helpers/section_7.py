@@ -87,7 +87,7 @@ class Section7Prep:
         display_df = pd.DataFrame(rows, dtype=object)
 
         columns = [
-            {"name": ["", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, "Indigenous HHs", y], "id": f"indg_{y}"}
             for y in YEARS_2016_2021
@@ -108,8 +108,7 @@ class Section7Prep:
             style_data_conditional=(
                 generate_style_data_conditional(display_df)
                 + make_special_row_styles(display_df, _LABEL_COL,
-                                          geo_headers={_SECTION_HEADER},
-                                          total_labels={}
+                                          section_headers={_SECTION_HEADER}
                                           )
             ),
             style_header_conditional=generate_style_header_conditional(
@@ -210,8 +209,8 @@ class Section7Prep:
         table_df = rows.reset_index(drop=True)
 
         columns = [
-            {"name": ["", ""], "id": _LABEL_COL},
-            {"name": [geo_name, ""], "id": _SUB_COL},
+            {"name": [geo_name, ""], "id": _LABEL_COL},
+            {"name": [geo_name, "Census Year"], "id": _SUB_COL},
             {"name": [geo_name, "2016"], "id": "2016"},
             {"name": [geo_name, "2021"], "id": "2021"},
         ]
@@ -229,7 +228,8 @@ class Section7Prep:
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, [_SUB_COL] + YEARS_2016_2021, label_width='40%', label_min_width='200px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, [_SUB_COL] + YEARS_2016_2021, 
+                                                   label_width='40%', label_min_width='200px'),
             **base_style
         )
 
@@ -315,7 +315,7 @@ class Section7Prep:
         table_df = rows.reset_index(drop=True)
 
         columns = [
-            {"name": ["", ""], "id": _LABEL_COL}
+            {"name": [geo_name, ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
         ]
@@ -421,7 +421,7 @@ class Section7Prep:
         table_df = rows.reset_index(drop=True)
 
         columns = [
-            {"name": ["", ""], "id": _LABEL_COL}
+            {"name": [geo_name, ""], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
         ]
