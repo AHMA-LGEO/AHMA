@@ -52,13 +52,12 @@ class DataLoader:
 
     @property
     def dropdown_options(self) -> pd.DataFrame:
-        """Get ordered list for dropdown (excludes province level)."""
+        """Get ordered list for dropdown"""
         df = self.geocode_master.copy()
         df['Geography'] = df['Geography'].str.replace(r'^([a-z])', lambda m: m.group(1).upper(), regex=True)
         # df = df.sort_values(by=['Province_Code', 'Region_Code', 'Geo_Code'])
         df = df.sort_values(by=['Geography'])
-        # Exclude province level from dropdown
-        df = df[df['Geo_Code'].astype(str).str.len() > 2]
+        
         return df
 
     @property

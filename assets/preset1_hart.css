@@ -164,6 +164,59 @@ div { font-size: 18px; }
   font-family: 'Open Sans'
 }
 
+
+/* When focused, hide the selected value and show search icon */
+#all-geo-dropdown .Select.is-focused .Select-value {
+    display: none !important;
+}
+
+/* Show the input field when focused */
+#all-geo-dropdown .Select.is-focused .Select-input input {
+    display: block !important;
+    width: 200px !important;
+}
+
+#all-geo-dropdown .Select.is-focused .Select-input input::placeholder {
+    display: block !important;
+    color: #a0a0a0 !important;
+    opacity: 0.8 !important;
+}
+
+
+/* Add magnifying glass icon to arrow zone when focused */
+#all-geo-dropdown .Select.is-focused .Select-arrow-zone {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+}
+
+#all-geo-dropdown .Select.is-focused .Select-arrow-zone::after {
+    content: "🔍" !important;
+    font-size: 15px !important;
+    color: #666 !important;
+    pointer-events: none !important;
+}
+
+/* Hide clear button when focused */
+#all-geo-dropdown .Select.is-focused .Select-clear, 
+#all-geo-dropdown .Select.is-focused .Select-arrow {
+    display: none !important;
+}
+
+/* Placeholder styling 
+#all-geo-dropdown .Select-placeholder {
+    color: #a0a0a0 !important;
+    opacity: 0.8 !important;
+}*/
+
+/* Make the placeholder visible when focused 
+#all-geo-dropdown .Select.is-focused .Select-placeholder {
+    display: block !important;
+    color: #a0a0a0 !important;
+    opacity: 0.8 !important;
+}*/
+
 .export-pdf {
   background-color: #C97A63;
   border-color: #C97A63;

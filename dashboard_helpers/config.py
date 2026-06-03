@@ -22,8 +22,8 @@ PROVINCE_CODE = 59
 PROVINCE_NAME = "British Columbia"
 
 # Default selection
-DEFAULT_GEOGRAPHY = 'Saanich (CSD, BC)'
-DEFAULT_GEOCODE = 5917021  # Saanich
+DEFAULT_GEOGRAPHY = 'British Columbia (Province)'
+DEFAULT_GEOCODE = 59
 
 # None Data testing
 # DEFAULT_GEOGRAPHY = 'Stequmwhulpa 5 (CSD, BC)'

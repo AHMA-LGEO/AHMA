@@ -34,26 +34,17 @@ layout = html.Div(
                         html.Div(
                             id='all-geo-dropdown-parent',
                             children=[
-                                html.Strong('Select Census Geography'),
+                                html.Strong('Select or Search Census Geography'),
                                 dcc.Dropdown(
                                     dropdown_options,
                                     DEFAULT_GEOGRAPHY,
-                                    id='all-geo-dropdown'
+                                    id='all-geo-dropdown',
+                                    placeholder='Select or search geography'
                                 ),
                             ],
                             className='dropdown-lgeo'
                         ),
 
-                        # Comparison area dropdown
-                        html.Div(
-                            id='comparison-geo-dropdown-parent',
-                            children=[
-                                html.Strong('Select Comparison Census Geography (Optional)'),
-                                dcc.Dropdown(dropdown_options, id='comparison-geo-dropdown'),
-                            ],
-                            className='dropdown-lgeo',
-                            style={'display': 'none'}
-                        )
                     ],
                     className='dropdown-box-lgeo'
                 ),
@@ -142,9 +133,7 @@ layout = html.Div(
     Output('comparison-area', 'data'),
     Output('area-scale-store', 'data'),
     Input('all-geo-dropdown', 'value'),
-    Input('comparison-geo-dropdown', 'value'),
     Input('all-geo-dropdown-parent', 'n_clicks'),
-    Input('comparison-geo-dropdown-parent', 'n_clicks'),
     Input('to-geography-1', 'n_clicks'),
     Input('to-region-1', 'n_clicks'),
     Input('to-province-1', 'n_clicks')
@@ -246,5 +235,6 @@ def update_map(click_data, reset_clicks, selected_geo, *args):
                 return fig, geo_name
 
     # Default: show region map
-    fig = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
+    # fig = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
+    fig = map_generator.create_region_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=False)
     return fig, DEFAULT_GEOGRAPHY
