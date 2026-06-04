@@ -232,13 +232,25 @@ class Section8Prep:
             for i, (lbl, val) in enumerate(zip(labels, values))
         ]
 
+        threshold = 3.0 # threshold below which labels change to ...
+        total_value = sum(values)
+
+        interactive_text = []
+        for val, original_text in zip(values, text):
+            percentage = (val / total_value) * 100
+            if percentage < threshold:
+                interactive_text.append("•••") 
+            else:
+                interactive_text.append(original_text)
+
+
         fig = go.Figure(go.Sunburst(
             labels=labels,
             parents=parents,
             values=values,
             branchvalues="total",
             marker=dict(colors=colors, line=dict(color="white", width=2)),
-            text=text,
+            text=interactive_text,
             texttemplate="%{text}",
             textfont=dict(size=12, color="white"),
             insidetextorientation="horizontal",
@@ -544,9 +556,10 @@ class Section8Prep:
     def create_chart_8_5(self, geocode: int):
         """Create stacked bar chart for Table 8.5 households in CHN by Priority Population - 2021."""
 
-        filtered = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode)
+        filtered = self.data_loader.get_table('table_8_5_hhs_in_chn_prior_pop', geocode, 
+                                              check_columns=['2021'])
 
-        if filtered.empty or filtered.isnull().values.all():
+        if filtered.empty:
             return html.Div([
                 html.H5(TABLE_8_5_TITLE, className='table-title'),
                 html.Div(
@@ -565,16 +578,42 @@ class Section8Prep:
         prior_pop_list = indg[_LABEL_COL].tolist()
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(prior_pop_list)}
 
+        # hover_config = dict(namelength=-1)
+        # if '#80875C' in colors.values():
+        #     hover_config['font'] = dict(color='white')
+
+
         fig = go.Figure()
   
+        # fig.add_trace(go.Bar(
+        #     y=indg[_LABEL_COL],
+        #     x=indg['2021'],
+        #     orientation='h',
+        #     marker_color=[colors[t] for t in indg[_LABEL_COL]],
+        #     customdata=indg[_LABEL_COL],
+        #     # textposition='inside',
+        #     hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>'),
+        #     # hoverlabel=hover_config
+        # ))
+        mask = indg[_LABEL_COL].map(colors) == '#80875C'
+
         fig.add_trace(go.Bar(
-            y=indg[_LABEL_COL],
-            x=indg['2021'],
+            y=indg.loc[mask, _LABEL_COL],
+            x=indg.loc[mask, '2021'],
             orientation='h',
-            marker_color=[colors[t] for t in indg[_LABEL_COL]],
             customdata=indg[_LABEL_COL],
-            # textposition='inside',
-            hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>')
+            marker_color='#80875C',
+            hoverlabel=dict(font=dict(color='white')),
+            hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>'),
+        ))
+
+        fig.add_trace(go.Bar(
+            y=indg.loc[~mask, _LABEL_COL],
+            x=indg.loc[~mask, '2021'],
+            orientation='h',
+            customdata=indg[_LABEL_COL],
+            marker_color=[colors[t] for t in indg.loc[~mask, _LABEL_COL]],
+            hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>'),
         ))
 
         fig.update_layout(
@@ -659,7 +698,7 @@ class Section8Prep:
                 + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3, 
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
@@ -711,7 +750,7 @@ class Section8Prep:
                 + make_special_row_styles(table_df, 'Income Type', total_labels={'Total'}, total_col=True)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Income Type',
+                columns, is_multiindex=True, first_col_id='Income Type', n_header_rows=2,
                 left_align_cells={'column_id':'Income Type', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Income Type', hh_cols, label_width='25%', label_min_width='120px'),

@@ -153,7 +153,7 @@ class Section3Prep:
                                           section_headers=t_3_1_section_headers)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Indicator', 
+                columns, is_multiindex=True, first_col_id='Indicator', n_header_rows=2,
                 left_align_cells={'column_id': 'Indicator', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Indicator', YEARS, label_min_width='200px'),
@@ -450,7 +450,7 @@ class Section3Prep:
                 + make_special_row_styles(table_df, 'Age Group', total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Age Group',
+                columns, is_multiindex=True, first_col_id='Age Group', n_header_rows=2,
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Age Group', value_cols, 
@@ -512,7 +512,7 @@ class Section3Prep:
                                           section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
                 left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_MINUS_2011, 
@@ -631,17 +631,26 @@ class Section3Prep:
             lbl if lbl in top_labels else ""
             for lbl in df_sorted[labels]
         ]
+        # white_hover_color = "#80875C" in CHART_COLORS
+
+        # Only set font color if #80875C is used
+        # hoverlabel = dict(namelength=-1)
+        # if white_hover_color:
+        #     hoverlabel['font'] = dict(color='white')
 
         fig = go.Figure(go.Pie(
             labels=df_sorted[labels],
             values=df_sorted["# of People"],
-            marker=dict(colors=CHART_COLORS, line=dict(color="white")),
+            # marker=dict(colors=color, line=dict(color="white")),
+            marker=dict(colors=CHART_COLORS),
             hole=0.3,
             text=text,
             textinfo="text",
+            # hoverlabel=hoverlabel,
             insidetextorientation="radial",
             hovertemplate="<b>%{label}</b><br>Count of people: %{value:,}<br>% of people: %{percent}<extra></extra>",
-            sort=False
+            sort=False,
+            domain=dict(x=[0.30, 1.0]) 
         ))
 
         fig.update_layout(
@@ -652,13 +661,13 @@ class Section3Prep:
             ),
             paper_bgcolor="white",
             showlegend=False,
-            margin=dict(t=90, b=40, l=20, r=20),
+            margin=dict(t=90, b=40, l=40, r=20),
             height=550,
 
             annotations=[
                 dict(
                     text="Indigenous<br>Distribution",
-                    x=0.5, y=0.5,
+                    x=0.65, y=0.5,
                     font=dict(size=14, family=TABLE_FONT),
                     showarrow=False,
                     align="center"

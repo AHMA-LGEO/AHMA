@@ -114,7 +114,7 @@ class Section11Prep:
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
                                   {'column_id':_LABEL_COL, 'header_index': 2}]
             ),
@@ -196,7 +196,7 @@ class Section11Prep:
 
             # Avg column (blank top/year header)
             + [{
-                "name": ["", "", "Avg. Indigenous HH size (Province, 2021)"],
+                "name": [geo_name, "Census Year", "Avg. Indigenous HH size (Province, 2021)"],
                 "id": "Avg"
             }]
 
@@ -226,7 +226,7 @@ class Section11Prep:
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
                                   {'column_id':_LABEL_COL, 'header_index': 2}]
             ),

@@ -80,10 +80,11 @@ class Section5Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + make_special_row_styles(table_df, 'Income Category', total_labels={'Area Median Household Income'})
+                + make_special_row_styles(table_df, 'Income Category', 
+                                          section_headers={'Area Median Household Income'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Income Category',
+                columns, is_multiindex=True, first_col_id='Income Category', n_header_rows=2, 
                 left_align_cells={'column_id':'Income Category', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Income Category', value_cols, 
@@ -427,7 +428,7 @@ class Section5Prep:
                 + make_special_row_styles(table_df, 'Census Year', section_headers=section_headers)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Census Year',
+                columns, is_multiindex=True, first_col_id='Census Year', n_header_rows=2,
                 left_align_cells={'column_id': 'Census Year', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Census Year', YEARS_2016_2021, 

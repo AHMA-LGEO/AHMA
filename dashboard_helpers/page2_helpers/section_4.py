@@ -331,10 +331,11 @@ class Section4Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(formatted_df)
-                + make_special_row_styles(formatted_df, _LABEL_COL, section_headers={_LABEL_COL})
+                + make_special_row_styles(formatted_df, _LABEL_COL, 
+                                          section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
@@ -575,6 +576,7 @@ class Section4Prep:
             for community in COMMUNITIES
         ]
 
+
         base_style = get_base_table_style()
 
         table = dash_table.DataTable(
@@ -589,7 +591,7 @@ class Section4Prep:
                                           total_labels={'Total', 'Average Household Size'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
@@ -601,7 +603,11 @@ class Section4Prep:
         ], className='pg2-table-lgeo')
 
     def prepare_table_4_5_data(self, geocode: int):
-        df = self.data_loader.get_table('table_4_5_1_4_5_2_hh_by_family_type', geocode, check_columns=YEARS_MINUS_2011)
+        df = self.data_loader.get_table('table_4_5_1_4_5_2_hh_by_family_type', geocode, 
+                                        check_columns=YEARS_MINUS_2011)
+
+        if df.empty:
+            return pd.DataFrame()
 
         _LABEL_COL = 'Family Type'
 
@@ -704,7 +710,11 @@ class Section4Prep:
     
 
     def prepare_table_4_6_data(self, geocode):
-        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, check_columns=YEARS_MINUS_2011)
+        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, 
+                                        check_columns=YEARS_MINUS_2011)
+        
+        if df.empty:
+            return pd.DataFrame()
 
         _LABEL_COL = 'Family Type'
 
@@ -777,7 +787,7 @@ class Section4Prep:
                                           total_labels={'Total Households for reference'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells={'column_id': _LABEL_COL, 'header_index': 1},
                 ),
             style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),

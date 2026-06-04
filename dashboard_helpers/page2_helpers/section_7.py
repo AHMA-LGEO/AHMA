@@ -148,6 +148,8 @@ class Section7Prep:
             labels=df[labels],
             values=df["2021"],
             marker=dict(colors=CHART_COLORS, line=dict(color="white")),
+            textfont_size=16,
+            pull=0.1,
             # text=text,
             # textinfo="text",
             # insidetextorientation="radial",

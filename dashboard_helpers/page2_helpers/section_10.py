@@ -108,7 +108,7 @@ class Section10Prep:
                 + make_centered_merged_row_styles(rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, value_cols, 

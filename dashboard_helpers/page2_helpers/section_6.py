@@ -130,7 +130,7 @@ class Section6Prep:
 
         if table_id == 'table-6-5':
             return html.Div([
-                html.Div([html.H6(TABLE_6_5_TITLE, className='table-title')]),
+                html.Div([html.H5(TABLE_6_5_TITLE, className='table-title')]),
                 with_export_btn(table, table_id),
             ], className='pg2-table-lgeo')
 
@@ -292,7 +292,7 @@ class Section6Prep:
                                           section_headers={label_col_name}, total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=label_col_name,
+                columns, is_multiindex=True, first_col_id=label_col_name, n_header_rows=3,
                 left_align_cells={'column_id': label_col_name, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(label_col_name, val_cols, label_width='25%', label_min_width='120px'),

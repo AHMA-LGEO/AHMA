@@ -168,7 +168,7 @@ class Section9Prep:
                 + get_special_row_styles_9_1(df_display)
             ),
             style_header_conditional= generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Age',
+                columns, is_multiindex=True, first_col_id='Age', n_header_rows=2,
                 left_align_cells={'column_id': 'Age', 'header_index': 1}
                 ),
             style_cell_conditional=make_style_cell('Age', _FY_YEARS, label_width='20%'),
