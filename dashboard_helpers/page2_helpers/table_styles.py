@@ -282,7 +282,7 @@ def generate_style_header_conditional(
     for i in range(1, n_header_rows - 1):
         styles.append({
             'if': {'header_index': i, 'column_id': first_col_id},
-            'borderTop': 'none',
+            # 'borderTop': 'none',
             'borderBottom': 'none',
         })
     styles.append({
