@@ -11,6 +11,9 @@ DB_PATH = os.path.join(DB_DIR, "ahma.db")
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+PIT_YEARS = ["2021", "2023", "2025"]
+YEARS_2016_TO_2023 = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+YEARLY_INTERVALS_2016_TO_2023 = ["2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023"]
 
 COMMUNITIES = ['First Nations', 'Métis', 'Inuit']
 
@@ -19,8 +22,12 @@ PROVINCE_CODE = 59
 PROVINCE_NAME = "British Columbia"
 
 # Default selection
-DEFAULT_GEOGRAPHY = 'Vancouver CY (CSD, BC)'
-DEFAULT_GEOCODE = 5915022  # Vancouver
+DEFAULT_GEOGRAPHY = 'British Columbia (Province)'
+DEFAULT_GEOCODE = 59
+
+# None Data testing
+# DEFAULT_GEOGRAPHY = 'Stequmwhulpa 5 (CSD, BC)'
+# DEFAULT_GEOCODE = 5933892 
 
 # Map configuration
 MAP_COLORS_WO_BLACK = [
@@ -33,10 +40,10 @@ MAP_COLORS_W_BLACK = [
     '#78cb80', '#ffe6d6', '#e98098', '#a480bb', '#490076', '#008481', '#74d3f9'
 ]
 
-MAP_COLORS_HIGHLIGHT = ['#37BB31', '#74D3F9']
-MAP_COLORS_HIGHLIGHT_W_BLACK = ['#000000', '#37BB31', '#74D3F9']
+MAP_COLORS_HIGHLIGHT = ['#80875C', '#b55438']
+MAP_COLORS_HIGHLIGHT_W_BLACK = ['#000000', '#80875C', '#D89A86']
 
-OPACITY_VALUE = 0.2
+OPACITY_VALUE = 0.3
 
 # Modebar colors
 MODEBAR_COLOR = '#099DD7'
@@ -51,7 +58,8 @@ PLOT_CONFIG = {
 
 # Page 2 - Table styling
 TABLE_COLORS = {
-    'geography': '#80875C',
+    'geography': '#4D5137',
+    'columns': '#80875C',
     'headings': '#B5BA9A',
     'row_alt_1': '#E6E8DD',
     'row_alt_2': '#CDD0BB',
@@ -63,7 +71,8 @@ CHART_COLORS = ['#D0B46A', '#9CA37A', '#C97A63', '#85A7B2',
                 '#D89A86', '#4B6470', '#80875C', '#b55438',
                 '#1d353d', '#5b2a1c', '#7d6c40', '#4d5137', '#000000']
 
-TABLE_FONT = 'Bahnschrift'
+TABLE_FONT = 'Open Sans'
+HEADER_FONT = 'Bahnschrift'
 
 # Map data paths
 MAP_DATA_DIR = Path(__file__).parent.parent / "source" / "mapdata_simplified"

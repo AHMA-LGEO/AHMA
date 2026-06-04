@@ -5,9 +5,16 @@ from io import BytesIO
 import pandas as pd
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+from dashboard_helpers.config import TABLE_FONT
 
+def with_export_btn(table_component, table_id: str, max_width: str = None):
 
-def with_export_btn(table_component, table_id: str):
+    # Base layout styles
+    wrapper_style = {"width": "100%"}
+    
+    # Dynamically adjust maximum width restriction if provided
+    if max_width:
+        wrapper_style["maxWidth"] = max_width
 
     return html.Div([
         dcc.Store(
@@ -25,10 +32,17 @@ def with_export_btn(table_component, table_id: str):
                 outline=True,
                 className="export-xlsx-btn",
             ),
-
+            style={
+                "display": "flex",
+                "justifyContent": "flex-end",
+                "paddingBottom": "10px",
+                "fontFamily": TABLE_FONT
+            }
         ),
+        # html.Br(),
         table_component,
-    ])
+        
+    ], style=wrapper_style)
 
 
 

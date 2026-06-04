@@ -1,9 +1,9 @@
 """
 Section 2 preparation and layout - Indigenous Nations / Territories and Métis Communities.
 """
+import re
 import pandas as pd
-from dash import dash_table, html
-import dash_bootstrap_components as dbc
+from dash import html
 
 from .data_loader import get_data_loader
 from .text_content import (
@@ -47,7 +47,7 @@ class Section2Prep:
 
         count_badge = html.Div(
         f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
-        style={'fontFamily': TABLE_FONT, 'color': '#000000'}
+        style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}
         )
 
         if not nations:
@@ -87,9 +87,9 @@ class Section2Prep:
             return []
 
         return sorted({
-            str(v).strip()
+            re.sub(r',\s*', ', ', str(v)).strip()
             for v in filtered['Metis Community']
-            if pd.notna(v) and str(v).strip() != ''
+            if pd.notna(v) and str(v).strip()
         })
 
     def prepare_table_2_2_layout(self, geocode: int):
@@ -103,11 +103,13 @@ class Section2Prep:
             )
         else:
             body = html.Div(
-                f"{', '.join(communities)}",
+                # f"{', '.join(communities)}",
+                ', '.join(map(str.strip, communities)),
                 style={'fontFamily': TABLE_FONT, 'color': '#000000'}
             )
 
         return html.Div([
-            html.Div(TABLE_2_2_DESC, className='table-desc'),
+            html.Div(TABLE_2_2_DESC, className='table-desc', 
+                     style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
             body,
         ], className='pg2-table-lgeo')

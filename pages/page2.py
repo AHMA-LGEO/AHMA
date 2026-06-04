@@ -8,26 +8,37 @@ from dashboard_helpers.page2_helpers.section_2 import Section2Prep
 from dashboard_helpers.page2_helpers.section_3 import Section3Prep
 from dashboard_helpers.page2_helpers.section_4 import Section4Prep
 from dashboard_helpers.page2_helpers.section_5 import Section5Prep
+from dashboard_helpers.page2_helpers.section_6 import Section6Prep
 from dashboard_helpers.page2_helpers.section_7 import Section7Prep
 from dashboard_helpers.page2_helpers.section_8 import Section8Prep
 from dashboard_helpers.page2_helpers.section_9 import Section9Prep
+from dashboard_helpers.page2_helpers.section_10 import Section10Prep
+from dashboard_helpers.page2_helpers.section_11 import Section11Prep
+from dashboard_helpers.page2_helpers.section_12 import Section12Prep
 
 from dashboard_helpers.page2_helpers.text_content import (
     INTRO_TITLE, INTRO_TEXT
 )
 from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG, TABLE_FONT
+from dashboard_helpers.page2_helpers.table_styles import COLOR_SCHEME
 
 # Initialize helpers
 section_2_layout = Section2Prep()
 section_3_layout = Section3Prep()
 section_4_layout = Section4Prep()
 section_5_layout = Section5Prep()
+section_6_layout = Section6Prep()
 section_7_layout = Section7Prep()
 section_8_layout = Section8Prep()
 section_9_layout = Section9Prep()
+section_10_layout = Section10Prep()
+section_11_layout = Section11Prep()
+section_12_layout = Section12Prep()
 
 # Table IDs - add new table IDs with toggle features as page 2 grows
-TABLE_IDS = ["table-4-1", "table-4-3", "table-5-5", "table-7-1", "table-8-1"]
+TABLE_IDS = ["table-4-1", "table-4-3", "table-5-2", "table-5-5", "table-6-1",
+             "table-6-3", "table-6-5", "table-7-1", "table-8-1", 
+             "table-8-3", "table-8-5"]
 
 
 def derive_global_state(store: dict) -> str:
@@ -57,7 +68,13 @@ def global_toggle_ui():
                         outline=True,
                         size="sm",
                         className="d-flex align-items-center gap-2",
-                        style={"minWidth": "170px", "justifyContent": "center"},
+                        style={"minWidth": "170px", 
+                               "justifyContent": "center",
+                               "backgroundColor": "#80875C",
+                               "borderColor": "#80875C",
+                               "color": "#ffffff",
+                               "fontFamily": "Open Sans",
+                               "cursor": "pointer"},
                     ),
                 ], className="d-flex align-items-center"),
             ], className="d-flex justify-content-between align-items-center"),
@@ -77,26 +94,28 @@ layout = html.Div([
     dcc.Store(id="table-visibility-store", data={tid: False for tid in TABLE_IDS}),
 
     # Export button
-    dbc.Button("Export to PDF", id="export-button", className="export-pdf"),
+    dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
     html.Div(id='dummy-output', style={'display': 'none'}),
+    
 
     # Page content
     html.Div([
         # Global toggle card (top of page)
+        html.Br(),
         global_toggle_ui(),
 
         # Introduction
         html.H3(html.Strong(INTRO_TITLE), id='intro-title'),
         html.Div([
-            html.H6([
-                INTRO_TEXT,
-                html.Br(), html.Br(),
+            html.Div([
+                INTRO_TEXT, 
+                # html.Br(), html.Br(),
                 # INTRO_PARAGRAPH,
-                html.Br(), html.Br(),
+                # html.Br(), html.Br(),
                 # html.Ul([
                 #     html.Li([html.I([note])]) for note in NOTES
                 # ])
-            ], style={'fontFamily': TABLE_FONT})
+            ], style={"fontFamily": TABLE_FONT})
         ], className='muni-reg-text-lgeo'),
 
         # Section 2 - Nations / Territories and Métis Communities
@@ -122,100 +141,288 @@ layout = html.Div([
 
         # Section 4 - Housing Tenure
         html.Div([
+            html.Div(id='chart-4-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-4-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
-
-            html.Div(id='chart-4-1-container'),
+            # ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+            
             html.Div(id='table-4-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div(id='table-4-2-container'),
+            html.Div(id='chart-4-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-4-3"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                     "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px", 
+                      }),
 
-            html.Div(id='chart-4-3-container'),
             html.Div(id='table-4-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div(id='table-4-4-container'),
+            html.Div(id='table-4-5-container'),
+            html.Div(id='table-4-6-container'),
         ], className='pg2-table-plot-box-lgeo'),
-
 
         # Section 5 - Income
         html.Div([
             html.Div(id='table-5-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='chart-5-2-container'),
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-5-2"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+            
+            html.Div(id='table-5-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-5-3-container'),
             html.Div(id='table-5-4-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-5-5"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-5-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 6- Dwellings
+        html.Div([
+            html.Div(id='chart-6-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-1"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+
+            html.Div(id='table-6-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-6-2-container'),
+            html.Div(id='chart-6-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-3"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+
+            html.Div(id='table-6-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-6-4-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Br(),
+        html.Br(),
+        html.Div([
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-6-5"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-120px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+
+            html.Div(id='table-6-5-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-6-6-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Br(),
+        html.Br(),
+        html.Br(),
 
         # Section 7 - Shelter Costs
         html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-7-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-170px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
             html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -223,31 +430,113 @@ layout = html.Div([
         html.Div([
             html.Div(id='chart-7-3-1-container'),
             html.Div(id='table-7-3-1-container'),
+            html.Div(id='chart-7-3-2-container'),
+            html.Div(id='table-7-3-2-container'),
+            html.Div(id='chart-7-3-3-container'),
+            html.Div(id='table-7-3-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 8 - Housing Need Indicators
         html.Div([
+            html.Div(id='chart-8-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
             html.Div([
                 html.Div([
-                    html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Indigenous & Non-Indigenous',
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
                               style={'fontFamily': TABLE_FONT}),
                 ]),
                 dbc.Switch(
                     id={"type": "table-toggle", "index": "table-8-1"},
                     value=False,
                     label="",
-                    className="mb-0",
+                    className="mb-0 green-toggle ms-5",
                     style={"transform": "scale(1.2)"},
                 ),
-            ], className="d-flex justify-content-between align-items-center mb-2 pb-2",
-               style={"borderBottom": "2px solid #002145"}),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
 
-            html.Div(id='chart-8-1-container'),
             html.Div(id='table-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-8-3"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-120px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+
+            html.Div(id='table-8-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        html.Div([
+            html.Div(id='table-8-4-container'),
+            html.Div(id='chart-8-5-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div([
+                html.Div([
+                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                              style={'fontFamily': TABLE_FONT}),
+                ]),
+                dbc.Switch(
+                    id={"type": "table-toggle", "index": "table-8-5"},
+                    value=False,
+                    label="",
+                    className="mb-0 green-toggle ms-5",
+                    style={"transform": "scale(1.2)"},
+                ),
+            ], className="d-flex align-items-center",
+               style={
+                #    "borderBottom": "2px solid #002145"
+                    "borderLeft": "4px solid #9CA37A",
+                    "marginBottom": "-70px",
+                    "position": "relative",
+                    "paddingLeft": "12px",
+                    "paddingRight": "12px",
+                    "paddingTop": "8px",
+                    "paddingBottom": "8px",
+                }),
+
+            html.Div(id='table-8-5-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        html.Div([
+            html.Div(id='table-8-6-container'),
             html.Div(id='table-8-7-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
@@ -256,12 +545,31 @@ layout = html.Div([
             html.Div(id='chart-9-1-container'),
             html.Div(id='table-9-1-container'),
             html.Div(id='table-9-2-container'),
+            html.Div(id='table-9-3-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
+        # Section 10 - Access to Services
+        html.Div([
+            html.Div(id='table-10-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 11 - Population & Household Growth
+        html.Div([
+            html.Div(id='table-11-1-1-container'),
+            html.Div(id='table-11-1-2-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+        # Section 12 - Housing Targets
+        html.Div([
+            html.Div(id='table-12-1-container'),
+            html.Div(id='table-12-2-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Footer
-        html.Footer([
-            html.Img(src='./assets/Footer for HNR Calc.png', className='footer-image')
-        ], className='footer')
+        # html.Footer([
+        #     html.Img(src='./assets/Footer for HNR Calc.png', className='footer-image')
+        # ], className='footer')
 
     ], id='page-content-to-print', className='dashboard-pg2-lgeo')
 
@@ -272,7 +580,8 @@ layout = html.Div([
 @callback(
     Output("table-visibility-store", "data"),
     Output("global-toggle-btn", "children"),
-    Output("global-toggle-btn", "color"),
+    # Output("global-toggle-btn", "color"),
+    Output("global-toggle-btn", "style"),
     Output("global-intent-store", "data"),
     Input({"type": "table-toggle", "index": ALL}, "value"),
     prevent_initial_call=True,
@@ -282,20 +591,36 @@ def local_toggle_state(toggle_values):
     global_state = derive_global_state(new_store)
 
     if global_state == "all_on":
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_on"
+        # btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_on"
+        state_key, new_intent = "all_on", "all_on"
     elif global_state == "all_off":
-        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_off"
+        # btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_off"
+        state_key, new_intent = "all_off", "all_off"
     else:  # mixed — next global click will turn all on
-        btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
+        # btn_label, btn_color, new_intent = "◐ Mixed", "warning", "all_on"
+        state_key, new_intent = "mixed", "all_on"
 
-    return new_store, btn_label, btn_color, new_intent
+    colors =  COLOR_SCHEME[state_key]
+    btn_style = {
+        "minWidth": "170px",
+        "justifyContent": "center",
+        "backgroundColor": colors["bg"],
+        "borderColor": colors["border"],
+        "color": colors["text"],
+        "cursor": "pointer",
+        "border": f"2px solid {colors['border']}",
+    }
+
+    # return new_store, btn_label, btn_color, new_intent
+    return new_store, colors['label'], btn_style, new_intent
 
 
 # Global button click → set all switches + update store + button state
 @callback(
     Output("table-visibility-store", "data", allow_duplicate=True),
     Output("global-toggle-btn", "children", allow_duplicate=True),
-    Output("global-toggle-btn", "color", allow_duplicate=True),
+    # Output("global-toggle-btn", "color", allow_duplicate=True),
+    Output("global-toggle-btn", "style", allow_duplicate=True),
     Output("global-intent-store", "data", allow_duplicate=True),
     Output({"type": "table-toggle", "index": ALL}, "value"),
     Input("global-toggle-btn", "n_clicks"),
@@ -307,11 +632,26 @@ def global_toggle_click(_, current_intent):
     new_store = {tid: turn_on for tid in TABLE_IDS}
 
     if turn_on:
-        btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_on"
+        # btn_label, btn_color, new_intent = "● Show Comparison", "success", "all_on"
+        state_key, new_intent = "all_on", "all_off"
     else:
-        btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_off"
+        # btn_label, btn_color, new_intent = "○ Hide Comparison", "secondary", "all_off"
+        state_key, new_intent = "all_off", "all_on"
 
-    return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
+    colors = COLOR_SCHEME[state_key]
+    
+    btn_style = {
+        "minWidth": "170px",
+        "justifyContent": "center",
+        "backgroundColor": colors["bg"],
+        "borderColor": colors["border"],
+        "color": colors["text"],
+        "cursor": "pointer",
+        "border": f"2px solid {colors['border']}",
+    }
+
+    # return new_store, btn_label, btn_color, new_intent, [turn_on] * len(TABLE_IDS)
+    return new_store, colors['label'], btn_style, new_intent, [turn_on] * len(TABLE_IDS)
 
 
 # Section 2 - Nations / Territories + Métis Communities
@@ -369,26 +709,34 @@ def update_section_3(geo_name, scale):
     Output('chart-4-3-container', 'children'),
     Output('table-4-3-container', 'children'),
     Output('table-4-4-container', 'children'),
+    Output('table-4-5-container', 'children'),
+    Output('table-4-6-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
 )
 def update_section_4(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-4-1", False)
+    show_both_4_1 = (visibility or {}).get("table-4-1", False)
+    show_both_4_3 = (visibility or {}).get("table-4-3", False)
     geocode = _resolve_geocode(geo_name, scale, section_4_layout.data_loader)
 
     return (
         section_4_layout.create_chart_4_1(geocode),
-        section_4_layout.create_table_4_1_layout(geocode, show_both),
+        section_4_layout.create_table_4_1_layout(geocode, show_both_4_1),
         section_4_layout.create_table_4_2_layout(geocode),
         section_4_layout.create_chart_4_3(geocode),
-        section_4_layout.create_table_4_3_layout(geocode, show_both),
+        section_4_layout.create_table_4_3_layout(geocode, show_both_4_3),
         section_4_layout.create_table_4_4_layout(geocode),
+        section_4_layout.create_table_4_5_layout(geocode, True),
+        section_4_layout.create_table_4_6_layout(geocode),
     )
 
 
 @callback(
     Output('table-5-1-container', 'children'),
+    Output('chart-5-2-container', 'children'),
+    Output('table-5-2-container', 'children'),
+    Output('table-5-3-container', 'children'),
     Output('table-5-4-container', 'children'),
     Output('table-5-5-container', 'children'),
     Input('main-area', 'data'),
@@ -396,13 +744,65 @@ def update_section_4(geo_name, scale, visibility):
     Input('table-visibility-store', 'data'),
 )
 def update_section_5(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-5-5", False)
+    show_both_5_2 = (visibility or {}).get("table-5-2", False)
+    show_both_5_5 = (visibility or {}).get("table-5-5", False)
     geocode = _resolve_geocode(geo_name, scale, section_5_layout.data_loader)
 
     return (
         section_5_layout.create_table_5_1_layout(geocode),
+        section_5_layout.create_chart_5_2(geocode),
+        section_5_layout.create_table_5_2_layout(geocode, show_both_5_2),
+        section_5_layout.create_table_5_3_layout(geocode),
         section_5_layout.create_table_5_4_layout(geocode),
-        section_5_layout.create_table_5_5_layout(geocode, show_both),
+        section_5_layout.create_table_5_5_layout(geocode, show_both_5_5),
+        )
+
+
+@callback(
+    Output('chart-6-1-container', 'children'),
+    Output('table-6-1-container', 'children'),
+    Output('table-6-2-container', 'children'),
+
+    Output('chart-6-3-container', 'children'),
+    Output('table-6-3-container', 'children'),
+    Output('table-6-4-container', 'children'),
+
+    Output('table-6-5-container', 'children'),
+    Output('table-6-6-container', 'children'),
+
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+    Input('table-visibility-store', 'data'),
+)
+def update_section_6(geo_name, scale, visibility):
+    show_both_6_1 = (visibility or {}).get("table-6-1", False)
+    show_both_6_3 = (visibility or {}).get("table-6-3", False)
+    show_both_6_5 = (visibility or {}).get("table-6-5", False)
+    geocode = _resolve_geocode(geo_name, scale, section_6_layout.data_loader)
+
+    table_6_1_name = 'table_6_1_hhs_bedroom'
+    table_6_2_name = 'table_6_2_hhs_bedroom_breakdown'
+    table_6_1_2_label = 'Households by Number of Bedrooms of Dwelling'
+
+    table_6_3_name = 'table_6_3_hhs_construction_period'
+    table_6_4_name = 'table_6_4_hhs_construction_period_breakdown'
+    table_6_3_4_label = 'Households by Period of Construction of Dwelling'
+
+    table_6_5_name = 'table_6_5_hhs_structure_type'
+    table_6_6_name = 'table_6_6_hhs_structure_type_breakdown'
+    table_6_5_6_label = 'Households by Structural Type of Dwelling'
+
+    return (
+        section_6_layout.create_chart_6(geocode, table_6_1_name, table_6_1_2_label),
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_1_name, table_6_1_2_label, show_both_6_1),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_2_name,table_6_1_2_label),
+
+        section_6_layout.create_chart_6(geocode, table_6_3_name, table_6_3_4_label),
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_3_name, table_6_3_4_label, show_both_6_3),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_4_name, table_6_3_4_label),
+
+        section_6_layout.create_table_6_primary_layout(geocode, table_6_5_name, table_6_5_6_label, show_both_6_5),
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_6_name, table_6_5_6_label),                                                
         )
 
 
@@ -410,6 +810,10 @@ def update_section_5(geo_name, scale, visibility):
     Output('table-7-1-container', 'children'),
     Output('chart-7-3-1-container', 'children'),
     Output('table-7-3-1-container', 'children'),
+    Output('chart-7-3-2-container', 'children'),
+    Output('table-7-3-2-container', 'children'),
+    Output('chart-7-3-3-container', 'children'),
+    Output('table-7-3-3-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
@@ -420,25 +824,41 @@ def update_section_7(geo_name, scale, visibility):
     return (
         section_7_layout.create_table_7_1_layout(geocode, show_both),
         section_7_layout.create_chart_7_3_1(geocode),
-        section_7_layout.create_table_7_3_1_layout(geocode)
+        section_7_layout.create_table_7_3_1_layout(geocode),
+        section_7_layout.create_chart_7_3_2(geocode),
+        section_7_layout.create_table_7_3_2_layout(geocode),
+        section_7_layout.create_chart_7_3_3(geocode),
+        section_7_layout.create_table_7_3_3_layout(geocode),
         )
 
 
 @callback(
     Output('chart-8-1-container', 'children'),
     Output('table-8-1-container', 'children'),
+    Output('table-8-3-container', 'children'),
+    Output('table-8-4-container', 'children'),
+    Output('chart-8-5-container', 'children'),
+    Output('table-8-5-container', 'children'),
+    Output('table-8-6-container', 'children'),
     Output('table-8-7-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data'),
     Input('table-visibility-store', 'data'),
 )
 def update_section_8(geo_name, scale, visibility):
-    show_both = (visibility or {}).get("table-8-1", False)
+    show_both_8_1 = (visibility or {}).get("table-8-1", False)
+    show_both_8_3 = (visibility or {}).get("table-8-3", False)
+    show_both_8_5 = (visibility or {}).get("table-8-5", False)
     geocode = _resolve_geocode(geo_name, scale, section_8_layout.data_loader)
 
     return (
         section_8_layout.create_chart_8_1(geocode),
-        section_8_layout.create_table_8_1_layout(geocode, show_both),
+        section_8_layout.create_table_8_1_layout(geocode, show_both_8_1),
+        section_8_layout.create_table_8_3_layout(geocode, show_both_8_3),
+        section_8_layout.create_table_8_4_layout(geocode),
+        section_8_layout.create_chart_8_5(geocode),
+        section_8_layout.create_table_8_5_layout(geocode, show_both_8_5),
+        section_8_layout.create_table_8_6_layout(geocode),
         section_8_layout.create_table_8_7_layout(geocode)
     )
 
@@ -447,6 +867,7 @@ def update_section_8(geo_name, scale, visibility):
     Output('chart-9-1-container', 'children'),
     Output('table-9-1-container', 'children'),
     Output('table-9-2-container', 'children'),
+    Output('table-9-3-container', 'children'),
     Input('main-area', 'data'),
     Input('area-scale-store', 'data')
 )
@@ -456,7 +877,50 @@ def update_section_9(geo_name, scale):
     return (
         section_9_layout.create_chart_9_1(geocode),
         section_9_layout.create_table_9_1_layout(geocode),
-        section_9_layout.create_table_9_2_layout(geocode)
+        section_9_layout.create_table_9_2_layout(geocode),
+        section_9_layout.create_table_9_3_layout(geocode)
+    )
+
+
+@callback(
+    Output('table-10-1-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_10(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_10_layout.data_loader)
+
+    return section_10_layout.create_table_10_1_layout(geocode)
+
+
+@callback(
+    Output('table-11-1-1-container', 'children'),
+    Output('table-11-1-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_11(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_11_layout.data_loader)
+
+    return (
+        section_11_layout.create_table_11_1_1_layout(geocode),
+        section_11_layout.create_table_11_1_2_layout(geocode),
+        )
+
+
+
+@callback(
+    Output('table-12-1-container', 'children'),
+    Output('table-12-2-container', 'children'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data')
+)
+def update_section_12(geo_name, scale):
+    geocode = _resolve_geocode(geo_name, scale, section_9_layout.data_loader)
+
+    return (
+        section_12_layout.create_table_12_1_layout(),
+        section_12_layout.create_table_12_2_layout(geocode),
     )
 
 

@@ -14,9 +14,13 @@ from section2_prep import Section2DataPrep
 from section3_prep import Section3DataPrep
 from section4_prep import Section4DataPrep
 from section5_prep import Section5DataPrep
+from section6_prep import Section6DataPrep
 from section7_prep import Section7DataPrep
 from section8_prep import Section8DataPrep
 from section9_prep import Section9DataPrep
+from section10_prep import Section10DataPrep
+from section11_prep import Section11DataPrep
+from section12_prep import Section12DataPrep
 
 
 DB_DIR = Path(__file__).parent.parent / "source"
@@ -50,24 +54,57 @@ class DBUploader:
         'table_4_2': 'table_4_2_housing_tenure_breakdown',
         'table_4_3': 'table_4_3_hh_by_household_size',
         'table_4_4': 'table_4_4_hh_by_household_size_breakdown',
+        'table_4_5': 'table_4_5_1_4_5_2_hh_by_family_type',
+        'table_4_6': 'table_4_5_3_hh_by_family_type_distinction',
 
         # Section 5 - Income
         'table_5_1': 'table_5_1_income_shelter_cost',
+        'table_5_2': 'table_5_2_hh_amhi_income',
+        'table_5_3': 'table_5_3_hh_amhi_income_breakdown',
         'table_5_4': 'table_5_4_median_income',
         'table_5_5_5_6': 'table_5_5_5_6_number_hh_maintainers',
+
+        # Section 6 - Dwellings
+        'table_6_1': 'table_6_1_hhs_bedroom',
+        'table_6_2': 'table_6_2_hhs_bedroom_breakdown',
+        'table_6_3': 'table_6_3_hhs_construction_period',
+        'table_6_4': 'table_6_4_hhs_construction_period_breakdown',
+        'table_6_5': 'table_6_5_hhs_structure_type',
+        'table_6_6': 'table_6_6_hhs_structure_type_breakdown',
 
         # Section 7 - Shelter Costs and Rental Market
         'table_7_1_7_2': 'table_7_1_7_2_dwelllings',
         'table_7_3_1': 'table_7_3_1_rental_units',
+        
+        'table_7_3_2_1': 'table_7_3_2_1_average_rent',
+        'table_7_3_2_2': 'table_7_3_2_2_change_in_average_rent',
+        'table_7_3_3_1': 'table_7_3_3_1_vacancy_rate',
+        'table_7_3_3_2': 'table_7_3_3_2_change_in_vacancy_rate',
+        
 
         # Section 8 - Core Housing Need
         'table_8_1': 'table_8_1_core_housing_need',
+        'table_8_3': 'table_8_3_hhs_in_chn',
+        'table_8_4': 'table_8_4_hhs_in_chn_breakdown',
+        'table_8_5': 'table_8_5_hhs_in_chn_prior_pop',
+        'table_8_6': 'table_8_6_hhs_in_chn_prior_pop_breakdown',
         'table_8_7': 'table_8_7_housing_deficit',
 
         # Section 9 - Systemic Pathways and Indigenous Homelessness
         'table_9_1': 'table_9_1_number_corrections',
         'table_9_1_1': 'table_9_1_1_percent_corrections',
         'table_9_2': 'table_9_2_ageing_out_of_care',
+        'table_9_3': 'table_9_3_indig_homelessness',
+
+        # Section 10 - Access to Services
+        'table_10_1': 'table_10_1_access_services',
+
+        # Section 11 - Population and Household Growth
+        'table_11_1_1': 'table_11_1_1_projected_pop',
+        'table_11_1_2': 'table_11_1_2_projected_hh',
+
+        # Section 12 - Housing Targets
+        'table_12_2': 'table_12_2_indigenous_housing_target'
     }
 
     def __init__(self, db_path):
@@ -90,9 +127,13 @@ class DBUploader:
         self.section_3_prep = Section3DataPrep()
         self.section_4_prep = Section4DataPrep()
         self.section_5_prep = Section5DataPrep()
+        self.section_6_prep = Section6DataPrep()
         self.section_7_prep = Section7DataPrep()
         self.section_8_prep = Section8DataPrep()
         self.section_9_prep = Section9DataPrep()
+        self.section_10_prep = Section10DataPrep()
+        self.section_11_prep = Section11DataPrep()
+        self.section_12_prep = Section12DataPrep()
 
         # Store table classes
         self.table_classes = {}
@@ -164,24 +205,56 @@ class DBUploader:
         self.table_data['table_4_2'] = self.section_4_prep.table_4_2()
         self.table_data['table_4_3'] = self.section_4_prep.table_4_3_4_4("4.3")
         self.table_data['table_4_4'] = self.section_4_prep.table_4_3_4_4("4.4")
+        self.table_data['table_4_5'] = self.section_4_prep.table_4_5_1_4_5_2()
+        self.table_data['table_4_6'] = self.section_4_prep.table_4_5_3()
 
         # Section 5
         self.table_data['table_5_1'] = self.section_5_prep.table_5_1()
+        self.table_data['table_5_2'] = self.section_5_prep.table_5_2()
+        self.table_data['table_5_3'] = self.section_5_prep.table_5_3()
         self.table_data['table_5_4'] = self.section_5_prep.table_5_4()
         self.table_data['table_5_5_5_6'] = self.section_5_prep.table_5_5_5_6()
+
+        # Section 6
+        self.table_data['table_6_1'] = self.section_6_prep.table_6_1_6_6("6.1")
+        self.table_data['table_6_2'] = self.section_6_prep.table_6_1_6_6("6.2")
+        self.table_data['table_6_3'] = self.section_6_prep.table_6_1_6_6("6.3")
+        self.table_data['table_6_4'] = self.section_6_prep.table_6_1_6_6("6.4")
+        self.table_data['table_6_5'] = self.section_6_prep.table_6_1_6_6("6.5")
+        self.table_data['table_6_6'] = self.section_6_prep.table_6_1_6_6("6.6")
 
         # Section 7
         self.table_data['table_7_1_7_2'] = self.section_7_prep.table_7_1_7_2()
         self.table_data['table_7_3_1'] = self.section_7_prep.table_7_3_1()
 
+        self.table_data['table_7_3_2_1'] = self.section_7_prep.table_7_3_2_1()
+        self.table_data['table_7_3_2_2'] = self.section_7_prep.table_7_3_2_2()
+        self.table_data['table_7_3_3_1'] = self.section_7_prep.table_7_3_3_1()
+        self.table_data['table_7_3_3_2'] = self.section_7_prep.table_7_3_3_2()
+
         # Section 8
         self.table_data['table_8_1'] = self.section_8_prep.table_8_1()
+        self.table_data['table_8_3'] = self.section_8_prep.table_8_3()
+        self.table_data['table_8_4'] = self.section_8_prep.table_8_4()
+        self.table_data['table_8_5'] = self.section_8_prep.table_8_5()
+        self.table_data['table_8_6'] = self.section_8_prep.table_8_6()
         self.table_data['table_8_7'] = self.section_8_prep.table_8_7()
 
         # Section 9
         self.table_data['table_9_1'] = self.section_9_prep.table_9_1()
         self.table_data['table_9_1_1'] = self.section_9_prep.table_9_1_1()
         self.table_data['table_9_2'] = self.section_9_prep.table_9_2()
+        self.table_data['table_9_3'] = self.section_9_prep.table_9_3()
+
+        # Section 10
+        self.table_data['table_10_1'] = self.section_10_prep.table_10_1()
+
+        # Section 11
+        self.table_data['table_11_1_1'] = self.section_11_prep.table_11_1_1()
+        self.table_data['table_11_1_2'] = self.section_11_prep.table_11_1_2()
+        
+        # Section 12
+        self.table_data['table_12_2'] = self.section_12_prep.table_12_2()
 
         print("\n" + "=" * 60)
         print("All tables prepared successfully!")
@@ -227,7 +300,8 @@ class DBUploader:
 
         try:
             # Replace '--' and similar placeholders with NaN
-            df = df.replace(['--', 'x', 'X', '..', '#N/A', '...', 'n/a'], np.nan)
+            df = df.replace(["x", "..", "...", "....", "n/a", "N/A", "--", 
+                  "xx", "xxx", "xxxx", "xxxxx", "#N/A", "#n/a", '**'], np.nan)
 
             # Convert DataFrame to list of dictionaries
             records = []

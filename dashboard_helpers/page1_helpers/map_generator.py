@@ -72,12 +72,20 @@ class MapGenerator:
         else:
             gdf = self.data_loader.load_region_gdf(PROVINCE_CODE)
 
-        if highlight and selected_geography:
-            info = self.data_loader.get_geography_info(selected_geography)
-            gdf['rand'] = gdf.index.map(
-                lambda x: 0 if str(x) == info['region_code'] else 100
-            )
+        # if highlight and selected_geography:
+        #     info = self.data_loader.get_geography_info(selected_geography)
+        #     gdf['rand'] = gdf.index.map(
+        #         lambda x: 0 if str(x) == info['region_code'] else 100
+        #     )
+        #     colors = MAP_COLORS_HIGHLIGHT
+        if highlight:
             colors = MAP_COLORS_HIGHLIGHT
+            info = self.data_loader.get_geography_info(selected_geography) if selected_geography else None
+            target_code = info.get('region_code') if info else None
+            gdf['rand'] = gdf.index.map(
+                lambda x: 0 if str(x) == target_code else 100
+            )
+
         else:
             gdf['rand'] = np.arange(len(gdf))
             colors = MAP_COLORS_WO_BLACK

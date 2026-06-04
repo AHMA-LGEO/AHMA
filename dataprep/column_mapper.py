@@ -1,5 +1,15 @@
-from utils import strip_map, YEARS, YEARS_MINUS_2011
+from utils import (
+    strip_map, 
+    YEARS, 
+    YEARS_MINUS_2011, 
+    YEARS_2016_TO_2023, 
+    YEARLY_INTERVALS_2016_TO_2023, 
+    PIT_YEARS, 
+    PROJECTION_YEARS,
+    INDIGENOUS_COMMUNITIES,
+    HH_TYPES)
 
+#-------------------- Section 3 – Indigenous Population --------------------
 
 TABLE_3_1_1_COL_MAP = strip_map({
     "First Nations": {
@@ -63,7 +73,7 @@ TABLE_3_1_2_COL_MAP = strip_map({
         "2011": ["  65 to 69 years", "  70 to 74 years", "  75 to 79 years",
                  "  80 to 84 years", "  85 years and over"],
     },
-    "total": {
+    "Total": {
             "2006": "Total Aboriginal identity population by age and sex groups - 20% sample data",
             "2011": "  Total Aboriginal identity population in private households by age groups",
             "2016": "  Total - Age groups",
@@ -82,11 +92,11 @@ TABLE_3_1_3_COL_MAP = strip_map({
         "2016": "Total – Mobility status 5 years ago of the PHM_  Off reserve_Aboriginal household",
         "2021": "Total – Mobility status 5 years ago of the PHM_  Off reserve_  Indigenous household",
     },
-    "TOTAL": {
-        "2006": "Total - Private households by area of residence _ Aboriginal household",
-        "2016": "Total – Mobility status 5 years ago of the PHM_Total - Private households by area of residence of primary household maintainers_Aboriginal household",
-        "2021": "Total – Mobility status 5 years ago of the PHM_Total - Residence on or off reserve_  Indigenous household",
-    },
+    # "Total": {
+    #     "2006": "Total - Private households by area of residence _ Aboriginal household",
+    #     "2016": "Total – Mobility status 5 years ago of the PHM_Total - Private households by area of residence of primary household maintainers_Aboriginal household",
+    #     "2021": "Total – Mobility status 5 years ago of the PHM_Total - Residence on or off reserve_  Indigenous household",
+    # },
 })
 
 TABLE_3_1_4_COL_MAP = strip_map({
@@ -121,7 +131,7 @@ TABLE_3_4_COL_MAP = {
         '45 to 54 years': '45 - 54',
         '55 to 64 years': '55 - 64',
         '65 years and over': '65+',
-        'Total - Age groups': 'Total'
+        # 'Total - Age groups': 'Total'
     }
 
 
@@ -196,6 +206,7 @@ def _build_3_5_1_map():
 TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 
+#-------------------- Section 4 – Housing Tenure --------------------
 
 _HH_SUFFIX_4_1_4_2 = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
@@ -218,12 +229,12 @@ _T4_1_TENURE_PREFIX = {
         "2016": "Dwelling provided by the local government, First Nation or Indian band",
         "2021": "Dwelling provided by the local government, First Nation or Indian band",
     },
-    "TOTAL": {
-        "2006": "Total – Housing tenure and presence of mortgage",
-        "2011": "Total number of private Aboriginal households by tenure",
-        "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
-        "2021": "Total - Tenure including presence of mortgage payment and subsidized housing",
-    },
+    # "Total": {
+    #     "2006": "Total – Housing tenure and presence of mortgage",
+    #     "2011": "Total number of private Aboriginal households by tenure",
+    #     "2016": "Total - Tenure including presence of mortgage payments and subsidized housing",
+    #     "2021": "Total - Tenure including presence of mortgage payment and subsidized housing",
+    # },
 }
 
 _T4_1_PCT_DIRECT = {
@@ -380,10 +391,209 @@ TABLE_4_3_4_4_COL_MAP = strip_map(_build_size_map_4_3_4_4(
 ))
 
 TABLE_4_3_1_COL_MAP = strip_map(_build_size_map_4_3_4_4(
-    {**_T4_3_SIZE_PREFIX, "Average": _T4_3_AVG_PREFIX},
+    {**_T4_3_SIZE_PREFIX, "Average Household Size": _T4_3_AVG_PREFIX},
     _T4_3_1_COMMUNITY_SUFFIX,
 ))
 
+# TODO CR - confirm these should go here?
+PCT_REFS_4_5 = {
+    "% of households with children": ("Households with children", "Total Households for reference"),
+    "% of households led by a single-parent": ("Households led by a single-parent", "Total Households for reference"),
+    "% Multigenerational households": ("Number of multigenerational households", "Total Households for reference"),
+    "% Non-family households (i.e. single or roomates)": ("Number of non-family households (i.e. single or roomates)", "Total Households for reference")
+}
+
+OP_MAP_4_5 = {
+    "Households with children": "direct",
+    "Households led by a single-parent": "sum",
+    "Number of multigenerational households": "direct",
+    "Number of non-family households (i.e. single or roomates)": "sum",
+    "Total Households for reference": "direct",
+    "% of households with children": "pct",
+    "% of households led by a single-parent": "pct",
+    "% Multigenerational households": "pct",
+    "% Non-family households (i.e. single or roomates)": "pct",
+}
+
+TABLE_4_5_1_4_5_2_COL_MAP = strip_map({
+    "Households with children": {
+        "Indigenous HHs": {
+            "2006": "With children _Aboriginal household",
+            "2016": "With children_Aboriginal household",
+            "2021": "With children _Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": "With children _Non-Aboriginal household",
+            "2016": "With children_Non-Aboriginal household",
+            "2021": "With children _Non-Indigenous household",
+        },
+    },
+    "% of households with children": {},  # empty — just a placeholder to reserve the row position
+
+    "Households led by a single-parent": {
+        "Indigenous HHs": {
+            "2006": ["With a lone parent that is a male_Aboriginal household",
+                     "With a lone parent that is a female_Aboriginal household"],
+            "2016": ["With a lone parent that is a male_Aboriginal household",
+                     "With a lone parent that is a female_Aboriginal household"],
+            "2021": ["With a one-parent that is a man+_Indigenous household",
+                     "With a one-parent that is a woman+_Indigenous household"],
+        },
+        "Non-Indigenous HHs": {
+            "2006": ["With a lone parent that is a male_Non-Aboriginal household",
+                     "With a lone parent that is a female_Non-Aboriginal household"],
+            "2016": ["With a lone parent that is a male_Non-Aboriginal household",
+                     "With a lone parent that is a female_Non-Aboriginal household"],
+            "2021": ["With a one-parent that is a man+_Non-Indigenous household",
+                     "With a one-parent that is a woman+_Non-Indigenous household"],
+        },
+    },
+    "% of households led by a single-parent": {},  # empty — just a placeholder to reserve the row position
+
+    "Number of multigenerational households": {
+        "Indigenous HHs": {
+            "2006": None,
+            "2016": "Multigenerational household_Aboriginal household",
+            "2021": "Multigenerational households_Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": None,
+            "2016": "Multigenerational household_Non-Aboriginal household",
+            "2021": "Multigenerational households_Non-Indigenous household",
+        },
+    },
+    "% Multigenerational households": {},  # empty — just a placeholder to reserve the row position
+
+    "Number of non-family households (i.e. single or roomates)": {
+        "Indigenous HHs": {
+            "2006": ["Other family households_Aboriginal household", "One person households_Aboriginal household"],
+            "2016": ["Two or more person non-census-family household_Aboriginal household",
+                     "One person household_Aboriginal household"],
+            "2021": ["Two-or-more-person non-census-family households_Indigenous household",
+                     "One-person households_Indigenous household"],
+        },
+        "Non-Indigenous HHs": {
+            "2006": ["Other family households_Non-Aboriginal household",
+                     "One person households_Non-Aboriginal household"],
+            "2016": ["Two or more person non-census-family household_Non-Aboriginal household",
+                     "One person household_Non-Aboriginal household"],
+            "2021": ["Two-or-more-person non-census-family households_Non-Indigenous household",
+                     "One-person households_Non-Indigenous household"],
+        },
+    },
+    "% Non-family households (i.e. single or roomates)": {},  # empty — just a placeholder to reserve the row position
+
+    "Total Households for reference": {
+        "Indigenous HHs": {
+            "2006": "Total - Presence of children_Aboriginal household",
+            "2016": "Total - Presence of children _Aboriginal household",
+            "2021": "Total - Presence of children _Indigenous household",
+        },
+        "Non-Indigenous HHs": {
+            "2006": "Total - Presence of children_Non-Aboriginal household",
+            "2016": "Total - Presence of children _Non-Aboriginal household",
+            "2021": "Total - Presence of children _Non-Indigenous household",
+        },
+    }
+})
+
+TABLE_4_5_3_COL_MAP = strip_map({
+    "Households with children":{
+        "First Nations-led":{
+            "2006": "With children _First Nations-led",
+            "2016": "With children_First Nations-led",
+            "2021": "With children _First Nations-led",
+        },
+        "Metis-led":{
+            "2006": "With children _Metis-led",
+            "2016": "With children_Metis-led",
+            "2021": "With children _Metis-led",
+        },
+        "Inuit-led":{
+            "2006": "With children _Inuit-led",
+            "2016": "With children_Inuit-led",
+            "2021": "With children _Inuit-led",
+        },
+    },
+    "% of households with children":{}, # empty — just a placeholder to reserve the row position
+
+    "Households led by a single-parent":{
+        "First Nations-led":{
+            "2006": ["With a lone parent that is a male_First Nations-led", "With a lone parent that is a female_First Nations-led"],
+            "2016": ["With a lone parent that is a male_First Nations-led", "With a lone parent that is a female_First Nations-led"],
+            "2021": ["With a one-parent that is a man+_First Nations-led", "With a one-parent that is a woman+_First Nations-led"],
+        },
+        "Metis-led":{
+            "2006": ["With a lone parent that is a male_Metis-led", "With a lone parent that is a female_Metis-led"],
+            "2016": ["With a lone parent that is a male_Metis-led", "With a lone parent that is a female_Metis-led"],
+            "2021": ["With a one-parent that is a man+_Metis-led", "With a one-parent that is a woman+_Metis-led"],
+        },
+        "Inuit-led":{
+            "2006": ["With a lone parent that is a male_Inuit-led", "With a lone parent that is a female_Inuit-led"],
+            "2016": ["With a lone parent that is a male_Inuit-led", "With a lone parent that is a female_Inuit-led"],
+            "2021": ["With a one-parent that is a man+_Inuit-led", "With a one-parent that is a woman+_Inuit-led"],
+        },
+    },
+    "% of households led by a single-parent":{}, # empty — just a placeholder to reserve the row position
+
+    "Number of multigenerational households":{
+        "First Nations-led":{
+            "2006": None,
+            "2016": "Multigenerational household_First Nations-led",
+            "2021": "Multigenerational households_First Nations-led",
+        },
+        "Metis-led":{
+            "2006": None,
+            "2016": "Multigenerational household_Metis-led",
+            "2021": "Multigenerational households_Metis-led",
+        },
+        "Inuit-led":{
+            "2006": None,
+            "2016": "Multigenerational household_Inuit-led",
+            "2021": "Multigenerational households_Inuit-led",
+        },
+    },
+    "% Multigenerational households":{}, # empty — just a placeholder to reserve the row position
+
+    "Number of non-family households (i.e. single or roomates)":{
+        "First Nations-led":{
+            "2006": ["Other family households_First Nations-led", "One person households_First Nations-led"],
+            "2016": ["Two or more person non-census-family household_First Nations-led", "One person household_First Nations-led"],
+            "2021": ["Two-or-more-person non-census-family households_First Nations-led", "One-person households_First Nations-led"],
+        },
+        "Metis-led":{
+            "2006": ["Other family households_Metis-led", "One person households_Metis-led"],
+            "2016": ["Two or more person non-census-family household_Metis-led", "One person household_Metis-led"],
+            "2021": ["Two-or-more-person non-census-family households_Metis-led", "One-person households_Metis-led"],
+        },
+        "Inuit-led":{
+            "2006": ["Other family households_Inuit-led", "One person households_Inuit-led"],
+            "2016": ["Two or more person non-census-family household_Inuit-led", "One person household_Inuit-led"],
+            "2021": ["Two-or-more-person non-census-family households_Inuit-led", "One-person households_Inuit-led"],
+        },
+    },
+    "% Non-family households (i.e. single or roomates)":{}, # empty — just a placeholder to reserve the row position
+
+    "Total Households for reference":{
+        "First Nations-led":{
+            "2006": "Total - Presence of children_First Nations-led",
+            "2016": "Total - Presence of children _First Nations-led",
+            "2021": "Total - Presence of children _First Nations-led",
+        },
+        "Metis-led":{
+            "2006": "Total - Presence of children_Metis-led",
+            "2016": "Total - Presence of children _Metis-led",
+            "2021": "Total - Presence of children _Metis-led",
+        },
+        "Inuit-led":{
+            "2006": "Total - Presence of children_Inuit-led",
+            "2016": "Total - Presence of children _Inuit-led",
+            "2021": "Total - Presence of children _Inuit-led",
+        },
+    }
+})
+
+#-------------------- Section 5 – Income --------------------
 
 TABLE_5_1_COL_MAP = {
     'Total - Private Households by core housing need status  _  Households with household income 20% or under of area median household income (AMHI)_  Indigenous household': 'Very Low Income (20% or under of AMHI)',
@@ -392,6 +602,131 @@ TABLE_5_1_COL_MAP = {
     'Total - Private Households by core housing need status  _  Households with household income 81% to 120% of AMHI_  Indigenous household': 'Median Income (81% to 120% of AMHI)',
     'Total - Private Households by core housing need status  _  Households with household income 121% and over of AMHI_  Indigenous household': 'High Income (121% and more of AMHI)'
     }
+
+
+_T5_2_INCOME_BASE = {
+    "Very Low Income": "Very Low Income (20% or under of AMHI)",
+    "Low": "Low Income (21% to 50% of AMHI)",
+    "Moderate": "Moderate Income (51% to 80% of AMHI)",
+    "Median": "Median Income (81% to 120% of AMHI)",
+    "High": "High Income (121% and more of AMHI)",
+    # "Total": "Total"
+}
+
+_T5_2_INDIGENOUS_SUFFIX = {
+    "2006": "_Aboriginal household",
+    "2016": "_Aboriginal household",
+    "2021": "_Indigenous household",
+}
+
+_T5_2_NON_INDIGENOUS_SUFFIX = {
+    "2006": "_Non-Aboriginal household",
+    "2016": "_Non-Aboriginal household",
+    "2021": "_Non-Indigenous household",
+}
+
+
+_T5_2_VERY_LOW_BASE = {
+    "2006": "Households with  income 20% or under of area median household income (AMHI)",
+    "2016": "Households with  income 20% or under of area median household income (AMHI)",
+    "2021": "Households with  income 20% or under of AMHI",
+}
+
+TABLE_5_2_COL_MAP = strip_map({
+    income: {
+        "Indigenous HHs": {
+            year: (
+                _T5_2_VERY_LOW_BASE[year] + _T5_2_INDIGENOUS_SUFFIX[year]
+                if income == "Very Low Income"
+                else TABLE_5_1_COL_MAP.get(
+                    f"{_T5_2_INCOME_BASE}_{_T5_2_INDIGENOUS_SUFFIX[year]}",
+                    f"{prefix}{_T5_2_INDIGENOUS_SUFFIX[year]}"
+                )
+                if income != "Area Median Household income (all HHs)"
+                else f"AMHI ({int(year)-1}$)"
+            )
+            for year in _T5_2_INDIGENOUS_SUFFIX
+        },
+        "Non-Indigenous HHs": {
+            year: (
+                _T5_2_VERY_LOW_BASE[year] + _T5_2_NON_INDIGENOUS_SUFFIX[year]
+                if income == "Very Low Income"
+                else TABLE_5_1_COL_MAP.get(
+                    f"{_T5_2_INCOME_BASE}_{_T5_2_NON_INDIGENOUS_SUFFIX[year]}",
+                    f"{prefix}{_T5_2_NON_INDIGENOUS_SUFFIX[year]}"
+                )
+                if income != "Area Median Household income (all HHs)"
+                else f"AMHI ({int(year)-1}$)"
+            )
+            for year in _T5_2_NON_INDIGENOUS_SUFFIX
+        },
+    }
+    for income, prefix in {
+        "Area Median Household income (all HHs)": "AMHI",
+        "Very Low Income": None,
+        "Low": "Households with income 21% to 50% of AMHI",
+        "Moderate": "Households with income 51%  to 80% of AMHI",
+        "Median": "Households with income 81% to 120% of AMHI",
+        "High": "Households with income 121% or over of AMHI",
+        # "Total": "Total - Household income ranges as proportion to AMHI",
+    }.items()
+})
+
+
+_T5_3_COMMUNITY_SUFFIX = {
+    "First Nations": "First Nations-led",
+    "Métis":         "Metis-led",
+    "Inuit":         "Inuit-led",
+}
+
+_T5_3_INCOME_MAP = {
+    "Area Median Household income (all HHs)": None,
+    "Very Low Income": None,
+    "Low": "Households with income 21% to 50% of AMHI",
+    "Moderate": "Households with income 51%  to 80% of AMHI",
+    "Median": "Households with income 81% to 120% of AMHI",
+    "High": "Households with income 121% or over of AMHI",
+    # "Total": "Total - Household income ranges as proportion to AMHI",
+}
+
+
+def _get_suffix_5_3(year: str, comm: str) -> str:
+    if year == "2006":
+        return f"_{comm} HH"
+    return f"_{comm}"
+
+
+TABLE_5_3_COL_MAP = strip_map({
+    income: {
+        com: {
+            year: (
+                # AMHI row
+                f"AMHI ({int(year)-1}$)"
+                if income == "Area Median Household income (all HHs)"
+                
+                # Very Low Income special handling (INLINE)
+                else (
+                    (
+                        "Households with  income 20% or under of area median household income (AMHI)"
+                        if year in {"2006", "2016"}
+                        else "Households with  income 20% or under of AMHI"
+                    )
+                    + _get_suffix_5_3(year, com_long_name)
+                )
+                if income == "Very Low Income"
+                
+                # all other income categories
+                else (
+                    f"{_T5_3_INCOME_MAP[income]}"
+                    + _get_suffix_5_3(year, com_long_name)
+                )
+            )
+            for year in YEARS_MINUS_2011
+        }
+        for com, com_long_name in _T5_3_COMMUNITY_SUFFIX.items()
+    }
+    for income in _T5_3_INCOME_MAP.keys()
+})
 
 
 TABLE_5_4_COL_MAP = strip_map({
@@ -446,8 +781,285 @@ TABLE_5_5_5_6_COL_MAP = strip_map({
     }
     for maintainers, year_map in _T5_5_5_6_MAINTAINER_PREFIX.items()
 })
-TABLE_5_5_5_6_COL_MAP['TOTAL'] = None
+TABLE_5_5_5_6_COL_MAP['Total'] = None
 
+
+#-------------------- Section 6 – Dwelling --------------------
+
+_T6_BEDROOM_KEYS = {
+    "No bedrooms (studio)": "No bedroom",
+    "1 bedroom": "1 bedroom",
+    "2 bedrooms": "2 bedrooms",
+    "3 bedrooms": "3 bedrooms",
+    "4 or more bedrooms": "4 or more bedrooms",
+}
+
+def _bedroom_label_6_1(display_name, year):
+    """Handles No bedroom(s) singular/plural shift"""
+    base = _T6_BEDROOM_KEYS[display_name]
+
+    if display_name == "No bedrooms (studio)" and year in {"2016", "2021"}:
+        return "No bedrooms"
+
+    return base
+
+
+# def _total_label(year):
+#     if year == "2006":
+#         return "Total - Number of bedrooms"
+#     return "Total - Occupied private dwellings by number of bedrooms - 25% sample data"
+
+
+def _build_bedroom_map_6_1_6_2(groups):
+    rows = {}
+
+    # for bedroom in [*_T6_BEDROOM_KEYS.keys(), "Total"]:
+    for bedroom in [*_T6_BEDROOM_KEYS.keys()]:
+        rows[bedroom] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[bedroom][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if bedroom == "Total":
+                #     col = f"{_total_label(year)}_{suffix}"
+                # else:
+                col = f"{_bedroom_label_6_1(bedroom, year)}_{suffix}"
+
+                rows[bedroom][grp_name][year] = col
+
+    return strip_map(rows)
+
+
+TABLE_6_1_COL_MAP = _build_bedroom_map_6_1_6_2({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Aboriginal household",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_2_COL_MAP = _build_bedroom_map_6_1_6_2({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+_T6_PERIOD_BUCKETS = {
+    "Before 1960": {
+        "2006": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+        "2016": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+        "2021": ["1920 or before", "1921 to 1945", "1946 to 1960"],
+    },
+    "1960-1980": {
+        "2006": ["1961 to 1970", "1971 to 1980"],
+        "2016": ["1961 to 1970", "1971 to 1980"],
+        "2021": ["1961 to 1970", "1971 to 1980"],
+    },
+    "1980-2000": {
+        "2006": ["1981 to 1985", "1986 to 1990", "1991 to 1995", "1996 to 2000"],
+        "2016": ["1981 to 1990", "1991 to 1995", "1996 to 2000"],
+        "2021": ["1981 to 1990", "1991 to 1995", "1996 to 2000"],
+    },
+    "After 2000": {
+        "2006": ["2001 to 2006"],
+        "2016": ["2001 to 2005", "2006 to 2010", "2011 to 2016"],
+        "2021": ["2001 to 2005", "2006 to 2010", "2011 to 2015", "2016 to 2021"],
+    },
+}
+
+
+def _build_period_map_6_3_6_4(groups):
+    rows = {}
+
+    # for bucket in [* _T6_PERIOD_BUCKETS.keys(), "Total"]:
+    for bucket in [* _T6_PERIOD_BUCKETS.keys()]:
+        rows[bucket] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[bucket][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if bucket == "Total":
+                #     rows[bucket][grp_name][year] = (
+                #         f"Total - Period of construction_{suffix}"
+                #     )
+                # else:
+                rows[bucket][grp_name][year] = [
+                    f"{label}_{suffix}"
+                    for label in _T6_PERIOD_BUCKETS[bucket][year]
+                ]
+
+    return strip_map(rows)
+
+
+TABLE_6_3_COL_MAP = _build_period_map_6_3_6_4({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Aboriginal household",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_4_COL_MAP = _build_period_map_6_3_6_4({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+_T6_STRUCTURE_LABELS = {
+    "Single-detached house": {
+        "2006": "Single-detached house",
+        "2016": "Single-detached house",
+        "2021": "Single-detached house",
+    },
+    "Semi-detatched": {
+        "2006": "Semi-detached house",
+        "2016": "Semi-detached house",
+        "2021": "Semi-detached house",
+    },
+    "Row house": {
+        "2006": "Row house",
+        "2016": "Row house",
+        "2021": "Row house",
+    },
+    "Apartment or flat in a duplex": {
+        "2006": "Apartment, duplex",
+        "2016": "Apartment or flat in a duplex",
+        "2021": "Apartment or flat in a duplex",
+    },
+    "Apartment in building with fewer than 5 storeys": {
+        "2006": "Apartment, building that has fewer than five storeys",
+        "2016": "Apartment in a building that has fewer than five storeys",
+        "2021": "Apartment in a building that has fewer than five storeys",
+    },
+    "Apartment in building with 5+ storeys": {
+        "2006": "Apartment, building that has five or more storeys",
+        "2016": "Apartment in a building that has five or more storeys",
+        "2021": "Apartment in a building that has five or more storeys",
+    },
+    "Other single-attached house": {
+        "2006": "Other single-attached house",
+        "2016": "Other single-attached house",
+        "2021": "Other single-attached house",
+    },
+    "Moveable dwelling": {
+        "2006": "Movable dwelling",
+        "2016": "Movable dwelling",
+        "2021": "Movable dwelling",
+    },
+}
+
+
+# def _structure_total_label_6_5(year, suffix):
+#     if year == "2016":
+#         return (
+#             "Total - Occupied private dwellings by structural type "
+#             f"of dwelling - 25% sample data_{suffix}"
+#         )
+#     return f"Total - Structural type of dwelling_{suffix}"
+
+
+def _build_structure_map_6_5_6_6(groups):
+    rows = {}
+
+    # for structure in [*_T6_STRUCTURE_LABELS.keys(), "Total"]:
+    for structure in [*_T6_STRUCTURE_LABELS.keys()]:
+        rows[structure] = {}
+
+        for grp_name, suffix_map in groups.items():
+            rows[structure][grp_name] = {}
+
+            for year in YEARS_MINUS_2011:
+                suffix = suffix_map[year]
+
+                # if structure == "Total":
+                #     rows[structure][grp_name][year] = _structure_total_label(
+                #         year, suffix
+                #     )
+                # else:
+                label = _T6_STRUCTURE_LABELS[structure][year]
+                rows[structure][grp_name][year] = f"{label}_{suffix}"
+
+    return strip_map(rows)
+
+
+TABLE_6_5_COL_MAP = _build_structure_map_6_5_6_6({
+    "Indigenous HHs": {
+        "2006": "Aboriginal household",
+        "2016": "Total - Aboriginal household status",
+        "2021": "Indigenous household",
+    },
+    "Non-Indigenous HHs": {
+        "2006": "Non-Aboriginal household",
+        "2016": "Non-Aboriginal household",
+        "2021": "Non-Indigenous household",
+    },
+})
+
+
+TABLE_6_6_COL_MAP = _build_structure_map_6_5_6_6({
+    "First Nations": {
+        "2006": "First Nations-led",
+        "2016": "First Nations-led",
+        "2021": "First Nations-led",
+    },
+    "Métis": {
+        "2006": "Metis-led",
+        "2016": "Metis-led",
+        "2021": "Metis-led",
+    },
+    "Inuit": {
+        "2006": "Inuit-led",
+        "2016": "Inuit-led",
+        "2021": "Inuit-led",
+    },
+})
+
+
+#-------------------- Section 7 – Shelter Costs and Rental Market --------------------
 
 _T7_HH_SUFFIX = {
     "2016": {"Indigenous HHs": " Aboriginal household", "Non-Indigenous HHs": "Non-Aboriginal household"},
@@ -466,6 +1078,29 @@ TABLE_7_1_7_2_COL_MAP = strip_map({
     for tenure, prefix in _T7_DWELLING_PREFIX.items()
 })
 
+TABLE_7_3_2_1_COL_MAP = strip_map({
+    year: f"Avg_Rent_{year}" for year in YEARS_2016_TO_2023
+})
+
+TABLE_7_3_2_2_COL_MAP = strip_map({
+    interval: {
+        "year_1": f"Avg_Rent_{interval.split('-')[0]}",
+        "year_2": f"Avg_Rent_{interval.split('-')[1]}"
+    }
+    for interval in YEARLY_INTERVALS_2016_TO_2023
+})
+
+TABLE_7_3_3_1_COL_MAP = strip_map({
+    year: f"Vacancy_{year}" for year in YEARS_2016_TO_2023
+})
+
+TABLE_7_3_3_2_COL_MAP = strip_map({
+    interval: {
+        "year_1": f"Vacancy_{interval.split('-')[0]}",
+        "year_2": f"Vacancy_{interval.split('-')[1]}"
+    }
+    for interval in YEARLY_INTERVALS_2016_TO_2023
+})
 
 _T8_1_HH_SUFFIX = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
@@ -507,6 +1142,8 @@ _T8_1_INDICATOR_PREFIX = {
     },
 }
 
+#-------------------- Section 8 – Core Housing Need --------------------
+
 TABLE_8_1_COL_MAP = strip_map({
     indicator: {
         "Number of households": {
@@ -520,6 +1157,219 @@ TABLE_8_1_COL_MAP = strip_map({
     for indicator, year_map in _T8_1_INDICATOR_PREFIX.items()
 })
 
+_T8_3_8_4_CALC_COLS = ["Rate of CHN (%)", "% of HHs in CHN who rent", "Rate of Extreme CHN (%)", "% of HHs in Extreme CHN who rent"]
+
+_T8_3_8_4_CALC_COL_PREFIXES = {
+    "renters": {
+        "examined": {
+            "2006": "  Household examined for core housing need_  Renter",
+            "2016": "  Household examined for core housing need_  Renter",
+            "2021": "  Household examined for core housing need_  Renter"
+        },
+        "chn": {
+            "2006": "In CHN or Extreme CHN_Renter",
+            "2016": "_Renter",
+            "2021": "In CHN or Extreme CHN_Renter"
+        },
+        "echn": {
+            "2006": "    In extreme core housing need_  Renter",
+            "2016": "    In extreme core housing need_  Renter",
+            "2021": "    In extreme core housing need_  Renter"
+        }
+    },
+    "total": {
+        "examined": {
+            "2006": "  Household examined for core housing need_Total – Housing tenure and presence of mortgage",
+            "2016": "  Household examined for core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+            "2021": "  Household examined for core housing need_Total - Tenure including presence of mortgage payment and subsidized housing"
+        },
+        "chn": { 
+            "2006": "In CHN or Extreme CHN_Total",
+            "2016": "In CHN or Extreme CHN_Total",
+            "2021": "In CHN or Extreme CHN_Total"
+        },
+        "echn": { 
+            "2006": "    In extreme core housing need_Total – Housing tenure and presence of mortgage",
+            "2016": "    In extreme core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+            "2021": "    In extreme core housing need_Total - Tenure including presence of mortgage payment and subsidized housing"
+        }
+    }
+}
+
+_T8_3_8_4_COL_MAP_PREFIXES = {
+    "HHs in Core Housing Need"        : { 
+        "2006": "In CHN or Extreme CHN_Total",
+        "2016": "In CHN or Extreme CHN_Total",
+        "2021": "In CHN or Extreme CHN_Total",
+    },
+    "Rate of CHN (%)"                 : None,
+    "% of HHs in CHN who rent"        : None,
+    "HHs in Extreme CHN"              : { 
+        "2006": "    In extreme core housing need_Total – Housing tenure and presence of mortgage",
+        "2016": "    In extreme core housing need_Total - Tenure including presence of mortgage payments and subsidized housing",
+        "2021": "    In extreme core housing need_Total - Tenure including presence of mortgage payment and subsidized housing",
+    },
+    "Rate of Extreme CHN (%)"         : None,
+    "% of HHs in Extreme CHN who rent": None
+}
+
+_T8_3_8_4_SUFFIXES = {
+    "2006": {
+        "Non-Indigenous HHs": "Non-Aboriginal HH",
+        "Indigenous HHs": "Aboriginal HH",
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
+    },
+    "2016": {
+        "Non-Indigenous HHs": "Non-Aboriginal household",
+        "Indigenous HHs": "Aboriginal household",
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
+    },
+    "2021": {
+        "Non-Indigenous HHs": "Non-Indigenous household",
+        "Indigenous HHs": "Indigenous household",
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
+    }
+}
+
+# column map to all the fields needed for calculations, but not necessarily direct output
+TABLE_8_3_8_4_CALC_COL_MAP = strip_map({
+    year: {
+        hh_type: {
+            tenure: {
+                statistic: f"{prefix_map[year]}_{suffix}"
+                for statistic, prefix_map in tenure_map.items()
+            }
+            for tenure, tenure_map in _T8_3_8_4_CALC_COL_PREFIXES.items()
+        }
+        for hh_type, suffix in hh_type_map.items()
+    }
+    for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+})
+
+TABLE_8_3_COL_MAP = strip_map({
+    statistic: {
+        year: {
+            hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
+            for hh_type in HH_TYPES
+        }
+        for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+    }
+    for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
+})
+
+TABLE_8_4_COL_MAP = strip_map({
+    statistic: {
+        year: {
+            hh_type: None if prefix_map is None else f"{prefix_map[year]}_{hh_type_map[hh_type]}"
+            for hh_type in INDIGENOUS_COMMUNITIES
+        }
+        for year, hh_type_map in _T8_3_8_4_SUFFIXES.items()
+    }
+    for statistic, prefix_map in _T8_3_8_4_COL_MAP_PREFIXES.items()
+})
+
+_T8_5_8_6_PREFIXES = {
+    "chn": "    In core housing need, but Not in extreme core housing need",
+    "echn": "    In extreme core housing need",
+    "examined": "  Household examined for core housing need",
+}
+
+_T8_5_8_6_BASES = {
+    "Youth-led (under 30)" : {
+        "2006": "  29 years or less",
+        "2016": "  29 years or less",
+        "2021": "  29 years or less",
+    },
+    "Senior-led (65+)" : {
+        "2006": "  65 years and over",
+        "2016": "  65 years and over",
+        "2021": "  65 years and over",
+    },
+    "Single-mother-led" : {
+        "2006": "  With a lone parent that is a female",
+        "2016": "  With a lone parent that is a female",
+        "2021": "  With a one-parent that is a woman+",
+    },
+    "Single-father-led" : {
+        "2006": "  With a lone parent that is a male",
+        "2016": "  With a lone parent that is a male",
+        "2021": "  With a one-parent that is a man+",
+    },
+    "HH with physical limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person who had at least one activity limitations reported for Q11a, Q11b, Q11c or Q11f or combinations of these health issues",
+        "2021": "  Household has at least one person who had at least one activity limitations reported for Q18a, Q18b, Q18c or Q18f or combinations of these health issues",
+    },
+    "HH with cognitive limitation" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(d)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18d only",
+    },
+    "HH with mental or addictions limitations" : {
+        "2006": None,
+        "2016": "  Household has at least one person with activity limitations reported for Q11(e)",
+        "2021": "  Household has at least one person with activity limitations reported for Q18e only",
+    },
+    "HH is gender diverse" : {
+        "2006": None,
+        "2016": None,
+        "2021": "  HH is gender diverse (HH includes  a same-gender, transgender or non-binary couple or includes a transgender or non-binary person who are not in a census family)",
+    },
+}
+
+_T8_5_8_6_SUFFIX_2006_2016 = {
+    "Non-Indigenous HHs": "Non-Aboriginal household",
+    "Indigenous HHs": "Aboriginal household",
+    "First Nations": "First Nations-led",
+    "Métis": "Metis-led",
+    "Inuit": "Inuit-led"
+}
+
+_T8_5_8_6_SUFFIXES = {
+    "2006": _T8_5_8_6_SUFFIX_2006_2016,
+    "2016": _T8_5_8_6_SUFFIX_2006_2016,
+    "2021": {
+        "Non-Indigenous HHs": "Non-Indigenous household",
+        "Indigenous HHs": "Indigenous household",
+        "First Nations": "First Nations-led",
+        "Métis": "Metis-led",
+        "Inuit": "Inuit-led"
+    }
+}
+
+TABLE_8_5_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in HH_TYPES
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
+
+TABLE_8_6_COL_MAP = strip_map({
+    distinction: {
+        year: {
+            hh_type: {
+                statistic: None if year_base_map[year] is None else f"{prefix}_{year_base_map[year]}_{hh_type_map[hh_type]}"
+                for statistic, prefix in _T8_5_8_6_PREFIXES.items()
+            }
+            for hh_type in INDIGENOUS_COMMUNITIES
+        }
+        for year, hh_type_map in _T8_5_8_6_SUFFIXES.items()
+    }
+    for distinction, year_base_map in _T8_5_8_6_BASES.items()
+})
 
 _T8_7_INCOME = {
     "Very Low Income": "20% or under of area median household income (AMHI)",
@@ -546,6 +1396,8 @@ TABLE_8_7_COL_MAP = strip_map({
 })
 
 
+#-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
+
 _T9_FY_YEARS  = [f"FY{i:02d}" for i in range(9, 25)]   # FY09 … FY24
 _T9_AGE_GROUPS = ["Under 30", "30-49", "50+"]
 
@@ -568,3 +1420,194 @@ TABLE_9_2_COL_MAP = strip_map({
         "Total Population": "Exited from their Youth Agreement_Total"
     },
 })
+
+
+
+def _pit_map(attrs: dict) -> dict:
+    return {attr: {y: cols.get(y) for y in PIT_YEARS} for attr, cols in attrs.items()}
+
+
+TABLE_9_3_COL_MAP = strip_map(_pit_map({
+    "First Nations": {
+        "2025": "2025_Indigenous_Indigenous distinction_First Nations",
+    },
+    "Métis": {
+        "2025": "2025_Indigenous_Indigenous distinction_Métis",
+    },
+    "Inuit": {
+        "2025": "2025_Indigenous_Indigenous distinction_Inuit",
+    },
+    "Other/Multiple Indigenous Communities": {
+        "2025": "2025_Indigenous_Indigenous distinction_Other Indigenous ancestry / Unknown",
+    },
+    "Total number of Indigenous people who experienced homelessness": {
+        "2021": "2021_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
+        "2023": "2023_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
+        "2025": "2025_All Respondents_Number of individuals who experienced homelessness _(blank)" # calculating indigenous number using this field * 2025_All Respondents_% of respondents identified as Indigenous_(blank)
+    },
+    "% of PEH who were Indigenous": {
+        "2021": "2021_All Respondents_% of respondents identified as Indigenous_(blank)",
+        "2023": "2023_All Respondents_% of respondents identified as Indigenous_(blank)",
+        "2025": "2025_All Respondents_% of respondents identified as Indigenous_(blank)",
+    },
+    "All Respondents Sheltered": {
+        "2021": "2021_All Respondents_Sheltered_% Sheltered",
+        "2023": "2023_All Respondents_Sheltered_(blank)",
+        "2025": "2025_All Respondents_Sheltered_(blank)",
+    },
+    "All Respondents Unsheltered": {
+        "2021": "2021_All Respondents_Unsheltered_% Unsheltered",
+        "2023": "2023_All Respondents_Unsheltered_(blank)",
+        "2025": "2025_All Respondents_Unsheltered_(blank)",
+    },
+    "Length of time experiencing homelessness - 12+ months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% One year or more",
+        "2023": "2023_All Respondents_Length of homelessness situation_% One year or more",
+        "2025": "2025_All Respondents_Length of homelessness situation_%One year or more",
+    },
+    "Length of time experiencing homelessness - 6-12 months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Six months to less than one year",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Six months to less than one year",
+        "2025": "2025_All Respondents_Length of homelessness situation_%6-12 months",
+    },
+    "Length of time experiencing homelessness - <6 months": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Under six months",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Under six months",
+        "2025": "2025_All Respondents_Length of homelessness situation_%Under six months",
+    },
+    "Length of time experiencing homelessness - Other/Unknown": {
+        "2021": "2021_All Respondents_Length of homelessness situation_% Other length / unknown",
+        "2023": "2023_All Respondents_Length of homelessness situation_% Unknown / no asnwer",
+        "2025": "2025_All Respondents_Length of homelessness situation_%Other/Unknown",
+    },
+    "Reason for housing loss - Not enough income %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Not enough income",
+        "2023": "2023_All Respondents_Reason for housing loss_% Not enough income",
+        "2025": "2025_All Respondents_Reason for housing loss_Not enough income",
+    },
+    "Reason for housing loss - Substance use issue %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Substance use issue",
+        "2023": "2023_All Respondents_Reason for housing loss_% Substance use issue",
+        "2025": "2025_All Respondents_Reason for housing loss_Substance use issue",
+    },
+    "Reason for housing loss - Conflict with landlord %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Conflict with landlord",
+        "2023": "2023_All Respondents_Reason for housing loss_% Landlord/tenant conflict",
+        "2025": "2025_All Respondents_Reason for housing loss_Conflict with landlord",
+    },
+    "Reason for housing loss - Conflict with spouse/partner %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Conflict with spouse/partner/family/other",
+        "2023": "2023_All Respondents_Reason for housing loss_%Conflict with spouse/partner/parent/guardian",
+        "2025": "2025_All Respondents_Reason for housing loss_Conflict with spouse/partner/parent/other",
+    },
+    "Reason for housing loss - Mental health issue %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Mental health issue",
+        "2023": "2023_All Respondents_Reason for housing loss_% Mental health issue",
+        "2025": "2025_All Respondents_Reason for housing loss_Mental/physical health issue",
+    },
+    "Reason for housing loss - Other %": {
+        "2021": "2021_All Respondents_Reason for housing loss_% Other",
+        "2023": "2023_All Respondents_Reason for housing loss_% Other",
+        "2025": "2025_All Respondents_Reason for housing loss_Other",
+    },
+    "% who identified eviction as cause of most recent housing loss": {
+        "2025": "2025_All Respondents_%Eviction as cause of most recent housing loss_(blank)",
+    },
+    "% who experienced homelessness for the first time as a youth (Indigenous)": {
+        "2025": "2025_Indigenous_Experienced homelessness for the first time as a youth_(blank)",
+    },
+    "% who experienced homelessness for the first time as a youth (Non-Indigenous)": {
+        "2025": "2025_Non-Indigenous_Experienced homelessness for the first time as a youth_(blank)",
+    },
+    "% of youth who were in foster care (Indigenous)": {
+        "2025": "2025_Indigenous_Foster care as a youth_(blank)",
+    },
+    "% of youth who were in foster care (Non-Indigenous)": {
+        "2025": "2025_Non-Indigenous_Foster care as a youth_(blank)",
+    },
+    "% with acquired brain injury": {
+        "2021": "2021_All Respondents_% Brain injury_(blank)",
+        "2023": "2023_All Respondents_% Brain injury_(blank)",
+        "2025": "2025_All Respondents_%Brain injury_(blank)",
+    },
+}))
+
+
+#-------------------- Section 10 – Access to Services --------------------
+
+_T10_1_TOTAL_COL = "Number of Indigenous people in selected geography (for reference)"
+_T10_1_BUFFER_COLS = ["Pharmacies (within 3 km buffer)", "Pharmacies (within 5 km buffer)",
+                      "Friendship Centres (within 10 km buffer)", "Friendship Centres (within 20 km buffer)"]
+_T10_1_TRANSPORT_TYPES = ["Walking", "Transit", "Biking"]
+
+TABLE_10_1_COL_MAP = strip_map({
+    "Health Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Health_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Health_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Health_Care"
+    },
+    "Recreation Centres": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Recreation",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Recreation",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Recreation"
+    },
+    "Primary or Secondary Education": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Primary_or_Secondary",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Primary_or_Secondary",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Primary_or_Secondary"
+    },
+    "Child Care": {
+        "Walking": "Indigenous_Population_w__Walking_Access_to_Child_Care",
+        "Transit": "Indigenous_Population_w__Transit_Access_to_Child_Care",
+        "Biking": "Indigenous_Population_w__Cycling_Access_to_Child_Care"
+    },
+    "Pharmacies (within 3 km buffer)": "Indigenous_Pop_w_3k_Pharm_Acc",
+    "Pharmacies (within 5 km buffer)": "Indigenous_Pop_w_5k_Pharm_Acc",
+    "Friendship Centres (within 10 km buffer)": "Indigenous_Pop_w_10k_FC_Access",
+    "Friendship Centres (within 20 km buffer)": "Indigenous_Pop_w_20k_FC_Access",
+    "Number of Indigenous people in selected geography (for reference)": "Indigenous_Population"
+})
+
+
+
+#-------------------- Section 11 – Population and Household Growth --------------------
+
+_T11_1_DISTINCTIONS = ["First Nations", "Métis", "Inuit", "Other Indigenous", "Total"]
+_T11_1_1_PREFIXES = {
+    pop: "Indigenous"
+    for pop in _T11_1_DISTINCTIONS
+}
+_T11_1_1_PREFIXES["Full population for comparison"] = "Full"
+
+_T11_1_1_SUFFIXES = {
+    "First Nations": {year: " - FN" for year in PROJECTION_YEARS},
+    "Métis": {year: " - Metis" for year in PROJECTION_YEARS},
+    "Inuit": {year: " - Inuit" for year in PROJECTION_YEARS},
+    "Other Indigenous": {"2021": " - Other Indigenous",
+                         "2026": " - Other Indigenous",
+                         "2031": " - Other Indigenous",
+                         "2046": " - Other"},
+    "Total": {year: " - All Indigenous" for year in PROJECTION_YEARS},
+    "Full population for comparison": {year: "" for year in PROJECTION_YEARS}
+}
+
+TABLE_11_1_1_COL_MAP = strip_map({
+    pop: {
+        year: f"{_T11_1_1_PREFIXES[pop]} Pop in {year}{suffix_map[year]}"
+        for year in PROJECTION_YEARS
+    }
+    for pop, suffix_map in _T11_1_1_SUFFIXES.items()
+})
+
+TABLE_11_1_2_COL_MAP = {
+    pop: {
+        col: name for col, name in col_map.items()
+    }
+    for pop, col_map in TABLE_11_1_1_COL_MAP.items()
+}
+TABLE_11_1_2_COL_MAP["First Nations"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_First Nations"
+TABLE_11_1_2_COL_MAP["Métis"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Metis"
+TABLE_11_1_2_COL_MAP["Inuit"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Inuit"
+TABLE_11_1_2_COL_MAP["Other Indigenous"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_Indigenous"
+TABLE_11_1_2_COL_MAP["Total"]["Avg. Indigenous HH size (Province, 2021)"] = None
+TABLE_11_1_2_COL_MAP["Full population for comparison"]["Avg. Indigenous HH size (Province, 2021)"] = "Average HH Size 2021_non-Indigenous"

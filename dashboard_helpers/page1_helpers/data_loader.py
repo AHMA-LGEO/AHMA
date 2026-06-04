@@ -4,7 +4,10 @@ Data loading utilities for dashboard.
 import pandas as pd
 import geopandas as gpd
 from sqlalchemy import create_engine
-from dashboard_helpers.config import DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, REGION_DATA_DIR, SUBREGION_DATA_DIR
+from dashboard_helpers.config import (
+    DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, 
+    REGION_DATA_DIR, SUBREGION_DATA_DIR
+    )
 
 
 class DataLoader:
@@ -49,11 +52,12 @@ class DataLoader:
 
     @property
     def dropdown_options(self) -> pd.DataFrame:
-        """Get ordered list for dropdown (excludes province level)."""
+        """Get ordered list for dropdown"""
         df = self.geocode_master.copy()
-        df = df.sort_values(by=['Province_Code', 'Region_Code', 'Geo_Code'])
-        # Exclude province level from dropdown
-        df = df[df['Geo_Code'].astype(str).str.len() > 2]
+        df['Geography'] = df['Geography'].str.replace(r'^([a-z])', lambda m: m.group(1).upper(), regex=True)
+        # df = df.sort_values(by=['Province_Code', 'Region_Code', 'Geo_Code'])
+        df = df.sort_values(by=['Geography'])
+        
         return df
 
     @property
@@ -81,6 +85,7 @@ class DataLoader:
         try:
             filepath = SUBREGION_DATA_DIR / f"{region_code}.shp"
             gdf = gpd.read_file(filepath)
+            # print(gdf.set_index('CSDUID'))
             return gdf.set_index('CSDUID')
         except Exception:
             # Fallback to province level if subregion data not available

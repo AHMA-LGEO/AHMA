@@ -2,7 +2,6 @@
 Section 3 preparation and layout - Demographics.
 """
 import pandas as pd
-import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
@@ -18,6 +17,7 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
+    SECTION_3_TITLE,
     TABLE_3_1_TITLE, CHART_3_2_TITLE,
     TABLE_3_3_TITLE, TABLE_3_4_TITLE,
     TABLE_3_5_TITLE, TABLE_3_6_TITLE,
@@ -51,10 +51,10 @@ class Section3Prep:
         is_csd = len(str(geocode)) == 7
         cd_geocode = self.data_loader.get_region_geocode(geocode) if is_csd else geocode
 
-        df_3_1_1 = self.data_loader.get_table('table_3_1_1_indigenous_pop', geocode)
-        df_3_1_2 = self.data_loader.get_table('table_3_1_2_indigenous_age', geocode)
-        df_3_1_3 = self.data_loader.get_table('table_3_1_3_indigenous_location', cd_geocode)
-        df_3_1_4 = self.data_loader.get_table('table_3_1_4_indigenous_move', cd_geocode)
+        df_3_1_1 = self.data_loader.get_table('table_3_1_1_indigenous_pop', geocode, check_columns=YEARS)
+        df_3_1_2 = self.data_loader.get_table('table_3_1_2_indigenous_age', geocode, check_columns=YEARS)
+        df_3_1_3 = self.data_loader.get_table('table_3_1_3_indigenous_location', cd_geocode, check_columns=YEARS)
+        df_3_1_4 = self.data_loader.get_table('table_3_1_4_indigenous_move', cd_geocode, check_columns=YEARS)
 
         def get_values(filtered_df, label_col, label_val, pct_row=False):
             """Extract year values for a specific label row with formatting."""
@@ -73,7 +73,7 @@ class Section3Prep:
         rows.append(blank_row('Indicator', YEARS, label_col_1))
         for pop_type in ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']:
             rows.append({'Indicator': pop_type, **get_values(df_3_1_1, label_col_1, pop_type)})
-        rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_1, label_col_1, 'TOTAL')})
+        rows.append({'Indicator': 'Total', **get_values(df_3_1_1, label_col_1, 'Total')})
         rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 2: Age Profile #####
@@ -88,7 +88,7 @@ class Section3Prep:
         rows.append(blank_row('Indicator', YEARS, label_col_3))
         for hh_type in ['On Reserve', 'Off Reserve']:
             rows.append({'Indicator': hh_type, **get_values(df_3_1_3, label_col_3, hh_type)})
-        rows.append({'Indicator': 'TOTAL', **get_values(df_3_1_3, label_col_3, 'TOTAL')})
+        rows.append({'Indicator': 'Total', **get_values(df_3_1_3, label_col_3, 'Total')})
         rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 4: Indigenous-led HH moves (by CD) #####
@@ -105,16 +105,17 @@ class Section3Prep:
         Create Dash DataTable layout for Table 3.1 with 2-level column headers"""
         df = self.prepare_table_3_1_data(geocode)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
-                html.H4(TABLE_3_1_TITLE, className='table-title'),
+                html.H4(SECTION_3_TITLE, className='table-title'),
+                html.H5(TABLE_3_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for Population and Age Distribution for Indigenous Population (2006, 2011, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
     
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -129,7 +130,7 @@ class Section3Prep:
             '__cd_header__': cd_name,
         })
 
-        columns = [{"name": ["", ""], "id": "Indicator"}] + [
+        columns = [{"name": [geo_name, "Census Year"], "id": "Indicator"}] + [
             {"name": [geo_name, y], "id": y} for y in YEARS
         ]
 
@@ -148,29 +149,32 @@ class Section3Prep:
             style_data_conditional=(
                 generate_style_data_conditional(df_display)
                 + make_special_row_styles(df, 'Indicator',
-                                          geo_headers={'__geo_header__', '__cd_header__'},
+                                          col_headers={'__geo_header__', '__cd_header__'},
                                           section_headers=t_3_1_section_headers)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Indicator'
+                columns, is_multiindex=True, first_col_id='Indicator', n_header_rows=2,
+                left_align_cells={'column_id': 'Indicator', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Indicator', YEARS, label_min_width='200px'),
             **base_style
         )
 
         return html.Div([
-            html.H4(TABLE_3_1_TITLE, className='table-title'),
+            html.H4(SECTION_3_TITLE, className='table-title'),
+            html.H5(TABLE_3_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-3-1'),
         ], className='pg2-table-lgeo')
     
 
     def create_chart_3_2(self, geocode: int):
         """Create 100% stacked bar chart for Table 3.2 Indigenous vs Non-Indigenous population by age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, 
+                                        check_columns=['Indigenous %', 'Non-Indigenous %'])
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
-                html.H4(CHART_3_2_TITLE, className='table-title'),
+                html.H5(CHART_3_2_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Indigenous vs Non-Indigenous population by age group (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -190,12 +194,20 @@ class Section3Prep:
 
         fig = go.Figure()
         for i, (label, indg_pct, non_indg_pct) in enumerate(zip(age_labels, indg_pcts, non_indg_pcts)):
+            
+            color = CHART_COLORS[i % len(CHART_COLORS)]
+            # Build hoverlabel dict conditionally
+            hoverlabel = dict(namelength=-1)
+            if color == '#80875C':
+                hoverlabel['font'] = dict(color='white')
+
             fig.add_trace(go.Bar(
                 name=label,
                 x=['Indigenous', 'Non-Indigenous'],
                 y=[indg_pct, non_indg_pct],
-                marker_color=CHART_COLORS[i % len(CHART_COLORS)],
+                marker_color=color,
                 legendrank=len(age_labels) - i,
+                hoverlabel=hoverlabel,
                 hovertemplate=f'<b>{label}</b><br>%{{x}}<br>%{{y:.1f}}%<extra></extra>'
             ))
 
@@ -214,18 +226,22 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(CHART_3_2_TITLE, className='table-title'),
+            html.H5(CHART_3_2_TITLE, className='table-title'),
             dcc.Graph(id='chart-3-2', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
 
     def create_chart_3_3(self, geocode: int):
         """Create stacked bar chart for Table 3.3 Indigenous population by identity and age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
 
-        if df.empty or df.isnull().values.all():
+        identity_cols = ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        identity_labels = ['First Nations', 'Métis', 'Inuk (Inuit)', 'Multiple/Other Indigenous responses']
+
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, check_columns=identity_cols)
+
+        if df.empty:
             return html.Div([
-                html.H4(TABLE_3_3_TITLE, className='table-title'),
+                html.H5(TABLE_3_3_TITLE, className='table-title'),
                 html.Div(
                 "No chart for population by identity and age group (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -234,19 +250,18 @@ class Section3Prep:
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        identity_cols = ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
-        identity_labels = ['First Nations', 'Métis', 'Inuk (Inuit)', 'Multiple/Other Indigenous responses']
-
-        indexed = df.set_index('Age Group').reindex(_AGE_GROUPS_3_2_3_3)
+        
+        chart_age_groups = ['Under 15' if age == '0 - 14' else age for age in _AGE_GROUPS_3_2_3_3]
+        indexed = df.replace("0 - 14", "Under 15").set_index('Age Group').reindex(chart_age_groups)
 
         fig = go.Figure()
         for i, (col, label) in enumerate(zip(identity_cols, identity_labels)):
             counts = pd.to_numeric(indexed[col], errors='coerce').fillna(0).tolist()
             fig.add_trace(go.Bar(
                 name=label,
-                x=_AGE_GROUPS_3_2_3_3,
+                x=chart_age_groups,
                 y=counts,
-                legendrank=len(identity_cols) - i,
+                legendrank=-(i + 1),
                 marker_color=CHART_COLORS[i % len(CHART_COLORS)],
                 hovertemplate=f'<b>{label}</b><br>Age: %{{x}}<br>Count: %{{y:,.0f}}<extra></extra>'
             ))
@@ -267,14 +282,17 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_3_3_TITLE, className='table-title'),
+            html.H5(TABLE_3_3_TITLE, className='table-title'),
             dcc.Graph(id='chart-3-3', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
 
     def create_table_3_3_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.3: population by identity and age group (2021)."""
-        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode)
+        value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        
+        df = self.data_loader.get_table('table_3_2_3_3_indigenous_age_group', geocode, check_columns=value_cols)
 
         if df.empty or df.isnull().values.all():
             return html.Div([
@@ -285,16 +303,14 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
-
-        value_cols = ['Indigenous Count', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
-        display_cols = ['Indigenous', 'First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']
+        df = df.fillna("N/A")
 
         table_df = (
             df.set_index('Age Group')[value_cols]
             .reindex(_AGE_GROUPS_3_2_3_3)
             .rename(columns=dict(zip(value_cols, display_cols)))
             .reset_index()
+            .replace("0 - 14", "Under 15")
         )
         totals = table_df[display_cols].apply(pd.to_numeric, errors='coerce').sum()
 
@@ -321,10 +337,10 @@ class Section3Prep:
                 + make_special_row_styles(table_df, 'Age Group', total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Age Group'
+                columns, is_multiindex=True, first_col_id='Age Group',
+                left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell('Age Group', display_cols, 
-                                                   label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='15%'),
             **base_style
         )
 
@@ -335,11 +351,13 @@ class Section3Prep:
 
     def create_chart_3_4(self, geocode: int):
         """Create stacked bar chart for Table 3.4 Indigenous population by gender (2021)."""
-        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
+        identity_cols = ['Men+', 'Women+']
 
-        if df.empty or df.isnull().values.all():
+        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=identity_cols)
+
+        if df.empty:
             return html.Div([
-                html.H4(TABLE_3_4_TITLE, className='table-title'),
+                html.H5(TABLE_3_4_TITLE, className='table-title'),
                 html.Div(
                 "No chart for Indigenous population by gender (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -347,8 +365,6 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-
-        identity_cols = ['Men+', 'Women+']
 
         indexed = df.set_index('Age Group - Census 2021').reindex(_AGE_GROUPS_3_4)
 
@@ -380,16 +396,18 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_3_4_TITLE, className='table-title'),
+            html.H5(TABLE_3_4_TITLE, className='table-title'),
             dcc.Graph(id='chart-3-4', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
 
     def create_table_3_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.4: population by gender (2021)."""
-        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode)
+        value_cols = ['Indigenous', 'Men+', 'Women+']
+        
+        df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=value_cols)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for population by gender (2021).",
@@ -398,9 +416,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
         
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
-
-        value_cols = ['Indigenous', 'Men+', 'Women+']
+        df = df.fillna("N/A")
 
         table_df = (
             df.set_index('Age Group - Census 2021')[value_cols]
@@ -434,7 +450,8 @@ class Section3Prep:
                 + make_special_row_styles(table_df, 'Age Group', total_labels={'Total'})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Age Group'
+                columns, is_multiindex=True, first_col_id='Age Group', n_header_rows=2,
+                left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Age Group', value_cols, 
                                                    label_width='25%', label_min_width='120px'),
@@ -448,11 +465,11 @@ class Section3Prep:
 
     def create_table_3_5_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.5: Priority Population (2006, 2016, 2021)."""
-        df = self.data_loader.get_table('table_3_5_indigenous_priority_pop', geocode)
+        df = self.data_loader.get_table('table_3_5_indigenous_priority_pop', geocode, check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
-                html.H4(TABLE_3_5_TITLE, className='table-title'),
+                html.H5(TABLE_3_5_TITLE, className='table-title'),
                 html.Div(
                 "No data for Priority Population (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -460,7 +477,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of Indigenous HHs'
 
@@ -478,7 +495,7 @@ class Section3Prep:
         header = pd.DataFrame([blank_row(_LABEL_COL, YEARS_MINUS_2011, _LABEL_COL)])
         table_df = pd.concat([header, table_df], ignore_index=True)
 
-        columns = [{"name": ["", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y], "id": y} for y in YEARS_MINUS_2011
         ]
 
@@ -492,11 +509,11 @@ class Section3Prep:
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
                 + make_special_row_styles(table_df, _LABEL_COL,
-                                          geo_headers={_LABEL_COL},
-                                          total_labels={'Total'})
+                                          section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_MINUS_2011, 
                                                    label_width='25%', label_min_width='120px'),
@@ -504,7 +521,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_3_5_TITLE, className='table-title'),
+            html.H5(TABLE_3_5_TITLE, className='table-title'),
             with_export_btn(table, 'table-3-5'),
         ], className='pg2-table-lgeo')
 
@@ -514,9 +531,10 @@ class Section3Prep:
             Level 1 - census year
             Level 2 - Indigenous Community
         """
-        df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode)
+        df = self.data_loader.get_table('table_3_5_1_indigenous_priority_pop_breakdown', geocode,
+                                        check_columns=YEARS_MINUS_2011)
 
-        if df.empty or df.isnull().values.all():
+        if df.empty:
             return html.Div([
                 html.Div(
                 "No data for Priority Population by Indigenous Community (2006, 2016, 2021).",
@@ -525,7 +543,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
-        df = df.fillna("NA")
+        df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of HHs'
 
@@ -556,7 +574,7 @@ class Section3Prep:
         table_df = pd.concat([header, table_df], ignore_index=True)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": ["", "", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -571,12 +589,14 @@ class Section3Prep:
             merge_duplicate_headers=True,
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
-                + make_special_row_styles(table_df, _LABEL_COL, geo_headers={_LABEL_COL})
+                + make_special_row_styles(table_df, _LABEL_COL, section_headers={_LABEL_COL})
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, first_col_id=_LABEL_COL,
+                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
+                                                   label_min_width='120px'),
             **base_style
         )
 
@@ -591,7 +611,7 @@ class Section3Prep:
         df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
         if df.empty or df["# of People"].isna().all():
             return html.Div([
-                html.H4(TABLE_3_6_TITLE, className='table-title'),
+                html.H5(TABLE_3_6_TITLE, className='table-title'),
                 html.Div(
                 "No distribution chart available for Indigenous ancestry distribution (2021) for the selected geography.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -601,27 +621,36 @@ class Section3Prep:
         labels = "Indigenous Ancestry, 2021"
         df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
 
-        if df.empty:
-            return html.Div("No data available", className='pg2-table-lgeo')
-
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
-        top_labels = (df.nlargest(10, "# of People")[labels].tolist())
+        # to assign the largest portion the first chart color and so on
+        df_sorted = df.sort_values("# of People", ascending=False) 
+        top_labels = (df_sorted.nlargest(10, "# of People")[labels].tolist())
 
         text = [
             lbl if lbl in top_labels else ""
-            for lbl in df[labels]
+            for lbl in df_sorted[labels]
         ]
+        # white_hover_color = "#80875C" in CHART_COLORS
+
+        # Only set font color if #80875C is used
+        # hoverlabel = dict(namelength=-1)
+        # if white_hover_color:
+        #     hoverlabel['font'] = dict(color='white')
 
         fig = go.Figure(go.Pie(
-            labels=df[labels],
-            values=df["# of People"],
-            marker=dict(colors=CHART_COLORS, line=dict(color="white")),
+            labels=df_sorted[labels],
+            values=df_sorted["# of People"],
+            # marker=dict(colors=color, line=dict(color="white")),
+            marker=dict(colors=CHART_COLORS),
             hole=0.3,
             text=text,
             textinfo="text",
+            # hoverlabel=hoverlabel,
             insidetextorientation="radial",
             hovertemplate="<b>%{label}</b><br>Count of people: %{value:,}<br>% of people: %{percent}<extra></extra>",
+            sort=False,
+            domain=dict(x=[0.30, 1.0]) 
         ))
 
         fig.update_layout(
@@ -632,13 +661,13 @@ class Section3Prep:
             ),
             paper_bgcolor="white",
             showlegend=False,
-            margin=dict(t=90, b=40, l=20, r=20),
+            margin=dict(t=90, b=40, l=40, r=20),
             height=550,
 
             annotations=[
                 dict(
                     text="Indigenous<br>Distribution",
-                    x=0.5, y=0.5,
+                    x=0.65, y=0.5,
                     font=dict(size=14, family=TABLE_FONT),
                     showarrow=False,
                     align="center"
@@ -647,7 +676,7 @@ class Section3Prep:
         )
 
         return html.Div([
-            html.H4(TABLE_3_6_TITLE, className='table-title'),
+            html.H5(TABLE_3_6_TITLE, className='table-title'),
             html.I(CHART_3_6_DESC),
             dcc.Graph(id='chart-3-6', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
@@ -667,6 +696,7 @@ class Section3Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = df.fillna("N/A")
 
         value_col = '# of People'
         index_col = 'Indigenous Ancestry, 2021'
@@ -705,16 +735,30 @@ class Section3Prep:
                 columns, is_multiindex=True, first_col_id=index_col
             ),
             style_cell_conditional=make_style_cell(index_col, [value_col],
-                                                   label_width='25%', label_min_width='120px'),
-            **base_style
+                                                   label_width='65%'),
+            # style_table={'maxWidth': '600px'},
+            # **base_style
+            style_table={
+                **base_style.get('style_table', {}), 
+                'maxWidth': '600px',
+                'width': '100%' 
+            },
+             **{k: v for k, v in base_style.items() if k != 'style_table'}
         )
 
         return html.Div([
-            with_export_btn(table, 'table-3-6'),
+            html.Div(
+            with_export_btn(table, 'table-3-6', max_width='600px'),
+            className="d-flex flex-column align-items-center w-100"
+            ),
+            html.Div(
             html.I(TABLE_3_6_NOTE),
+            className="d-flex flex-column align-items-center w-100"
+            ),
         ], className='pg2-table-lgeo')
     
 
-if __name__ == "__main__":
-    t = Section3Prep()
-    t.create_table_3_6_layout(5915022)
+# For testing
+# if __name__ == "__main__":
+#     t = Section3Prep()
+#     t.create_table_3_6_layout(5915022)

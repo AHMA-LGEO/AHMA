@@ -14,7 +14,7 @@ map_generator = MapGenerator()
 dropdown_options = data_loader.dropdown_options['Geography'].unique()
 
 # Create default map
-default_map = map_generator.create_region_map(region_code=str(PROVINCE_CODE))
+default_map = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
 
 # Layout
 layout = html.Div(
@@ -34,26 +34,22 @@ layout = html.Div(
                         html.Div(
                             id='all-geo-dropdown-parent',
                             children=[
-                                html.Strong('Select Census Geography'),
+                                html.Strong('Select or Search Census Geography'),
                                 dcc.Dropdown(
                                     dropdown_options,
                                     DEFAULT_GEOGRAPHY,
-                                    id='all-geo-dropdown'
+                                    id='all-geo-dropdown',
+                                    placeholder='Select or search geography'
                                 ),
                             ],
-                            className='dropdown-lgeo'
+                            className='dropdown-lgeo',
+                            style={
+                                'width': '100%',         
+                                'maxWidth': '600px',     
+                                'minWidth': '350px'
+                            }
                         ),
 
-                        # Comparison area dropdown
-                        html.Div(
-                            id='comparison-geo-dropdown-parent',
-                            children=[
-                                html.Strong('Select Comparison Census Geography (Optional)'),
-                                dcc.Dropdown(dropdown_options, id='comparison-geo-dropdown'),
-                            ],
-                            className='dropdown-lgeo',
-                            style={'display': 'none'}
-                        )
                     ],
                     className='dropdown-box-lgeo'
                 ),
@@ -68,7 +64,7 @@ layout = html.Div(
                                     title='A provincially-legislated area at the municipal scale',
                                     id='to-geography-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -80,7 +76,7 @@ layout = html.Div(
                                     title='A provincially legislated area like counties or regional districts',
                                     id='to-region-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -92,7 +88,7 @@ layout = html.Div(
                                     title='Province of British Columbia',
                                     id='to-province-1',
                                     n_clicks=0,
-                                    className='region-button-lgeo'
+                                    className='button-lgeo'
                                 ),
                             ],
                             className='region-button-box-lgeo'
@@ -116,7 +112,12 @@ layout = html.Div(
                         # Reset button
                         html.Div(
                             children=[
-                                html.Button('Reset Map', id='reset-map', n_clicks=0),
+                                html.Button('Reset Map', 
+                                            id='reset-map', 
+                                            n_clicks=0,
+                                            className='button-lgeo'
+                                            ),
+                                
                             ],
                             className='reset-button-lgeo'
                         ),
@@ -137,9 +138,7 @@ layout = html.Div(
     Output('comparison-area', 'data'),
     Output('area-scale-store', 'data'),
     Input('all-geo-dropdown', 'value'),
-    Input('comparison-geo-dropdown', 'value'),
     Input('all-geo-dropdown-parent', 'n_clicks'),
-    Input('comparison-geo-dropdown-parent', 'n_clicks'),
     Input('to-geography-1', 'n_clicks'),
     Input('to-region-1', 'n_clicks'),
     Input('to-province-1', 'n_clicks')
@@ -229,15 +228,18 @@ def update_map(click_data, reset_clicks, selected_geo, *args):
             )['Geography'].iloc[0]
             return fig, geo_name
 
-        else:  # csd
-            fig = map_generator.create_subregion_map(subregion_code=clicked_code, highlight=True)
+        else:  # csd            
             match = data_loader.geocode_master[
-                data_loader.geocode_master['Geo_Code'] == int(clicked_code)
+                data_loader.geocode_master['Geo_Code'] == clicked_code
                 ]
             if not match.empty:
                 geo_name = match['Geography'].iloc[0]
+
+                fig = map_generator.create_subregion_map(subregion_code=clicked_code, 
+                                                     highlight=True, selected_geography=geo_name)
                 return fig, geo_name
 
     # Default: show region map
-    fig = map_generator.create_region_map(region_code=str(PROVINCE_CODE))
+    # fig = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
+    fig = map_generator.create_region_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=False)
     return fig, DEFAULT_GEOGRAPHY

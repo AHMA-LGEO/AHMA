@@ -1,15 +1,90 @@
 import pandas as pd
 import numpy as np
+from typing import Union
 from sheet_registry import fetch_data
 
 YEARS = ["2006", "2011", "2016", "2021"]
 YEARS_MINUS_2011 = ["2006", "2016", "2021"]
 YEARS_2016_2021 = ["2016", "2021"]
+YEARS_2016_TO_2023 = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+YEARLY_INTERVALS_2016_TO_2023 = ["2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023"]
+PIT_YEARS = ["2021", "2023", "2025"]
+PROJECTION_YEARS = ["2021", "2026", "2031", "2046"]
 
 HH_TYPES = ["Indigenous HHs", "Non-Indigenous HHs"]
 INDIGENOUS_COMMUNITIES = ["First Nations", "Métis", "Inuit"]
-NO_INFO_VALUES = ["x", "..", "...", "n/a", "N/A", "--", "xxxxx"]
+NO_INFO_VALUES = ["x", "..", "...", "....", "n/a", "N/A", "--", 
+                  "xx", "xxx", "xxxx", "xxxxx", "#N/A", "#n/a", '**']
 POP_SIZES = ["1 pp", "2 pp", "3 pp", "4 pp", "5+ pp"]
+
+pct_count = 0
+over_100_count = 0
+
+_REVERSE_MAPPING = {}
+
+# Define geocode mappings for different scenarios
+GEOCODE_MAPPINGS = {
+    # Scenario 1: Single geocode in 2006 maps to different one in later years
+    "2006_to_later": {
+        5919807: 5919822,  # 2006 geocode -> later years geocode
+        5933867: 5933881,
+        5957801: 5949845,
+        5957805: 5949846,
+    },
+    
+    # Scenario 2: Geocodes starting with 5925 in 2006 -> 5926 in later years (last 3 digits same)
+    # Comox-Strathcona (5925) (2006) → Comox-Valley (5926) + Strathcona (5924) (2011, 2016, 2021)
+    # e.g., 5925005 -> 5926005, 5925010 -> 5926010, etc.
+    "5925_to_5926": {
+        5925005: 5926005,
+        5925010: 5926010,
+        5925014: 5926014,
+        5925022: 5926022,
+        5925024: 5926024,
+        5925801: 5926801,
+        5925802: 5926802,
+        
+    },
+    
+    # Scenario 3: Geocodes starting with 5925 in 2006 -> 5924 in later years (last 3 digits same)
+    # Comox-Strathcona (5925) (2006) → Comox-Valley (5926) + Strathcona (5924) (2011, 2016, 2021)
+    # e.g., 5925803 -> 5924803, 5925804 -> 5924804, etc.
+    "5925_to_5924": {
+        5925025: 5924025,
+        5925029: 5924029,
+        5925030: 5924030,
+        5925034: 5924034,
+        5925039: 5924039,
+        5925042: 5924042,
+        5925052: 5924052,
+        5925054: 5924054,
+        5925803: 5924803,
+        5925804: 5924804,
+        5925805: 5924805,
+        5925806: 5924806,
+        5925812: 5924812,
+        5925813: 5924813,
+        5925814: 5924814,
+        5925817: 5924817,
+        5925818: 5924818,
+        5925820: 5924820,
+        5925833: 5924833,
+        5925835: 5924835,
+        5925836: 5924836,
+        5925840: 5924840,
+    },
+
+    
+    # Scenario 4: Single geocode maps differently across years
+    "year_specific_mapping": {
+        5933838: {
+            "2011": 5933838,
+            "2016": 5933898,
+            "2021": 5933898,
+        }
+    },
+}
+
 
 def strip_map(d: dict) -> dict:
     """Recursively strip all string values in a nested dict/list."""
@@ -22,14 +97,104 @@ def strip_map(d: dict) -> dict:
     }
 
 
+def apply_geocode_mapping(df: pd.DataFrame, from_year: str, to_year: str) -> pd.DataFrame:
+    """
+    Apply geocode mappings to convert geocodes from one year to another.
+    
+    Args:
+        df: DataFrame with 'Geocode' column
+        from_year: Source year
+        to_year: Target year
+    
+    Returns:
+        DataFrame with mapped geocodes
+    """
+    if df.empty:
+        return df
+    
+    df = df.copy()
+    
+    # Scenario 1: Direct single geocode mappings (2006 to later years)
+    if from_year == "2006":
+        for old_code, new_code in GEOCODE_MAPPINGS["2006_to_later"].items():
+            df.loc[df['Geocode'] == old_code, 'Geocode'] = new_code
+    
+    # Scenario 2: Specific 5925 -> 5926 mappings
+    if from_year == "2006":
+        for old_code, new_code in GEOCODE_MAPPINGS["5925_to_5926"].items():
+            df.loc[df['Geocode'] == old_code, 'Geocode'] = new_code
+    
+    # Scenario 3: Specific 5925 -> 5924 mappings
+    if from_year == "2006":
+        for old_code, new_code in GEOCODE_MAPPINGS["5925_to_5924"].items():
+            df.loc[df['Geocode'] == old_code, 'Geocode'] = new_code
+    
+    # Scenario 4: Year-specific mappings
+    for old_code, year_map in GEOCODE_MAPPINGS["year_specific_mapping"].items():
+        if to_year in year_map:
+            new_code = year_map[to_year]
+            df.loc[df['Geocode'] == old_code, 'Geocode'] = new_code
+    
+    return df
+ 
+
 def build_master(dfs: dict) -> pd.DataFrame:
-    """Prepares master geocode, geography columns, across years"""
+    """Prepares master geocode, geography columns, across years
+    Applies geocode mappings to ensure consistency across years.
+    """
     # union of all geocodes across all years, latest available Geography wins
-    return (
-        pd.concat([df[["Geocode", "Geography"]] for df in dfs.values() if "Geography" in df.columns]) # because for some reason 2011 data does not have a geography column
-        .drop_duplicates(subset="Geocode", keep="last")  # keep last = most recent year's Geography
-        .reset_index(drop=True)
-    )
+    # return (
+    #     pd.concat([df[["Geocode", "Geography"]] for df in dfs.values() if "Geography" in df.columns]) # because for some reason 2011 data does not have a geography column
+    #     .drop_duplicates(subset="Geocode", keep="last")  # keep last = most recent year's Geography
+    #     .reset_index(drop=True)
+    # )
+    
+    # Apply mappings to all dfs and track the mappings
+    mapped_dfs = {}
+    for year, df in dfs.items():
+        if df is None or df.empty:
+            mapped_dfs[year] = df
+            continue
+        
+        df_mapped = apply_geocode_mapping(df.copy(), year, year)
+        mapped_dfs[year] = df_mapped
+        
+        # Track original -> mapped geocodes
+        for orig_code, mapped_code in zip(df['Geocode'], df_mapped['Geocode']):
+            if mapped_code not in _REVERSE_MAPPING:
+                _REVERSE_MAPPING[mapped_code] = {}
+            _REVERSE_MAPPING[mapped_code][year] = orig_code
+    
+    all_geocodes = set()
+    
+    # Collect all unique geocodes
+    for year, df in mapped_dfs.items():
+        if df is not None and not df.empty:
+            all_geocodes.update(df['Geocode'].unique())
+    
+    # Build master with mapped geocodes
+    master_list = []
+    for geocode in sorted(all_geocodes):
+        geo_name = None
+        for year, df in mapped_dfs.items():
+            if df is not None and not df.empty:
+                match = df[df['Geocode'] == geocode]
+                if not match.empty and 'Geography' in match.columns:
+                    geo_name = match['Geography'].iloc[0]
+                    break
+        
+        if geo_name:
+            master_list.append({
+                'Geocode': geocode,
+                'Geography': geo_name
+            })
+    
+    return pd.DataFrame(master_list)
+
+
+def get_original_geocode(mapped_geocode: int, year: str) -> int:
+    """Get the original geocode for a mapped geocode in a specific year."""
+    return _REVERSE_MAPPING.get(mapped_geocode, {}).get(year, mapped_geocode)
 
 
 def clean_val(val):
@@ -58,11 +223,31 @@ def sum_bands(df: pd.DataFrame, cols: list) -> int:
 
 
 def pct(numerator: int, denominator: int) -> float:
-    """Safe percentage calculation."""
+    """Safe percentage calculation. Limits any calculated percentage over 100 to 100"""
+    global pct_count
+    global over_100_count
+
+    pct_count += 1
     if numerator is None or denominator is None or denominator == 0:
         return None
-    return round((numerator / denominator) * 100, 1)
+    pct = round((numerator / denominator) * 100, 1)
+    if pct > 100:
+        over_100_count += 1
+        return 100
+    return pct
 
+def growth_rate(beginning: int , ending: int) -> Union[float, str]:
+    """
+    Safe growth rate (%) calculation. Undefined growth rates (beginning = 0) return 'No Rate'.
+    If either value is 'None', 'None' is returned.
+    """
+    if beginning is None or ending is None:
+        return None
+    elif beginning == 0:
+        return "No Rate"
+    else:
+        delta = ending - beginning
+        return round((delta / beginning) * 100, 1)
 
 def transform_geocode_master() -> pd.DataFrame:
     """
@@ -208,4 +393,30 @@ def transform_geocode_master() -> pd.DataFrame:
         })
 
     result_df = pd.DataFrame(rows)
-    return result_df
+    return result_df.sort_values('Geography')
+
+
+def resolve_op(op, values):
+    """
+    op: string key from OP_MAP (e.g. "sum", "pct")
+    values: list of raw numeric values pulled from source columns, in the same order as the oclumn list in COL_MAP
+    Added by CR from BF's Table4DataPrep.BF.ipynb
+    """
+
+    vals = [clean_val(v) for v in values]
+
+    if op == "sum":
+        if all(v is None for v in vals):
+            return None
+        return sum(v for v in vals if v is not None)
+
+    elif op == "pct":
+        # expects [numerator, denominator]
+        num, den = vals[0], vals[1]
+        if num is None or den is None or den == 0:
+            return None
+        return round((num / den) * 100, 1)
+
+    elif op == "direct":
+        # just return the first value (direct lookup behaviour)
+        return vals[0] if vals else None
