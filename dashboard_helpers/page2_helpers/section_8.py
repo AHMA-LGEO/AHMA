@@ -232,14 +232,18 @@ class Section8Prep:
             for i, (lbl, val) in enumerate(zip(labels, values))
         ]
 
-        threshold = 3.0 # threshold below which labels change to ...
+        threshold = 10 # threshold below which labels change to "..."
         total_value = sum(values)
 
         interactive_text = []
-        for val, original_text in zip(values, text):
-            percentage = (val / total_value) * 100
-            if percentage < threshold:
-                interactive_text.append("•••") 
+        for i, (val, original_text) in enumerate(zip(values, text)):
+            if i >= 3:  # Detail indicators only (Unaffordability, Inadequacy, etc.)
+                raw_pct = raw_details[i - 3]
+                print(original_text, total_value, raw_pct)
+                if raw_pct < threshold:
+                    interactive_text.append("•••") 
+                else:
+                    interactive_text.append(original_text)
             else:
                 interactive_text.append(original_text)
 

@@ -18,7 +18,7 @@ from .table_styles import (
 )
 from .text_content import SECTION_11_TITLE, TABLE_11_1_TITLE
 
-from dashboard_helpers.config import TABLE_FONT
+from dashboard_helpers.config import TABLE_FONT, TABLE_COLORS
 
 from .export_helpers import with_export_btn
 
@@ -113,10 +113,16 @@ class Section11Prep:
                 + make_special_row_styles(table_df, _LABEL_COL, 
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
-            style_header_conditional=generate_style_header_conditional(
+            style_header_conditional=(generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
                                   {'column_id':_LABEL_COL, 'header_index': 2}]
+                ) + [
+                {
+                    'if': {'column_id': _LABEL_COL, 'header_index': 1},
+                    'borderBottom': f"1px solid {TABLE_COLORS['border']}",
+                }
+            ]
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='20%'),
             **base_style
