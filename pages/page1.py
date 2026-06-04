@@ -42,7 +42,12 @@ layout = html.Div(
                                     placeholder='Select or search geography'
                                 ),
                             ],
-                            className='dropdown-lgeo'
+                            className='dropdown-lgeo',
+                            style={
+                                'width': '100%',         
+                                'maxWidth': '600px',     
+                                'minWidth': '350px'
+                            }
                         ),
 
                     ],
