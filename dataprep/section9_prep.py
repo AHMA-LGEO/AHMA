@@ -202,7 +202,7 @@ class Section9DataPrep:
 
         return result_transposed
     
-
-if __name__ == '__main__':
-    t = Section9DataPrep()
-    t.table_9_1()
+# For testing
+# if __name__ == '__main__':
+#     t = Section9DataPrep()
+#     t.table_9_1()
