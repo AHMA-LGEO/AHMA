@@ -348,7 +348,7 @@ class Section5Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -373,7 +373,7 @@ class Section5Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
             **base_style
@@ -505,7 +505,7 @@ class Section5Prep:
 
         # 4-level columns: [geo_name, HH type, year, metric]
         columns = [
-            {"name": [geo_name, "", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, ht, year, metric], "id": f"{prefix}_{year}_{suffix}"}
             for ht, prefix in _HH_TYPES
@@ -533,7 +533,7 @@ class Section5Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=4,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 3}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
             **base_style
