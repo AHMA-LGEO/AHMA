@@ -3,12 +3,25 @@ Section 2 preparation and layout - Indigenous Nations / Territories and Métis C
 """
 import re
 import pandas as pd
-from dash import html
+from dash import html, dcc
 
 from .data_loader import get_data_loader
 from .text_content import (
     TABLE_2_1_TITLE,
-    TABLE_2_2_DESC
+    TABLE_2_2_DESC,
+    TABLE_2_1_P1,
+    TABLE_2_1_P2,
+    TABLE_2_1_P3,
+    TABLE_2_1_P4,
+    TABLE_2_1_NOTE,
+    SECTION_2_P1,
+    SECTION_2_P2,
+    SECTION_2_LINK_1,
+    SECTION_2_LINK_2,
+    SECTION_2_LINK_3,
+    SECTION_2_NOTE_P1,
+    SECTION_2_NOTE_P2,
+    SECTION_2_NOTE_P3
 )
 from dashboard_helpers.config import TABLE_FONT
 
@@ -45,9 +58,9 @@ class Section2Prep:
 
         count = len(nations)
 
-        count_badge = html.Div(
-        f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
-        style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}
+        count_badge = html.P(
+            f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
+            style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}
         )
 
         if not nations:
@@ -73,8 +86,16 @@ class Section2Prep:
 
         return html.Div([
             html.H4(TABLE_2_1_TITLE, className='table-title'),
+            html.Div([
+                html.P(TABLE_2_1_P1),
+                html.P(TABLE_2_1_P2),
+                html.P(TABLE_2_1_P3),
+                html.P(TABLE_2_1_P4),
+                html.I(TABLE_2_1_NOTE)
+            ], className="pg2-text-content-lgeo"),
+            html.Br(),
             count_badge,
-            body,
+            body
         ], className='pg2-table-lgeo')
 
     
@@ -99,17 +120,29 @@ class Section2Prep:
         if not communities:
             body = html.Div(
                 "No data available for the selected geography.",
-                style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                style={'fontFamily': TABLE_FONT, 'color': '#666', 'padding-bottom': '1.5rem'}
             )
         else:
             body = html.Div(
                 # f"{', '.join(communities)}",
                 ', '.join(map(str.strip, communities)),
-                style={'fontFamily': TABLE_FONT, 'color': '#000000'}
+                style={'fontFamily': TABLE_FONT, 'color': '#000000', 'padding-bottom': '1.5rem'}
             )
 
         return html.Div([
-            html.Div(TABLE_2_2_DESC, className='table-desc', 
-                     style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
+            html.P(TABLE_2_2_DESC, className='table-desc', 
+                   style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
             body,
+            html.Br(),
+            html.Div([
+                html.P(SECTION_2_P1, style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
+                html.P(SECTION_2_P2),
+                html.Div(dcc.Markdown(SECTION_2_LINK_1)),
+                html.Div(dcc.Markdown(SECTION_2_LINK_2)),
+                html.Div(dcc.Markdown(SECTION_2_LINK_3)),
+                html.Br(),
+                html.I(dcc.Markdown(SECTION_2_NOTE_P1), style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}),
+                html.I(dcc.Markdown(SECTION_2_NOTE_P2)),
+                html.I(dcc.Markdown(SECTION_2_NOTE_P3)),
+            ], className="pg2-text-content-lgeo")
         ], className='pg2-table-lgeo')

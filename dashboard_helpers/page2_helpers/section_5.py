@@ -20,8 +20,12 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
-    SECTION_5_TITLE, TABLE_5_1_TITLE, 
-    TABLE_5_2_TITLE, TABLE_5_4_TITLE
+    SECTION_5_TITLE, SECTION_5_P1, SECTION_5_P2,
+    TABLE_5_1_TITLE, TABLE_5_1_DESC_P1, TABLE_5_1_DESC_P2, 
+    TABLE_5_2_TITLE, CHART_5_2_DESC, CHART_5_2_NOTE, TABLE_5_2_DESC, 
+    TABLE_5_3_DESC,
+    TABLE_5_4_TITLE, TABLE_5_4_DESC, TABLE_5_4_NOTE,
+    TABLE_5_5_TITLE, TABLE_5_5_DESC, TABLE_5_5_NOTE
     )
 
 from dashboard_helpers.config import (
@@ -49,6 +53,8 @@ class Section5Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_5_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_5_P1),
+                          html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_5_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for HART income & shelter cost of Indigenous Households.",
@@ -94,7 +100,11 @@ class Section5Prep:
 
         return html.Div([
             html.H4(SECTION_5_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_5_P1),
+                      html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_5_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_5_1_DESC_P1),
+                      html.P(TABLE_5_1_DESC_P2)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-5-1'),
         ], className='pg2-table-lgeo')
     
@@ -276,6 +286,8 @@ class Section5Prep:
 
         return html.Div([
             html.H5(TABLE_5_2_TITLE, className='table-title'),
+            html.Div([html.P(CHART_5_2_DESC),
+                      html.I(CHART_5_2_NOTE)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-5-2', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -368,6 +380,7 @@ class Section5Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_5_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-4'),
         ], className='pg2-table-lgeo')
     
@@ -438,6 +451,8 @@ class Section5Prep:
 
         return html.Div([
             html.H5(TABLE_5_4_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_5_4_DESC),
+                      html.I(TABLE_5_4_NOTE)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-5-4'),
         ], className='pg2-table-lgeo')
     

@@ -17,11 +17,13 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
-    SECTION_3_TITLE,
-    TABLE_3_1_TITLE, CHART_3_2_TITLE,
-    TABLE_3_3_TITLE, TABLE_3_4_TITLE,
-    TABLE_3_5_TITLE, TABLE_3_6_TITLE,
-    CHART_3_6_DESC, TABLE_3_6_NOTE)
+    SECTION_3_TITLE, SECTION_3_P1, SECTION_3_NOTE,
+    TABLE_3_1_TITLE, TABLE_3_1_DESC, 
+    CHART_3_2_TITLE, CHART_3_2_DESC,
+    TABLE_3_3_TITLE, CHART_3_3_DESC, TABLE_3_3_DESC,
+    TABLE_3_4_TITLE, CHART_3_4_DESC, CHART_3_4_NOTE, TABLE_3_4_DESC,
+    TABLE_3_5_TITLE, 
+    TABLE_3_6_TITLE, CHART_3_6_DESC, TABLE_3_6_DESC, TABLE_3_6_NOTE)
 
 from .export_helpers import with_export_btn
 
@@ -108,6 +110,10 @@ class Section3Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_3_TITLE, className='table-title'),
+                html.Div([
+                    html.P(SECTION_3_P1),
+                    html.I(SECTION_3_NOTE)
+                ], className="pg2-text-content-lgeo"),
                 html.H5(TABLE_3_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for Population and Age Distribution for Indigenous Population (2006, 2011, 2016, 2021).",
@@ -162,7 +168,12 @@ class Section3Prep:
 
         return html.Div([
             html.H4(SECTION_3_TITLE, className='table-title'),
+            html.Div([
+                html.P(SECTION_3_P1),
+                html.I(SECTION_3_NOTE)
+            ], className="pg2-text-content-lgeo"),
             html.H5(TABLE_3_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_3_1_DESC)], className="pg2-text-content-lgeo"),
             with_export_btn(table, 'table-3-1'),
         ], className='pg2-table-lgeo')
     
@@ -227,6 +238,7 @@ class Section3Prep:
 
         return html.Div([
             html.H5(CHART_3_2_TITLE, className='table-title'),
+            html.Div([html.P(CHART_3_2_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-3-2', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -283,6 +295,7 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_3_TITLE, className='table-title'),
+            html.Div([html.P(CHART_3_3_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-3-3', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -345,6 +358,7 @@ class Section3Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-3-3'),
         ], className='pg2-table-lgeo')
     
@@ -397,6 +411,8 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_4_TITLE, className='table-title'),
+            html.Div([html.P(CHART_3_4_DESC),
+                      html.I(CHART_3_4_NOTE)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-3-4', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -459,6 +475,7 @@ class Section3Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_3_4_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-3-4'),
         ], className='pg2-table-lgeo')
     
@@ -677,7 +694,7 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_6_TITLE, className='table-title'),
-            html.I(CHART_3_6_DESC),
+            html.Div([html.P(CHART_3_6_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-3-6', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -747,13 +764,14 @@ class Section3Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_3_6_DESC)], className='pg2-text-content-lgeo'),
             html.Div(
-            with_export_btn(table, 'table-3-6', max_width='600px'),
-            className="d-flex flex-column align-items-center w-100"
+                with_export_btn(table, 'table-3-6', max_width='600px'),
+                className="d-flex flex-column align-items-center w-100"
             ),
             html.Div(
-            html.I(TABLE_3_6_NOTE),
-            className="d-flex flex-column align-items-center w-100"
+                html.I(TABLE_3_6_NOTE),
+                className="d-flex flex-column align-items-center w-100"
             ),
         ], className='pg2-table-lgeo')
     

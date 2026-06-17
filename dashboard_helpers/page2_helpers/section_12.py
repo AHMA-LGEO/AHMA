@@ -14,7 +14,11 @@ from .table_styles import (
     make_style_cell,
     format_number
 )
-from .text_content import SECTION_12_TITLE, TABLE_12_1_TITLE, TABLE_12_2_TITLE, TABLE_12_2_NOTE
+from .text_content import (
+    SECTION_12_TITLE, SECTION_12_P1,
+    TABLE_12_1_TITLE, TABLE_12_1_DESC_P1, TABLE_12_1_DESC_P2, TABLE_12_1_DESC_P3,
+    TABLE_12_2_TITLE, TABLE_12_2_DESC, TABLE_12_2_NOTE
+    )
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import TABLE_FONT
 
@@ -28,7 +32,11 @@ class Section12Prep:
         """Add static screenshots from AHMA's reports."""
         return html.Div([
             html.H4(SECTION_12_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_12_P1)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_12_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_12_1_DESC_P1),
+                      html.P(TABLE_12_1_DESC_P2),
+                      html.P(TABLE_12_1_DESC_P3)], className='pg2-text-content-lgeo'),
             html.Img(src='./assets/Section 12.1 Table 4.png', className='footer-image'),
             html.Img(src='./assets/Section 12.1 Table 6.png', className='footer-image')
         ])
@@ -103,6 +111,7 @@ class Section12Prep:
 
         return html.Div([
             html.H5(TABLE_12_2_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-12-2'),
-            html.I(TABLE_12_2_NOTE),
+            #html.I(TABLE_12_2_NOTE),
         ], className='pg2-table-lgeo')

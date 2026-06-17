@@ -18,9 +18,11 @@ from .table_styles import (
     format_dollar,
 )
 from .text_content import (
-    SECTION_7_TITLE, TABLE_7_1_TITLE,
-    TABLE_7_3_TITLE, TABLE_7_3_1_TITLE,
-    TABLE_7_3_2_TITLE, TABLE_7_3_3_TITLE
+    SECTION_7_TITLE, SECTION_7_P1, SECTION_7_P2,
+    TABLE_7_1_TITLE, TABLE_7_1_DESC,
+    TABLE_7_3_TITLE, TABLE_7_3_1_TITLE, CHART_7_3_1_DESC, TABLE_7_3_1_DESC,
+    TABLE_7_3_2_TITLE, CHART_7_3_2_DESC, TABLE_7_3_2_DESC,
+    TABLE_7_3_3_TITLE, CHART_7_3_3_DESC_P1, CHART_7_3_3_DESC_P2, TABLE_7_3_3_DESC
     )
 
 from dashboard_helpers.config import (
@@ -45,8 +47,6 @@ class Section7Prep:
 
         if df.empty:
             return html.Div([
-                html.H4(SECTION_7_TITLE, className='table-title'),
-                html.H5(TABLE_7_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for median shelter cost (2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -120,8 +120,6 @@ class Section7Prep:
         )
 
         return html.Div([
-            html.H4(SECTION_7_TITLE, className='table-title'),
-            html.H5(TABLE_7_1_TITLE, className='table-title'),
             with_export_btn(table, 'table-7-1'),
         ], className='pg2-table-lgeo')
     
@@ -171,6 +169,7 @@ class Section7Prep:
         return html.Div([
             html.H5(TABLE_7_3_TITLE, className='table-title'),
             html.H6(TABLE_7_3_1_TITLE, className='table-title'),
+            html.Div([html.P(CHART_7_3_1_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -237,6 +236,7 @@ class Section7Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_7_3_1_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-7-3-1'),
         ], className='pg2-table-lgeo')
     
@@ -286,6 +286,7 @@ class Section7Prep:
 
         return html.Div([
             html.H6(TABLE_7_3_2_TITLE, className='table-desc'),
+            html.Div([html.P(CHART_7_3_2_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-7-3-2', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -341,6 +342,7 @@ class Section7Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_7_3_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-7-3-2'),
         ], className='pg2-table-lgeo')
 
@@ -392,6 +394,8 @@ class Section7Prep:
 
         return html.Div([
             html.H6(TABLE_7_3_3_TITLE, className='table-desc'),
+            html.Div([html.P(CHART_7_3_3_DESC_P1),
+                      html.P(CHART_7_3_3_DESC_P2)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-7-3-3', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -447,6 +451,7 @@ class Section7Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_7_3_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-7-3-3'),
         ], className='pg2-table-lgeo')
 

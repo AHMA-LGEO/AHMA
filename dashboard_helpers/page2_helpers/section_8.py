@@ -21,9 +21,13 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import (
-    SECTION_8_TITLE, TABLE_8_1_TITLE, 
-    TABLE_8_3_TITLE, TABLE_8_5_TITLE, 
-    TABLE_8_7_TITLE
+    SECTION_8_TITLE, SECTION_8_P1, SECTION_8_P2,
+    TABLE_8_1_TITLE, CHART_8_1_DESC, TABLE_8_1_DESC,
+    TABLE_8_3_TITLE, TABLE_8_3_DESC, 
+    TABLE_8_4_DESC, 
+    TABLE_8_5_TITLE, CHART_8_5_DESC, TABLE_8_5_DESC,
+    TABLE_8_6_DESC, 
+    TABLE_8_7_TITLE, TABLE_8_7_DESC
     )
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import (
@@ -204,6 +208,8 @@ class Section8Prep:
         if math.isnan(acceptable_pct):
             return html.Div([
                 html.H4(SECTION_8_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_8_P1),
+                          html.P(SECTION_8_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_8_1_TITLE, className='table-desc'),
                 html.Div(
                 "No chart for 2021 Indigenous Core Housing Need.",
@@ -280,7 +286,10 @@ class Section8Prep:
 
         return html.Div([
             html.H4(SECTION_8_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_8_P1),
+                      html.P(SECTION_8_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_8_1_TITLE, className='table-desc'),
+            html.Div([html.P(CHART_8_1_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -380,7 +389,6 @@ class Section8Prep:
         )
 
         return html.Div([
-            html.H5(TABLE_8_3_TITLE, className='table-title'),
             with_export_btn(table, 'table-8-3'),
         ], className='pg2-table-lgeo')
 
@@ -467,6 +475,7 @@ class Section8Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_8_4_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-4'),
         ], className='pg2-table-lgeo')
     
@@ -643,6 +652,7 @@ class Section8Prep:
 
         return html.Div([
             html.H5(TABLE_8_5_TITLE, className='table-title'),
+            html.Div([html.P(CHART_8_5_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-8-5', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -711,6 +721,7 @@ class Section8Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_8_6_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-6'),
         ], className='pg2-table-lgeo')
     
@@ -763,5 +774,6 @@ class Section8Prep:
 
         return html.Div([
             html.H5(TABLE_8_7_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_8_7_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-7'),
         ], className='pg2-table-lgeo')

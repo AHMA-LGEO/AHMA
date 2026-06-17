@@ -17,8 +17,12 @@ from .table_styles import (
     format_number
 )
 from .text_content import (
-    SECTION_6_TITLE, TABLE_6_1_TITLE, 
-    TABLE_6_3_TITLE, TABLE_6_5_TITLE
+    SECTION_6_TITLE, SECTION_6_P1, SECTION_6_P2,
+    TABLE_6_1_TITLE, CHART_6_1_DESC, TABLE_6_1_DESC,
+    TABLE_6_2_DESC,
+    TABLE_6_3_TITLE, CHART_6_3_DESC, TABLE_6_3_DESC,
+    TABLE_6_4_DESC, 
+    TABLE_6_5_TITLE, TABLE_6_5_DESC, TABLE_6_6_DESC
     )
 
 from dashboard_helpers.config import (
@@ -130,7 +134,6 @@ class Section6Prep:
 
         if table_id == 'table-6-5':
             return html.Div([
-                html.Div([html.H5(TABLE_6_5_TITLE, className='table-title')]),
                 with_export_btn(table, table_id),
             ], className='pg2-table-lgeo')
 
@@ -152,11 +155,15 @@ class Section6Prep:
         if chart_id == "chart-6-1":
             title_tags = html.Div([
                 html.H4(SECTION_6_TITLE, className='table-title'),
-                html.H5(TABLE_6_1_TITLE, className='table-title')
+                html.Div([html.P(SECTION_6_P1),
+                          html.P(SECTION_6_P2)], className='pg2-text-content-lgeo'),
+                html.H5(TABLE_6_1_TITLE, className='table-title'),
+                html.Div([html.P(CHART_6_1_DESC)], className='pg2-text-content-lgeo'),
             ])
         else:
             title_tags = html.Div([
-                html.H5(TABLE_6_3_TITLE, className='table-title')
+                html.H5(TABLE_6_3_TITLE, className='table-title'),
+                html.Div([html.P(CHART_6_3_DESC)], className='pg2-text-content-lgeo')
             ])
 
 
@@ -299,7 +306,20 @@ class Section6Prep:
             **base_style
         )
 
-        return html.Div([
-            with_export_btn(table, table_id),
+        if table_id == 'table-6-2':
+            return html.Div([
+                html.Div([html.P(TABLE_6_2_DESC)], className='pg2-text-content-lgeo'),
+                with_export_btn(table, table_id),
         ], className='pg2-table-lgeo')
-    
+
+        elif table_id == 'table-6-4':
+            return html.Div([
+                html.Div([html.P(TABLE_6_4_DESC)], className='pg2-text-content-lgeo'),
+                with_export_btn(table, table_id),
+        ], className='pg2-table-lgeo')
+
+        else:
+            return html.Div([
+                html.Div([html.P(TABLE_6_6_DESC)], className='pg2-text-content-lgeo'),
+                with_export_btn(table, table_id),
+        ], className='pg2-table-lgeo')

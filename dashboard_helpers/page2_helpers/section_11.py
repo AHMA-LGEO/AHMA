@@ -16,7 +16,10 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import SECTION_11_TITLE, TABLE_11_1_TITLE
+from .text_content import (
+    SECTION_11_TITLE, SECTION_11_P1, SECTION_11_P2,
+    TABLE_11_1_TITLE, TABLE_11_1_DESC
+    )
 
 from dashboard_helpers.config import TABLE_FONT, TABLE_COLORS
 
@@ -130,7 +133,10 @@ class Section11Prep:
 
         return html.Div([
             html.H4(SECTION_11_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_11_P1),
+                      html.P(SECTION_11_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_11_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_11_1_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-11-1-1'),
         ], className='pg2-table-lgeo')
     

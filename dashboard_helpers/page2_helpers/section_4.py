@@ -18,10 +18,14 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
-    SECTION_4_TITLE, TABLE_4_1_TITLE, 
-    TABLE_4_1_DESC, TABLE_4_3_TITLE,
-    TABLE_4_5_TITLE
-    )
+    SECTION_4_TITLE, SECTION_4_P1, SECTION_4_P2,
+    TABLE_4_1_TITLE, CHART_4_1_DESC, TABLE_4_1_DESC,
+    TABLE_4_2_DESC,
+    TABLE_4_3_TITLE, CHART_4_3_DESC, TABLE_4_3_DESC,
+    TABLE_4_4_DESC,
+    TABLE_4_5_TITLE, TABLE_4_5_DESC,
+    TABLE_4_6_DESC
+)
 
 from dashboard_helpers.config import (
     CHART_COLORS, PLOT_CONFIG, YEARS,
@@ -159,6 +163,8 @@ class Section4Prep:
         if filtered.empty:
             return html.Div([
                 html.H4(SECTION_4_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_4_P1),
+                          html.P(SECTION_4_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_4_1_TITLE, className='table-title'),
                 # html.Div(TABLE_4_1_DESC, className='table-desc'),
                 html.Div(
@@ -257,9 +263,11 @@ class Section4Prep:
 
         return html.Div([
             html.H4(SECTION_4_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_4_P1),
+                      html.P(SECTION_4_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_4_1_TITLE, className='table-title'),
-            # html.Div(TABLE_4_1_DESC, className='table-desc'),
-            dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG)
+            html.Div(html.P(CHART_4_1_DESC), className='pg2-text-content-lgeo'),
+            dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG),
         ], className='pg2-table-lgeo')
     
 
@@ -343,6 +351,7 @@ class Section4Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_4_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-2'),
         ], className='pg2-table-lgeo')
     
@@ -515,6 +524,7 @@ class Section4Prep:
 
         return html.Div([
             html.H5(TABLE_4_3_TITLE, className='table-title'),
+            html.Div([html.P(CHART_4_3_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-4-3', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -599,6 +609,7 @@ class Section4Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_4_4_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-4'),
         ], className='pg2-table-lgeo')
 
@@ -705,6 +716,7 @@ class Section4Prep:
         )
         return html.Div([
             html.H5(TABLE_4_5_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_4_5_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-5'),
         ], className='pg2-table-lgeo')
     
@@ -795,6 +807,7 @@ class Section4Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_4_6_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-6'),
         ], className='pg2-table-lgeo')
 
