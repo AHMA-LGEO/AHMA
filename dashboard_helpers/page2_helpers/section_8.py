@@ -21,9 +21,13 @@ from .table_styles import (
     _T8_TOTAL,
 )
 from .text_content import (
-    SECTION_8_TITLE, TABLE_8_1_TITLE, 
-    TABLE_8_3_TITLE, TABLE_8_5_TITLE, 
-    TABLE_8_7_TITLE
+    SECTION_8_TITLE, SECTION_8_P1, SECTION_8_P2,
+    TABLE_8_1_TITLE, CHART_8_1_DESC, TABLE_8_1_DESC,
+    TABLE_8_3_TITLE, TABLE_8_3_DESC, 
+    TABLE_8_4_DESC, 
+    TABLE_8_5_TITLE, CHART_8_5_DESC, TABLE_8_5_DESC,
+    TABLE_8_6_DESC, 
+    TABLE_8_7_TITLE, TABLE_8_7_DESC
     )
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import (
@@ -204,6 +208,8 @@ class Section8Prep:
         if math.isnan(acceptable_pct):
             return html.Div([
                 html.H4(SECTION_8_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_8_P1),
+                          html.P(SECTION_8_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_8_1_TITLE, className='table-desc'),
                 html.Div(
                 "No chart for 2021 Indigenous Core Housing Need.",
@@ -239,7 +245,6 @@ class Section8Prep:
         for i, (val, original_text) in enumerate(zip(values, text)):
             if i >= 3:  # Detail indicators only (Unaffordability, Inadequacy, etc.)
                 raw_pct = raw_details[i - 3]
-                print(original_text, total_value, raw_pct)
                 if raw_pct < threshold:
                     interactive_text.append("•••") 
                 else:
@@ -280,7 +285,10 @@ class Section8Prep:
 
         return html.Div([
             html.H4(SECTION_8_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_8_P1),
+                      html.P(SECTION_8_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_8_1_TITLE, className='table-desc'),
+            html.Div([html.P(CHART_8_1_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-8-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -380,7 +388,6 @@ class Section8Prep:
         )
 
         return html.Div([
-            html.H5(TABLE_8_3_TITLE, className='table-title'),
             with_export_btn(table, 'table-8-3'),
         ], className='pg2-table-lgeo')
 
@@ -440,7 +447,7 @@ class Section8Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, _LABEL_COL, ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", _LABEL_COL], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -459,7 +466,7 @@ class Section8Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
                                                    label_min_width='120px'),
@@ -467,6 +474,7 @@ class Section8Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_8_4_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-4'),
         ], className='pg2-table-lgeo')
     
@@ -643,6 +651,7 @@ class Section8Prep:
 
         return html.Div([
             html.H5(TABLE_8_5_TITLE, className='table-title'),
+            html.Div([html.P(CHART_8_5_DESC)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-8-5', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -684,7 +693,7 @@ class Section8Prep:
 
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -703,7 +712,7 @@ class Section8Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3, 
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
                                                    label_min_width='120px'),
@@ -711,6 +720,7 @@ class Section8Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_8_6_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-6'),
         ], className='pg2-table-lgeo')
     
@@ -763,5 +773,6 @@ class Section8Prep:
 
         return html.Div([
             html.H5(TABLE_8_7_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_8_7_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-8-7'),
         ], className='pg2-table-lgeo')

@@ -19,8 +19,12 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
-    SECTION_9_TITLE, TABLE_9_1_TITLE, 
-    TABLE_9_2_TITLE, TABLE_9_3_TITLE
+    SECTION_9_TITLE, SECTION_9_P1, SECTION_9_P2,
+    TABLE_9_1_TITLE, TABLE_9_1_DESC_P1, TABLE_9_1_DESC_P2, TABLE_9_1_DESC_P3,
+    TABLE_9_1_LINK_1, TABLE_9_1_LINK_2, TABLE_9_1_LINK_3, TABLE_9_1_LINK_4,
+    TABLE_9_2_TITLE, TABLE_9_2_DESC, TABLE_9_2_LINK,
+    TABLE_9_3_TITLE, TABLE_9_3_DESC_P1, TABLE_9_3_DESC_P2, TABLE_9_3_DESC_P3,
+    TABLE_9_3_LINK_1, TABLE_9_3_LINK_2, TABLE_9_3_LINK_3
     )
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import (
@@ -176,6 +180,7 @@ class Section9Prep:
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_9_1_DESC_P3)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-9-1'),
         ], className='pg2-table-lgeo')
     
@@ -187,11 +192,21 @@ class Section9Prep:
         if filtered.empty or filtered.isnull().values.all():
             return html.Div([
                 html.H4(SECTION_9_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_9_P1),
+                          html.P(SECTION_9_P2)], className='pg2-text-content-lgeo'),
+                html.H5(TABLE_9_1_TITLE, className='table-title'),
+                html.Div([html.P(TABLE_9_1_DESC_P1),
+                          html.Br(),
+                        html.P(TABLE_9_1_DESC_P2),
+                        html.P(dcc.Markdown(TABLE_9_1_LINK_1)),
+                        html.P(dcc.Markdown(TABLE_9_1_LINK_2)),
+                        html.P(dcc.Markdown(TABLE_9_1_LINK_3)),
+                        html.P(dcc.Markdown(TABLE_9_1_LINK_4))], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_9_1_TITLE, className='table-title'),
                 html.Div(
-                "No chart for Indigenous People Released from Corrections (2008-2024).",
-                style={'fontFamily': TABLE_FONT, 'color': '#666'}
-                )
+                    "No chart for Indigenous People Released from Corrections (2008-2024).",
+                    style={'fontFamily': TABLE_FONT, 'color': '#666'}
+                    )
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
@@ -242,7 +257,16 @@ class Section9Prep:
 
         return html.Div([
             html.H4(SECTION_9_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_9_P1),
+                      html.P(SECTION_9_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_9_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_9_1_DESC_P1),
+                      html.Br(),
+                      html.P(TABLE_9_1_DESC_P2),
+                      html.P(dcc.Markdown(TABLE_9_1_LINK_1)),
+                      html.P(dcc.Markdown(TABLE_9_1_LINK_2)),
+                      html.P(dcc.Markdown(TABLE_9_1_LINK_3)),
+                      html.P(dcc.Markdown(TABLE_9_1_LINK_4))], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -257,6 +281,8 @@ class Section9Prep:
         if df.empty:
             return html.Div([
                 html.H5(TABLE_9_2_TITLE, className='table-title'),
+                html.Div([html.P(TABLE_9_2_DESC),
+                          html.P(dcc.Markdown(TABLE_9_2_LINK))], className='pg2-text-content-lgeo'),
                 html.Div(
                 "No data for Indigenous Children Ageing out of Care or Youth Agreements.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -297,6 +323,8 @@ class Section9Prep:
 
         return html.Div([
             html.H5(TABLE_9_2_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_9_2_DESC),
+                      html.P(dcc.Markdown(TABLE_9_2_LINK))], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-9-2'),
         ], className='pg2-table-lgeo')
     
@@ -308,6 +336,13 @@ class Section9Prep:
         if df.empty:
             return html.Div([
                 html.H5(TABLE_9_3_TITLE, className='table-title'),
+                html.Div([html.P(TABLE_9_3_DESC_P1),
+                        html.P(TABLE_9_3_DESC_P2),
+                        html.Br(),
+                        html.P(TABLE_9_3_DESC_P3),
+                        html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
+                        html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
+                        html.P(dcc.Markdown(TABLE_9_3_LINK_3))], className='pg2-text-content-lgeo'),
                 html.Div(
                 "No data for Indigenous Homelessness (2021, 2023, 2025).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -377,5 +412,12 @@ class Section9Prep:
 
         return html.Div([
             html.H5(TABLE_9_3_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_9_3_DESC_P1),
+                      html.P(TABLE_9_3_DESC_P2),
+                      html.Br(),
+                      html.P(TABLE_9_3_DESC_P3),
+                      html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
+                      html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
+                      html.P(dcc.Markdown(TABLE_9_3_LINK_3))], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-9-3'),
         ], className='pg2-table-lgeo')

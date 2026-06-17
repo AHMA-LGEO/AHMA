@@ -17,7 +17,7 @@ from dashboard_helpers.page2_helpers.section_11 import Section11Prep
 from dashboard_helpers.page2_helpers.section_12 import Section12Prep
 
 from dashboard_helpers.page2_helpers.text_content import (
-    INTRO_TITLE, INTRO_TEXT
+    INTRO_TITLE, INTRO_TEXT, SECTION_7_P1, SECTION_7_P2, SECTION_7_TITLE, TABLE_4_1_DESC, TABLE_4_3_DESC, TABLE_5_2_DESC, TABLE_5_5_DESC, TABLE_5_5_NOTE, TABLE_5_5_TITLE, TABLE_6_1_DESC, TABLE_6_2_DESC, TABLE_6_3_DESC, TABLE_6_4_DESC, TABLE_6_5_DESC, TABLE_6_5_TITLE, TABLE_7_1_DESC, TABLE_7_1_TITLE, TABLE_8_1_DESC, TABLE_8_3_DESC, TABLE_8_3_TITLE, TABLE_8_5_DESC
 )
 from dashboard_helpers.config import DEFAULT_GEOCODE, PLOT_CONFIG, TABLE_FONT
 from dashboard_helpers.page2_helpers.table_styles import COLOR_SCHEME
@@ -105,18 +105,18 @@ layout = html.Div([
         global_toggle_ui(),
 
         # Introduction
-        html.H3(html.Strong(INTRO_TITLE), id='intro-title'),
-        html.Div([
-            html.Div([
-                INTRO_TEXT, 
-                # html.Br(), html.Br(),
-                # INTRO_PARAGRAPH,
-                # html.Br(), html.Br(),
-                # html.Ul([
-                #     html.Li([html.I([note])]) for note in NOTES
-                # ])
-            ], style={"fontFamily": TABLE_FONT})
-        ], className='muni-reg-text-lgeo'),
+        # html.H3(html.Strong(INTRO_TITLE), id='intro-title'),
+        # html.Div([
+        #     html.Div([
+        #         INTRO_TEXT, 
+        #         # html.Br(), html.Br(),
+        #         # INTRO_PARAGRAPH,
+        #         # html.Br(), html.Br(),
+        #         # html.Ul([
+        #         #     html.Li([html.I([note])]) for note in NOTES
+        #         # ])
+        #     ], style={"fontFamily": TABLE_FONT})
+        # ], className='muni-reg-text-lgeo'),
 
         # Section 2 - Nations / Territories and Métis Communities
         html.Div([
@@ -145,6 +145,7 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div([html.P(TABLE_4_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -181,6 +182,7 @@ layout = html.Div([
 
 
         html.Div([
+            html.Div([html.P(TABLE_4_3_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -222,6 +224,7 @@ layout = html.Div([
 
         html.Div([
             html.Div(id='chart-5-2-container'),
+            html.Div([html.P(TABLE_5_2_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -257,6 +260,9 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.H5(TABLE_5_5_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_5_5_DESC),
+                      html.I(TABLE_5_5_NOTE)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -291,6 +297,7 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div([html.P(TABLE_6_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -326,6 +333,7 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div([html.P(TABLE_6_3_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -361,6 +369,8 @@ layout = html.Div([
         html.Br(),
         html.Br(),
         html.Div([
+            html.Div([html.H5(TABLE_6_5_TITLE, className='table-title')]),
+            html.Div([html.P(TABLE_6_5_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -378,7 +388,7 @@ layout = html.Div([
                style={
                 #    "borderBottom": "2px solid #002145"
                     "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-120px",
+                    "marginBottom": "-70px",
                     "position": "relative",
                     "paddingLeft": "12px",
                     "paddingRight": "12px",
@@ -399,6 +409,11 @@ layout = html.Div([
 
         # Section 7 - Shelter Costs
         html.Div([
+            html.H4(SECTION_7_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_7_P1),
+                      html.P(SECTION_7_P2)], className='pg2-text-content-lgeo'),
+            html.H5(TABLE_7_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_7_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -416,7 +431,7 @@ layout = html.Div([
                style={
                 #    "borderBottom": "2px solid #002145"
                     "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-170px",
+                    "marginBottom": "-70px",
                     "position": "relative",
                     "paddingLeft": "12px",
                     "paddingRight": "12px",
@@ -436,12 +451,20 @@ layout = html.Div([
             html.Div(id='table-7-3-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
+
+        # Section 10 - Access to Services
+        html.Div([
+            html.Div(id='table-10-1-container'),
+        ], className='pg2-table-plot-box-lgeo'),
+
+
         # Section 8 - Housing Need Indicators
         html.Div([
             html.Div(id='chart-8-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.Div([html.P(TABLE_8_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -471,6 +494,8 @@ layout = html.Div([
         ], className='pg2-table-plot-box-lgeo'),
 
         html.Div([
+            html.H5(TABLE_8_3_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_8_3_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -488,7 +513,7 @@ layout = html.Div([
                style={
                 #    "borderBottom": "2px solid #002145"
                     "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-120px",
+                    "marginBottom": "-70px",
                     "position": "relative",
                     "paddingLeft": "12px",
                     "paddingRight": "12px",
@@ -506,6 +531,7 @@ layout = html.Div([
 
 
         html.Div([
+            html.Div([html.P(TABLE_8_5_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
                     # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
@@ -546,12 +572,6 @@ layout = html.Div([
             html.Div(id='table-9-1-container'),
             html.Div(id='table-9-2-container'),
             html.Div(id='table-9-3-container'),
-        ], className='pg2-table-plot-box-lgeo'),
-
-
-        # Section 10 - Access to Services
-        html.Div([
-            html.Div(id='table-10-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
 
         # Section 11 - Population & Household Growth

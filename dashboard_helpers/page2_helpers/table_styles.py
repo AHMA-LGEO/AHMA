@@ -238,7 +238,10 @@ def generate_style_header_conditional(
                 'color': '#FFFFFF',
                 'fontWeight': 'bold',
                 'border': f"1px solid {TABLE_COLORS['border']}",
-                'padding': '6px',
+                'paddingTop': '6px',
+                'paddingBottom': '6px',
+                'paddingLeft': '12px',
+                'paddingRight': '6px',
             }
             for i, col in enumerate(columns)
         ]
@@ -246,7 +249,10 @@ def generate_style_header_conditional(
     base = {
         'fontWeight': 'bold',
         'border': f"1px solid {TABLE_COLORS['border']}",
-        'padding': '6px',
+        'paddingTop': '6px',
+        'paddingBottom': '6px',
+        'paddingRight': '6px',
+        'paddingLeft': '12px',
         'color': '#FFFFFF',
     }
     
@@ -272,6 +278,7 @@ def generate_style_header_conditional(
         styles.append({
             'if': cell_spec,
             'textAlign': 'left',
+            'paddingLeft': '12px',
         })
 
     # Add borders between geography and label column rows
@@ -530,17 +537,17 @@ _T8_BELOW_MULTIPLE = "Below multiple indicators (Affordability and/or Adequacy a
 _T8_TOTAL = "Total households (for reference)"
 
 # Indicators that use geography-colour header styling (excludes warning + total rows)
-_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
-
+#_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_BELOW_MULTIPLE, _T8_TOTAL}
+_T8_GEO_HEADERS = _T8_INDICATORS - {_T8_TOTAL}
 
 def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
     base_styles = make_special_row_styles(
         data, 'Indicator',
         section_headers=_T8_GEO_HEADERS,
-        warning_headers={_T8_BELOW_MULTIPLE},
+        #warning_headers={_T8_BELOW_MULTIPLE},
         col_headers={_T8_TOTAL},
         total_labels=frozenset(), 
-        italic_labels={'__below_count__', '__below_pct__'},
+        #italic_labels={'__below_count__', '__below_pct__'},
     )
     
     # Override col_headers styling to semi-bold
@@ -603,6 +610,6 @@ def get_special_row_styles_9_3(data: pd.DataFrame) -> list:
         data, 'Attribute',
         col_headers=_T9_3_GEO_HEADERS,
         section_headers=_T9_3_SECTION_HEADERS,
-        italic_labels=_T9_3_RED_ATTRS,
+        #italic_labels=_T9_3_RED_ATTRS,
         total_labels={"Total"},
     )

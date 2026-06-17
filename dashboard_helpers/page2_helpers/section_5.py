@@ -20,8 +20,12 @@ from .table_styles import (
     format_percent
 )
 from .text_content import (
-    SECTION_5_TITLE, TABLE_5_1_TITLE, 
-    TABLE_5_2_TITLE, TABLE_5_4_TITLE
+    SECTION_5_TITLE, SECTION_5_P1, SECTION_5_P2,
+    TABLE_5_1_TITLE, TABLE_5_1_DESC_P1, TABLE_5_1_DESC_P2, 
+    TABLE_5_2_TITLE, CHART_5_2_DESC, CHART_5_2_NOTE, TABLE_5_2_DESC, 
+    TABLE_5_3_DESC,
+    TABLE_5_4_TITLE, TABLE_5_4_DESC, TABLE_5_4_NOTE,
+    TABLE_5_5_TITLE, TABLE_5_5_DESC, TABLE_5_5_NOTE
     )
 
 from dashboard_helpers.config import (
@@ -49,6 +53,8 @@ class Section5Prep:
         if df.empty:
             return html.Div([
                 html.H4(SECTION_5_TITLE, className='table-title'),
+                html.Div([html.P(SECTION_5_P1),
+                          html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_5_1_TITLE, className='table-title'),
                 html.Div(
                 "No data for HART income & shelter cost of Indigenous Households.",
@@ -94,7 +100,11 @@ class Section5Prep:
 
         return html.Div([
             html.H4(SECTION_5_TITLE, className='table-title'),
+            html.Div([html.P(SECTION_5_P1),
+                      html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_5_1_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_5_1_DESC_P1),
+                      html.P(TABLE_5_1_DESC_P2)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-5-1'),
         ], className='pg2-table-lgeo')
     
@@ -276,6 +286,8 @@ class Section5Prep:
 
         return html.Div([
             html.H5(TABLE_5_2_TITLE, className='table-title'),
+            html.Div([html.P(CHART_5_2_DESC),
+                      html.I(CHART_5_2_NOTE)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-5-2', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
     
@@ -336,7 +348,7 @@ class Section5Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -361,13 +373,14 @@ class Section5Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', label_min_width='120px'),
             **base_style
         )
 
         return html.Div([
+            html.Div([html.P(TABLE_5_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-4-4'),
         ], className='pg2-table-lgeo')
     
@@ -438,6 +451,8 @@ class Section5Prep:
 
         return html.Div([
             html.H5(TABLE_5_4_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_5_4_DESC),
+                      html.I(TABLE_5_4_NOTE)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-5-4'),
         ], className='pg2-table-lgeo')
     
@@ -490,7 +505,7 @@ class Section5Prep:
 
         # 4-level columns: [geo_name, HH type, year, metric]
         columns = [
-            {"name": [geo_name, "", "Census Year", ""], "id": _LABEL_COL}
+            {"name": [geo_name, "", "", "Census Year"], "id": _LABEL_COL}
         ] + [
             {"name": [geo_name, ht, year, metric], "id": f"{prefix}_{year}_{suffix}"}
             for ht, prefix in _HH_TYPES
@@ -518,7 +533,7 @@ class Section5Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=4,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 3}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
             **base_style
