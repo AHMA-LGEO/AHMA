@@ -17,7 +17,8 @@ from .table_styles import (
 from .text_content import (
     SECTION_12_TITLE, SECTION_12_P1,
     TABLE_12_1_TITLE, TABLE_12_1_DESC_P1, TABLE_12_1_DESC_P2, TABLE_12_1_DESC_P3,
-    TABLE_12_2_TITLE, TABLE_12_2_DESC, TABLE_12_2_NOTE
+    TABLE_12_2_TITLE, TABLE_12_2_DESC, 
+    # TABLE_12_2_NOTE
     )
 from .export_helpers import with_export_btn
 from dashboard_helpers.config import TABLE_FONT

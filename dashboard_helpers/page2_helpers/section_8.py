@@ -245,7 +245,6 @@ class Section8Prep:
         for i, (val, original_text) in enumerate(zip(values, text)):
             if i >= 3:  # Detail indicators only (Unaffordability, Inadequacy, etc.)
                 raw_pct = raw_details[i - 3]
-                print(original_text, total_value, raw_pct)
                 if raw_pct < threshold:
                     interactive_text.append("•••") 
                 else:
@@ -448,7 +447,7 @@ class Section8Prep:
         formatted_df = pd.DataFrame(rows, dtype=object)
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, _LABEL_COL, ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", _LABEL_COL], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -467,7 +466,7 @@ class Section8Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
                                                    label_min_width='120px'),
@@ -694,7 +693,7 @@ class Section8Prep:
 
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, "Census Year", ""], "id": _LABEL_COL}] + [
+        columns = [{"name": [geo_name, "", "Census Year"], "id": _LABEL_COL}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -713,7 +712,7 @@ class Section8Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3, 
-                left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
+                left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%', 
                                                    label_min_width='120px'),

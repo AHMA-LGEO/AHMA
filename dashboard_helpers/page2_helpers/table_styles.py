@@ -238,7 +238,10 @@ def generate_style_header_conditional(
                 'color': '#FFFFFF',
                 'fontWeight': 'bold',
                 'border': f"1px solid {TABLE_COLORS['border']}",
-                'padding': '6px',
+                'paddingTop': '6px',
+                'paddingBottom': '6px',
+                'paddingLeft': '12px',
+                'paddingRight': '6px',
             }
             for i, col in enumerate(columns)
         ]
@@ -246,7 +249,10 @@ def generate_style_header_conditional(
     base = {
         'fontWeight': 'bold',
         'border': f"1px solid {TABLE_COLORS['border']}",
-        'padding': '6px',
+        'paddingTop': '6px',
+        'paddingBottom': '6px',
+        'paddingRight': '6px',
+        'paddingLeft': '12px',
         'color': '#FFFFFF',
     }
     
@@ -272,6 +278,7 @@ def generate_style_header_conditional(
         styles.append({
             'if': cell_spec,
             'textAlign': 'left',
+            'paddingLeft': '12px',
         })
 
     # Add borders between geography and label column rows

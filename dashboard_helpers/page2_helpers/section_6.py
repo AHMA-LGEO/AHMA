@@ -278,7 +278,7 @@ class Section6Prep:
 
 
         # 3-level columns: [geo_name, year, community]
-        columns = [{"name": [geo_name, "Census Year", ""], "id": label_col_name}] + [
+        columns = [{"name": [geo_name, "", "Census Year"], "id": label_col_name}] + [
             {"name": [geo_name, y, community], "id": f'{y}_{community[0]}'}
             for y in YEARS_MINUS_2011
             for community in COMMUNITIES
@@ -300,7 +300,7 @@ class Section6Prep:
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=label_col_name, n_header_rows=3,
-                left_align_cells={'column_id': label_col_name, 'header_index': 1}
+                left_align_cells={'column_id': label_col_name, 'header_index': 2}
             ),
             style_cell_conditional=make_style_cell(label_col_name, val_cols, label_width='25%', label_min_width='120px'),
             **base_style
