@@ -2,8 +2,8 @@
 Dashboard page 1: Geography selection with interactive map.
 """
 from dash import dcc, html, Input, Output, ctx, callback
-from dashboard_helpers.page1_helpers.data_loader import DataLoader
-from dashboard_helpers.page1_helpers.map_generator import MapGenerator
+from dashboard_helpers.map_helpers.data_loader import DataLoader
+from dashboard_helpers.map_helpers.map_generator import MapGenerator
 from dashboard_helpers.config import DEFAULT_GEOGRAPHY, PLOT_CONFIG, PROVINCE_CODE
 
 # Initialize data loader and map generator

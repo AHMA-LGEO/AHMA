@@ -4,7 +4,7 @@ Map generation utilities for dashboard.
 import json
 import numpy as np
 import plotly.graph_objects as go
-from dashboard_helpers.page1_helpers.data_loader import DataLoader
+from dashboard_helpers.map_helpers.data_loader import DataLoader
 from dashboard_helpers.config import (
     MAP_COLORS_WO_BLACK, MAP_COLORS_HIGHLIGHT,
     OPACITY_VALUE, MODEBAR_COLOR,

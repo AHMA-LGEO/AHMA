@@ -9,6 +9,13 @@ dashboard_helpers/Archive/*
 dashboard_helpers/__pycache__/*
 dashboard_helpers/page1_helpers/__pycache__/*
 dashboard_helpers/page2_helpers/__pycache__/*
+dashboard_helpers/content_helpers/__pycache__/*
+dashboard_helpers/map_helpers/__pycache__/*
+dashboard_helpers/indigeneous_helper/__pycache__/*
+dashboard_helpers/tab1_helpers/__pycache__/*
+dashboard_helpers/tab2_helpers/__pycache__/*
+dashboard_helpers/tab3_helpers/__pycache__/*
+dashboard_helpers/tab4_helpers/__pycache__/*
 pages/Archive/*
 pages/__pycache__/*
 source/data/*

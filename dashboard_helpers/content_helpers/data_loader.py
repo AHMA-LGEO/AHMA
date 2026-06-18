@@ -5,6 +5,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from dashboard_helpers.config import DB_PATH
 
+from dashboard_helpers.config import DEFAULT_GEOCODE
 
 class DataLoader:
     def __init__(self):
@@ -104,3 +105,29 @@ def get_data_loader() -> DataLoader:
     if _shared_loader is None:
         _shared_loader = DataLoader()
     return _shared_loader
+
+
+# Helper function to share geocode resolution logic
+def resolve_geocode(geo_name, scale, data_loader):
+    if geo_name is None:
+        from dashboard_helpers.config import DEFAULT_GEOGRAPHY
+        geo_name = DEFAULT_GEOGRAPHY
+
+    geocode = data_loader.get_geocode(geo_name)
+
+    if geocode is None:
+        geocode = DEFAULT_GEOCODE
+    else:
+        try:
+            geocode = int(geocode)
+        except (ValueError, TypeError):
+            geocode = DEFAULT_GEOCODE
+
+    if scale == 'to-region-1':
+        region = data_loader.get_region_geocode(geocode)
+        geocode = int(region) if region is not None else geocode
+    elif scale == 'to-province-1':
+        province = data_loader.get_province_geocode(geocode)
+        geocode = int(province) if province is not None else geocode
+
+    return geocode

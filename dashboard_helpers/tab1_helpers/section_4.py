@@ -6,8 +6,8 @@ import pandas as pd
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
-from .data_loader import get_data_loader
-from .table_styles import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.table_styles import (
     blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -17,7 +17,7 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import (
+from ..content_helpers.text_content import (
     SECTION_4_TITLE, SECTION_4_P1, SECTION_4_P2,
     TABLE_4_1_TITLE, CHART_4_1_DESC, TABLE_4_1_DESC,
     TABLE_4_2_DESC,
@@ -32,7 +32,7 @@ from dashboard_helpers.config import (
     YEARS_MINUS_2011, COMMUNITIES, TABLE_FONT
     )
 
-from .export_helpers import with_export_btn
+from ..content_helpers.export_helpers import with_export_btn
 
 
 class Section4Prep:

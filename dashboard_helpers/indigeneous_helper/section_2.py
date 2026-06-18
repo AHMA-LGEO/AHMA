@@ -5,8 +5,8 @@ import re
 import pandas as pd
 from dash import html, dcc
 
-from .data_loader import get_data_loader
-from .text_content import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.text_content import (
     TABLE_2_1_TITLE,
     TABLE_2_2_DESC,
     TABLE_2_1_P1,

@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 from dash import dash_table, html
 
-from .data_loader import get_data_loader
-from .table_styles import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.table_styles import (
     blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -18,14 +18,14 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import (
+from ..content_helpers.text_content import (
     SECTION_10_TITLE, SECTION_10_P1, SECTION_10_P2, 
     TABLE_10_1_TITLE, TABLE_10_1_DESC
     )
 
 from dashboard_helpers.config import TABLE_FONT
 
-from .export_helpers import with_export_btn
+from ..content_helpers.export_helpers import with_export_btn
 
 class Section10Prep:
     """Prepare and format Section 10 schemas."""

@@ -4,8 +4,8 @@ Section 12 preparation and layout - Housing Targets.
 import pandas as pd
 from dash import dash_table, html
 
-from .data_loader import get_data_loader
-from .table_styles import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.table_styles import (
     blank_row,
     generate_style_data_conditional,
     generate_style_header_conditional,
@@ -14,13 +14,13 @@ from .table_styles import (
     make_style_cell,
     format_number
 )
-from .text_content import (
+from ..content_helpers.text_content import (
     SECTION_12_TITLE, SECTION_12_P1,
     TABLE_12_1_TITLE, TABLE_12_1_DESC_P1, TABLE_12_1_DESC_P2, TABLE_12_1_DESC_P3,
     TABLE_12_2_TITLE, TABLE_12_2_DESC, 
     # TABLE_12_2_NOTE
     )
-from .export_helpers import with_export_btn
+from ..content_helpers.export_helpers import with_export_btn
 from dashboard_helpers.config import TABLE_FONT
 
 class Section12Prep:

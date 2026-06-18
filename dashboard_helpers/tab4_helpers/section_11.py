@@ -6,8 +6,8 @@ import numpy as np
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
-from .data_loader import get_data_loader
-from .table_styles import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.table_styles import (
     generate_style_data_conditional,
     generate_style_header_conditional,
     get_base_table_style,
@@ -16,14 +16,14 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import (
+from ..content_helpers.text_content import (
     SECTION_11_TITLE, SECTION_11_P1, SECTION_11_P2,
     TABLE_11_1_TITLE, TABLE_11_1_DESC
     )
 
 from dashboard_helpers.config import TABLE_FONT, TABLE_COLORS
 
-from .export_helpers import with_export_btn
+from ..content_helpers.export_helpers import with_export_btn
 
 SECTION_11_YEARS = ['2021', '2026', '2031', '2046']
 

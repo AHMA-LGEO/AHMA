@@ -5,8 +5,8 @@ import pandas as pd
 from dash import dash_table, html, dcc
 import plotly.graph_objects as go
 
-from .data_loader import get_data_loader
-from .table_styles import (
+from dashboard_helpers.content_helpers.data_loader import get_data_loader
+from dashboard_helpers.content_helpers.table_styles import (
     blank_row,
     make_special_row_styles,
     make_style_cell,
@@ -16,7 +16,7 @@ from .table_styles import (
     format_number,
     format_percent
 )
-from .text_content import (
+from ..content_helpers.text_content import (
     SECTION_3_TITLE, SECTION_3_P1, SECTION_3_NOTE,
     TABLE_3_1_TITLE, TABLE_3_1_DESC, 
     CHART_3_2_TITLE, CHART_3_2_DESC,
@@ -25,7 +25,7 @@ from .text_content import (
     TABLE_3_5_TITLE, 
     TABLE_3_6_TITLE, CHART_3_6_DESC, TABLE_3_6_DESC, TABLE_3_6_NOTE)
 
-from .export_helpers import with_export_btn
+from ..content_helpers.export_helpers import with_export_btn
 
 from dashboard_helpers.config import (
     TABLE_FONT, CHART_COLORS, PLOT_CONFIG,
