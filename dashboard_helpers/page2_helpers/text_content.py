@@ -44,9 +44,9 @@ SECTION_2_LINK_3 = """[Home - BCAAFC](https://bcaafc.com/)"""
 
 SECTION_2_NOTE_P1 = """Sources:"""
 
-SECTION_2_NOTE_P2 = """Native Land Digital (https://native-land.ca/) is an Indigenous-led not-for-profit organization based in Canada. The Native Land map does not represent or intend to represent official or legal boundaries of any Indigenous nations."""
+SECTION_2_NOTE_P2 = """[Native Land Digital](https://native-land.ca/) is an Indigenous-led not-for-profit organization based in Canada. The Native Land map does not represent or intend to represent official or legal boundaries of any Indigenous nations."""
 
-SECTION_2_NOTE_P3 = """Métis Chartered Communities were identified as listed on the Métis Nation British Columbia website (https://www.mnbc.ca/citizens-culture/chartered-communities)."""
+SECTION_2_NOTE_P3 = """Métis Chartered Communities were identified as listed on the [Métis Nation British Columbia website](https://www.mnbc.ca/citizens-culture/chartered-communities)."""
 
 #-------------------- Section 3 descriptions --------------------
 SECTION_3_TITLE = 'Demographics'
@@ -283,7 +283,7 @@ TABLE_9_1_TITLE = "Number of Indigenous People Released from Corrections by Age 
 
 TABLE_9_1_DESC_P1 = """This data highlights the number of Indigenous individuals transitioning from one of the 10 custody centres in the province, a key point of housing vulnerability.⁴ There is an alarming overrepresentation of Indigenous people in the criminal justice system,⁵ and a lack of culturally appropriate and responsive services and resources upon release. Indigenous people continue to be disproportionately harmed in this system and this data can be used to support awareness and advocacy for transformational changes."""
 
-TABLE_9_1_DESC_P2 = """To learn more, please visit: """
+TABLE_9_1_DESC_P2 = """To learn more, please visit: (can go under the references tab as well)"""
 
 TABLE_9_1_LINK_1 = """BC First Nations Justice Council: https://trackingjustice.bcfnjc.com"""
 
@@ -300,7 +300,7 @@ TABLE_9_2_TITLE = "Number of Indigenous Children Ageing out of Care or Youth Agr
 
 TABLE_9_2_DESC = """Colonization and intergenerational trauma continue to impact young Indigenous people in profound ways, leading to overrepresentation in government care and experiences of homelessness. This data highlights Indigenous youth transitioning out of care, who may face housing instability without appropriate supports."""
 
-TABLE_9_2_LINK = """See AHMA's Indigenous Youth Housing Strategy for more information and solutions: https://ahma-bc.org/resource-centre/public-policy/indigenous-youth-housing-strategy/"""
+TABLE_9_2_LINK = """See [AHMA's Indigenous Youth Housing Strategy](https://ahma-bc.org/resource-centre/public-policy/indigenous-youth-housing-strategy/) for more information and solutions"""
 
 # Table 9.3 descriptions
 TABLE_9_3_TITLE = "Indigenous Homelessness"
@@ -309,7 +309,7 @@ TABLE_9_3_DESC_P1 = """This section highlights Point in Time Count data focused 
 
 TABLE_9_3_DESC_P2 = """It is important to recognize that Indigenous homelessness is often undercounted, and data on demographics, service access, and outcomes remains sparse or inconsistent. This limits accountability and masks the disproportionate harms faced by Indigenous people, particularly Indigenous women, girls, 2SLGBTQQIA+ individuals, and youth."""
 
-TABLE_9_3_DESC_P3 = """For more information:"""
+TABLE_9_3_DESC_P3 = """For more information: (can go under the references tab as well)"""
 
 TABLE_9_3_LINK_1 ="""https://ahma-bc.org/resource-centre/public-policy/bc-indigenous-homelessness/"""
 
