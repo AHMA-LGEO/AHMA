@@ -20,8 +20,8 @@ TABLE_3_2_INDIGENOUS_SUFFIXES = ["First Nations (North American Indian)", "Méti
 
 GENDER_MAPPING = {
         'Total - Gender': 'Indigenous',
-        '  Men+': 'Men+',
-        '  Women+': 'Women+'
+        '  Men+': 'Indigenous Men+',
+        '  Women+': 'Indigenous Women+'
     }
 
 class Section3DataPrep:
@@ -293,8 +293,8 @@ class Section3DataPrep:
                     "Non-Indigenous %": pct(non_indg_count, non_indg_total),
                     "First Nations": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[0])), # fetching 0th index = First Nations
                     "Métis": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[1])), # fetching 1st index = Metis
-                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 1st index = Inuit
-                    "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Multiple Other Responses
+                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Inuit
+                    "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[3])), # fetching 3rd index = Multiple Other Responses
                     
                 })
 

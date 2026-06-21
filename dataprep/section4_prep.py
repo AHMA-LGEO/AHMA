@@ -564,7 +564,7 @@ class Section4DataPrep:
                 )
 
         print("Table 4.6 is ready now...\n" + '=' * 60)
-        return result
+        return result.replace('Metis-led', 'Métis-led')
 
     def run_all(self) -> dict[str, pd.DataFrame]:
         "Runs all Section 4 methods and returns {name:df}"

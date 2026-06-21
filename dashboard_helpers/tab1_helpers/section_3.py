@@ -367,7 +367,7 @@ class Section3Prep:
 
     def create_chart_3_4(self, geocode: int):
         """Create stacked bar chart for Table 3.4 Indigenous population by gender (2021)."""
-        identity_cols = ['Men+', 'Women+']
+        identity_cols = ['Indigenous Men+', 'Indigenous Women+']
 
         df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=identity_cols)
 
@@ -421,7 +421,7 @@ class Section3Prep:
 
     def create_table_3_4_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.4: population by gender (2021)."""
-        value_cols = ['Indigenous', 'Men+', 'Women+']
+        value_cols = ['Indigenous', 'Indigenous Men+', 'Indigenous Women+']
         
         df = self.data_loader.get_table('table_3_4_indigenous_age_gender', geocode, check_columns=value_cols)
 
