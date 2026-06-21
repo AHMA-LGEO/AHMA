@@ -119,7 +119,7 @@ class Section5Prep:
                 "No data for Households by AMHI Income (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
@@ -215,7 +215,7 @@ class Section5Prep:
 
         return html.Div([
             with_export_btn(table, 'table-5-2'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
     
 
     def create_chart_5_2(self, geocode: int):
@@ -468,7 +468,7 @@ class Section5Prep:
                 "No data for Households by Number of Household Maintainers (2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -541,7 +541,7 @@ class Section5Prep:
 
         return html.Div([
             with_export_btn(table, 'table-5-5'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
 
 
 # For testing

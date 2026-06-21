@@ -56,7 +56,7 @@ class Section6Prep:
                 f"No data for {label_col_name}.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -135,12 +135,12 @@ class Section6Prep:
         if table_id == 'table-6-5':
             return html.Div([
                 with_export_btn(table, table_id),
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), False
 
         else:
             return html.Div([
                 with_export_btn(table, table_id),
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), False
     
 
     def create_chart_6(self, geocode: int, sql_table_name: str, label_col_name: str):

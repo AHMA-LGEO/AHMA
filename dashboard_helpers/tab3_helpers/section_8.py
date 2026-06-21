@@ -133,7 +133,7 @@ class Section8Prep:
                 "No data for Core Housing Needs indicators (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -185,7 +185,7 @@ class Section8Prep:
 
         return html.Div([
             with_export_btn(table, 'table-8-1'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
     
 
     def create_chart_8_1(self, geocode: int):
@@ -304,7 +304,7 @@ class Section8Prep:
                 "No data for Households in CHN or Extreme CHN (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         filtered = df.copy()
         _LABEL_COL = 'Census Year'
@@ -389,7 +389,7 @@ class Section8Prep:
 
         return html.Div([
             with_export_btn(table, 'table-8-3'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
 
 
     def create_table_8_4_layout(self, geocode: int):
@@ -491,7 +491,7 @@ class Section8Prep:
                 "No data for Households in CHN by Priority Population.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -562,7 +562,7 @@ class Section8Prep:
 
         return html.Div([
             with_export_btn(table, 'table-8-5'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
     
     
     def create_chart_8_5(self, geocode: int):

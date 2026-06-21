@@ -103,7 +103,7 @@ class Section4Prep:
                 "No data for Households by Tenure (2006, 2011, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -153,7 +153,7 @@ class Section4Prep:
 
         return html.Div([
             with_export_btn(table, 'table-4-1'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
 
 
     def create_chart_4_1(self, geocode: int):
@@ -366,7 +366,7 @@ class Section4Prep:
                 "No data for households by household size.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
-            ], className='pg2-table-lgeo')
+            ], className='pg2-table-lgeo'), True
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
@@ -453,7 +453,7 @@ class Section4Prep:
 
         return html.Div([
             with_export_btn(table, 'table-4-3'),
-        ], className='pg2-table-lgeo')
+        ], className='pg2-table-lgeo'), False
     
 
     def create_chart_4_3(self, geocode: int):
@@ -722,11 +722,11 @@ class Section4Prep:
     
 
     def prepare_table_4_6_data(self, geocode):
-        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode, 
+        df = self.data_loader.get_table('table_4_5_3_hh_by_family_type_distinction', geocode,
                                         check_columns=YEARS_MINUS_2011)
-        
+
         if df.empty:
-            return pd.DataFrame()
+            return pd.DataFrame(), []
 
         _LABEL_COL = 'Family Type'
 

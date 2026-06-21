@@ -25,6 +25,8 @@ section_10_layout = Section10Prep()
 # Table IDs with toggle features for Tab 2
 TABLE_IDS = ["table-6-1", "table-6-3", "table-6-5", "table-7-1"]
 
+TOGGLE_WRAPPER_STYLE = {}
+
 def derive_tab2_state(store: dict) -> str:
     """Return 'all_on', 'all_off', or 'mixed' based on per-table toggle states."""
     values = list(store.values())
@@ -96,28 +98,30 @@ layout = html.Div([
             html.Div([html.P(TABLE_6_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
-                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
-                              style={'fontFamily': TABLE_FONT}),
-                ]),
-                dbc.Switch(
-                    id={"type": "tab2-toggle", "index": "table-6-1"},
-                    value=False,
-                    label="",
-                    className="mb-0 green-toggle ms-5",
-                    style={"transform": "scale(1.2)"},
-                ),
-            ], className="d-flex align-items-center",
-               style={
-                #    "borderBottom": "2px solid #002145"
-                    "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-70px",
-                    "position": "relative",
-                    "paddingLeft": "12px",
-                    "paddingRight": "12px",
-                    "paddingTop": "8px",
-                    "paddingBottom": "8px",
-                }),
+                    html.Div([
+                        # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                        html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                                  style={'fontFamily': TABLE_FONT}),
+                    ]),
+                    dbc.Switch(
+                        id={"type": "tab2-toggle", "index": "table-6-1"},
+                        value=False,
+                        label="",
+                        className="mb-0 green-toggle ms-5",
+                        style={"transform": "scale(1.2)"},
+                    ),
+                ], className="d-flex align-items-center",
+                   style={
+                    #    "borderBottom": "2px solid #002145"
+                        "borderLeft": "4px solid #9CA37A",
+                        "marginBottom": "-70px",
+                        "position": "relative",
+                        "paddingLeft": "12px",
+                        "paddingRight": "12px",
+                        "paddingTop": "8px",
+                        "paddingBottom": "8px",
+                    }),
+            ], id='toggle-wrapper-6-1'),
 
             html.Div(id='table-6-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -132,28 +136,30 @@ layout = html.Div([
             html.Div([html.P(TABLE_6_3_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
-                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
-                              style={'fontFamily': TABLE_FONT}),
-                ]),
-                dbc.Switch(
-                    id={"type": "tab2-toggle", "index": "table-6-3"},
-                    value=False,
-                    label="",
-                    className="mb-0 green-toggle ms-5",
-                    style={"transform": "scale(1.2)"},
-                ),
-            ], className="d-flex align-items-center",
-               style={
-                #    "borderBottom": "2px solid #002145"
-                    "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-70px",
-                    "position": "relative",
-                    "paddingLeft": "12px",
-                    "paddingRight": "12px",
-                    "paddingTop": "8px",
-                    "paddingBottom": "8px",
-                }),
+                    html.Div([
+                        # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                        html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                                  style={'fontFamily': TABLE_FONT}),
+                    ]),
+                    dbc.Switch(
+                        id={"type": "tab2-toggle", "index": "table-6-3"},
+                        value=False,
+                        label="",
+                        className="mb-0 green-toggle ms-5",
+                        style={"transform": "scale(1.2)"},
+                    ),
+                ], className="d-flex align-items-center",
+                   style={
+                    #    "borderBottom": "2px solid #002145"
+                        "borderLeft": "4px solid #9CA37A",
+                        "marginBottom": "-70px",
+                        "position": "relative",
+                        "paddingLeft": "12px",
+                        "paddingRight": "12px",
+                        "paddingTop": "8px",
+                        "paddingBottom": "8px",
+                    }),
+            ], id='toggle-wrapper-6-3'),
 
             html.Div(id='table-6-3-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -169,28 +175,30 @@ layout = html.Div([
             html.Div([html.P(TABLE_6_5_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
-                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
-                              style={'fontFamily': TABLE_FONT}),
-                ]),
-                dbc.Switch(
-                    id={"type": "tab2-toggle", "index": "table-6-5"},
-                    value=False,
-                    label="",
-                    className="mb-0 green-toggle ms-5",
-                    style={"transform": "scale(1.2)"},
-                ),
-            ], className="d-flex align-items-center",
-               style={
-                #    "borderBottom": "2px solid #002145"
-                    "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-70px",
-                    "position": "relative",
-                    "paddingLeft": "12px",
-                    "paddingRight": "12px",
-                    "paddingTop": "8px",
-                    "paddingBottom": "8px",
-                }),
+                    html.Div([
+                        # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                        html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                                  style={'fontFamily': TABLE_FONT}),
+                    ]),
+                    dbc.Switch(
+                        id={"type": "tab2-toggle", "index": "table-6-5"},
+                        value=False,
+                        label="",
+                        className="mb-0 green-toggle ms-5",
+                        style={"transform": "scale(1.2)"},
+                    ),
+                ], className="d-flex align-items-center",
+                   style={
+                    #    "borderBottom": "2px solid #002145"
+                        "borderLeft": "4px solid #9CA37A",
+                        "marginBottom": "-70px",
+                        "position": "relative",
+                        "paddingLeft": "12px",
+                        "paddingRight": "12px",
+                        "paddingTop": "8px",
+                        "paddingBottom": "8px",
+                    }),
+            ], id='toggle-wrapper-6-5'),
 
             html.Div(id='table-6-5-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -212,28 +220,30 @@ layout = html.Div([
             html.Div([html.P(TABLE_7_1_DESC)], className='pg2-text-content-lgeo'),
             html.Div([
                 html.Div([
-                    # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
-                    html.Span('Show Comparison: Indigenous & Non-Indigenous',
-                              style={'fontFamily': TABLE_FONT}),
-                ]),
-                dbc.Switch(
-                    id={"type": "tab2-toggle", "index": "table-7-1"},
-                    value=False,
-                    label="",
-                    className="mb-0 green-toggle ms-5",
-                    style={"transform": "scale(1.2)"},
-                ),
-            ], className="d-flex align-items-center",
-               style={
-                #    "borderBottom": "2px solid #002145"
-                    "borderLeft": "4px solid #9CA37A",
-                    "marginBottom": "-70px",
-                    "position": "relative",
-                    "paddingLeft": "12px",
-                    "paddingRight": "12px",
-                    "paddingTop": "8px",
-                    "paddingBottom": "8px",
-                }),
+                    html.Div([
+                        # html.Strong('Show Comparison: ', style={'marginRight': '6px'}),
+                        html.Span('Show Comparison: Indigenous & Non-Indigenous',
+                                  style={'fontFamily': TABLE_FONT}),
+                    ]),
+                    dbc.Switch(
+                        id={"type": "tab2-toggle", "index": "table-7-1"},
+                        value=False,
+                        label="",
+                        className="mb-0 green-toggle ms-5",
+                        style={"transform": "scale(1.2)"},
+                    ),
+                ], className="d-flex align-items-center",
+                   style={
+                    #    "borderBottom": "2px solid #002145"
+                        "borderLeft": "4px solid #9CA37A",
+                        "marginBottom": "-70px",
+                        "position": "relative",
+                        "paddingLeft": "12px",
+                        "paddingRight": "12px",
+                        "paddingTop": "8px",
+                        "paddingBottom": "8px",
+                    }),
+            ], id='toggle-wrapper-7-1'),
 
             html.Div(id='table-7-1-container'),
         ], className='pg2-table-plot-box-lgeo'),
@@ -338,13 +348,16 @@ def tab2_toggle_click(_, current_intent):
 @callback(
     Output('chart-6-1-container', 'children'),
     Output('table-6-1-container', 'children'),
+    Output('toggle-wrapper-6-1', 'style'),
     Output('table-6-2-container', 'children'),
 
     Output('chart-6-3-container', 'children'),
     Output('table-6-3-container', 'children'),
+    Output('toggle-wrapper-6-3', 'style'),
     Output('table-6-4-container', 'children'),
 
     Output('table-6-5-container', 'children'),
+    Output('toggle-wrapper-6-5', 'style'),
     Output('table-6-6-container', 'children'),
 
     Input('main-area', 'data'),
@@ -369,22 +382,30 @@ def update_section_6(geo_name, scale, visibility):
     table_6_6_name = 'table_6_6_hhs_structure_type_breakdown'
     table_6_5_6_label = 'Households by Structural Type of Dwelling'
 
+    table_6_1, empty_6_1 = section_6_layout.create_table_6_primary_layout(geocode, table_6_1_name, table_6_1_2_label, show_both_6_1)
+    table_6_3, empty_6_3 = section_6_layout.create_table_6_primary_layout(geocode, table_6_3_name, table_6_3_4_label, show_both_6_3)
+    table_6_5, empty_6_5 = section_6_layout.create_table_6_primary_layout(geocode, table_6_5_name, table_6_5_6_label, show_both_6_5)
+
     return (
         section_6_layout.create_chart_6(geocode, table_6_1_name, table_6_1_2_label),
-        section_6_layout.create_table_6_primary_layout(geocode, table_6_1_name, table_6_1_2_label, show_both_6_1),
-        section_6_layout.create_table_6_secondary_layout(geocode, table_6_2_name,table_6_1_2_label),
+        table_6_1,
+        {'display': 'none'} if empty_6_1 else TOGGLE_WRAPPER_STYLE,
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_2_name, table_6_1_2_label),
 
         section_6_layout.create_chart_6(geocode, table_6_3_name, table_6_3_4_label),
-        section_6_layout.create_table_6_primary_layout(geocode, table_6_3_name, table_6_3_4_label, show_both_6_3),
+        table_6_3,
+        {'display': 'none'} if empty_6_3 else TOGGLE_WRAPPER_STYLE,
         section_6_layout.create_table_6_secondary_layout(geocode, table_6_4_name, table_6_3_4_label),
 
-        section_6_layout.create_table_6_primary_layout(geocode, table_6_5_name, table_6_5_6_label, show_both_6_5),
-        section_6_layout.create_table_6_secondary_layout(geocode, table_6_6_name, table_6_5_6_label),                                                
+        table_6_5,
+        {'display': 'none'} if empty_6_5 else TOGGLE_WRAPPER_STYLE,
+        section_6_layout.create_table_6_secondary_layout(geocode, table_6_6_name, table_6_5_6_label),
         )
 
 
 @callback(
     Output('table-7-1-container', 'children'),
+    Output('toggle-wrapper-7-1', 'style'),
     Output('chart-7-3-1-container', 'children'),
     Output('table-7-3-1-container', 'children'),
     Output('chart-7-3-2-container', 'children'),
@@ -398,8 +419,10 @@ def update_section_6(geo_name, scale, visibility):
 def update_section_7(geo_name, scale, visibility):
     show_both = (visibility or {}).get("table-7-1", False)
     geocode = resolve_geocode(geo_name, scale, section_7_layout.data_loader)
+    table_7_1, empty_7_1 = section_7_layout.create_table_7_1_layout(geocode, show_both)
     return (
-        section_7_layout.create_table_7_1_layout(geocode, show_both),
+        table_7_1,
+        {'display': 'none'} if empty_7_1 else TOGGLE_WRAPPER_STYLE,
         section_7_layout.create_chart_7_3_1(geocode),
         section_7_layout.create_table_7_3_1_layout(geocode),
         section_7_layout.create_chart_7_3_2(geocode),

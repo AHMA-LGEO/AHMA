@@ -52,6 +52,8 @@ class DataLoader:
                         col.isna()
                         | (col.astype(str).str.strip() == '')
                         | (col.astype(str).str.strip().str.upper() == 'N/A')
+                        | (col.astype(str).str.strip() == 'No Rate')
+                        | (pd.to_numeric(col, errors='coerce') == 0)
                 )
                 .all(axis=1)
             )

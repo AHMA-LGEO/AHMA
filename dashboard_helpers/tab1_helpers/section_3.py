@@ -60,6 +60,8 @@ class Section3Prep:
 
         def get_values(filtered_df, label_col, label_val, pct_row=False):
             """Extract year values for a specific label row with formatting."""
+            if filtered_df.empty or label_col not in filtered_df.columns:
+                return {y: None for y in YEARS}
             row = filtered_df[filtered_df[label_col] == label_val]
             if row.empty:
                 return {y: None for y in YEARS}
