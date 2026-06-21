@@ -108,7 +108,7 @@ layout = html.Div([
                         value=False,
                         label="",
                         className="mb-0 green-toggle ms-5",
-                        style={"transform": "scale(1.2)"},
+                        style={"transform": "scale(1.2)", "pointerEvents": "auto"},
                     ),
                 ], className="d-flex align-items-center",
                    style={
@@ -120,6 +120,7 @@ layout = html.Div([
                         "paddingRight": "12px",
                         "paddingTop": "8px",
                         "paddingBottom": "8px",
+                        "pointerEvents": "none",
                     }),
             ], id='toggle-wrapper-6-1'),
 
@@ -146,7 +147,7 @@ layout = html.Div([
                         value=False,
                         label="",
                         className="mb-0 green-toggle ms-5",
-                        style={"transform": "scale(1.2)"},
+                        style={"transform": "scale(1.2)", "pointerEvents": "auto"},
                     ),
                 ], className="d-flex align-items-center",
                    style={
@@ -158,6 +159,7 @@ layout = html.Div([
                         "paddingRight": "12px",
                         "paddingTop": "8px",
                         "paddingBottom": "8px",
+                        "pointerEvents": "none",
                     }),
             ], id='toggle-wrapper-6-3'),
 
@@ -185,7 +187,7 @@ layout = html.Div([
                         value=False,
                         label="",
                         className="mb-0 green-toggle ms-5",
-                        style={"transform": "scale(1.2)"},
+                        style={"transform": "scale(1.2)", "pointerEvents": "auto"},
                     ),
                 ], className="d-flex align-items-center",
                    style={
@@ -197,6 +199,7 @@ layout = html.Div([
                         "paddingRight": "12px",
                         "paddingTop": "8px",
                         "paddingBottom": "8px",
+                        "pointerEvents": "none",
                     }),
             ], id='toggle-wrapper-6-5'),
 
@@ -230,7 +233,7 @@ layout = html.Div([
                         value=False,
                         label="",
                         className="mb-0 green-toggle ms-5",
-                        style={"transform": "scale(1.2)"},
+                        style={"transform": "scale(1.2)", "pointerEvents": "auto"},
                     ),
                 ], className="d-flex align-items-center",
                    style={
@@ -242,6 +245,7 @@ layout = html.Div([
                         "paddingRight": "12px",
                         "paddingTop": "8px",
                         "paddingBottom": "8px",
+                        "pointerEvents": "none",
                     }),
             ], id='toggle-wrapper-7-1'),
 
