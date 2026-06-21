@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 source_dir = Path(__file__).parent.parent / "source" / "data"
-DATA_PATH = os.path.join(source_dir, r"2026-06-09 IHNAT Data v11.xlsx") # CHECK IN DROPBOX'S SOURCE FOLDER, IF THIS IS THE RECENT DATA FILE
+DATA_PATH = os.path.join(source_dir, r"2026-06-19 IHNAT Data v12.xlsx") # CHECK IN DROPBOX'S SOURCE FOLDER, IF THIS IS THE RECENT DATA FILE
 
 # ADDED THE ACCESS PATH HERE FROM SECTION 10 PREP, FOR CONSISTENCY PURPOSES
 ACCESS_DATA_PATH = os.path.join(source_dir, r"2026-05-10 IHNAT Access Data v1.csv") # CHECK IN DROPBOX'S PROCESSED->DATA->EXCEL->CSV->Access Data (for source-data) FOR MOST
@@ -165,22 +165,32 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
     # Step 2: resolve column name conflicts if across different sheets
     col_seen = {} # col_name -> sheet_name that first claimed it
     for sheet_name, frame in frames.items():
-        rename_map = {}
-        for col in frame.columns:
+        new_columns = list(frame.columns)
+        col_count_in_sheet = {}
+
+        for i, col in enumerate(frame.columns):
             if col in ANCHOR_COLS:
                 continue
 
-            if col in col_seen:
+            if col in col_count_in_sheet:
+                # Intra-sheet duplicate: disambiguate with occurrence count
+                col_count_in_sheet[col] += 1
+                new_name = f"{col}_{col_count_in_sheet[col]}"
+                new_columns[i] = new_name
+                col_seen[new_name] = sheet_name
+                print(f"[WARN] '{col}' duplicate within '{sheet_name}' (occurrence {col_count_in_sheet[col]}) → renamed to '{new_name}'")
+            elif col in col_seen:
+                # Cross-sheet conflict: append sheet name
                 new_name = f"{col}_{sheet_name}"
-                rename_map[col] = new_name
+                new_columns[i] = new_name
+                col_seen[new_name] = sheet_name
                 print(f"[WARN] '{col}' conflict between '{col_seen[col]}' and '{sheet_name}' → renamed to '{new_name}'")
-            # elif col in ['Region', 'Name']: # Renaming Region or Name column to Geography
-            #     new_name = 'Geography'
-            #     rename_map[col] = new_name
             else:
+                col_count_in_sheet[col] = 1
                 col_seen[col] = sheet_name
 
-        frames[sheet_name] = frame.rename(columns=rename_map)
+        frame.columns = new_columns
+        frames[sheet_name] = frame
 
     # Step 3: merging all data on geocode column
     result = list(frames.values())[0]
@@ -205,6 +215,6 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
     return result.reset_index(drop=True)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     
-    a = fetch_data("9.1", sheets=["BC Corrections"])
+#     a = fetch_data("9.1", sheets=["BC Corrections"])
