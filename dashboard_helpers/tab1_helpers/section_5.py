@@ -381,7 +381,7 @@ class Section5Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_5_3_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-4-4'),
+            with_export_btn(table, 'table-5-3'),
         ], className='pg2-table-lgeo')
     
     

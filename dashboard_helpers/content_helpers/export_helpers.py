@@ -10,7 +10,7 @@ from dashboard_helpers.config import TABLE_FONT
 def with_export_btn(table_component, table_id: str, max_width: str = None):
 
     # Base layout styles
-    wrapper_style = {"width": "100%"}
+    wrapper_style = {"width": "100%", "position": "relative", "zIndex": 1}
     
     # Dynamically adjust maximum width restriction if provided
     if max_width:
