@@ -272,7 +272,7 @@ class Section8Prep:
             title=dict(
                 text=f"2021 Indigenous Households in Unacceptable Housing<br><sup>{geo_name}</sup>",
                 x=0.5, xanchor="center",
-                font=dict(size=15, family=TABLE_FONT),
+                # font=dict(size=15, family=TABLE_FONT),
             ),
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),

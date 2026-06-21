@@ -233,7 +233,7 @@ class Section9Prep:
             title=dict(
                 text=f"Number of Indigenous People<br>Released from Corrections by Age Group<br><sup>{geo_name}</sup>",
                 x=0.5, xanchor="center",
-                font=dict(size=15, family=TABLE_FONT),
+                # font=dict(size=15, family=TABLE_FONT),
             ),
             xaxis=dict(
                 title='Fiscal Year',

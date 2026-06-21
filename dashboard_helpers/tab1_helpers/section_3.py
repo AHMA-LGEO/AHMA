@@ -226,7 +226,7 @@ class Section3Prep:
 
         fig.update_layout(
             title=dict(
-                text=f'Indigenous and Non-Indigenous Populations by Age Groups,<br>2021 Census<br>[{geo_name}]',
+                text=f'Indigenous and Non-Indigenous Populations by Age Groups,<br>2021 Census<br>{geo_name}',
                 x=0.5, xanchor='center'
             ),
             barmode='stack',
@@ -282,7 +282,7 @@ class Section3Prep:
 
         fig.update_layout(
             title=dict(
-                text=f'Indigenous Populations by Age Group & Identity,<br>2021 Census<br>[{geo_name}]',
+                text=f'Indigenous Populations by Age Group & Identity,<br>2021 Census<br>{geo_name}',
                 x=0.5, xanchor='center'
             ),
             barmode='stack',
@@ -398,7 +398,7 @@ class Section3Prep:
 
         fig.update_layout(
             title=dict(
-                text=f'Indigenous Populations by Age Groups & Gender,<br>2021 Census<br>[{geo_name}]',
+                text=f'Indigenous Populations by Age Groups & Gender,<br>2021 Census<br>{geo_name}',
                 x=0.5, xanchor='center'
             ),
             barmode='stack',
@@ -676,7 +676,7 @@ class Section3Prep:
             title=dict(
                 text=f"2021 Indigenous Ancestry<br><sup>{geo_name}</sup>",
                 x=0.5, xanchor="center",
-                font=dict(size=15, family=TABLE_FONT),
+                # font=dict(size=15, family=TABLE_FONT),
             ),
             paper_bgcolor="white",
             showlegend=False,
