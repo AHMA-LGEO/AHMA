@@ -226,7 +226,7 @@ class Section9Prep:
                 line=dict(color=colors.get(age_cat, 'gray'), width=1),
                 fillcolor=colors.get(age_cat),
                 legendrank=len(colors) - index,
-                hovertemplate=f'<br>Year: %{{x}}<br>Number of Indigenous People: %{{y}}<extra></extra>'
+                hovertemplate=f'<br>Year: %{{x}}<br>Number of Indigenous People: %{{y:,.0f}}<extra></extra>'
             ))
 
         fig.update_layout(

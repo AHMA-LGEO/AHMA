@@ -488,30 +488,32 @@ class Section4Prep:
 
         fig = go.Figure()
         for i, tenure in enumerate(tenure_list):
-            counts = pd.to_numeric(count_indexed.loc[tenure], errors='coerce').fillna(0)
-            percentages = (
-                counts / totals_series.replace(0, float('nan')) * 100
-            ).fillna(0).tolist()
+            counts = pd.to_numeric(count_indexed.loc[tenure], errors='coerce').fillna(0).tolist()
+            # percentages = (
+            #     counts / totals_series.replace(0, float('nan')) * 100
+            # ).fillna(0).tolist()
 
             fig.add_trace(go.Bar(
                 name=tenure,
                 x=YEARS_MINUS_2011,
-                y=percentages,
+                y=counts,
                 marker_color=colors[tenure],
                 legendrank=-(i + 1),
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
-                hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
+                # hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
+                hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Number of People: %{{y:,.0f}}<extra></extra>'
             ))
 
         fig.update_layout(
             title=dict(text=f'Indigenous Households by Household Size - {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Census Year',
             yaxis=dict(
-                title='Percentage of Households',
-                ticksuffix='%',
-                range=[0, 100],
-                dtick=10,
+                # title='Percentage of Households',
+                title='Number of Households',
+                # ticksuffix='%',
+                # range=[0, 100],
+                # dtick=10,
                 gridcolor='#E5E5E5',
             ),
             barmode='stack',
