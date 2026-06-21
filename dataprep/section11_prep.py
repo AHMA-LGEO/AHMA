@@ -123,13 +123,40 @@ class Section11DataPrep:
             # for a given geography, initialize a new dict in order to efficiently calculate totals and growth rates
             num_hhs = { year: {} for year in PROJECTION_YEARS }
 
+            # Pre-compute HH sizes with fallback logic before the main loop
+            _hh_fn    = get_val(match, cm.TABLE_11_1_2_COL_MAP["First Nations"]["Avg. Indigenous HH size (Province, 2021)"])
+            _hh_metis = get_val(match, cm.TABLE_11_1_2_COL_MAP["Métis"]["Avg. Indigenous HH size (Province, 2021)"])
+            _hh_inuit = get_val(match, cm.TABLE_11_1_2_COL_MAP["Inuit"]["Avg. Indigenous HH size (Province, 2021)"])
+            _hh_other = get_val(match, cm.TABLE_11_1_2_COL_MAP["Other Indigenous"]["Avg. Indigenous HH size (Province, 2021)"])
+
+            def _has_val(v):
+                return v is not None and not pd.isna(v)
+
+            if _has_val(_hh_other) and not _has_val(_hh_metis) and not _has_val(_hh_inuit):
+                _hh_metis = _hh_other
+                _hh_inuit = _hh_other
+            elif not _has_val(_hh_other) and _has_val(_hh_fn):
+                _hh_metis = _hh_fn
+                _hh_inuit = _hh_fn
+                _hh_other = _hh_fn
+
+            hh_size_overrides = {
+                "First Nations": _hh_fn,
+                "Métis": _hh_metis,
+                "Inuit": _hh_inuit,
+                "Other Indigenous": _hh_other,
+            }
+
             # for each population count (i.e. First Mations, Inuit, etc.)
             for indigenous_pop, year_col_map in cm.TABLE_11_1_2_COL_MAP.items():
-                
+
                 # if not total, which should be the last loop iteration, calculate and populate num hhs and % change for all years
-                if indigenous_pop != "Total": 
+                if indigenous_pop != "Total":
                     # calculate estimated number of households for all the years
-                    hh_size = get_val(match, year_col_map["Avg. Indigenous HH size (Province, 2021)"])
+                    hh_size = hh_size_overrides.get(
+                        indigenous_pop,
+                        get_val(match, year_col_map["Avg. Indigenous HH size (Province, 2021)"])
+                    )
                     for year in PROJECTION_YEARS:
                         pop = get_val(match, year_col_map[year])
                         # store the value in our dictionary

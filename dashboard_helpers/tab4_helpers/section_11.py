@@ -90,7 +90,7 @@ class Section11Prep:
 
         # 3-level columns: [geo_name, year, community]
         columns = (
-            [{"name": [geo_name, "Census Year", "Household Count"], "id": _LABEL_COL}]
+            [{"name": [geo_name, "Census Year", _LABEL_COL], "id": _LABEL_COL}]
             +
             [{"name": [geo_name, "2021", "Estimate"], "id": "2021_E"}]
             +
@@ -142,13 +142,13 @@ class Section11Prep:
     
 
     def create_table_11_1_2_layout(self, geocode: int):
-        """Create Dash DataTable for Table 11.1.2: Projected Population of Indigenous Households."""
+        """Create Dash DataTable for Table 11.1.2: Projected Household of Indigenous Households."""
         df = self.data_loader.get_table('table_11_1_2_projected_hh', geocode, check_columns=SECTION_11_YEARS)
 
         if df.empty:
             return html.Div([
                 html.Div(
-                "No data for projected households for indigenous population.",
+                "No data for projected households for indigenous household.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
@@ -190,6 +190,8 @@ class Section11Prep:
         )
 
         table_df = table_df[[_LABEL_COL] + val_cols]
+        table_df.loc[table_df[_LABEL_COL].eq('Total'), 'Avg'] = '-'
+        
         # print(table_df, val_cols)
 
         for col in val_cols:
@@ -204,7 +206,7 @@ class Section11Prep:
 
         # 3-level columns: [geo_name, year, community]
         columns = (
-            [{"name": [geo_name, "Census Year", "Population Count"], "id": _LABEL_COL}]
+            [{"name": [geo_name, "Census Year", _LABEL_COL], "id": _LABEL_COL}]
 
             # Avg column (blank top/year header)
             + [{
