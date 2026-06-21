@@ -21,7 +21,7 @@ from ..content_helpers.text_content import (
     # TABLE_12_2_NOTE
     )
 from ..content_helpers.export_helpers import with_export_btn
-from dashboard_helpers.config import TABLE_FONT
+from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT
 
 class Section12Prep:
     """Prepare and format Section 12 schemas."""
@@ -30,7 +30,100 @@ class Section12Prep:
         self.data_loader = get_data_loader()
 
     def create_table_12_1_layout(self):
-        """Add static screenshots from AHMA's reports."""
+        """Static tables from AHMA provincial report: Table 4 and Table 6."""
+
+        base_style = get_base_table_style()
+
+        _LABEL_4 = "Households in Core Need 2021"
+        _VAL_4   = "Number"
+
+        table4_rows = [
+            {_LABEL_4: _LABEL_4 + " ", _VAL_4: "17,145"},
+            {_LABEL_4: "Subtract: Households in Subsidized Housing (affordability needs substantively met)", _VAL_4: "- 2,845"},
+            {_LABEL_4: "Subtotal:",  _VAL_4: "14,300"},
+            blank_row(_LABEL_4, [_VAL_4]),
+            {_LABEL_4: "Add: Households Experiencing Homelessness",  _VAL_4: "+ 4,541"},
+            {_LABEL_4: "Subtotal:", _VAL_4: "18,841"},
+            blank_row(_LABEL_4, [_VAL_4]),
+            {_LABEL_4: "Add: Projected Households with Incomes Below Core Need Threshold Unable to Find Appropriate Housing in the Market (15.5% of 27,407)", 
+             _VAL_4: "+4,248"},
+            blank_row(_LABEL_4, [_VAL_4]),
+            {_LABEL_4: "Total Need for Affordable Housing Solutions", _VAL_4: "23,089"},
+        ]
+        table4_df = pd.DataFrame(table4_rows, dtype=object)
+
+        columns4 = [
+            {"name": _LABEL_4, "id": _LABEL_4},
+            {"name": _VAL_4, "id": _VAL_4},
+        ]
+
+        table4 = dash_table.DataTable(
+            id='table-12-1-4',
+            columns=columns4,
+            data=table4_df.to_dict('records'),
+            merge_duplicate_headers=True,
+            style_data_conditional=(
+                generate_style_data_conditional(table4_df)
+                + make_special_row_styles(
+                    table4_df, _LABEL_4,
+                    section_headers={"Subtotal:", _LABEL_4 + " "},
+                    total_labels={"Total Need for Affordable Housing Solutions"},
+                )
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns4, is_multiindex=False, first_col_id=_LABEL_4,
+            ) + [
+                {'if': {'column_id': _LABEL_4}, 'backgroundColor': TABLE_COLORS['columns'],
+                                                'textAlign': 'left',  'paddingLeft': '12px'},
+                {'if': {'column_id': _VAL_4},   'textAlign': 'right', 'paddingRight': '12px'},
+            ],
+            style_cell_conditional=make_style_cell(_LABEL_4, [_VAL_4], label_width='75%'),
+            **base_style
+        )
+
+        
+        _LABEL_6 = "Affordable Housing Solution"
+        _VAL_6   = "Number"
+
+        table6_rows = [
+            # blank_row(_LABEL_6, [_VAL_6], "AFFORDABLE HOUSING SOLUTION"),
+            {_LABEL_6: "Rent/affordability assistance",    _VAL_6: "8,900"},
+            {_LABEL_6: "Supportive housing",               _VAL_6: "4,700"},
+            {_LABEL_6: "Affordable homeownership",         _VAL_6: "950"},
+            {_LABEL_6: "Independent subsidized housing",   _VAL_6: "8,500"},
+            # blank_row(_LABEL_6, [_VAL_6]),
+            {_LABEL_6: "Total Affordable Housing Solutions", _VAL_6: "23,000 (rounded)"},
+        ]
+        table6_df = pd.DataFrame(table6_rows, dtype=object)
+
+        columns6 = [
+            {"name": _LABEL_6, "id": _LABEL_6},
+            {"name": _VAL_6,   "id": _VAL_6},
+        ]
+
+        table6 = dash_table.DataTable(
+            id='table-12-1-6',
+            columns=columns6,
+            data=table6_df.to_dict('records'),
+            merge_duplicate_headers=False,
+            style_data_conditional=(
+                generate_style_data_conditional(table6_df)
+                + make_special_row_styles(
+                    table6_df, _LABEL_6,
+                    total_labels={"Total Affordable Housing Solutions"},
+                )
+            ),
+            style_header_conditional=generate_style_header_conditional(
+                columns6, is_multiindex=False, first_col_id=_LABEL_6,
+            ) + [
+                {'if': {'column_id': _LABEL_6}, 'backgroundColor': TABLE_COLORS['columns'],
+                                                'textAlign': 'left',  'paddingLeft': '12px'},
+                {'if': {'column_id': _VAL_6},   'textAlign': 'right', 'paddingRight': '12px'},
+            ],
+            style_cell_conditional=make_style_cell(_LABEL_6, [_VAL_6], label_width='75%'),
+            **base_style
+        )
+
         return html.Div([
             html.H4(SECTION_12_TITLE, className='table-title'),
             html.Div([html.P(SECTION_12_P1)], className='pg2-text-content-lgeo'),
@@ -38,8 +131,10 @@ class Section12Prep:
             html.Div([html.P(TABLE_12_1_DESC_P1),
                       html.P(TABLE_12_1_DESC_P2),
                       html.P(TABLE_12_1_DESC_P3)], className='pg2-text-content-lgeo'),
-            html.Img(src='./assets/Section 12.1 Table 4.png', className='footer-image'),
-            html.Img(src='./assets/Section 12.1 Table 6.png', className='footer-image')
+            with_export_btn(table4, 'table-12-1-4'),
+            html.Br(),
+            html.Br(),
+            with_export_btn(table6, 'table-12-1-6'),
         ])
 
     def create_table_12_2_layout(self, geocode: int):

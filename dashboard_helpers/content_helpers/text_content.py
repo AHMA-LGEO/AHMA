@@ -296,7 +296,7 @@ TABLE_9_1_LINK_4 = """Department of Justice (2024). The Overrepresentation of In
 TABLE_9_1_DESC_P3 = """The following table shows the numerical values of the above chart."""
 
 # Table 9.2 descriptions
-TABLE_9_2_TITLE = "Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24)(Service Delivery Area)"
+TABLE_9_2_TITLE = "Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24) (Service Delivery Area)"
 
 TABLE_9_2_DESC = """Colonization and intergenerational trauma continue to impact young Indigenous people in profound ways, leading to overrepresentation in government care and experiences of homelessness. This data highlights Indigenous youth transitioning out of care, who may face housing instability without appropriate supports."""
 
