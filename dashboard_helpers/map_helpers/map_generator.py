@@ -17,6 +17,12 @@ class MapGenerator:
 
     def __init__(self):
         self.data_loader = DataLoader()
+        self._geojson_cache = {}
+
+    def _geojson(self, gdf, key):
+        if key not in self._geojson_cache:
+            self._geojson_cache[key] = json.loads(gdf.geometry.to_json())
+        return self._geojson_cache[key]
 
     def create_province_map(self, selected_geography: str = None, highlight: bool = False) -> go.Figure:
         """Create province-level map."""
@@ -34,7 +40,7 @@ class MapGenerator:
 
         fig = go.Figure()
         fig.add_trace(go.Choroplethmapbox(
-            geojson=json.loads(gdf.geometry.to_json()),
+            geojson=self._geojson(gdf, ('province', id(gdf))),
             locations=gdf.index,
             z=gdf['rand'],
             showscale=False,
@@ -65,12 +71,15 @@ class MapGenerator:
                           region_code: str = None) -> go.Figure:
         """Create region (CD) level map."""
         if region_code:
-            gdf = self.data_loader.load_region_gdf(int(region_code[:2]))
+            _prov_code = int(region_code[:2])
+            gdf = self.data_loader.load_region_gdf(_prov_code)
         elif selected_geography:
             info = self.data_loader.get_geography_info(selected_geography)
-            gdf = self.data_loader.load_region_gdf(int(info['province_code']))
+            _prov_code = int(info['province_code'])
+            gdf = self.data_loader.load_region_gdf(_prov_code)
         else:
-            gdf = self.data_loader.load_region_gdf(PROVINCE_CODE)
+            _prov_code = PROVINCE_CODE
+            gdf = self.data_loader.load_region_gdf(_prov_code)
 
         # if highlight and selected_geography:
         #     info = self.data_loader.get_geography_info(selected_geography)
@@ -92,7 +101,7 @@ class MapGenerator:
 
         fig = go.Figure()
         fig.add_trace(go.Choroplethmapbox(
-            geojson=json.loads(gdf.geometry.to_json()),
+            geojson=self._geojson(gdf, ('region', _prov_code)),
             locations=gdf.index,
             z=gdf['rand'],
             showscale=False,
@@ -148,7 +157,7 @@ class MapGenerator:
 
         fig = go.Figure()
         fig.add_trace(go.Choroplethmapbox(
-            geojson=json.loads(gdf.geometry.to_json()),
+            geojson=self._geojson(gdf, ('subregion', region_code)),
             locations=gdf.index,
             z=gdf['rand'],
             showscale=False,

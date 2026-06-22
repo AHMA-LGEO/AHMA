@@ -193,9 +193,11 @@ def update_map(click_data, reset_clicks, selected_geo, *args):
         return fig, selected_geo
 
     if triggered_id == 'to-geography-1':
-        if level in ['province', 'cd']:
-            fig = map_generator.create_region_map(selected_geo, highlight=True)
-        else:
+        if level == 'province':
+            fig = map_generator.create_region_map(selected_geo, highlight=False)
+        elif level == 'cd':
+            fig = map_generator.create_subregion_map(selected_geo, highlight=False)
+        else:  # 'csd' — highlight the selected municipality
             fig = map_generator.create_subregion_map(selected_geo, highlight=True)
         return fig, selected_geo
 

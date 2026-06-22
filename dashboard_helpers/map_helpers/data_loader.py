@@ -17,6 +17,8 @@ class DataLoader:
         self.engine = create_engine(f'sqlite:///{DB_PATH}')
         self._geocode_master = None
         self._province_gdf = None
+        self._region_gdf_cache = {}
+        self._subregion_gdf_cache = {}
 
     @property
     def geocode_master(self) -> pd.DataFrame:
@@ -72,22 +74,28 @@ class DataLoader:
         return self._province_gdf
 
     def load_region_gdf(self, province_code: int = None) -> gpd.GeoDataFrame:
-        """Load region (CD) shapefile for a province."""
+        """Load region (CD) shapefile for a province (cached)."""
         if province_code is None:
             province_code = PROVINCE_CODE
-
-        filepath = REGION_DATA_DIR / f"{province_code}.shp"
-        gdf = gpd.read_file(filepath, encoding='UTF-8')
-        return gdf.set_index('CDUID')
+        if province_code not in self._region_gdf_cache:
+            filepath = REGION_DATA_DIR / f"{province_code}.shp"
+            gdf = gpd.read_file(filepath, encoding='UTF-8')
+            self._region_gdf_cache[province_code] = gdf.set_index('CDUID')
+        return self._region_gdf_cache[province_code]
 
     def load_subregion_gdf(self, region_code: int) -> gpd.GeoDataFrame:
-        """Load subregion (CSD) shapefile for a region."""
+        """Load subregion (CSD) shapefile for a region (cached)."""
+        if region_code in self._subregion_gdf_cache:
+            return self._subregion_gdf_cache[region_code]
         try:
             filepath = SUBREGION_DATA_DIR / f"{region_code}.shp"
             gdf = gpd.read_file(filepath)
-            # print(gdf.set_index('CSDUID'))
-            return gdf.set_index('CSDUID')
+            result = gdf.set_index('CSDUID')
+            result.geometry = result.geometry.simplify(tolerance=0.001, preserve_topology=True)
+            self._subregion_gdf_cache[region_code] = result
+            return result
         except Exception:
+            self._subregion_gdf_cache[region_code] = None
             # Fallback to province level if subregion data not available
             return None
 
