@@ -53,7 +53,8 @@ MODEBAR_ACTIVECOLOR = '#044762'
 PLOT_CONFIG = {
     'displayModeBar': True,
     'displaylogo': False,
-    'modeBarButtonsToRemove': ['zoom', 'lasso2d', 'pan', 'select', 'autoScale', 'resetScale', 'resetViewMapbox']
+    'modeBarButtonsToRemove': ['zoom', 'lasso2d', 'pan', 'select', 'autoScale', 'resetScale', 'resetViewMapbox'],
+    "responsive": True
 }
 
 # Page 2 - Table styling
