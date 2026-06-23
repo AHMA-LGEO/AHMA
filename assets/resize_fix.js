@@ -1,17 +1,29 @@
-// After the page fully loads, trigger a resize so Plotly redraws charts
-// at the correct container width (fixes overlap when loaded inside a hidden tab).
-window.addEventListener('load', function () {
-    setTimeout(function () {
-        window.dispatchEvent(new Event('resize'));
-    }, 500);
-});
-
-// Also respond to a postMessage from the WordPress parent when a tab is clicked,
-// in case the iframe was already loaded when the user switches back to this tab.
-window.addEventListener('message', function (e) {
-    if (e.data === 'tab-visible') {
-        setTimeout(function () {
+(function () {
+    function resizePlots() {
+        var graphs = document.querySelectorAll('.js-plotly-plot');
+        if (!graphs.length) return false;
+        if (window.Plotly) {
+            graphs.forEach(function (el) {
+                try { window.Plotly.Plots.resize(el); } catch (e) {}
+            });
+        } else {
             window.dispatchEvent(new Event('resize'));
-        }, 100);
+        }
+        return true;
     }
-});
+
+    // Poll every 500ms until Plotly charts appear in the DOM, then resize.
+    // Dash renders charts asynchronously via React/callbacks, so window.load
+    // fires long before the charts exist.
+    var attempts = 0;
+    var timer = setInterval(function () {
+        if (resizePlots() || ++attempts > 30) clearInterval(timer);
+    }, 500);
+
+    // Re-resize when WordPress parent signals this tab just became visible.
+    window.addEventListener('message', function (e) {
+        if (e.data === 'tab-visible') {
+            setTimeout(resizePlots, 300);
+        }
+    });
+}());

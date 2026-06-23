@@ -227,8 +227,8 @@ class Section6Prep:
             paper_bgcolor='white',
             autosize=True,
             font=dict(family=TABLE_FONT),
-            margin=dict(l=70, r=20, t=70, b=120),
-            legend=dict(orientation="h", yanchor="top", y=-0.20, 
+            margin=dict(l=70, r=20, t=70, b=100),
+            legend=dict(orientation="h", yanchor="top", y=-0.15,
                         xanchor="center", x=0.5, traceorder="reversed")
         )
         fig.update_xaxes(automargin=True)

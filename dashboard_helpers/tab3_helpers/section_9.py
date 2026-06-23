@@ -251,11 +251,11 @@ class Section9Prep:
             plot_bgcolor='white',
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),
-            margin=dict(l=70, r=20, t=70, b=120),
+            margin=dict(l=70, r=20, t=70, b=100),
             autosize=True,
             height=560,
-            legend=dict(orientation="h", yanchor="top", 
-                        y=-0.20, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top",
+                        y=-0.15, xanchor="center", x=0.5)
         )
         fig.update_xaxes(automargin=True)
         fig.update_yaxes(automargin=True)
