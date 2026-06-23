@@ -20,8 +20,8 @@ TABLE_3_2_INDIGENOUS_SUFFIXES = ["First Nations (North American Indian)", "Méti
 
 GENDER_MAPPING = {
         'Total - Gender': 'Indigenous',
-        '  Men+': 'Men+',
-        '  Women+': 'Women+'
+        '  Men+': 'Indigenous Men+',
+        '  Women+': 'Indigenous Women+'
     }
 
 class Section3DataPrep:
@@ -35,7 +35,7 @@ class Section3DataPrep:
             "2021": fetch_data("3.1.1", sheets=["2021_Indig_Profile"]),
         }
 
-        master = build_master(dfs)
+        master = build_master(dfs).replace(u'\xa0', u' ')
 
         rows = []
         for _, geo_row in master.iterrows():
@@ -50,6 +50,7 @@ class Section3DataPrep:
                 }
                 for year, col_name in year_col_map.items():
                     df = dfs[year]
+                    df.columns = df.columns.str.replace('\xa0', ' ') # for Inuk\xa0(Inuit)
                     original_geocode = get_original_geocode(geocode, year)
                     match = df[df["Geocode"] == original_geocode]
                     row[year] = match[col_name].iloc[0] if col_name in df.columns and not match.empty else None
@@ -292,8 +293,8 @@ class Section3DataPrep:
                     "Non-Indigenous %": pct(non_indg_count, non_indg_total),
                     "First Nations": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[0])), # fetching 0th index = First Nations
                     "Métis": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[1])), # fetching 1st index = Metis
-                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 1st index = Inuit
-                    "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Multiple Other Responses
+                    "Inuit": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[2])), # fetching 2nd index = Inuit
+                    "Multiple/Other Responses": get_val(geo_df, find_col(geo_df, age_key, TABLE_3_2_INDIGENOUS_SUFFIXES[3])), # fetching 3rd index = Multiple Other Responses
                     
                 })
 
@@ -417,8 +418,9 @@ class Section3DataPrep:
         df_2021 = fetch_data("3.6", sheets=["2021_Indig_Profile"])
         
         # Renaming same columns, and removing unrelated one
+        df_2021.drop(['Métis'], axis=1, inplace=True)
         df_2021.columns.values[-1] = 'Métis'
-        df_2021 = df_2021.drop('Métis_2021_Indig_Profile', axis=1)
+        # df_2021 = df_2021.drop('Métis', axis=1)
 
         
         df_communities = df_2021.melt(id_vars=['Geocode', 'Geography'], 
@@ -452,4 +454,4 @@ class Section3DataPrep:
 
 if __name__ == '__main__':
     t = Section3DataPrep()
-    t.table_3_2_3_3()
+    t.table_3_6()

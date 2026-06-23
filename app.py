@@ -1,14 +1,11 @@
 # Import necessary libraries
-from dash import Dash, html, dcc, callback_context, no_update, Input, Output, State, ALL
-import dash
-import pandas as pd
-from io import BytesIO
+from dash import html, dcc, callback_context, no_update, Input, Output, State, ALL
 
 from app_file import app
 
 # Connect to app pages
-from pages import page1, page2
-from dashboard_helpers.page2_helpers.export_helpers import table_to_excel
+from pages import map_picker, indig_territory, tab1, tab2, tab3, tab4
+from dashboard_helpers.content_helpers.export_helpers import table_to_excel
 
 
 # Define the index page layout
@@ -31,10 +28,18 @@ server = app.server
     Input('url', 'pathname')
 )
 def display_page(pathname):
-    if pathname == '/page1':
-        return page1.layout
-    elif pathname == '/page2':
-        return page2.layout
+    if pathname == '/map_picker':
+        return map_picker.layout
+    elif pathname == '/indig_territory':
+        return indig_territory.layout
+    elif pathname == '/tab1':
+        return tab1.layout
+    elif pathname == '/tab2':
+        return tab2.layout
+    elif pathname == '/tab3':
+        return tab3.layout
+    elif pathname == '/tab4':
+        return tab4.layout
     else:
         return "404 Page Error! Please choose a link"
 
