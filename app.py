@@ -30,8 +30,6 @@ server = app.server
 def display_page(pathname):
     if pathname == '/map_picker':
         return map_picker.layout
-    # elif pathname == '/page2':
-    #     return page2.layout
     elif pathname == '/indig_territory':
         return indig_territory.layout
     elif pathname == '/tab1':
