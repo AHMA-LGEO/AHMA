@@ -251,9 +251,12 @@ class Section9Prep:
             plot_bgcolor='white',
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),
+            autosize=True,
             height=550,
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
         )
+        fig.update_xaxes(automargin=True)
+        fig.update_yaxes(automargin=True)
 
         return html.Div([
             html.H4(SECTION_9_TITLE, className='table-title'),
@@ -267,7 +270,9 @@ class Section9Prep:
                       html.P(dcc.Markdown(TABLE_9_1_LINK_2)),
                       html.P(dcc.Markdown(TABLE_9_1_LINK_3)),
                       html.P(dcc.Markdown(TABLE_9_1_LINK_4))], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG,
+                      config={"responsive": True}, 
+                      style={"width": "100%", "height": "100%"})
         ], className='pg2-table-lgeo')
 
 

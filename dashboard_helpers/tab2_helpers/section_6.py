@@ -224,13 +224,18 @@ class Section6Prep:
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
+            autosize=True,
             font=dict(family=TABLE_FONT),
             legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, traceorder="reversed")
         )
+        fig.update_xaxes(automargin=True)
+        fig.update_yaxes(automargin=True)
 
         return html.Div([
             title_tags,
-            dcc.Graph(id=chart_id, figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id=chart_id, figure=fig, config=PLOT_CONFIG,
+                      config={"responsive": True}, 
+                      style={"width": "100%", "height": "100%"})
         ], className='pg2-table-lgeo')
     
 
