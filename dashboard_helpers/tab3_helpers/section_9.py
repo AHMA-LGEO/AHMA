@@ -243,7 +243,7 @@ class Section9Prep:
             ),
 
             yaxis=dict(
-                title='# Indigenous People',
+                title=dict(text='# Indigenous People', standoff=10),
                 gridcolor='#E5E5E5',
                 automargin=True,
                 rangemode='tozero',
@@ -251,9 +251,11 @@ class Section9Prep:
             plot_bgcolor='white',
             paper_bgcolor="white",
             font=dict(family=TABLE_FONT),
+            margin=dict(l=70, r=20, t=70, b=120),
             autosize=True,
-            height=550,
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            height=560,
+            legend=dict(orientation="h", yanchor="top", 
+                        y=-0.20, xanchor="center", x=0.5)
         )
         fig.update_xaxes(automargin=True)
         fig.update_yaxes(automargin=True)
