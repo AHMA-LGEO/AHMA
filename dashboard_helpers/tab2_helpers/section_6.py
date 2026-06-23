@@ -214,19 +214,22 @@ class Section6Prep:
             title=dict(text=f'Indigenous {label_col_name} - {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Census Year',
             yaxis=dict(
-                title='Percentage of Households',
+                title=dict(text='Percentage of Households', standoff=10),
                 ticksuffix='%',
                 range=[0, 100],
                 dtick=10,
                 gridcolor='#E5E5E5',
+                automargin=True
             ),
             barmode='stack',
-            height=500,
+            height=560,
             plot_bgcolor='white',
             paper_bgcolor='white',
             autosize=True,
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5, traceorder="reversed")
+            margin=dict(l=70, r=20, t=70, b=120),
+            legend=dict(orientation="h", yanchor="top", y=-0.20, 
+                        xanchor="center", x=0.5, traceorder="reversed")
         )
         fig.update_xaxes(automargin=True)
         fig.update_yaxes(automargin=True)
@@ -234,7 +237,7 @@ class Section6Prep:
         return html.Div([
             title_tags,
             dcc.Graph(id=chart_id, figure=fig, config=PLOT_CONFIG,
-                      style={"width": "100%", "height": "100%"})
+                      style={"width": "100%"})
         ], className='pg2-table-lgeo')
     
 
