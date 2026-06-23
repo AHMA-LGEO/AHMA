@@ -213,8 +213,3 @@ def fetch_data(table_id: str, geo: str = None, sheets: list = None) -> pd.DataFr
         result = result[result['Geocode'] == geo]
 
     return result.reset_index(drop=True)
-
-
-# if __name__ == '__main__':
-    
-#     a = fetch_data("9.1", sheets=["BC Corrections"])
