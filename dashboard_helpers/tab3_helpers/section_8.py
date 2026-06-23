@@ -238,7 +238,7 @@ class Section8Prep:
             for i, (lbl, val) in enumerate(zip(labels, values))
         ]
 
-        threshold = 10 # threshold below which labels change to "..."
+        threshold = 7 # threshold below which labels change to "..."
         total_value = sum(values)
 
         interactive_text = []
@@ -261,7 +261,7 @@ class Section8Prep:
             marker=dict(colors=colors, line=dict(color="white", width=2)),
             text=interactive_text,
             texttemplate="%{text}",
-            textfont=dict(size=12, color="white"),
+            textfont=dict(size=10, color="white"),
             insidetextorientation="horizontal",
             hovertemplate="<b>%{label}</b><br>%{value:.0f}% of total HHs<extra></extra>",
             sort=False,
