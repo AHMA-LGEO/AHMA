@@ -1,5 +1,8 @@
 (function () {
     function relayoutAll() {
+        // Dispatch resize so Plotly's own responsive handler recalculates
+        // tick positions, axis titles, and legend — relayout alone doesn't do this.
+        window.dispatchEvent(new Event('resize'));
         if (!window.Plotly) return;
         document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
             try { window.Plotly.relayout(el, {autosize: true}); } catch (e) {}
