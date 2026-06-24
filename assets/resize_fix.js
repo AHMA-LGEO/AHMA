@@ -16,28 +16,26 @@
         });
     }
 
-    // PRIMARY: when the parent tab goes from display:none to visible, the iframe
-    // viewport changes from 0 → real width, which fires a window resize event.
-    window.addEventListener('resize', function () {
-        [0, 300, 800, 1500].forEach(function (d) { setTimeout(resizeAll, d); });
-    });
+    function triggerResize() {
+        [0, 300, 700, 1400].forEach(function (d) { setTimeout(resizeAll, d); });
+    }
 
-    // SECONDARY: postMessage from WordPress parent
+    // Trigger 1: window resize (fires in some browsers when display:none -> visible)
+    window.addEventListener('resize', triggerResize);
+
+    // Trigger 2: postMessage from WordPress parent tab switcher
     window.addEventListener('message', function (e) {
-        if (e.data === 'tab-visible') {
-            [0, 300, 800, 1500].forEach(function (d) { setTimeout(resizeAll, d); });
-        }
+        if (e.data === 'tab-visible') triggerResize();
     });
 
-    // TERTIARY: handles the race where the resize event fires before Plotly has
-    // rendered. Polls every 2s; once vw is real AND charts exist, resizes and stops.
-    var ticks = 0;
-    (function tick() {
-        if (ticks++ >= 300) return; // 10-minute ceiling
-        if (vw() > 50 && document.querySelectorAll('.js-plotly-plot').length > 0) {
-            resizeAll();
-            return; // stop once we have both real width and rendered charts
-        }
-        setTimeout(tick, 2000);
-    })();
+    // Trigger 3: poll vw() every 500ms — catches browsers where the resize
+    // event does NOT fire on display:none -> visible. When the hidden iframe's
+    // parent tab becomes visible, window.innerWidth jumps from 0 to real width.
+    // This transition is the guaranteed detection mechanism.
+    var prevVw = vw();
+    setInterval(function () {
+        var cur = vw();
+        if (prevVw < 50 && cur >= 50) triggerResize();
+        prevVw = cur;
+    }, 500);
 }());
