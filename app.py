@@ -17,9 +17,6 @@ app.layout = html.Div([
     html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
     html.Script(src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"),
     dcc.Download(id="download-dataframe-xlsx"),
-    # Fires a few times after page load so all charts get relayout'd at correct container size
-    dcc.Interval(id='autosize-interval', interval=1000, max_intervals=8, n_intervals=0),
-    html.Div(id='autosize-dummy', style={'display': 'none'}),
 ])
 
 server = app.server
@@ -65,33 +62,6 @@ app.clientside_callback(
     Output('dummy-output', 'children'),
     Input('export-btn', 'n_clicks'),
     State('main-area', 'data')
-)
-
-app.clientside_callback(
-    """
-    function(n) {
-        if (!window.Plotly) return '' + n;
-        document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
-            try {
-                if (el.data) {
-                    // Full re-render at the current container size — recomputes legend,
-                    // axes, and all paper-coordinate positions from scratch.
-                    window.Plotly.react(
-                        el, el.data,
-                        Object.assign({}, el.layout, {autosize: true}),
-                        el._context || {}
-                    );
-                } else {
-                    window.Plotly.relayout(el, {autosize: true});
-                }
-            } catch(e) {}
-        });
-        return '' + n;
-    }
-    """,
-    Output('autosize-dummy', 'children'),
-    Input('autosize-interval', 'n_intervals'),
-    prevent_initial_call=True,
 )
 
 @app.callback(
