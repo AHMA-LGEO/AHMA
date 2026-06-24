@@ -1,18 +1,14 @@
 (function () {
     function resizePlots() {
-        // Dispatch window resize so Dash's own responsive handler fires at the React level
-        window.dispatchEvent(new Event('resize'));
-        // Also call Plotly directly on each chart element
-        if (window.Plotly) {
-            document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
-                try { window.Plotly.Plots.resize(el); } catch (e) {}
-            });
-        }
+        if (!window.Plotly) return;
+        document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
+            try { window.Plotly.relayout(el, {autosize: true}); } catch (e) {}
+        });
     }
 
-    // Run every 500ms for 25 seconds — never stop early.
+    // Poll every 500ms for 25 seconds — never stop early.
     // Dash renders each chart via a separate async callback, so stopping
-    // when the first chart appears leaves every later chart unsized.
+    // when the first chart appears leaves every later chart un-relayout'd.
     var n = 0;
     var t = setInterval(function () {
         resizePlots();
