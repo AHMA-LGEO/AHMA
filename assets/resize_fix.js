@@ -1,9 +1,12 @@
 (function () {
+    console.log('[resize_fix v4] loaded — url:', window.location.href, '| vw:', window.innerWidth);
+
     function vw() {
         return window.innerWidth || document.documentElement.clientWidth || 0;
     }
 
     function resizeAll() {
+        console.log('[resize_fix v4] resizeAll called — vw:', vw(), '| plots:', document.querySelectorAll('.js-plotly-plot').length);
         if (vw() < 50) return; // Don't run when iframe still has 0-width
         window.dispatchEvent(new Event('resize')); // Triggers Plotly's responsive handler
         if (!window.Plotly) return;
@@ -36,7 +39,9 @@
     var done = 0, attempts = 0;
     (function tick() {
         if (done >= 5 || attempts++ >= 60) return;
-        if (vw() > 50 && document.querySelectorAll('.js-plotly-plot').length > 0) {
+        var plots = document.querySelectorAll('.js-plotly-plot').length;
+        console.log('[resize_fix v4] tick #' + attempts + ' — vw:', vw(), '| plots:', plots, '| done:', done);
+        if (vw() > 50 && plots > 0) {
             resizeAll();
             done++;
         }
