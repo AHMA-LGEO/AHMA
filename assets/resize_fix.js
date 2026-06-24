@@ -1,29 +1,30 @@
 (function () {
     function resizePlots() {
-        var graphs = document.querySelectorAll('.js-plotly-plot');
-        if (!graphs.length) return false;
+        // Dispatch window resize so Dash's own responsive handler fires at the React level
+        window.dispatchEvent(new Event('resize'));
+        // Also call Plotly directly on each chart element
         if (window.Plotly) {
-            graphs.forEach(function (el) {
+            document.querySelectorAll('.js-plotly-plot').forEach(function (el) {
                 try { window.Plotly.Plots.resize(el); } catch (e) {}
             });
-        } else {
-            window.dispatchEvent(new Event('resize'));
         }
-        return true;
     }
 
-    // Poll every 500ms until Plotly charts appear in the DOM, then resize.
-    // Dash renders charts asynchronously via React/callbacks, so window.load
-    // fires long before the charts exist.
-    var attempts = 0;
-    var timer = setInterval(function () {
-        if (resizePlots() || ++attempts > 30) clearInterval(timer);
+    // Run every 500ms for 25 seconds — never stop early.
+    // Dash renders each chart via a separate async callback, so stopping
+    // when the first chart appears leaves every later chart unsized.
+    var n = 0;
+    var t = setInterval(function () {
+        resizePlots();
+        if (++n >= 50) clearInterval(t);
     }, 500);
 
-    // Re-resize when WordPress parent signals this tab just became visible.
+    // Burst-fire when WordPress parent signals this tab just became visible
     window.addEventListener('message', function (e) {
         if (e.data === 'tab-visible') {
-            setTimeout(resizePlots, 300);
+            [0, 300, 800, 1500, 3000].forEach(function (d) {
+                setTimeout(resizePlots, d);
+            });
         }
     });
 }());
