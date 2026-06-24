@@ -70,12 +70,23 @@ app.clientside_callback(
 app.clientside_callback(
     """
     function(n) {
-        if (window.Plotly) {
-            document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
-                try { window.Plotly.relayout(el, {autosize: true}); } catch(e) {}
-            });
-        }
-        return null;
+        if (!window.Plotly) return '' + n;
+        document.querySelectorAll('.js-plotly-plot').forEach(function(el) {
+            try {
+                if (el.data) {
+                    // Full re-render at the current container size — recomputes legend,
+                    // axes, and all paper-coordinate positions from scratch.
+                    window.Plotly.react(
+                        el, el.data,
+                        Object.assign({}, el.layout, {autosize: true}),
+                        el._context || {}
+                    );
+                } else {
+                    window.Plotly.relayout(el, {autosize: true});
+                }
+            } catch(e) {}
+        });
+        return '' + n;
     }
     """,
     Output('autosize-dummy', 'children'),
