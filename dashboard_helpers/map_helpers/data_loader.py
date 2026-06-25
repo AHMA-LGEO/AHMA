@@ -5,8 +5,8 @@ import pandas as pd
 import geopandas as gpd
 from sqlalchemy import create_engine
 from dashboard_helpers.config import (
-    DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE, 
-    REGION_DATA_DIR, SUBREGION_DATA_DIR
+    DB_PATH, PROVINCE_CODE, PROVINCE_SHAPEFILE,
+    REGION_DATA_DIR, SUBREGION_DATA_DIR, SUBREGION_CACHE_DIR
     )
 
 
@@ -83,11 +83,22 @@ class DataLoader:
             self._region_gdf_cache[province_code] = gdf.set_index('CDUID')
         return self._region_gdf_cache[province_code]
 
-    def load_subregion_gdf(self, region_code: int) -> gpd.GeoDataFrame:
-        """Load subregion (CSD) shapefile for a region (cached)."""
+    def load_subregion_gdf(self, region_code: int):
+        """Load subregion (CSD) data for a region (cached).
+
+        Fast path: reads pre-computed CSV from subregion_cache/ (~10ms).
+        Slow fallback: reads shapefile and simplifies (~3-5s, first load only).
+        Run preprocess_subregion_cache.py once to generate the cache files.
+        """
         if region_code in self._subregion_gdf_cache:
             return self._subregion_gdf_cache[region_code]
         try:
+            attrs_path = SUBREGION_CACHE_DIR / f"{region_code}_attrs.csv"
+            if attrs_path.exists():
+                result = pd.read_csv(attrs_path, index_col='CSDUID')
+                self._subregion_gdf_cache[region_code] = result
+                return result
+
             filepath = SUBREGION_DATA_DIR / f"{region_code}.shp"
             gdf = gpd.read_file(filepath)
             result = gdf.set_index('CSDUID')
@@ -96,7 +107,6 @@ class DataLoader:
             return result
         except Exception:
             self._subregion_gdf_cache[region_code] = None
-            # Fallback to province level if subregion data not available
             return None
 
     def get_geography_info(self, geography_name: str) -> dict:

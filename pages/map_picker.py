@@ -1,6 +1,7 @@
 """
 Dashboard page 1: Geography selection with interactive map.
 """
+import threading
 from dash import dcc, html, Input, Output, ctx, callback
 from dashboard_helpers.map_helpers.data_loader import DataLoader
 from dashboard_helpers.map_helpers.map_generator import MapGenerator
@@ -15,6 +16,22 @@ dropdown_options = data_loader.dropdown_options['Geography'].unique()
 
 # Create default map
 default_map = map_generator.create_subregion_map(selected_geography=DEFAULT_GEOGRAPHY, highlight=True)
+
+
+def _warm_subregion_cache():
+    """Pre-load all subregion data into memory in the background."""
+    region_codes = data_loader.geocode_master['Region_Code'].dropna().unique()
+    for code in sorted(region_codes):
+        try:
+            code = int(code)
+            gdf = data_loader.load_subregion_gdf(code)
+            if gdf is not None:
+                map_generator._geojson(gdf, ('subregion', code))
+        except Exception:
+            pass
+
+
+threading.Thread(target=_warm_subregion_cache, daemon=True).start()
 
 # Layout
 layout = html.Div(

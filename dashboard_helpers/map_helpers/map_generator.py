@@ -8,7 +8,8 @@ from dashboard_helpers.map_helpers.data_loader import DataLoader
 from dashboard_helpers.config import (
     MAP_COLORS_WO_BLACK, MAP_COLORS_HIGHLIGHT,
     OPACITY_VALUE, MODEBAR_COLOR,
-    MODEBAR_ACTIVECOLOR, PROVINCE_CODE
+    MODEBAR_ACTIVECOLOR, PROVINCE_CODE,
+    SUBREGION_CACHE_DIR
 )
 
 
@@ -21,6 +22,12 @@ class MapGenerator:
 
     def _geojson(self, gdf, key):
         if key not in self._geojson_cache:
+            if isinstance(key, tuple) and key[0] == 'subregion':
+                geojson_path = SUBREGION_CACHE_DIR / f"{key[1]}.geojson"
+                if geojson_path.exists():
+                    with open(geojson_path) as f:
+                        self._geojson_cache[key] = json.load(f)
+                    return self._geojson_cache[key]
             self._geojson_cache[key] = json.loads(gdf.geometry.to_json())
         return self._geojson_cache[key]
 
