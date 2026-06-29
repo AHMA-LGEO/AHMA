@@ -14,10 +14,10 @@ from utils import (
 
 INCOME_BRACKETS = [
     ("or under", None, 0.20),   # "20% or under"
+    ("121%",     1.20, None),   # must come before "21%" to avoid substring match
     ("21%",      0.20, 0.50),
     ("51%",      0.50, 0.80),
     ("81%",      0.80, 1.20),
-    ("121%",     1.20, None),
 ]
 
 class Section5DataPrep:
