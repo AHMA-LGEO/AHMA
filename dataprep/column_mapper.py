@@ -1029,7 +1029,7 @@ def _build_structure_map_6_5_6_6(groups):
 TABLE_6_5_COL_MAP = _build_structure_map_6_5_6_6({
     "Indigenous HHs": {
         "2006": "Aboriginal household",
-        "2016": "Total - Aboriginal household status",
+        "2016": "Aboriginal household",
         "2021": "Indigenous household",
     },
     "Non-Indigenous HHs": {
