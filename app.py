@@ -72,11 +72,16 @@ app.clientside_callback(
     prevent_initial_call=True,
 )
 def download_xlsx(n_clicks_list, all_data, all_cols):
-    if not callback_context.triggered or all((n or 0) == 0 for n in n_clicks_list):
+    if not callback_context.triggered:
         return no_update
 
     triggered_id = callback_context.triggered_id
     if not isinstance(triggered_id, dict) or triggered_id.get("type") != "export-btn":
+        return no_update
+
+    # When a section rebuilds, Dash re-fires this callback for newly added export
+    # buttons whose n_clicks is None. Only proceed on an actual user click (n_clicks > 0).
+    if not callback_context.triggered[0]["value"]:
         return no_update
 
     table_id = triggered_id["index"]
