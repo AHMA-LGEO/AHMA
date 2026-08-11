@@ -1445,7 +1445,7 @@ TABLE_9_3_COL_MAP = strip_map(_pit_map({
         "2023": "2023_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
         "2025": "2025_All Respondents_Number of individuals who experienced homelessness _(blank)" # calculating indigenous number using this field * 2025_All Respondents_% of respondents identified as Indigenous_(blank)
     },
-    "% of PEH who were Indigenous": {
+    "% of people who experienced homelessness who were Indigenous": {
         "2021": "2021_All Respondents_% of respondents identified as Indigenous_(blank)",
         "2023": "2023_All Respondents_% of respondents identified as Indigenous_(blank)",
         "2025": "2025_All Respondents_% of respondents identified as Indigenous_(blank)",

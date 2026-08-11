@@ -56,12 +56,12 @@ SECTION_3_P1 = """Determining the true number of affordable housing units needed
 SECTION_3_NOTE = """Note: Indigenous identity data in this section reflects self-identified First Nations, Métis, and Inuit identity as captured in Census data. It does not reflect Nation membership or territorial relationships. The data presented reflects reported information and likely undercounts Indigenous people and does not fully capture those experiencing housing instability, homelessness, or frequent movement between communities."""
 
 # Table 3.1 descriptions
-TABLE_3_1_TITLE = "Indigenous populations, Ages, & Movement On-/Off Reserve Over Time"
+TABLE_3_1_TITLE = "Indigenous Populations, Ages, & Movement On-/Off Reserve Over Time"
 
 TABLE_3_1_DESC = """This data highlights how Indigenous populations in the community have changed over time, including age structure and movement between on-reserve and off-reserve housing. These patterns can reflect broader dynamics such as access to housing, availability of services, and the need to relocate in search of stability and opportunity."""
 
 # Table 3.2 descriptions
-CHART_3_2_TITLE = "Population by Age Group, Indigenous vs Non-Indigenous (2021)"
+CHART_3_2_TITLE = "Population by Age Groups"
 
 CHART_3_2_DESC = """This chart highlights the age distribution of Indigenous and non-Indigenous populations in the community. Understanding age structure is critical for housing planning for priority populations, including the need for family housing, youth supports, and housing for seniors and Elders."""
 
@@ -115,14 +115,14 @@ TABLE_4_1_DESC = """The following table shows the numeric values of the above gr
 TABLE_4_2_DESC = """The following table shows the housing tenure of Indigenous households by Indigenous identity over time in the selected community."""
 
 # Table 4.3 descriptions
-TABLE_4_3_TITLE = "HHs by Household Size (2006, 2016, 2021)"
+TABLE_4_3_TITLE = "Households by Household Size (2006, 2016, 2021)"
 
 CHART_4_3_DESC = """This section highlights household size over time. Larger household sizes may reflect strong family connections, but can also indicate overcrowding when housing options are limited."""
 
 TABLE_4_3_DESC = """The following table shows the numeric values of the above graph, and also details the average household size and figures for the non-Indigenous population."""
 
 # Table 4.3 descriptions
-TABLE_4_4_DESC = """The following table shows the number of people living in Indigenous households, over time and organized by Indigenous identity."""
+TABLE_4_4_DESC = """The following table shows the number of people living in Indigenous-led households, over time and organized by Indigenous identity."""
 
 # Table 4.5 descriptions
 TABLE_4_5_TITLE = "Households by Family Type (2006, 2016, 2021)"
@@ -151,7 +151,7 @@ TABLE_5_2_TITLE = "Households by Income Category (2006, 2016, 2021)"
 
 CHART_5_2_DESC = """This data shows how Indigenous households are distributed across income levels over time. Interpret this trend alongside household size, household and family type, and median household and individual income."""
 
-CHART_5_2_NOTE = """Note: At the provincial level, the relative share of Indigenous households with a High Income has been increasing between 2006 and 2021. While this result suggests improving incomes relative to non-Indigenous households, household income can be affected by differences in household composition. Indigenous households historically have larger households (see above Sec. 4: HHs by Household Size) with more individual incomes contributing to the household income (see below Sec. 5: Number of Household Maintainers). Household income should be interpreted in that context, along with median per person income (see below Sec 5: Median Household & Individual Income)."""
+CHART_5_2_NOTE = """Note: At the provincial level, the relative share of Indigenous households with a High Income increased between 2006 and 2021. While this result suggests improving incomes relative to non-Indigenous households, household income can be affected by differences in household composition. Indigenous households historically have larger households (see above Sec. 4: Households by Household Size) with more individual incomes contributing to the household income (see below Sec. 5: Number of Household Maintainers). Household income should be interpreted in that context, along with median per person income (see below Sec 5: Median Household & Individual Income)."""
 
 TABLE_5_2_DESC = """The following table shows the numeric values of the above chart with comparison to non-Indigenous households."""
 
@@ -189,11 +189,11 @@ TABLE_6_2_DESC = """The following table shows the number of bedrooms in Indigeno
 # Table 6.3 and 6.4 descriptions
 TABLE_6_3_TITLE = "Households by Period of Construction of Dwelling (2006-2021)"
 
-CHART_6_3_DESC = """This data shows the age of housing stock. Older housing may require repairs or upgrades to be healthy and safe. Province-wide in 2021, 13% of occupied dwellings that were built before 1980 needed major repairs. Examples of major repairs would be defective plumbing, electrical wiring, or structural damage. For comparison, only 5% of homes built after 1980 needed major repairs (IHNAT 2021 data)."""
+CHART_6_3_DESC = """This data shows the age of housing stock. Older housing may require repairs or upgrades to be healthy and safe. Province-wide in 2021, 13% of occupied dwellings that were built before 1980 needed major repairs. For comparison, only 5% of homes built after 1980 needed major repairs (IHNAT 2021 data). Examples of major repairs would be defective plumbing, electrical wiring, or structural damage."""
 
 TABLE_6_3_DESC = """The following table shows the numerical value of the above graph, with comparison to non-Indigenous homes."""
 
-TABLE_6_4_DESC = """The following table shows the numerical value of the above graph organized by Indigenous identity."""
+TABLE_6_4_DESC = """The following table shows the numerical value of the above graph organized by Indigenous-led identity."""
 
 # Table 6.5 and 6.6 descriptions
 TABLE_6_5_TITLE = "Households by Structural Type of Dwelling (2006, 2016, 2021)"
@@ -210,12 +210,12 @@ SECTION_7_P1 = """This section explores the cost of renting and owning housing, 
 SECTION_7_P2 = """As you explore this section, consider what the data suggests about the accessibility of rental housing in this community, and who is most affected when housing becomes scarce."""
 
 # Table 7.1 descriptions
-TABLE_7_1_TITLE = "Households Median Shelter Cost for Owned & Rented dwellings (2016, 2021)"
+TABLE_7_1_TITLE = "Household Median Shelter Cost for Owned & Rented dwellings (2016, 2021)"
 
 TABLE_7_1_DESC = """This data compares how much income is spent on housing in Indigenous and non-Indigenous households."""
 
 # Table 7.3 descriptions
-TABLE_7_3_TITLE = "CMHC Rental Market Survey data (number of rental units, average rent, vacancy rate) (2016-2023)"
+TABLE_7_3_TITLE = "CMHC Rental Market Survey Data (2016-2023)"
 
 # Table 7.3.1 descriptions
 TABLE_7_3_1_TITLE = "Number of Primary and Secondary Rental Units"
@@ -248,14 +248,14 @@ SECTION_8_P1 = """This section highlights where existing housing systems are not
 SECTION_8_P2 = """As you reflect, consider how these challenges connect to broader systems and policies. What would it look like for housing and systems of support to truly meet community needs?"""
 
 # Table 8.1 and 8.2 descriptions
-TABLE_8_1_TITLE = "Households in Acceptable & Unacceptable Housing (2006, 2016, 2021)"
+TABLE_8_1_TITLE = "Households in Acceptable & Unacceptable Housing"
 
 CHART_8_1_DESC = """This data shows the proportion of Indigenous households living in housing that does not meet adequacy, suitability, or affordability standards."""
 
 TABLE_8_1_DESC = """The following table shows the numerical and proportional values of the above graph as well as a comparison with non-Indigenous households."""
 
 # Table 8.3 and 8.4 descriptions
-TABLE_8_3_TITLE = "Households in Core Housing Need or Extreme Core Housing Need, by Tenure"
+TABLE_8_3_TITLE = "Households in Core Housing Need or Extreme Core Housing Need by Tenure"
 
 TABLE_8_3_DESC = """The following table shows the numerical and proportional values of both Indigenous and non-Indigenous households in core housing need and extreme core housing need over time."""
 
@@ -268,7 +268,7 @@ CHART_8_5_DESC = """This data identifies priority groups within the Indigenous p
 
 TABLE_8_5_DESC = """The following table shows the proportional values of the above chart, including comparison with non-Indigenous households."""
 
-TABLE_8_6_DESC = """The following table shows the proportional values of core housing need in Indigenous households in core housing need over time, organized by priority populations and Indigenous identity."""
+TABLE_8_6_DESC = """The following table shows the proportional values of core housing need in Indigenous households over time, organized by priority populations and Indigenous identity."""
 
 # Table 8.7 descriptions
 TABLE_8_7_TITLE = "Indigenous Affordable Housing Deficit by Income & Household Size"
@@ -329,7 +329,7 @@ SECTION_10_P1 = """Access to services such as health care, education, childcare,
 SECTION_10_P2 = """This section estimates spatial access to selected services by walking, cycling, and public transit. It helps identify where services may be physically difficult to reach, but it does not measure service quality, affordability, eligibility, waitlists, cultural safety, accessibility, or whether services are Indigenous-led. As you explore this section, consider what services are accessible within the community. Who may face barriers to access? How might access (or lack of access) impact housing stability and wellbeing?"""
 
 # Table 10.1 descriptions
-TABLE_10_1_TITLE = "Access to Health Care, Sports & Rec facilities, Primary & Secondary education, Child Care by Public Transit"
+TABLE_10_1_TITLE = "Access to Health Care, Sports & Rec facilities, Primary & Secondary education, Child Care by Active or Public Transportation"
 
 TABLE_10_1_DESC = """The following table shows the proportion of Indigenous individuals that have access to core services by walking, biking, or transit."""
 
@@ -341,7 +341,7 @@ SECTION_11_P1 = """This section offers a way to explore the predicted growth and
 SECTION_11_P2 = """As you explore this data, consider how the Indigenous population changing in this community, and what types of housing will be needed in the future. Are current plans aligned with this reality? How can planning support future generations' housing stability and wellbeing?"""
 
 # Table 11.1 descriptions
-TABLE_11_1_TITLE = "Projected Population of Indigenous People & Households (First Nations, Metis, Inuit, or Other) 2021-2046"
+TABLE_11_1_TITLE = "Projected Population of Indigenous People & Households (First Nations, Métis, Inuit, or Other) 2021-2046"
 
 TABLE_11_1_DESC = """The following table shows the recorded number of Indigenous people in 2021 and projections for Indigenous individuals over time, organized by Indigenous identity (First Nations, Métis, Inuit). These projections highlight the need for forward-looking housing strategies that can meet future demand while supporting community wellbeing."""
 
@@ -362,6 +362,6 @@ TABLE_12_1_DESC_P3 = """This tool applies AHMA's approach to local and regional 
 # Table 12.2 descriptions
 TABLE_12_2_TITLE = "Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"
 
-TABLE_12_2_DESC = """The following table breaks down the affordable housing target into types of solutions required, according to AHMA's methodology. For the complete methodology, please see AHMA’s Urban, Rural, and Northern Indigenous Housing Strategy document from December 2024.⁹"""
+TABLE_12_2_DESC = """The following table breaks down the affordable housing target into types of solutions required, according to AHMA's methodology. For the complete methodology, please see AHMA's Urban, Rural, and Northern Indigenous Housing Strategy document from December 2024.⁹"""
 
 TABLE_12_2_NOTE = "*FYI: Values are for City of Vancouver, and they are projected to have fewer Indigenous people in 2034 than 2024, hence the negative value under part 4."

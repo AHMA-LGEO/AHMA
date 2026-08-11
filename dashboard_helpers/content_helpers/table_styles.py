@@ -17,6 +17,7 @@ _LABEL_RENAMES = (
     (re.compile(r'\bHHs\b'), 'Households'),
     (re.compile(r'\bHH\b'),  'Household'),
     (re.compile(r'\bpp\b'),  'person(s)'),
+    (re.compile(r'\bCHN\b'), 'Core Housing Need'),
 )
 
 

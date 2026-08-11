@@ -79,7 +79,7 @@ class Section10Prep:
             table_df.loc[~number_mask, col] = table_df.loc[~number_mask, col].apply(format_percent)
 
 
-        title_row = '% of Indigenous people with access to services by public transport (2021)'
+        title_row = '% of Indigenous people with access to services by active or public transportation (2021)'
         rows = [blank_row(_LABEL_COL, value_cols, title_row)]
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())

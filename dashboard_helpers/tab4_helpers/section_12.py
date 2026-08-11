@@ -82,7 +82,7 @@ class Section12Prep:
         )
 
         
-        _LABEL_6 = "Affordable Housing Solution"
+        _LABEL_6 = "Affordable Housing Solutions"
         _VAL_6   = "Number"
 
         table6_rows = [

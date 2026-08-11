@@ -100,7 +100,7 @@ class Section9DataPrep:
 
         
         total_all_2025_col = cm.TABLE_9_3_COL_MAP["Total number of Indigenous people who experienced homelessness"]["2025"]
-        pct_indig_2025_col = cm.TABLE_9_3_COL_MAP["% of PEH who were Indigenous"]["2025"]
+        pct_indig_2025_col = cm.TABLE_9_3_COL_MAP["% of people who experienced homelessness who were Indigenous"]["2025"]
 
         def _get(geo_row, col):
             return clean_val(geo_row[col]) if col and col in df.columns else None

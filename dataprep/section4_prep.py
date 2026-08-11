@@ -108,7 +108,9 @@ class Section4DataPrep:
                 "Household Type": hh_type,
             }
             for year in YEARS:
-                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum()
+                # min_count=1 keeps a year whose entries are all missing as NaN
+                # rather than summing to a misleading 0 (e.g. 2011 non-Indigenous).
+                total_row[year] = pd.to_numeric(filtered_group[year], errors="coerce").sum(min_count=1)
             total_rows.append(total_row)
 
         attr_order = [

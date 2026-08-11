@@ -66,7 +66,7 @@ _NUMBER_ATTRS_9_3 = {"First Nations", "Métis", "Inuit", "Other/Multiple Indigen
 # Groups 2-4 repeat the "All respondents" top header since they continue it.
 _ROW_STRUCTURE_9_3 = [
     [
-        ("Number of Indigenous people who experienced homelessness (PEH)", [
+        ("Number of Indigenous people who experienced homelessness", [
             ("None", [
                 "First Nations",
                 "Métis",
@@ -74,13 +74,13 @@ _ROW_STRUCTURE_9_3 = [
                 "Other/Multiple Indigenous Communities",
                 "Total number of Indigenous people who experienced homelessness",
             ]),
-            ("None", "% of PEH who were Indigenous"),
+            ("None", "% of people who experienced homelessness who were Indigenous"),
         ]),
     ],
 
     [
         ("All respondents", [
-            ("Where PEH stayed the night of the PIT count", [
+            ("Where people who experienced homelessness stayed the night of the Point-In-Time Count", [
                 "All Respondents Sheltered",
                 "All Respondents Unsheltered",
             ]),
@@ -400,8 +400,8 @@ class Section9Prep:
                             out.append(r)
             return out
 
-        columns = [{"name": [f"{geo_name} - {region_name} PiT Count", "PIT Count Year"], "id": _LABEL_COL}] + [
-            {"name": [f"{geo_name} - {region_name} PiT Count", y], "id": y} for y in PIT_YEARS
+        columns = [{"name": [f"{geo_name} - {region_name} Point-in-Time Count", "Point-in-Time Count Year"], "id": _LABEL_COL}] + [
+            {"name": [f"{geo_name} - {region_name} Point-in-Time Count", y], "id": y} for y in PIT_YEARS
         ]
 
         base_style = get_base_table_style()

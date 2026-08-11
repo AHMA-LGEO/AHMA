@@ -306,7 +306,7 @@ class Section8Prep:
             return html.Div([
                 html.H5(TABLE_8_3_TITLE, className='table-title'),
                 html.Div(
-                "No data for Households in CHN or Extreme CHN (2006, 2016, 2021).",
+                "No data for Households in Core Housing Need or Extreme Core Housing Need (2006, 2016, 2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo'), True
@@ -404,7 +404,7 @@ class Section8Prep:
         if df.empty:
             return html.Div([
                 html.Div(
-                "No data for Households in CHN by Indigenous communities.",
+                "No data for Households in Core Housing Need by Indigenous communities.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
@@ -493,7 +493,7 @@ class Section8Prep:
         if df.empty:
             return html.Div([
                 html.Div(
-                "No data for Households in CHN by Priority Population.",
+                "No data for Households in Core Housing Need by Priority Population.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo'), True
@@ -580,7 +580,7 @@ class Section8Prep:
             return html.Div([
                 html.H5(TABLE_8_5_TITLE, className='table-title'),
                 html.Div(
-                "No chart for households in CHN by Priority Population - 2021.",
+                "No chart for households in Core Housing Need by Priority Population - 2021.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
@@ -640,7 +640,7 @@ class Section8Prep:
         ))
 
         fig.update_layout(
-            title=dict(text=f'Indigenous Housing in Core Housing Need by Priority Population in 2021 - {geo_name}', x=0.5, xanchor='center'),
+            title=dict(text=f'Percentage of Indigenous Households in Core Housing Need by Priority Population in 2021 - {geo_name}', x=0.5, xanchor='center'),
             yaxis=dict(
                 title='',
                 categoryorder='array',
@@ -675,7 +675,7 @@ class Section8Prep:
         if df.empty:
             return html.Div([
                 html.Div(
-                "No data for Households in CHN by Priority Populations by Indigenous communities.",
+                "No data for Households in Core Housing Need by Priority Populations by Indigenous communities.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
@@ -747,7 +747,7 @@ class Section8Prep:
             return html.Div([
                 html.H5(TABLE_8_7_TITLE, className='table-title'),
                 html.Div(
-                "No data for Housing Deficit by Income and HH size (2021).",
+                "No data for Housing Deficit by Income and Household size (2021).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')

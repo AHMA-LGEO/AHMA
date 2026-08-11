@@ -52,7 +52,7 @@ class Section5Prep:
 
         if df.empty:
             return html.Div([
-                html.H4(SECTION_5_TITLE, className='table-title'),
+                # html.H4(SECTION_5_TITLE, className='table-title'),
                 html.Div([html.P(SECTION_5_P1),
                           html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_5_1_TITLE, className='table-title'),
@@ -87,7 +87,7 @@ class Section5Prep:
             style_data_conditional=(
                 generate_style_data_conditional(table_df)
                 + make_special_row_styles(table_df, 'Income Category', 
-                                          section_headers={'Area Median Household Income'})
+                                          section_headers={'Area Median Household Income (AMHI)'})
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id='Income Category', n_header_rows=2, 
@@ -99,7 +99,7 @@ class Section5Prep:
         )
 
         return html.Div([
-            html.H4(SECTION_5_TITLE, className='table-title'),
+            # html.H4(SECTION_5_TITLE, className='table-title'),
             html.Div([html.P(SECTION_5_P1),
                       html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_5_1_TITLE, className='table-title'),
@@ -125,8 +125,8 @@ class Section5Prep:
 
         df = df.fillna("N/A")
 
-        filtered = df.copy()
-        _LABEL_COL = 'Households by Income'
+        _LABEL_COL = 'Households by Income Category'
+        filtered = df.rename(columns={'Households by Income': _LABEL_COL})
 
         dollar_mask = filtered[_LABEL_COL].str.contains('Area Median', na=False)
         for year in YEARS_MINUS_2011:
@@ -310,14 +310,15 @@ class Section5Prep:
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
 
-        _LABEL_COL = 'Households by Income'
+        _LABEL_COL = 'Households by Income Category'
 
         community_df = []
         for community in COMMUNITIES:
             indig_df = (
                 df[df['Distinction'] == community]
-                .set_index(_LABEL_COL)[YEARS_MINUS_2011]
+                .set_index('Households by Income')[YEARS_MINUS_2011]
                 .rename(columns={y: f'{y}_{community[0]}' for y in YEARS_MINUS_2011})
+                .rename_axis(_LABEL_COL)
             )
             community_df.append(indig_df)
 
