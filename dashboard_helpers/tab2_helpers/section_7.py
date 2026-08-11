@@ -16,7 +16,7 @@ from dashboard_helpers.content_helpers.table_styles import (
     format_number,
     format_percent,
     format_dollar,
-)
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_7_TITLE, SECTION_7_P1, SECTION_7_P2,
     TABLE_7_1_TITLE, TABLE_7_1_DESC,
@@ -100,7 +100,7 @@ class Section7Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-7-1',
             columns=columns,
             data=display_df.to_dict('records'),
@@ -161,7 +161,8 @@ class Section7Prep:
                 font=dict(size=15, family=TABLE_FONT),
             ),
             paper_bgcolor="white",
-            showlegend=False,
+            showlegend=True,
+            legend=dict(traceorder="reversed"),
             margin=dict(t=90, b=40, l=20, r=20),
             height=550,
         )
@@ -192,34 +193,35 @@ class Section7Prep:
         df = df.fillna("N/A")
 
         _LABEL_COL = 'Number of primary and secondary rental units'
-        _SUB_COL = 'sub_type'
+        # _SUB_COL = 'sub_type'
 
         rows = (
             df.set_index('Rental Type')[YEARS_2016_2021]
             .reset_index()
-            .rename(columns={'Rental Type': _SUB_COL})
+            .rename(columns={'Rental Type': _LABEL_COL})
         )
-        rows[_SUB_COL] = rows[_SUB_COL].replace(
-            {"Primary Renters": "Primary", "Secondary Renters": "Secondary"}
+        rows[_LABEL_COL] = rows[_LABEL_COL].replace(
+            {"Primary Renters": "Number of primary rental units", 
+             "Secondary Renters": "Number of secondary rental units"}
         )
         for col in YEARS_2016_2021:
             rows[col] = rows[col].map(format_number)
 
         # Label column: show on first row only to simulate a merged cell
-        rows.insert(0, _LABEL_COL, '')
-        rows.iloc[0, rows.columns.get_loc(_LABEL_COL)] = _LABEL_COL
+        # rows.insert(0, _LABEL_COL, '')
+        # rows.iloc[0, rows.columns.get_loc(_LABEL_COL)] = _LABEL_COL
         table_df = rows.reset_index(drop=True)
 
         columns = [
             {"name": [geo_name, ""], "id": _LABEL_COL},
-            {"name": [geo_name, ""], "id": _SUB_COL},
+            # {"name": [geo_name, ""], "id": _SUB_COL},
             {"name": [geo_name, "2016"], "id": "2016"},
             {"name": [geo_name, "2021"], "id": "2021"},
         ]
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-7-3-1',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -230,7 +232,7 @@ class Section7Prep:
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, [_SUB_COL] + YEARS_2016_2021, 
+            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_2021, 
                                                    label_width='40%', label_min_width='200px'),
             **base_style
         )
@@ -308,25 +310,27 @@ class Section7Prep:
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
         _LABEL_COL = 'Statistic'
+        statistic = df[_LABEL_COL].iloc[0]
 
-        rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()
+        table_df = df[YEARS_2016_TO_2023].reset_index(drop=True)
 
         for col in YEARS_2016_TO_2023:
-            rows[col] = rows[col].map(format_dollar)
-
-        # rows.insert(0, _LABEL_COL, '')
-
-        table_df = rows.reset_index(drop=True)
+            table_df[col] = table_df[col].map(format_dollar)
 
         columns = [
-            {"name": [geo_name, ""], "id": _LABEL_COL}
-        ] + [
-            {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
+            {"name": [geo_name, statistic, y], "id": y} for y in YEARS_2016_TO_2023
         ]
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        n = len(YEARS_2016_TO_2023)
+        value_width = f'{round(100 / n, 1)}%'
+        style_cell_conditional = [
+            {'if': {'column_id': y}, 'textAlign': 'right', 'width': value_width, 'paddingRight': '12px'}
+            for y in YEARS_2016_TO_2023
+        ]
+
+        table = make_data_table(
             id='table-7-3-2',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -335,9 +339,9 @@ class Section7Prep:
                 generate_style_data_conditional(table_df)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, n_header_rows=3
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_TO_2023, label_width='40%', label_min_width='200px'),
+            style_cell_conditional=style_cell_conditional,
             **base_style
         )
 
@@ -417,25 +421,27 @@ class Section7Prep:
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
         _LABEL_COL = 'Statistic'
+        statistic = df[_LABEL_COL].iloc[0]
 
-        rows = df.set_index(_LABEL_COL)[YEARS_2016_TO_2023].reset_index()
+        table_df = df[YEARS_2016_TO_2023].reset_index(drop=True)
 
         for col in YEARS_2016_TO_2023:
-            rows[col] = rows[col].map(lambda x: format_percent(x, precision=1))
-
-        # rows.insert(0, _LABEL_COL, '')
-
-        table_df = rows.reset_index(drop=True)
+            table_df[col] = table_df[col].map(lambda x: format_percent(x, precision=1))
 
         columns = [
-            {"name": [geo_name, ""], "id": _LABEL_COL}
-        ] + [
-            {"name": [geo_name, y], "id": y} for y in YEARS_2016_TO_2023
+            {"name": [geo_name, statistic, y], "id": y} for y in YEARS_2016_TO_2023
         ]
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        n = len(YEARS_2016_TO_2023)
+        value_width = f'{round(100 / n, 1)}%'
+        style_cell_conditional = [
+            {'if': {'column_id': y}, 'textAlign': 'right', 'width': value_width, 'paddingRight': '12px'}
+            for y in YEARS_2016_TO_2023
+        ]
+
+        table = make_data_table(
             id='table-7-3-3',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -444,9 +450,9 @@ class Section7Prep:
                 generate_style_data_conditional(table_df)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL
+                columns, is_multiindex=True, n_header_rows=3
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_TO_2023, label_width='40%', label_min_width='200px'),
+            style_cell_conditional=style_cell_conditional,
             **base_style
         )
 

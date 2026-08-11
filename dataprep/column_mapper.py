@@ -31,10 +31,10 @@ TABLE_3_1_1_COL_MAP = strip_map({
         "2021": "      Inuk (Inuit)",
     },
     "Multiple/Other Responses": {
-        "2006": "      Multiple Aboriginal identity responses",
-        "2011": "    Multiple Aboriginal identities",
-        "2016": "    Multiple Aboriginal responses",
-        "2021": "    Multiple Indigenous responses",
+        "2006": ["      Multiple Aboriginal identity responses", "      Aboriginal responses not included elsewhere"],
+        "2011": ["    Multiple Aboriginal identities", "    Aboriginal identities not included elsewhere"],
+        "2016": ["    Multiple Aboriginal responses", "    Aboriginal responses not included elsewhere"],
+        "2021": ["    Multiple Indigenous responses", "    Indigenous responses not included elsewhere"],
     },
     # TODO: add this item back if we want to use original total column and remove the calc total logic from 3.1.1 function
     # "TOTAL": {
@@ -210,18 +210,17 @@ TABLE_3_5_1_COL_MAP = _build_3_5_1_map()
 
 _HH_SUFFIX_4_1_4_2 = {
     "2006": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal HH"},
-    "2011": {"Indigenous HHs": "Indigenous"},
+    "2011": {"Indigenous HHs": "Indigenous", "Non-Indigenous HHs": "non-Indigenous"},
     "2016": {"Indigenous HHs": "Aboriginal household",  "Non-Indigenous HHs": "Non-Aboriginal household"},
     "2021": {"Indigenous HHs": "Indigenous household",  "Non-Indigenous HHs": "Non-Indigenous household"},
 }
 
 _T4_1_TENURE_PREFIX = {
     "Owner": {
-        "2006": "Owners",
-        "2011": "Owner", "2016": "Owner", "2021": "Owner",
+        "2006": "Owners", "2011": "  Owner", "2016": "Owner", "2021": "Owner",
     },
     "Renter": {
-        "2006": "Renter", "2011": "Renter", "2016": "Renter", "2021": "Renter",
+        "2006": "Renter", "2011": "  Renter", "2016": "Renter", "2021": "Renter",
     },
     "Dwelling provided by local government or First Nation": {
         "2006": "Dwelling provided by the local government, First Nation or Indian band",
@@ -237,11 +236,11 @@ _T4_1_TENURE_PREFIX = {
     # },
 }
 
-_T4_1_PCT_DIRECT = {
-    "% of Owners with mortgage":          {"Indigenous HHs": "% of owner households with a mortgage_Indigenous"},
-    "% of Owners without a mortgage":     {"Indigenous HHs": "% of owner households WITHOUT a mortgage_Indigenous"},
-    "% of Renters in subsidized housing": {"Indigenous HHs": "% of tenant households in subsidized housing_Indigenous"},
-    "% of Renters not in subsidized housing": {"Indigenous HHs": "% of tenant households NOT in subsidized housing_Indigenous"},
+_T4_1_PCT_DIRECT_LABELS = {
+    "% of Owners with mortgage":              "% of owner households with a mortgage",
+    "% of Owners without a mortgage":         "% of owner households WITHOUT a mortgage",
+    "% of Renters in subsidized housing":     "% of tenant households in subsidized housing",
+    "% of Renters not in subsidized housing": "% of tenant households NOT in subsidized housing",
 }
 
 # Calc column labels – shared between table 4.1 (by HH type) and 4.2 (by community)
@@ -276,12 +275,13 @@ def _build_4_1_col_map():
                 for hh_type, suffix in _HH_SUFFIX_4_1_4_2[year].items()
             }
     
-    for field, direct_map in _T4_1_PCT_DIRECT.items():
+    for field, label in _T4_1_PCT_DIRECT_LABELS.items():
         result[field] = {
-            year: {
-                hh_type: (direct_map.get(hh_type) if year == "2011" else None)
-                for hh_type in _HH_SUFFIX_4_1_4_2[year]
-            }
+            year: (
+                {hh_type: f"{label}_{suffix}" for hh_type, suffix in _HH_SUFFIX_4_1_4_2[year].items()}
+                if year == "2011"
+                else {hh_type: None for hh_type in _HH_SUFFIX_4_1_4_2[year]}
+            )
             for year in YEARS
         }
     return result
@@ -309,7 +309,7 @@ def _build_4_2_col_map():
             for year in YEARS_MINUS_2011
         }
     
-    for field in _T4_1_PCT_DIRECT:
+    for field in _T4_1_PCT_DIRECT_LABELS:
         result[field] = {
             year: {community: None for community in _T4_2_COMMUNITY_SUFFIX}
             for year in YEARS_MINUS_2011

@@ -407,37 +407,37 @@ class Section4DataPrep:
 
         #### Recalculate totals
         # #calculate totals for "Total" rows by summing the non-total hh_size rows per group
-        CAT_ROWS = ["Households with children",
-                    "Households led by a single-parent",
-                    "Number of multigenerational households",
-                    "Number of non-family households (i.e. single or roomates)",
-                    "Apartment in building with fewer than 5 storeys",
-                    "Apartment in building with 5+ storeys",
-                    "Other single-attached house",
-                    "Moveable dwelling"
-                    ]  # rows that should be summed
-        CAT = "Family Type"
-        TYPE = "Household Type"
-        TOTAL_ROW = "Total Households for reference"
+        # CAT_ROWS = ["Households with children",
+        #             "Households led by a single-parent",
+        #             "Number of multigenerational households",
+        #             "Number of non-family households (i.e. single or roomates)",
+        #             "Apartment in building with fewer than 5 storeys",
+        #             "Apartment in building with 5+ storeys",
+        #             "Other single-attached house",
+        #             "Moveable dwelling"
+        #             ]  # rows that should be summed
+        # CAT = "Family Type"
+        # TYPE = "Household Type"
+        # TOTAL_ROW = "Total Households for reference"
 
-        for year in YEARS:
-            # for each (Geocode, Household type) group, sum the size rows and assign to "total"
-            totals = (
-                result[result[CAT].isin(CAT_ROWS)]
-                .groupby(["Geocode", TYPE])[year]
-                .sum(min_count=1)
-            )
+        # for year in YEARS:
+        #     # for each (Geocode, Household type) group, sum the size rows and assign to "total"
+        #     totals = (
+        #         result[result[CAT].isin(CAT_ROWS)]
+        #         .groupby(["Geocode", TYPE])[year]
+        #         .sum(min_count=1)
+        #     )
 
-            # build a mask for the "Total" rows
-            # B - not totally sure how to use this in the future
-            total_mask = result[CAT] == TOTAL_ROW
+        #     # build a mask for the "Total" rows
+        #     # B - not totally sure how to use this in the future
+        #     total_mask = result[CAT] == TOTAL_ROW
 
-            # map the summed values back using (Geocode, Houshold Type) as the key
-            # B - not totally sure how to use this in the future
-            result.loc[total_mask, year] = result[total_mask].apply(
-                lambda row: totals.get((row["Geocode"], row[TYPE])),
-                axis=1
-            )
+        #     # map the summed values back using (Geocode, Houshold Type) as the key
+        #     # B - not totally sure how to use this in the future
+        #     result.loc[total_mask, year] = result[total_mask].apply(
+        #         lambda row: totals.get((row["Geocode"], row[TYPE])),
+        #         axis=1
+        #     )
 
         #### APPLY PERCENTAGE CALCULATION AFTER FILLING IN VALUE FIELDS IN DATAFRAME
 
@@ -578,6 +578,6 @@ class Section4DataPrep:
         }
 
 # For testing
-# if __name__ == '__main__':
-#     t = Section4DataPrep()
-#     t.table_4_3_4_4("4.3")
+if __name__ == '__main__':
+    t = Section4DataPrep()
+    t.table_4_5_1_4_5_2()

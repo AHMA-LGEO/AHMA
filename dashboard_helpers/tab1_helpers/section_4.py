@@ -15,8 +15,9 @@ from dashboard_helpers.content_helpers.table_styles import (
     make_special_row_styles,
     make_style_cell,
     format_number,
-    format_percent
-)
+    format_percent,
+    make_data_table,
+    prettify_label)
 from ..content_helpers.text_content import (
     SECTION_4_TITLE, SECTION_4_P1, SECTION_4_P2,
     TABLE_4_1_TITLE, CHART_4_1_DESC, TABLE_4_1_DESC,
@@ -82,8 +83,8 @@ class Section4Prep:
         for _, row in result.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
-            if tenure == 'Total' or 'without a mortgage' in str(tenure):
-                rows.append(blank_row('Households by Tenure'))
+            # if tenure == 'Total' or 'without a mortgage' in str(tenure):
+            #     rows.append(blank_row('Households by Tenure'))
 
         return pd.DataFrame(rows, dtype=object)
     
@@ -121,7 +122,7 @@ class Section4Prep:
                 {"name": [geo_name, "Non-Indigenous HHs", y], "id": f"non_indg_{y}"}
                 for y in YEARS
             ]
-        
+
 
         data_cols = [_LABEL_COL] + [f'indg_{y}' for y in YEARS]
         if show_both:
@@ -132,7 +133,7 @@ class Section4Prep:
         data_cols.remove(_LABEL_COL)
         # print(data_cols)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-1',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -152,7 +153,8 @@ class Section4Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-4-1'),
+            with_export_btn(table, 'table-4-1',
+                            title=f'Indigenous Households by Tenure - {geo_name}'),
         ], className='pg2-table-lgeo'), False
 
 
@@ -318,8 +320,8 @@ class Section4Prep:
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
             tenure = row['Households by Tenure']
-            if tenure == 'Total' or 'without a mortgage' in str(tenure):
-                rows.append(blank_row('Households by Tenure'))
+            # if tenure == 'Total' or 'without a mortgage' in str(tenure):
+            #     rows.append(blank_row('Households by Tenure'))
 
         formatted_df = pd.DataFrame(rows, dtype=object)
 
@@ -332,7 +334,7 @@ class Section4Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-2',
             columns=columns,
             data=formatted_df.to_dict('records'),
@@ -406,9 +408,9 @@ class Section4Prep:
         rows = [blank_row(_LABEL_COL, all_val_cols, _LABEL_COL)]
         for _, row in result.iterrows():
             rows.append(row.to_dict())
-            tenure = row[_LABEL_COL]
-            if tenure == 'Total' in str(tenure):
-                rows.append(blank_row(_LABEL_COL))
+            # tenure = row[_LABEL_COL]
+            # if tenure == 'Total' in str(tenure):
+            #     rows.append(blank_row(_LABEL_COL))
 
         df_display = pd.DataFrame(rows, dtype=object)
     
@@ -432,7 +434,7 @@ class Section4Prep:
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-3',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -478,10 +480,10 @@ class Section4Prep:
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
         count_indexed = count_rows.set_index(hh_size_col)[YEARS_MINUS_2011]
-        totals_series = (
-            pd.to_numeric(total_rows[YEARS_MINUS_2011].iloc[0], errors='coerce').fillna(0)
-            if not total_rows.empty else pd.Series(0.0, index=YEARS_MINUS_2011)
-        )
+        # totals_series = (
+        #     pd.to_numeric(total_rows[YEARS_MINUS_2011].iloc[0], errors='coerce').fillna(0)
+        #     if not total_rows.empty else pd.Series(0.0, index=YEARS_MINUS_2011)
+        # )
 
         tenure_list = count_rows[hh_size_col].unique()
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(tenure_list)}
@@ -493,8 +495,9 @@ class Section4Prep:
             #     counts / totals_series.replace(0, float('nan')) * 100
             # ).fillna(0).tolist()
 
+            label = prettify_label(tenure)
             fig.add_trace(go.Bar(
-                name=tenure,
+                name=label,
                 x=YEARS_MINUS_2011,
                 y=counts,
                 marker_color=colors[tenure],
@@ -502,7 +505,7 @@ class Section4Prep:
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 # hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
-                hovertemplate=f'<b>{tenure}</b><br>Year: %{{x}}<br>Number of People: %{{y:,.0f}}<extra></extra>'
+                hovertemplate=f'<b>{label}</b><br>Year: %{{x}}<br>Number of People: %{{y:,.0f}}<extra></extra>'
             ))
 
         fig.update_layout(
@@ -576,8 +579,8 @@ class Section4Prep:
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
             tenure = row[_LABEL_COL]
-            if tenure == 'Total' in str(tenure):
-                rows.append(blank_row(_LABEL_COL))
+            # if tenure == 'Total' in str(tenure):
+            #     rows.append(blank_row(_LABEL_COL))
 
         formatted_df = pd.DataFrame(rows, dtype=object)
 
@@ -591,7 +594,7 @@ class Section4Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-4',
             columns=columns,
             data=formatted_df.to_dict('records'),
@@ -651,9 +654,9 @@ class Section4Prep:
         rows = [blank_row(_LABEL_COL, all_val_cols, f"Households by {_LABEL_COL}")]
         for _, row in result.iterrows():
             rows.append(row.to_dict())
-            famtype = row[_LABEL_COL]
-            if '%' in str(famtype):
-                rows.append(blank_row(_LABEL_COL))
+            # famtype = row[_LABEL_COL]
+            # if '%' in str(famtype):
+            #     rows.append(blank_row(_LABEL_COL))
 
         return pd.DataFrame(rows, dtype=object)
 
@@ -698,7 +701,7 @@ class Section4Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-5',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -759,9 +762,9 @@ class Section4Prep:
         rows = [blank_row(_LABEL_COL, all_val_cols, f"Households by {_LABEL_COL}")]
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
-            famtype = row[_LABEL_COL]
-            if '%' in str(famtype):
-                rows.append(blank_row(_LABEL_COL))
+            # famtype = row[_LABEL_COL]
+            # if '%' in str(famtype):
+            #     rows.append(blank_row(_LABEL_COL))
 
         return pd.DataFrame(rows, dtype=object), all_val_cols
 
@@ -789,7 +792,7 @@ class Section4Prep:
         ]
 
         base_style = get_base_table_style()
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-4-5',
             columns=columns,
             data=df.to_dict('records'),

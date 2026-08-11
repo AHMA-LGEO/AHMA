@@ -17,8 +17,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     merge_columns,
     format_number,
     format_dollar,
-    format_percent
-)
+    format_percent,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_5_TITLE, SECTION_5_P1, SECTION_5_P2,
     TABLE_5_1_TITLE, TABLE_5_1_DESC_P1, TABLE_5_1_DESC_P2, 
@@ -79,7 +79,7 @@ class Section5Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-5-1',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -167,8 +167,8 @@ class Section5Prep:
             else:
                 rows.append(row.to_dict())
             
-                if 'Total' in str(income):
-                    rows.append(blank_row(_LABEL_COL))
+                # if 'Total' in str(income):
+                #     rows.append(blank_row(_LABEL_COL))
 
         rows.extend(median_row)
 
@@ -194,7 +194,7 @@ class Section5Prep:
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-5-2',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -245,7 +245,9 @@ class Section5Prep:
             if not total_rows.empty else pd.Series(0.0, index=YEARS_MINUS_2011)
         )
 
-        income_list = count_rows[hh_size_col].unique()
+        INCOME_ORDER = ["Very Low Income", "Low", "Moderate", "Median", "High"]
+        available = set(count_rows[hh_size_col].unique())
+        income_list = [i for i in INCOME_ORDER if i in available]
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(income_list)}
 
         fig = go.Figure()
@@ -260,7 +262,7 @@ class Section5Prep:
                 x=YEARS_MINUS_2011,
                 y=percentages,
                 marker_color=colors[income],
-                legendrank=len(income) - i,
+                legendrank=-i,
                 # text=[f"{p:.1f}%" for p in percentages],
                 textposition='inside',
                 hovertemplate=f'<b>{income}</b><br>Year: %{{x}}<br>Percentage: %{{y:.1f}}%<extra></extra>'
@@ -340,8 +342,8 @@ class Section5Prep:
             else:
                 rows.append(row.to_dict())
             
-                if 'Total' in str(income):
-                    rows.append(blank_row(_LABEL_COL))
+                # if 'Total' in str(income):
+                #     rows.append(blank_row(_LABEL_COL))
 
         rows.extend(median_row)
 
@@ -359,7 +361,7 @@ class Section5Prep:
         # Row index 8th is median household income
         formatted_df = merge_columns(formatted_df, rows=[8], value_cols=val_cols, group_size=3)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-5-3',
             columns=columns,
             data=formatted_df.to_dict('records'),
@@ -415,7 +417,7 @@ class Section5Prep:
             rows.append(row.to_dict())
             tenure = row['Census Year']
             if tenure == 'Non-Indigenous household' in str(tenure):
-                rows.append(blank_row('Census Year'))
+                # rows.append(blank_row('Census Year'))
                 rows.append(blank_row('Census Year', YEARS_2016_2021, 'Median Annual Per Person Income'))
 
         table_df = pd.DataFrame(rows, dtype=object)
@@ -431,7 +433,7 @@ class Section5Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-5-1',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -522,7 +524,7 @@ class Section5Prep:
         base_style = get_base_table_style()
         val_cols = [c for c in data_cols if c != _LABEL_COL]
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-5-5',
             columns=columns,
             data=df_display.to_dict('records'),

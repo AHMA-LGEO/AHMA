@@ -79,8 +79,8 @@ layout = html.Div([
     dcc.Store(id="tab2-visibility-store", data={tid: False for tid in TABLE_IDS}),
 
     # Export button
-    # dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
-    # html.Div(id='dummy-output', style={'display': 'none'}),
+    dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
+    html.Div(id='dummy-output', style={'display': 'none'}),
     
 
     # Page content

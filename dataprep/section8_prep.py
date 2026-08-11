@@ -78,16 +78,21 @@ class Section8DataPrep:
                             get_val(match, cm.TABLE_8_1_COL_MAP[k]["Number of households"].get(year, {}).get(hh_type))
                             for k in _UNACCEPTABLE_KEYS
                         ]
+                        # Suppressed cells (e.g. "x") come back as NaN, not None - treat them
+                        # as 0 here so they don't poison the sum, while the indicator's own
+                        # row (via clean_val below) still displays them as None.
                         sum_of_unacceptable = (
-                            sum(v for v in unaccept_vals if v is not None)
+                            sum(v for v in unaccept_vals if v is not None and not pd.isna(v))
                             if any(v is not None for v in unaccept_vals) else None
                         )
 
-                        
+
                         raw_total = get_val(
                             match,
                             cm.TABLE_8_1_COL_MAP[_TOTAL_KEY]["Number of households"].get(year, {}).get(hh_type),
                         )
+                        if raw_total is not None and pd.isna(raw_total):
+                            raw_total = None
 
                         # If total is less than sum of unacceptable categories, reassign the total = sum of unacceptable
                         if raw_total is not None and sum_of_unacceptable is not None:

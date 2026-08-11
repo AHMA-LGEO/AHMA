@@ -45,11 +45,20 @@ def display_page(pathname):
 
 app.clientside_callback(
       """
-    function(n_clicks, geo){
+    function(n_clicks, geo, pathname){
         if (n_clicks > 0 && geo){
+            // Name the PDF after the tab it was exported from.
+            var tabNames = {
+                '/tab1': 'Who lives here',
+                '/tab2': 'How are people housed',
+                '/tab3': 'Where does the system fail',
+                '/tab4': 'What is needed'
+            };
+            var tab = tabNames[pathname];
+            var filename = (tab ? tab + ' - ' + geo : geo) + '.pdf';
             var opt = {
                 margin: 1,
-                filename: geo + '.pdf',
+                filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 3},
                 jsPDF: { unit: 'cm', format: 'a2', orientation: 'p' },
@@ -61,7 +70,8 @@ app.clientside_callback(
     """,
     Output('dummy-output', 'children'),
     Input('export-btn', 'n_clicks'),
-    State('main-area', 'data')
+    State('main-area', 'data'),
+    State('url', 'pathname')
 )
 
 @app.callback(

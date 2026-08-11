@@ -12,8 +12,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    format_number
-)
+    format_number,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_12_TITLE, SECTION_12_P1,
     TABLE_12_1_TITLE, TABLE_12_1_DESC_P1, TABLE_12_1_DESC_P2, TABLE_12_1_DESC_P3,
@@ -41,13 +41,13 @@ class Section12Prep:
             {_LABEL_4: _LABEL_4 + " ", _VAL_4: "17,145"},
             {_LABEL_4: "Subtract: Households in Subsidized Housing (affordability needs substantively met)", _VAL_4: "- 2,845"},
             {_LABEL_4: "Subtotal:",  _VAL_4: "14,300"},
-            blank_row(_LABEL_4, [_VAL_4]),
+            # blank_row(_LABEL_4, [_VAL_4]),
             {_LABEL_4: "Add: Households Experiencing Homelessness",  _VAL_4: "+ 4,541"},
             {_LABEL_4: "Subtotal:", _VAL_4: "18,841"},
-            blank_row(_LABEL_4, [_VAL_4]),
+            # blank_row(_LABEL_4, [_VAL_4]),
             {_LABEL_4: "Add: Projected Households with Incomes Below Core Need Threshold Unable to Find Appropriate Housing in the Market (15.5% of 27,407)", 
              _VAL_4: "+4,248"},
-            blank_row(_LABEL_4, [_VAL_4]),
+            # blank_row(_LABEL_4, [_VAL_4]),
             {_LABEL_4: "Total Need for Affordable Housing Solutions", _VAL_4: "23,089"},
         ]
         table4_df = pd.DataFrame(table4_rows, dtype=object)
@@ -57,7 +57,7 @@ class Section12Prep:
             {"name": _VAL_4, "id": _VAL_4},
         ]
 
-        table4 = dash_table.DataTable(
+        table4 = make_data_table(
             id='table-12-1-4',
             columns=columns4,
             data=table4_df.to_dict('records'),
@@ -101,7 +101,7 @@ class Section12Prep:
             {"name": _VAL_6,   "id": _VAL_6},
         ]
 
-        table6 = dash_table.DataTable(
+        table6 = make_data_table(
             id='table-12-1-6',
             columns=columns6,
             data=table6_df.to_dict('records'),
@@ -158,56 +158,67 @@ class Section12Prep:
         _LABEL_COL = "Calculation of Indigenous Housing Target"
         _VAL_COL = "# of HHs (2034)"
         _TOTAL_ATTR = "Total Indigenous Housing Need - 2034"
+        _BREAKDOWN_LABEL = "Breakdown of Affordable Housing Solutions Needed"
 
         result = (df.set_index(_LABEL_COL)[_VAL_COL]
                   .reset_index()
                   .rename(columns={_LABEL_COL: ""}))
-                  
+
         result[_VAL_COL] = result[_VAL_COL].apply(format_number)
         total_row = result[result[""] == _TOTAL_ATTR]
+        total_idx = total_row.index[0]
 
-        rows = [blank_row("", [_VAL_COL], _LABEL_COL)]
-        for _, row in result.iterrows():
-            rows.append(row.to_dict())
-            attr = row[""] # Assigning blank column name in result df above
-            if attr == _TOTAL_ATTR:
-                rows.append(blank_row("", [_VAL_COL]))
-                rows.append(blank_row("", [_VAL_COL], 'Breakdown of Affordable Housing Solutions Needed'))
-
-        table_df = pd.DataFrame(rows, dtype=object)
-        table_df = pd.concat([table_df, total_row], ignore_index=True)
-
-        columns = [{"name": [geo_name, ""], "id": ""}] + [
-            {"name": [geo_name, _VAL_COL], "id": _VAL_COL}
-        ]
-
-        section_headers = {
-            'Calculation of Indigenous Housing Target',
-            'Breakdown of Affordable Housing Solutions Needed',
-        }
+        # Split into two visual tables so each gets its own merged geography
+        # header; the Total row closes the first and repeats to close the second.
+        calc_df = result.loc[:total_idx].reset_index(drop=True)
+        breakdown_df = pd.concat(
+            [result.loc[total_idx + 1:], total_row], ignore_index=True
+        )
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
-            id='table-12-2',
-            columns=columns,
-            data=table_df.to_dict('records'),
-            merge_duplicate_headers=True,
-            style_data_conditional=(
-                generate_style_data_conditional(table_df)
-                + make_special_row_styles(table_df, "", section_headers=section_headers,
-                                          total_labels={"Total Indigenous Housing Need - 2034"})
-            ),
-            style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=""
-            ),
-            style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='65%'),
-            **base_style
+        def build_table(table_id, label_header, table_df):
+            columns = [{"name": [geo_name, label_header], "id": ""}] + [
+                {"name": [geo_name, _VAL_COL], "id": _VAL_COL}
+            ]
+            table = make_data_table(
+                id=table_id,
+                columns=columns,
+                data=table_df.to_dict('records'),
+                merge_duplicate_headers=True,
+                style_data_conditional=(
+                    generate_style_data_conditional(table_df)
+                    + make_special_row_styles(table_df, "", total_labels={_TOTAL_ATTR})
+                ),
+                style_header_conditional=generate_style_header_conditional(
+                    columns, is_multiindex=True, first_col_id="", n_header_rows=2,
+                    left_align_cells={'column_id': '', 'header_index': 1}
+                ) + [
+                    {'if': {'header_index': 1, 'column_id': _VAL_COL},
+                     'textAlign': 'right', 'paddingRight': '12px'},
+                ],
+                style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='65%'),
+                **base_style
+            )
+            return table, columns
+
+        calc_table, calc_columns = build_table('table-12-2', _LABEL_COL, calc_df)
+        breakdown_table, _ = build_table('table-12-2-breakdown', _BREAKDOWN_LABEL, breakdown_df)
+
+        # Both sections go into one sheet, separated by the breakdown's own header.
+        export_data = (
+            calc_df.to_dict('records')
+            + [blank_row("", [_VAL_COL])]
+            + [{"": _BREAKDOWN_LABEL, _VAL_COL: _VAL_COL}]
+            + breakdown_df.to_dict('records')
         )
 
         return html.Div([
             html.H5(TABLE_12_2_TITLE, className='table-title'),
             html.Div([html.P(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-12-2'),
+            with_export_btn(calc_table, 'table-12-2',
+                            export_data=export_data, export_columns=calc_columns),
+            html.Br(),
+            breakdown_table,
             #html.I(TABLE_12_2_NOTE),
         ], className='pg2-table-lgeo')

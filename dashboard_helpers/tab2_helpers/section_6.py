@@ -14,8 +14,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     get_base_table_style,
     make_special_row_styles,
     make_style_cell,
-    format_number
-)
+    format_number,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_6_TITLE, SECTION_6_P1, SECTION_6_P2,
     TABLE_6_1_TITLE, CHART_6_1_DESC, TABLE_6_1_DESC,
@@ -114,7 +114,7 @@ class Section6Prep:
         table_id_regex = re.search(r'(table)_([0-9]+)_([0-9]+)', sql_table_name)
         table_id = f"{table_id_regex.group(1)}-{table_id_regex.group(2)}-{table_id_regex.group(3)}"
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id=table_id,
             columns=columns,
             data=df_display.to_dict('records'),
@@ -295,7 +295,7 @@ class Section6Prep:
         table_id_regex = re.search(r'(table)_([0-9]+)_([0-9]+)', sql_table_name)
         table_id = f"{table_id_regex.group(1)}-{table_id_regex.group(2)}-{table_id_regex.group(3)}"
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id=table_id,
             columns=columns,
             data=formatted_df.to_dict('records'),

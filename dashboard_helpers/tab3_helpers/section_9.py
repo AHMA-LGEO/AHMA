@@ -16,8 +16,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     get_special_row_styles_9_3,
     make_style_cell,
     format_number,
-    format_percent
-)
+    format_percent,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_9_TITLE, SECTION_9_P1, SECTION_9_P2,
     TABLE_9_1_TITLE, TABLE_9_1_DESC_P1, TABLE_9_1_DESC_P2, TABLE_9_1_DESC_P3,
@@ -60,55 +60,70 @@ _ATTR_RENAME_9_3 = {
 _NUMBER_ATTRS_9_3 = {"First Nations", "Métis", "Inuit", "Other/Multiple Indigenous Communities", 
                      "Total number of Indigenous people who experienced homelessness"}
 
-# Ordered display structure: (section_header_or_None, [raw_attr_names])
+# Ordered display structure, grouped into the separate tables rendered on the
+# page. Each group is a list of (top_header, [(sub_header, attrs), ...]) sections;
+# sub_header "None" means the attributes hang directly off the top header.
+# Groups 2-4 repeat the "All respondents" top header since they continue it.
 _ROW_STRUCTURE_9_3 = [
-    ("Number of Indigenous people who experienced homelessness (PEH)", [
-        ("None", [
-            "First Nations",
-            "Métis",
-            "Inuit",
-            "Other/Multiple Indigenous Communities",
-            "Total number of Indigenous people who experienced homelessness",
+    [
+        ("Number of Indigenous people who experienced homelessness (PEH)", [
+            ("None", [
+                "First Nations",
+                "Métis",
+                "Inuit",
+                "Other/Multiple Indigenous Communities",
+                "Total number of Indigenous people who experienced homelessness",
+            ]),
+            ("None", "% of PEH who were Indigenous"),
         ]),
-        ("None", "% of PEH who were Indigenous"),
-    ]),
-    
-    ("All respondents", [
-        ("Where PEH stayed the night of the PIT count", [
-            "All Respondents Sheltered",
-            "All Respondents Unsheltered",
-        ]),
+    ],
 
-        ("Length of time experiencing homelessness", [
-            "Length of time experiencing homelessness - 12+ months",
-            "Length of time experiencing homelessness - 6-12 months",
-            "Length of time experiencing homelessness - <6 months",
-            "Length of time experiencing homelessness - Other/Unknown",
+    [
+        ("All respondents", [
+            ("Where PEH stayed the night of the PIT count", [
+                "All Respondents Sheltered",
+                "All Respondents Unsheltered",
             ]),
 
-        ("Reason for housing loss", [
-            "Reason for housing loss - Not enough income %",
-            "Reason for housing loss - Substance use issue %",
-            "Reason for housing loss - Conflict with landlord %",
-            "Reason for housing loss - Conflict with spouse/partner %",
-            "Reason for housing loss - Mental health issue %",
-            "Reason for housing loss - Other %",
-            ]),
-
-        ("None", "% who identified eviction as cause of most recent housing loss"),
-
-        ("% who experienced homelessness for the first time as a youth", [
-            "% who experienced homelessness for the first time as a youth (Indigenous)",
-            "% who experienced homelessness for the first time as a youth (Non-Indigenous)",
-            ]),
-
-        ("% of youth who were in foster care, youth group home, or an independent Living Agreement as a youth", [
-            "% of youth who were in foster care (Indigenous)",
-            "% of youth who were in foster care (Non-Indigenous)",
+            ("Length of time experiencing homelessness", [
+                "Length of time experiencing homelessness - 12+ months",
+                "Length of time experiencing homelessness - 6-12 months",
+                "Length of time experiencing homelessness - <6 months",
+                "Length of time experiencing homelessness - Other/Unknown",
+                ]),
         ]),
-        
-        ("None", "% with acquired brain injury"),
-    ]),
+    ],
+
+    [
+        ("All respondents", [
+            ("Reason for housing loss", [
+                "Reason for housing loss - Not enough income %",
+                "Reason for housing loss - Substance use issue %",
+                "Reason for housing loss - Conflict with landlord %",
+                "Reason for housing loss - Conflict with spouse/partner %",
+                "Reason for housing loss - Mental health issue %",
+                "Reason for housing loss - Other %",
+                ]),
+
+            ("None", "% who identified eviction as cause of most recent housing loss"),
+        ]),
+    ],
+
+    [
+        ("All respondents", [
+            ("% who experienced homelessness for the first time as a youth", [
+                "% who experienced homelessness for the first time as a youth (Indigenous)",
+                "% who experienced homelessness for the first time as a youth (Non-Indigenous)",
+                ]),
+
+            ("% of youth who were in foster care, youth group home, or an independent Living Agreement as a youth", [
+                "% of youth who were in foster care (Indigenous)",
+                "% of youth who were in foster care (Non-Indigenous)",
+            ]),
+
+            ("None", "% with acquired brain injury"),
+        ]),
+    ],
 ]
 
 
@@ -162,7 +177,7 @@ class Section9Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-9-1',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -301,7 +316,8 @@ class Section9Prep:
         table_df = df.set_index('Exit Reason')[value_cols].reset_index()
 
         for col in value_cols:
-            table_df[col] = table_df[col].apply(format_number)
+            fmt = (lambda v: format_percent(v, precision=0)) if col == '% Indigenous' else format_number
+            table_df[col] = table_df[col].apply(fmt)
 
 
         columns = [{"name": [geo_name, "Data from MCFD Region - FY2024"], "id": "Exit Reason"}] + [
@@ -310,7 +326,7 @@ class Section9Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-9-2',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -356,6 +372,7 @@ class Section9Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        region_name = df["Region"].iloc[0]
         df = df.fillna("N/A")
 
         _LABEL_COL = 'Attribute'
@@ -368,53 +385,60 @@ class Section9Prep:
             fmt = format_number if attr in _NUMBER_ATTRS_9_3 else format_percent
             return {_LABEL_COL: _ATTR_RENAME_9_3.get(attr, attr), **{y: fmt(raw[y]) for y in PIT_YEARS}}
 
-        rows = []
-        for top_header, top_items in _ROW_STRUCTURE_9_3:
-            rows.append(blank_row(_LABEL_COL, PIT_YEARS, top_header))
-
-            if top_items and isinstance(top_items[0], str):
-                # Flat list of attribute keys (first section)
-                for attr in top_items:
-                    r = _attr_row(attr)
-                    if r:
-                        rows.append(r)
-                rows.append(blank_row(_LABEL_COL, PIT_YEARS))
-            else:
-                # Nested: list of (sub_header, sub_content) tuples
-                for sub_header, sub_content in top_items:
+        def _group_rows(group):
+            """Rows for one table - no blank spacers, the table split separates them."""
+            out = []
+            for top_header, sub_items in group:
+                out.append(blank_row(_LABEL_COL, PIT_YEARS, top_header))
+                for sub_header, sub_content in sub_items:
                     if sub_header != "None":
-                        rows.append(blank_row(_LABEL_COL, PIT_YEARS, sub_header))
+                        out.append(blank_row(_LABEL_COL, PIT_YEARS, sub_header))
                     attrs = [sub_content] if isinstance(sub_content, str) else sub_content
                     for attr in attrs:
                         r = _attr_row(attr)
                         if r:
-                            rows.append(r)
-                    rows.append(blank_row(_LABEL_COL, PIT_YEARS))
+                            out.append(r)
+            return out
 
-        df_display = pd.DataFrame(rows, columns=[_LABEL_COL] + PIT_YEARS).fillna("N/A")
-
-        columns = [{"name": [geo_name, "PIT Count Year"], "id": _LABEL_COL}] + [
-            {"name": [geo_name, y], "id": y} for y in PIT_YEARS
+        columns = [{"name": [f"{geo_name} - {region_name} PiT Count", "PIT Count Year"], "id": _LABEL_COL}] + [
+            {"name": [f"{geo_name} - {region_name} PiT Count", y], "id": y} for y in PIT_YEARS
         ]
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
-            id='table-9-3',
-            columns=columns,
-            data=df_display.to_dict('records'),
-            merge_duplicate_headers=True,
-            style_data_conditional=(
-                generate_style_data_conditional(df_display)
-                + get_special_row_styles_9_3(df_display)
-            ),
-            style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
-                left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
-            ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='30%'),
-            **base_style
-        )
+        def _build(table_id, group_df):
+            return make_data_table(
+                id=table_id,
+                columns=columns,
+                data=group_df.to_dict('records'),
+                merge_duplicate_headers=True,
+                style_data_conditional=(
+                    generate_style_data_conditional(group_df)
+                    + get_special_row_styles_9_3(group_df)
+                ),
+                style_header_conditional=generate_style_header_conditional(
+                    columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
+                    left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
+                ),
+                style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='30%'),
+                **base_style
+            )
+
+        tables, export_records = [], []
+        for i, group in enumerate(_ROW_STRUCTURE_9_3):
+            group_df = pd.DataFrame(_group_rows(group),
+                                    columns=[_LABEL_COL] + PIT_YEARS).fillna("N/A")
+            tables.append(_build('table-9-3' if i == 0 else f'table-9-3-{i + 1}', group_df))
+            # The export stays a single sheet covering all four groups.
+            if export_records:
+                export_records.append(blank_row(_LABEL_COL, PIT_YEARS))
+            export_records.extend(group_df.to_dict('records'))
+
+        table_blocks = [with_export_btn(tables[0], 'table-9-3',
+                                        export_data=export_records,
+                                        export_columns=columns)]
+        for tbl in tables[1:]:
+            table_blocks += [html.Br(), tbl]
 
         return html.Div([
             html.H5(TABLE_9_3_TITLE, className='table-title'),
@@ -425,5 +449,11 @@ class Section9Prep:
                       html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_3))], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-9-3'),
+            *table_blocks,
         ], className='pg2-table-lgeo')
+
+
+# For testing
+if __name__ == "__main__":
+    t = Section9Prep()
+    t.create_table_9_3_layout(59)

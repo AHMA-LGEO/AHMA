@@ -109,6 +109,7 @@ class Section9DataPrep:
         for _, geo_row in df.iterrows():
             geocode   = geo_row["Geocode"]
             geography = geo_row["Name"]
+            pit_region = geo_row["PiT Region"]
 
             # Pre-compute 2025 total Indigenous PEH: total all respondents × % Indigenous
             total_all_2025   = _get(geo_row, total_all_2025_col)
@@ -121,7 +122,8 @@ class Section9DataPrep:
 
             for attribute, year_map in cm.TABLE_9_3_COL_MAP.items():
                 row = {"Geocode": geocode, 
-                       "Geography": geography, 
+                       "Geography": geography,
+                       "Region": pit_region,
                        "Attribute": attribute}
 
                 for year in PIT_YEARS:
@@ -203,6 +205,6 @@ class Section9DataPrep:
         return result_transposed
     
 # For testing
-# if __name__ == '__main__':
-#     t = Section9DataPrep()
-#     t.table_9_1()
+if __name__ == '__main__':
+    t = Section9DataPrep()
+    t.table_9_3()

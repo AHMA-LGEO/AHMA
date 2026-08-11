@@ -19,7 +19,9 @@ from dashboard_helpers.content_helpers.table_styles import (
     format_percent,
     _T8_BELOW_MULTIPLE,
     _T8_TOTAL,
-)
+    _T8_GEO_HEADERS,
+    make_data_table,
+    prettify_label)
 from ..content_helpers.text_content import (
     SECTION_8_TITLE, SECTION_8_P1, SECTION_8_P2,
     TABLE_8_1_TITLE, CHART_8_1_DESC, TABLE_8_1_DESC,
@@ -31,7 +33,7 @@ from ..content_helpers.text_content import (
     )
 from ..content_helpers.export_helpers import with_export_btn
 from dashboard_helpers.config import (
-    CHART_COLORS, TABLE_FONT, PLOT_CONFIG, 
+    CHART_COLORS, TABLE_COLORS, TABLE_FONT, PLOT_CONFIG,
     YEARS_MINUS_2011, COMMUNITIES)
 
 
@@ -99,7 +101,7 @@ class Section8Prep:
 
             if indicator == _T8_TOTAL:
                 rows.append({_LABEL_COL: indicator, **indg_count_vals, **non_indg_count_vals})
-                rows.append(blank_row(_LABEL_COL))
+                # rows.append(blank_row(_LABEL_COL))
                 continue
 
             indg_pct_vals = _fmt_vals(indg_idx, indicator, '% of households', format_percent, 'indg')
@@ -114,7 +116,7 @@ class Section8Prep:
             pct_label = '__below_pct__' if indicator == _T8_BELOW_MULTIPLE else '% of households'
             rows.append({_LABEL_COL: pct_label, **indg_pct_vals, **non_indg_pct_vals})
 
-            rows.append(blank_row(_LABEL_COL))
+            # rows.append(blank_row(_LABEL_COL))
 
         return pd.DataFrame(rows, dtype=object)
 
@@ -166,13 +168,16 @@ class Section8Prep:
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-1',
             columns=columns,
             data=df_display.to_dict('records'),
             merge_duplicate_headers=True,
             style_data_conditional=(
-                generate_style_data_conditional(df_display)
+                # Restart the shading at every indicator header so 'Number of
+                # households' and '% of households' keep the same colours in
+                # every section, regardless of what precedes them.
+                generate_style_data_conditional(df_display, _LABEL_COL, _T8_GEO_HEADERS)
                 + get_special_row_styles_8_1(df)
             ),
             style_header_conditional=generate_style_header_conditional(
@@ -263,7 +268,7 @@ class Section8Prep:
             texttemplate="%{text}",
             textfont=dict(size=10, color="white"),
             insidetextorientation="horizontal",
-            hovertemplate="<b>%{label}</b><br>%{value:.0f}% of total HHs<extra></extra>",
+            hovertemplate="<b>%{label}</b><br>%{value:.0f}% of total Households<extra></extra>",
             sort=False,
             rotation=-90
         ))
@@ -341,8 +346,8 @@ class Section8Prep:
         for _, row in result.iterrows():
             rows.append(row.to_dict())
             tenure = row[_LABEL_COL]
-            if tenure == '% of HHs in CHN who rent' in str(tenure):
-                rows.append(blank_row(_LABEL_COL))
+            # if tenure == '% of HHs in CHN who rent' in str(tenure):
+            #     rows.append(blank_row(_LABEL_COL))
         
         
         table_df = pd.DataFrame(rows, dtype=object)
@@ -369,7 +374,7 @@ class Section8Prep:
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-3',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -441,8 +446,8 @@ class Section8Prep:
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
             tenure = row[_LABEL_COL]
-            if tenure == '% of HHs in CHN who rent' in str(tenure):
-                rows.append(blank_row(_LABEL_COL))
+            # if tenure == '% of HHs in CHN who rent' in str(tenure):
+            #     rows.append(blank_row(_LABEL_COL))
 
         formatted_df = pd.DataFrame(rows, dtype=object)
 
@@ -455,7 +460,7 @@ class Section8Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-4',
             columns=columns,
             data=formatted_df.to_dict('records'),
@@ -542,7 +547,7 @@ class Section8Prep:
         base_style = get_base_table_style()
         data_cols.remove(_LABEL_COL)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-5',
             columns=columns,
             data=df_display.to_dict('records'),
@@ -590,6 +595,12 @@ class Section8Prep:
         prior_pop_list = indg[_LABEL_COL].tolist()
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(prior_pop_list)}
 
+        # Axis/hover text uses the expanded labels; colours and the mask stay
+        # keyed on the stored values.
+        _DISPLAY_COL = '_display_metric'
+        indg[_DISPLAY_COL] = indg[_LABEL_COL].map(prettify_label)
+        prior_pop_display = indg[_DISPLAY_COL].tolist()
+
         # hover_config = dict(namelength=-1)
         # if '#80875C' in colors.values():
         #     hover_config['font'] = dict(color='white')
@@ -610,20 +621,20 @@ class Section8Prep:
         mask = indg[_LABEL_COL].map(colors) == '#80875C'
 
         fig.add_trace(go.Bar(
-            y=indg.loc[mask, _LABEL_COL],
+            y=indg.loc[mask, _DISPLAY_COL],
             x=indg.loc[mask, '2021'],
             orientation='h',
-            customdata=indg[_LABEL_COL],
+            customdata=indg.loc[mask, _DISPLAY_COL],
             marker_color='#80875C',
             hoverlabel=dict(font=dict(color='white')),
             hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>'),
         ))
 
         fig.add_trace(go.Bar(
-            y=indg.loc[~mask, _LABEL_COL],
+            y=indg.loc[~mask, _DISPLAY_COL],
             x=indg.loc[~mask, '2021'],
             orientation='h',
-            customdata=indg[_LABEL_COL],
+            customdata=indg.loc[~mask, _DISPLAY_COL],
             marker_color=[colors[t] for t in indg.loc[~mask, _LABEL_COL]],
             hovertemplate=('<b>%{customdata}</b><br>Percentage: %{x:.1f}%<extra></extra>'),
         ))
@@ -633,7 +644,7 @@ class Section8Prep:
             yaxis=dict(
                 title='',
                 categoryorder='array',
-                categoryarray=prior_pop_list[::-1]
+                categoryarray=prior_pop_display[::-1]
             ),
             xaxis=dict(
                 title='Percentage of Households',
@@ -701,7 +712,7 @@ class Section8Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-6',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -748,13 +759,15 @@ class Section8Prep:
 
         table_df = table_df.applymap(format_number)
 
-        columns = [{"name": [geo_name, "2021 Affordable Housing Deficit - Indigenous HHs in Core Housing Need"], "id": "Income Type"}] + [
-            {"name": [geo_name, col], "id": col} for col in hh_cols
+        DEFICIT_LABEL = "2021 Affordable Housing Deficit - Indigenous HHs in Core Housing Need"
+
+        columns = [{"name": [geo_name, DEFICIT_LABEL, "Income Category"], "id": "Income Type"}] + [
+            {"name": [geo_name, DEFICIT_LABEL, col], "id": col} for col in hh_cols
         ]
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-8-7',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -764,9 +777,15 @@ class Section8Prep:
                 + make_special_row_styles(table_df, 'Income Type', total_labels={'Total'}, total_col=True)
             ),
             style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Income Type', n_header_rows=2,
-                left_align_cells={'column_id':'Income Type', 'header_index': 1}
-            ),
+                columns, is_multiindex=True, first_col_id='Income Type', n_header_rows=3,
+                left_align_cells={'column_id':'Income Type', 'header_index': 2}
+            ) + [
+                # The helper strips the label column's bottom borders so it reads
+                # as one merged block. Here the deficit banner spans the full
+                # width, so restore the rule under it in the label column too.
+                {'if': {'header_index': 1, 'column_id': 'Income Type'},
+                 'borderBottom': f"1px solid {TABLE_COLORS['border']}"},
+            ],
             style_cell_conditional=make_style_cell('Income Type', hh_cols, label_width='25%', label_min_width='120px'),
             **base_style
         )

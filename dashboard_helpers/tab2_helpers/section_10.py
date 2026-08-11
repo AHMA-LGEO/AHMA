@@ -16,8 +16,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     merge_columns,
     make_centered_merged_row_styles,
     format_number,
-    format_percent
-)
+    format_percent,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_10_TITLE, SECTION_10_P1, SECTION_10_P2, 
     TABLE_10_1_TITLE, TABLE_10_1_DESC
@@ -83,9 +83,9 @@ class Section10Prep:
         rows = [blank_row(_LABEL_COL, value_cols, title_row)]
         for _, row in table_df.iterrows():
             rows.append(row.to_dict())
-            tenure = row[_LABEL_COL]
-            if tenure == 'Friendship Centres (within 20 km buffer)' in str(tenure):
-                rows.append(blank_row(_LABEL_COL))
+            # tenure = row[_LABEL_COL]
+            # if tenure == 'Friendship Centres (within 20 km buffer)' in str(tenure):
+            #     rows.append(blank_row(_LABEL_COL))
 
         formatted_df = pd.DataFrame(rows, dtype=object)
 
@@ -96,9 +96,10 @@ class Section10Prep:
         base_style = get_base_table_style()
 
         # Row index 5-6 pharmacies, 7-8 friendship centres, 10 total number of indigenous people
-        formatted_df = merge_columns(formatted_df, rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
+        # formatted_df = merge_columns(formatted_df, rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
+        formatted_df = merge_columns(formatted_df, rows=list(np.arange(5,10)), value_cols=value_cols)
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-10-1',
             columns=columns,
             data=formatted_df.to_dict('records'),
@@ -108,7 +109,8 @@ class Section10Prep:
                 + make_special_row_styles(formatted_df, _LABEL_COL, 
                                           section_headers={title_row},
                                           total_labels={'Number of Indigenous people in selected geography (for reference)'})
-                + make_centered_merged_row_styles(rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
+                # + make_centered_merged_row_styles(rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
+                + make_centered_merged_row_styles(rows=list(np.arange(5,10)), value_cols=value_cols)
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,

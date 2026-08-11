@@ -46,14 +46,17 @@ class Section3DataPrep:
                 row = {
                     "Geocode": geocode,
                     "Geography": geography,
-                    "Indigenous Population (by CSD)": canonical_name
+                    "Indigenous Population": canonical_name
                 }
                 for year, col_name in year_col_map.items():
                     df = dfs[year]
                     df.columns = df.columns.str.replace('\xa0', ' ') # for Inuk\xa0(Inuit)
                     original_geocode = get_original_geocode(geocode, year)
                     match = df[df["Geocode"] == original_geocode]
-                    row[year] = match[col_name].iloc[0] if col_name in df.columns and not match.empty else None
+                    if isinstance(col_name, list):
+                        row[year] = sum_bands(match, col_name) if not match.empty else None
+                    else:
+                        row[year] = match[col_name].iloc[0] if col_name in df.columns and not match.empty else None
                 rows.append(row)
 
         result = pd.DataFrame(rows)
@@ -64,7 +67,7 @@ class Section3DataPrep:
             total_row = {
                 "Geocode": geocode,
                 "Geography": group["Geography"].iloc[0],
-                "Indigenous Population (by CSD)": "Total",
+                "Indigenous Population": "Total",
             }
             for year in YEARS:
                 total_row[year] = pd.to_numeric(group[year], errors="coerce").sum()
@@ -72,7 +75,7 @@ class Section3DataPrep:
 
         result = (
             pd.concat([result, pd.DataFrame(total_rows)], ignore_index=True)
-            .sort_values(["Geocode", "Indigenous Population (by CSD)"])
+            .sort_values(["Geocode", "Indigenous Population"])
             .reset_index(drop=True)
         )
 
@@ -186,7 +189,9 @@ class Section3DataPrep:
                 "Regional Indigenous Households (by CD)": "Total",
             }
             for year in YEARS:
-                total_row[year] = pd.to_numeric(group[year], errors="coerce").sum()
+                # min_count=1 keeps a year with no On/Off Reserve values as NaN
+                # instead of summing to 0 (2011 has no source data at all).
+                total_row[year] = pd.to_numeric(group[year], errors="coerce").sum(min_count=1)
             total_rows.append(total_row)
 
         result = (
@@ -219,7 +224,7 @@ class Section3DataPrep:
                 row = {
                     "Geocode": geocode,
                     "Geography": geography,
-                    "Number of Indigenous-led HHs who have moved in last 5 years (by CD)...": canonical_name,
+                    "Number of Indigenous-led HHs who have moved in last 5 years (by CD)": canonical_name,
                 }
                 for year in YEARS:
                     if dfs[year] is None:
@@ -454,4 +459,4 @@ class Section3DataPrep:
 
 if __name__ == '__main__':
     t = Section3DataPrep()
-    t.table_3_6()
+    t.table_3_1_1()

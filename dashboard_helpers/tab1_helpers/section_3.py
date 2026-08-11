@@ -14,16 +14,17 @@ from dashboard_helpers.content_helpers.table_styles import (
     generate_style_header_conditional,
     get_base_table_style,
     format_number,
-    format_percent
-)
+    format_percent,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_3_TITLE, SECTION_3_P1, SECTION_3_NOTE,
     TABLE_3_1_TITLE, TABLE_3_1_DESC, 
     CHART_3_2_TITLE, CHART_3_2_DESC,
-    TABLE_3_3_TITLE, CHART_3_3_DESC, TABLE_3_3_DESC,
+    TABLE_3_3_TITLE, CHART_3_3_DESC, TABLE_3_3_DESC, TABLE_3_3_NOTE,
     TABLE_3_4_TITLE, CHART_3_4_DESC, CHART_3_4_NOTE, TABLE_3_4_DESC,
     TABLE_3_5_TITLE, 
-    TABLE_3_6_TITLE, CHART_3_6_DESC, TABLE_3_6_DESC, TABLE_3_6_NOTE)
+    TABLE_3_6_TITLE, CHART_3_6_DESC, TABLE_3_6_DESC, TABLE_3_6_NOTE,
+    CHART_3_6_NOTE)
 
 from ..content_helpers.export_helpers import with_export_btn
 
@@ -72,13 +73,13 @@ class Section3Prep:
         rows = []
 
         ##### Section 1: Indigenous Population (by CSD) #####
-        label_col_1 = 'Indigenous Population (by CSD)'
+        label_col_1 = 'Indigenous Population'
         rows.append(blank_row('Indicator', YEARS, '__geo_header__'))
         rows.append(blank_row('Indicator', YEARS, label_col_1))
         for pop_type in ['First Nations', 'Métis', 'Inuit', 'Multiple/Other Responses']:
             rows.append({'Indicator': pop_type, **get_values(df_3_1_1, label_col_1, pop_type)})
         rows.append({'Indicator': 'Total', **get_values(df_3_1_1, label_col_1, 'Total')})
-        rows.append(blank_row('Indicator', YEARS))
+        # rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 2: Age Profile #####
         label_col_2 = 'Age Profile'
@@ -93,10 +94,10 @@ class Section3Prep:
         for hh_type in ['On Reserve', 'Off Reserve']:
             rows.append({'Indicator': hh_type, **get_values(df_3_1_3, label_col_3, hh_type)})
         rows.append({'Indicator': 'Total', **get_values(df_3_1_3, label_col_3, 'Total')})
-        rows.append(blank_row('Indicator', YEARS))
+        # rows.append(blank_row('Indicator', YEARS))
 
         ##### Section 4: Indigenous-led HH moves (by CD) #####
-        label_col_4 = 'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...'
+        label_col_4 = 'Number of Indigenous-led HHs who have moved in last 5 years (by CD)'
         rows.append(blank_row('Indicator', YEARS, label_col_4))
         for move_type in ['...to a Reserve from off-Reserve', '...off a Reserve']:
             rows.append({'Indicator': move_type, **get_values(df_3_1_4, label_col_4, move_type)})
@@ -131,41 +132,72 @@ class Section3Prep:
         cd_geocode = self.data_loader.get_region_geocode(geocode) if is_csd else geocode
         cd_name = self.data_loader.get_geography_name(int(cd_geocode)) if is_csd else geo_name
 
-        # Replace sentinels with display text for rendering
-        df_display = df.copy()
-        df_display['Indicator'] = df_display['Indicator'].replace({
-            '__geo_header__': geo_name,
-            '__cd_header__': cd_name,
-        })
-
-        columns = [{"name": [geo_name, "Census Year"], "id": "Indicator"}] + [
-            {"name": [geo_name, y], "id": y} for y in YEARS
-        ]
-
         base_style = get_base_table_style()
         t_3_1_section_headers = {
-            'Indigenous Population (by CSD)',
+            'Indigenous Population',
             'Regional Indigenous Households (by CD)',
-            'Number of Indigenous-led HHs who have moved in last 5 years (by CD)...',
+            'Number of Indigenous-led HHs who have moved in last 5 years (by CD)',
         }
 
-        table = dash_table.DataTable(
-            id='table-3-1',
-            columns=columns,
-            data=df_display.to_dict('records'),
-            merge_duplicate_headers=True,
-            style_data_conditional=(
-                generate_style_data_conditional(df_display)
-                + make_special_row_styles(df, 'Indicator',
-                                          col_headers={'__geo_header__', '__cd_header__'},
-                                          section_headers=t_3_1_section_headers)
-            ),
-            style_header_conditional=generate_style_header_conditional(
-                columns, is_multiindex=True, first_col_id='Indicator', n_header_rows=2,
+        # Split at the CD banner so each half carries its own export button: the
+        # CSD half ends at '% 65 years or older', the CD half runs from the CD
+        # banner through '...off a Reserve'.
+        cd_matches = df.index[df['Indicator'] == '__cd_header__']
+        cd_idx = int(cd_matches[0]) if len(cd_matches) else len(df)
+
+        def _split(start, stop):
+            """Slice the sentinel df and drop trailing spacer rows."""
+            sub = df.iloc[start:stop]
+            while len(sub) and sub.iloc[-1]['Indicator'] == '':
+                sub = sub.iloc[:-1]
+            return sub.reset_index(drop=True)
+
+        def _build(table_id, sub_df, cols, header_styles):
+            disp = sub_df.copy()
+            disp['Indicator'] = disp['Indicator'].replace({
+                '__geo_header__': geo_name,
+                '__cd_header__': cd_name,
+            })
+            return make_data_table(
+                id=table_id,
+                columns=cols,
+                data=disp.to_dict('records'),
+                merge_duplicate_headers=True,
+                style_data_conditional=(
+                    generate_style_data_conditional(disp)
+                    + make_special_row_styles(sub_df, 'Indicator',
+                                              col_headers={'__geo_header__', '__cd_header__'},
+                                              section_headers=t_3_1_section_headers)
+                ),
+                style_header_conditional=header_styles,
+                style_cell_conditional=make_style_cell('Indicator', YEARS, label_min_width='200px'),
+                **base_style
+            )
+
+        # CSD half: geography banner sitting over the census-year row.
+        csd_cols = [{"name": [geo_name, "Census Year"], "id": "Indicator"}] + [
+            {"name": [geo_name, y], "id": y} for y in YEARS
+        ]
+        csd_table = _build(
+            'table-3-1', _split(0, cd_idx), csd_cols,
+            generate_style_header_conditional(
+                csd_cols, is_multiindex=True, first_col_id='Indicator', n_header_rows=2,
                 left_align_cells={'column_id': 'Indicator', 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell('Indicator', YEARS, label_min_width='200px'),
-            **base_style
+        )
+
+        # CD half: single header row where the CD name takes the 'Census Year'
+        # slot, so the geography banner and the CD label row both drop out.
+        cd_cols = [{"name": cd_name, "id": "Indicator"}] + [
+            {"name": y, "id": y} for y in YEARS
+        ]
+        cd_table = _build(
+            'table-3-1-cd', _split(cd_idx + 1, len(df)), cd_cols,
+            generate_style_header_conditional(cd_cols, is_multiindex=False,
+                                              first_col_id='Indicator')
+            + [{'if': {'header_index': 0, 'column_id': 'Indicator'},
+                'textAlign': 'left', 'paddingLeft': '12px',
+                'backgroundColor': '#80885B'}],
         )
 
         return html.Div([
@@ -176,7 +208,9 @@ class Section3Prep:
             ], className="pg2-text-content-lgeo"),
             html.H5(TABLE_3_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_3_1_DESC)], className="pg2-text-content-lgeo"),
-            with_export_btn(table, 'table-3-1'),
+            with_export_btn(csd_table, 'table-3-1'),
+            html.Br(),
+            with_export_btn(cd_table, 'table-3-1-cd'),
         ], className='pg2-table-lgeo')
     
 
@@ -342,7 +376,7 @@ class Section3Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-3-3',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -362,6 +396,8 @@ class Section3Prep:
         return html.Div([
             html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-3-3'),
+            html.Div(html.I(TABLE_3_3_NOTE), 
+                                 className="d-flex flex-column align-items-left w-100"),
         ], className='pg2-table-lgeo')
     
 
@@ -458,7 +494,7 @@ class Section3Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-3-4',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -520,7 +556,7 @@ class Section3Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-3-5',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -601,7 +637,7 @@ class Section3Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-3-5-1',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -624,10 +660,39 @@ class Section3Prep:
         ], className='pg2-table-lgeo')
     
 
+    def _get_table_3_6_data(self, geocode: int):
+        """
+        Load table 3.6, falling back to the parent CD when a CSD is selected.
+
+        Ancestry is only published at the CD level - CSD rows exist but carry no
+        values - so a CSD selection would otherwise render nothing. Returns the
+        data alongside the geography name it actually belongs to, so the chart
+        title and table header never label CD figures as the CSD's.
+        """
+        _VAL_COL = "# of People"
+        name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+
+        has_data = not df.empty and df[_VAL_COL].notna().any()
+        is_csd = len(str(geocode)) == 7
+        if has_data or not is_csd:
+            return df, name
+
+        cd_geocode = self.data_loader.get_region_geocode(geocode)
+        if not cd_geocode:
+            return df, name
+
+        cd_df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', cd_geocode)
+        if cd_df.empty or cd_df[_VAL_COL].isna().all():
+            return df, name
+
+        cd_name = self.data_loader.get_geography_name(int(cd_geocode)) or str(cd_geocode)
+        return cd_df, cd_name
+
     def create_chart_3_6(self, geocode: int):
         """Create donut chart for Table 3.6 Indigenous ancestry distribution (2021)."""
 
-        df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+        df, geo_name = self._get_table_3_6_data(geocode)
         if df.empty or df["# of People"].isna().all():
             return html.Div([
                 html.H5(TABLE_3_6_TITLE, className='table-title'),
@@ -639,8 +704,6 @@ class Section3Prep:
 
         labels = "Indigenous Ancestry, 2021"
         df = df[df[labels] != 'Total - Indigenous ancestry responses for the population in private households - 25% sample data']
-
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
 
         # to assign the largest portion the first chart color and so on
         df_sorted = df.sort_values("# of People", ascending=False) 
@@ -696,7 +759,8 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_6_TITLE, className='table-title'),
-            html.Div([html.P(CHART_3_6_DESC)], className='pg2-text-content-lgeo'),
+            html.Div([html.P(CHART_3_6_DESC),
+                      html.I(CHART_3_6_NOTE)], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-3-6', figure=fig, config=PLOT_CONFIG)
         ], className='pg2-table-lgeo')
 
@@ -704,7 +768,7 @@ class Section3Prep:
     def create_table_3_6_layout(self, geocode: int):
         """Create Dash DataTable for Table 3.6: population by indigenous ancestry (2021)."""
 
-        df = self.data_loader.get_table('table_3_6_indigenous_pop_ancestry', geocode)
+        df, geo_name = self._get_table_3_6_data(geocode)
 
         if df.empty or df["# of People"].isna().all():
             return html.Div([
@@ -714,7 +778,6 @@ class Section3Prep:
                 )
             ], className='pg2-table-lgeo')
 
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
         df = df.fillna("N/A")
 
         value_col = '# of People'
@@ -741,7 +804,7 @@ class Section3Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-3-6',
             columns=columns,
             data=table_df.to_dict('records'),

@@ -14,8 +14,8 @@ from dashboard_helpers.content_helpers.table_styles import (
     make_special_row_styles,
     make_style_cell,
     format_number,
-    format_percent
-)
+    format_percent,
+    make_data_table)
 from ..content_helpers.text_content import (
     SECTION_11_TITLE, SECTION_11_P1, SECTION_11_P2,
     TABLE_11_1_TITLE, TABLE_11_1_DESC
@@ -106,7 +106,7 @@ class Section11Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-11-1-1',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -229,7 +229,7 @@ class Section11Prep:
 
         base_style = get_base_table_style()
 
-        table = dash_table.DataTable(
+        table = make_data_table(
             id='table-11-1-2',
             columns=columns,
             data=table_df.to_dict('records'),
@@ -239,10 +239,18 @@ class Section11Prep:
                 + make_special_row_styles(table_df, _LABEL_COL, 
                                           geo_headers={_LABEL_COL}, total_labels={'Total', 'Full population for comparison'})
             ),
-            style_header_conditional=generate_style_header_conditional(
+            style_header_conditional=(generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=3,
                 left_align_cells=[{'column_id':_LABEL_COL, 'header_index': 1},
                                   {'column_id':_LABEL_COL, 'header_index': 2}]
+                ) + [
+                # Both header levels of this column carry text, so restore the
+                # divider the helper strips to merge blank label columns.
+                {
+                    'if': {'column_id': _LABEL_COL, 'header_index': 1},
+                    'borderBottom': f"1px solid {TABLE_COLORS['border']}",
+                }
+            ]
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='15%'),
             **base_style

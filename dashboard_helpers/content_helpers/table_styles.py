@@ -1,8 +1,64 @@
 """
 Styling utilities for Dash DataTables.
 """
+import re
 import pandas as pd
+from dash import dash_table
 from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT
+
+#-------------------- Display label expansion --------------------
+
+# The database stores abbreviated labels because they double as match keys
+# throughout dataprep and the dashboard ('Household Type' == 'Indigenous HHs',
+# HH_TYPES, POP_SIZES, the styling label sets, ...). Expanding them here - at
+# render time - keeps every one of those lookups working untouched.
+# Order matters: HHs must be expanded before the bare HH.
+_LABEL_RENAMES = (
+    (re.compile(r'\bHHs\b'), 'Households'),
+    (re.compile(r'\bHH\b'),  'Household'),
+    (re.compile(r'\bpp\b'),  'person(s)'),
+)
+
+
+def prettify_label(value):
+    """Expand abbreviated labels for display. Non-strings pass through."""
+    if not isinstance(value, str):
+        return value
+    for pattern, replacement in _LABEL_RENAMES:
+        value = pattern.sub(replacement, value)
+    return value
+
+
+def prettify_columns(columns: list) -> list:
+    """Expand DataTable column ``name``s, leaving ``id``s (the lookup keys) alone."""
+    out = []
+    for col in columns:
+        new = dict(col)
+        name = new.get('name')
+        new['name'] = ([prettify_label(part) for part in name]
+                       if isinstance(name, list) else prettify_label(name))
+        out.append(new)
+    return out
+
+
+def prettify_data(records: list) -> list:
+    """Expand the string cells of DataTable records; formatted numbers are unaffected."""
+    return [{k: prettify_label(v) for k, v in row.items()} for row in records]
+
+
+def make_data_table(**kwargs) -> dash_table.DataTable:
+    """
+    Build a DataTable with abbreviated labels expanded for display.
+
+    Styling is keyed on row index and column id, both untouched here, so
+    style_data_conditional built from the original frame still lines up. The
+    xlsx export reads these same expanded columns/data.
+    """
+    if 'columns' in kwargs:
+        kwargs['columns'] = prettify_columns(kwargs['columns'])
+    if 'data' in kwargs:
+        kwargs['data'] = prettify_data(kwargs['data'])
+    return dash_table.DataTable(**kwargs)
 
 #-------------------- Global Comparison Button Style --------------------
 
@@ -177,26 +233,45 @@ def make_special_row_styles(
 
 #-------------------- Shared header and base styles --------------------
 
-def generate_style_data_conditional(data: pd.DataFrame) -> list:
+def generate_style_data_conditional(
+    data: pd.DataFrame,
+    label_col: str = None,
+    restart_labels: set = frozenset(),
+) -> list:
     """
     Generate alternating row colours for table data.
 
     Args:
-        data: DataFrame with table data.
+        data:           DataFrame with table data.
+        label_col:      Column holding row labels. Only needed with restart_labels.
+        restart_labels: Label values that restart the alternation. Without this the
+                        shading follows the absolute row index, so a section whose
+                        row count is odd flips the colours of every section after
+                        it; restarting keeps the nth row of each section the same
+                        colour. The restart rows themselves are section headers,
+                        whose own colour is set by make_special_row_styles.
 
     Returns:
         List of style dicts for DataTable style_data_conditional.
     """
-    return [
-        {
+    labels = data[label_col] if (label_col and label_col in data.columns) else None
+
+    styles, shade = [], 0
+    for i in range(len(data)):
+        if labels is not None and labels.iloc[i] in restart_labels:
+            shade = 0
+            colour = TABLE_COLORS['row_alt_1']
+        else:
+            colour = TABLE_COLORS['row_alt_1'] if shade % 2 == 0 else TABLE_COLORS['row_alt_2']
+            shade += 1
+        styles.append({
             'if': {'row_index': i},
-            'backgroundColor': TABLE_COLORS['row_alt_1'] if i % 2 == 0 else TABLE_COLORS['row_alt_2'],
+            'backgroundColor': colour,
             'color': TABLE_COLORS['text'],
             'border': f"1px solid {TABLE_COLORS['border']}",
             'paddingRight': '12px',
-        }
-        for i in range(len(data))
-    ]
+        })
+    return styles
 
 
 def generate_style_header_conditional(
@@ -600,6 +675,8 @@ _T9_3_SECTION_HEADERS = {
     "Reason for housing loss",
     "% who experienced homelessness for the first time as a youth",
     "% of youth who were in foster care, youth group home, or an independent Living Agreement as a youth",
+    # Carries its own values but is coloured like the section headers above it
+    "% with acquired brain injury",
 }
 _T9_3_RED_ATTRS = {"Indigenous respondents", "Non-Indigenous respondents", 
                    "Sheltered", "Unsheltered", "% who identified eviction as cause of most recent housing loss",

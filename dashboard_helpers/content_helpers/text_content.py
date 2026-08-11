@@ -72,12 +72,14 @@ CHART_3_3_DESC = """This data provides a more detailed view of age distribution 
 
 TABLE_3_3_DESC = """The following table shows the numeric values of the above graph, indicating the number of Indigenous individuals in each age group, organized by their Indigenous identity (First Nations, Métis, Inuit)."""
 
+TABLE_3_3_NOTE = """*Note that Indigenous column does not include "Indigenous responses not included elsewhere" and will show lower totals accordingly."""
+
 # Table 3.4 descriptions
 TABLE_3_4_TITLE = "Population by Gender & Age Group (2021)"
 
 CHART_3_4_DESC = """This section highlights gender and age patterns within the Indigenous population. These patterns can help inform approaches to supporting priority populations, including women, youth, and seniors and Elders."""
 
-CHART_3_4_NOTE = """Note on Men+ and Women+ terminology: TO BE ADDED"""
+CHART_3_4_NOTE = """Please note: Starting in the 2021 census, the gender variable has been split into three categories: Man, Woman, and Non-binary person. However, due to the non-binary population being relatively small, and therefore having a high risk of identification, Statistics Canada have grouped non-binary people into two overarching categories in many cases: Men+ and Women+."""
 
 TABLE_3_4_DESC = """The following table shows the numeric values of the above graph, highlighting gender and age patterns within the Indigenous population in the selected community."""
 
@@ -86,6 +88,8 @@ TABLE_3_5_TITLE = "Priority Population (2006, 2016, 2021)"
 
 # Table 3.6 descriptions
 TABLE_3_6_TITLE = "Population by Indigenous Ancestry (as reported in Census data) (2021)"
+
+CHART_3_6_NOTE = """Note: Indigenous ancestry data is only available at the provincial and regional district level."""
 
 CHART_3_6_DESC = """This data reflects the diversity of Indigenous ancestry in the community, including First Nations, Métis, and Inuit people as reported in Census data."""
 

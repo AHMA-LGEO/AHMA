@@ -2,6 +2,7 @@
 Dashboard Tab 4: What is needed? Covers: Population and Household Growth (Section 11) and Housing Targets (Section 12)
 """
 from dash import dcc, html, Input, Output, callback
+import dash_bootstrap_components as dbc
 
 from dashboard_helpers.tab4_helpers.section_11 import Section11Prep
 from dashboard_helpers.tab4_helpers.section_12 import Section12Prep
@@ -17,6 +18,11 @@ layout = html.Div([
     dcc.Store(id='main-area', storage_type='local'),
     dcc.Store(id='comparison-area', storage_type='local'),
     dcc.Store(id='area-scale-store', storage_type='local'),
+
+    # Export button
+    dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
+    html.Div(id='dummy-output', style={'display': 'none'}),
+        
 
     html.Div([
     # Section 11 - Population & Household Growth
