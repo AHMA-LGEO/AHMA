@@ -76,7 +76,12 @@ layout = html.Div([
     dcc.Store(id="tab3-visibility-store", data={tid: False for tid in TABLE_IDS}),
 
     # Export button
-    dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
+    # Wrapped in the content column so the button lines up with the
+    # left edge of the section text instead of the viewport edge.
+    html.Div(
+        dbc.Button("Export to PDF", id="export-btn", className="export-pdf"),
+        className="dashboard-pg2-lgeo",
+    ),
     html.Div(id='dummy-output', style={'display': 'none'}),
     
 
