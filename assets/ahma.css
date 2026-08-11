@@ -397,7 +397,7 @@ div { font-size: 13px; }
 
 
 .map-lgeo {
-  display: inline;
+  display: block;
 }
 
 .map-area-box-lgeo {
@@ -406,9 +406,12 @@ div { font-size: 13px; }
 }
 
 @media (max-width: 500px) {
+  /* min-height, not height: the box also holds the Reset Map button below the
+     map, and a fixed height leaves it overflowing into .background-lgeo's
+     overflow:hidden, where it gets clipped. */
   .map-area-box-lgeo  {
     width: 300px;
-    height: 100px;
+    min-height: 100px;
     display: inline-block;
   }
 
@@ -423,9 +426,11 @@ div { font-size: 13px; }
 
 
 @media (min-width: 500px) {
+  /* min-height, not height - see note above: the Reset Map button sits below
+     the map inside this box and a fixed height gets it clipped. */
   .map-area-box-lgeo  {
     width: 1000px;
-    height: 500px;
+    min-height: 500px;
     display: inline-block;
   }
 

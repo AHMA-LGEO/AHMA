@@ -122,6 +122,12 @@ layout = html.Div(
                                 id='canada_map',
                                 figure=default_map,
                                 config=PLOT_CONFIG,
+                                # PLOT_CONFIG sets responsive=True, so Plotly sizes
+                                # the plot to its container rather than to the
+                                # figure. Without a definite height here the graph
+                                # reserves no space in the flow and its SVG paints
+                                # over the Reset Map button below it.
+                                style={'height': '500px', 'width': '100%'},
                             ),
                             className='map-lgeo'
                         ),
