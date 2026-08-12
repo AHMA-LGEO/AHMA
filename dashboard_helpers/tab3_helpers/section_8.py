@@ -189,7 +189,8 @@ class Section8Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-8-1'),
+            with_export_btn(table, 'table-8-1',
+                            title=f'Households in Acceptable & Unacceptable Housing - {geo_name}'),
         ], className='pg2-table-lgeo'), False
     
 
@@ -393,7 +394,8 @@ class Section8Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-8-3'),
+            with_export_btn(table, 'table-8-3',
+                            title=f'Households in Core Housing Need or Extreme Core Housing Need by Tenure - {geo_name}'),
         ], className='pg2-table-lgeo'), False
 
 
@@ -480,7 +482,8 @@ class Section8Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_8_4_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-8-4'),
+            with_export_btn(table, 'table-8-4',
+                            title=f'Households in Core Housing Need or Extreme Core Housing Need by Tenure by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -566,7 +569,8 @@ class Section8Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-8-5'),
+            with_export_btn(table, 'table-8-5',
+                            title=f'Households in Core Housing Need by Priority Populations - {geo_name}'),
         ], className='pg2-table-lgeo'), False
     
     
@@ -732,7 +736,8 @@ class Section8Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_8_6_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-8-6'),
+            with_export_btn(table, 'table-8-6',
+                            title=f'Households in Core Housing Need by Priority Populations by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -793,5 +798,6 @@ class Section8Prep:
         return html.Div([
             html.H5(TABLE_8_7_TITLE, className='table-title'),
             html.Div([html.P(TABLE_8_7_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-8-7'),
+            with_export_btn(table, 'table-8-7',
+                            title=f'Indigenous Affordable Housing Deficit by Income & Household Size - {geo_name}'),
         ], className='pg2-table-lgeo')

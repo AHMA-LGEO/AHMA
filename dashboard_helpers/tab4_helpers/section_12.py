@@ -131,10 +131,12 @@ class Section12Prep:
             html.Div([html.P(TABLE_12_1_DESC_P1),
                       html.P(TABLE_12_1_DESC_P2),
                       html.P(TABLE_12_1_DESC_P3)], className='pg2-text-content-lgeo'),
-            with_export_btn(table4, 'table-12-1-4'),
+            with_export_btn(table4, 'table-12-1-4',
+                            title=f"AHMA's provincial results for 2034 - Households in Core Need 2021"),
             html.Br(),
             html.Br(),
-            with_export_btn(table6, 'table-12-1-6'),
+            with_export_btn(table6, 'table-12-1-6',
+                            title=f"AHMA's provincial results for 2034 - Affordable Housing Solutions"),
         ])
 
     def create_table_12_2_layout(self, geocode: int):
@@ -217,7 +219,8 @@ class Section12Prep:
             html.H5(TABLE_12_2_TITLE, className='table-title'),
             html.Div([html.P(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(calc_table, 'table-12-2',
-                            export_data=export_data, export_columns=calc_columns),
+                            export_data=export_data, export_columns=calc_columns,
+                            title=f"Indigenous Housing Target - Urban, Rural and Northern (off-reserve) - {geo_name}"),
             html.Br(),
             breakdown_table,
             #html.I(TABLE_12_2_NOTE),

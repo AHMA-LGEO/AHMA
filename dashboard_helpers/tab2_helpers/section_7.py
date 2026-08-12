@@ -120,7 +120,8 @@ class Section7Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-7-1'),
+            with_export_btn(table, 'table-7-1',
+                            title=f'Household Median Shelter Cost for Owned & Rented dwellings - {geo_name}'),
         ], className='pg2-table-lgeo'), False
     
 
@@ -239,7 +240,8 @@ class Section7Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_7_3_1_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-7-3-1'),
+            with_export_btn(table, 'table-7-3-1',
+                            title=f'Number of Primary and Secondary Rental Units - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -347,7 +349,8 @@ class Section7Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_7_3_2_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-7-3-2'),
+            with_export_btn(table, 'table-7-3-2',
+                            title=f'Change in Average Monthly Rent($) (2016-2023) - {geo_name}'),
         ], className='pg2-table-lgeo')
 
 
@@ -380,7 +383,7 @@ class Section7Prep:
         ))
 
         fig.update_layout(
-            title=dict(text=f'Vacancy Rate (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
+            title=dict(text=f'Change in Vacancy Rate (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Year',
             yaxis=dict(
                 title='Vacancy Rate (%)',
@@ -458,7 +461,8 @@ class Section7Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_7_3_3_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-7-3-3'),
+            with_export_btn(table, 'table-7-3-3',
+                            title=f'Change in Vacancy Rate (2016-2023) - {geo_name}'),
         ], className='pg2-table-lgeo')
 
 

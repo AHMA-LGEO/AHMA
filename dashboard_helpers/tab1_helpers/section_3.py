@@ -208,9 +208,11 @@ class Section3Prep:
             ], className="pg2-text-content-lgeo"),
             html.H5(TABLE_3_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_3_1_DESC)], className="pg2-text-content-lgeo"),
-            with_export_btn(csd_table, 'table-3-1'),
+            with_export_btn(csd_table, 'table-3-1',
+                            title=f'Indigenous Populations and Ages - {geo_name}'),
             html.Br(),
-            with_export_btn(cd_table, 'table-3-1-cd'),
+            with_export_btn(cd_table, 'table-3-1-cd',
+                            title=f'Indigenous Movement On-/Off Reserve Over Time - {cd_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -395,7 +397,8 @@ class Section3Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-3-3'),
+            with_export_btn(table, 'table-3-3',
+                            title=f'Population by Indigenous Identity & Age Group - {geo_name}'),
             html.Div(html.I(TABLE_3_3_NOTE), 
                                  className="d-flex flex-column align-items-left w-100"),
         ], className='pg2-table-lgeo')
@@ -514,7 +517,8 @@ class Section3Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_3_4_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-3-4'),
+            with_export_btn(table, 'table-3-4',
+                            title=f'Population by Gender & Age Group - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -577,7 +581,8 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_5_TITLE, className='table-title'),
-            with_export_btn(table, 'table-3-5'),
+            with_export_btn(table, 'table-3-5',
+                            title=f'Priority Population - {geo_name}'),
         ], className='pg2-table-lgeo')
 
     def create_table_3_5_1_layout(self, geocode: int):
@@ -656,7 +661,8 @@ class Section3Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-3-5-1'),
+            with_export_btn(table, 'table-3-5-1',
+                            title=f'Priority Population by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -831,7 +837,8 @@ class Section3Prep:
         return html.Div([
             html.Div([html.P(TABLE_3_6_DESC)], className='pg2-text-content-lgeo'),
             html.Div(
-                with_export_btn(table, 'table-3-6', max_width='600px'),
+                with_export_btn(table, 'table-3-6', max_width='600px',
+                            title=f'Population by Indigenous Ancestry (2021) - {geo_name}'),
                 className="d-flex flex-column align-items-center w-100"
             ),
             html.Div(

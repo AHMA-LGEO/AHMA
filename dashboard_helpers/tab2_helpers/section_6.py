@@ -132,14 +132,9 @@ class Section6Prep:
             **base_style
         )
 
-        if table_id == 'table-6-5':
-            return html.Div([
-                with_export_btn(table, table_id),
-            ], className='pg2-table-lgeo'), False
-
-        else:
-            return html.Div([
-                with_export_btn(table, table_id),
+        return html.Div([
+                with_export_btn(table, table_id,
+                            title=f'{label_col_name} - {geo_name}'),
             ], className='pg2-table-lgeo'), False
     
 
@@ -316,17 +311,20 @@ class Section6Prep:
         if table_id == 'table-6-2':
             return html.Div([
                 html.Div([html.P(TABLE_6_2_DESC)], className='pg2-text-content-lgeo'),
-                with_export_btn(table, table_id),
+                with_export_btn(table, table_id,
+                            title=f'{label_col_name} by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
 
         elif table_id == 'table-6-4':
             return html.Div([
                 html.Div([html.P(TABLE_6_4_DESC)], className='pg2-text-content-lgeo'),
-                with_export_btn(table, table_id),
+                with_export_btn(table, table_id,
+                            title=f'{label_col_name} by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
 
         else:
             return html.Div([
                 html.Div([html.P(TABLE_6_6_DESC)], className='pg2-text-content-lgeo'),
-                with_export_btn(table, table_id),
+                with_export_btn(table, table_id,
+                            title=f'{label_col_name} by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')

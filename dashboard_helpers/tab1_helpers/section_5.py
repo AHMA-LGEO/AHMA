@@ -105,7 +105,8 @@ class Section5Prep:
             html.H5(TABLE_5_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_5_1_DESC_P1),
                       html.P(TABLE_5_1_DESC_P2)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-5-1'),
+            with_export_btn(table, 'table-5-1',
+                            title=f'Income Categories & Affordable Shelter Costs (2021) - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -214,7 +215,8 @@ class Section5Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-5-2'),
+            with_export_btn(table, 'table-5-2',
+                            title=f'Households by Income Category - {geo_name}'),
         ], className='pg2-table-lgeo'), False
     
 
@@ -360,7 +362,8 @@ class Section5Prep:
         base_style = get_base_table_style()
 
         # Row index 8th is median household income
-        formatted_df = merge_columns(formatted_df, rows=[8], value_cols=val_cols, group_size=3)
+        # formatted_df = merge_columns(formatted_df, rows=[8], value_cols=val_cols, group_size=3)
+        formatted_df = merge_columns(formatted_df, rows=[7], value_cols=val_cols, group_size=3)
 
         table = make_data_table(
             id='table-5-3',
@@ -372,7 +375,8 @@ class Section5Prep:
                 + make_special_row_styles(formatted_df, _LABEL_COL, 
                                           section_headers={_LABEL_COL}, 
                                           total_labels={'Total', 'Area Median Household income (all HHs)'})
-                + make_centered_merged_row_styles(rows=[8], value_cols=val_cols, group_size=3)
+                # + make_centered_merged_row_styles(rows=[8], value_cols=val_cols, group_size=3)
+                + make_centered_merged_row_styles(rows=[7], value_cols=val_cols, group_size=3)
             ),
             style_header_conditional=generate_style_header_conditional(
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
@@ -384,7 +388,8 @@ class Section5Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_5_3_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-5-3'),
+            with_export_btn(table, 'table-5-3',
+                            title=f'Households by Income Category by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
     
     
@@ -456,7 +461,8 @@ class Section5Prep:
             html.H5(TABLE_5_4_TITLE, className='table-title'),
             html.Div([html.P(TABLE_5_4_DESC),
                       html.I(TABLE_5_4_NOTE)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-5-4'),
+            with_export_btn(table, 'table-5-4',
+                            title=f'Median Household & Individual Income - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -543,7 +549,8 @@ class Section5Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-5-5'),
+            with_export_btn(table, 'table-5-5',
+                            title=f'Number of Household Maintainers - {geo_name}'),
         ], className='pg2-table-lgeo'), False
 
 

@@ -137,7 +137,8 @@ class Section11Prep:
                       html.P(SECTION_11_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_11_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_11_1_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-11-1-1'),
+            with_export_btn(table, 'table-11-1-1',
+                            title=f'Projected Population of Indigenous People - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -257,5 +258,6 @@ class Section11Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-11-1-2'),
+            with_export_btn(table, 'table-11-1-2',
+                            title=f'Projected Households of Indigenous People - {geo_name}'),
         ], className='pg2-table-lgeo')

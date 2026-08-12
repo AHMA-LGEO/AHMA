@@ -196,7 +196,8 @@ class Section9Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_9_1_DESC_P3)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-9-1'),
+            with_export_btn(table, 'table-9-1',
+                            title=f'Indigenous People Released from Corrections by Age Group - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -347,7 +348,8 @@ class Section9Prep:
             html.H5(TABLE_9_2_TITLE, className='table-title'),
             html.Div([html.P(TABLE_9_2_DESC),
                       html.P(dcc.Markdown(TABLE_9_2_LINK))], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-9-2'),
+            with_export_btn(table, 'table-9-2',
+                            title=f'Number of Indigenous Children Ageing out of Care or Youth Agreements (FY24) - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -436,7 +438,8 @@ class Section9Prep:
 
         table_blocks = [with_export_btn(tables[0], 'table-9-3',
                                         export_data=export_records,
-                                        export_columns=columns)]
+                                        export_columns=columns,
+                                        title=f'Indigenous Homelessness - {geo_name}')]
         for tbl in tables[1:]:
             table_blocks += [html.Br(), tbl]
 

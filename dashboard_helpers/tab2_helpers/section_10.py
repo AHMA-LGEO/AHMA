@@ -127,5 +127,6 @@ class Section10Prep:
                       html.P(SECTION_10_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_10_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_10_1_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-10-1'),
+            with_export_btn(table, 'table-10-1',
+                            title=f'Access to Services - {geo_name}'),
         ], className='pg2-table-lgeo')

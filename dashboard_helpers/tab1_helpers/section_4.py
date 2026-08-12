@@ -354,7 +354,8 @@ class Section4Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_4_2_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-4-2'),
+            with_export_btn(table, 'table-4-2',
+                            title=f'Indigenous Households by Tenure by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -454,7 +455,8 @@ class Section4Prep:
         )
 
         return html.Div([
-            with_export_btn(table, 'table-4-3'),
+            with_export_btn(table, 'table-4-3',
+                            title=f'Indigenous Households by Household Size - {geo_name}'),
         ], className='pg2-table-lgeo'), False
     
 
@@ -615,7 +617,8 @@ class Section4Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_4_4_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-4-4'),
+            with_export_btn(table, 'table-4-4',
+                            title=f'Indigenous Households by Household Size by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
 
     def prepare_table_4_5_data(self, geocode: int):
@@ -722,7 +725,8 @@ class Section4Prep:
         return html.Div([
             html.H5(TABLE_4_5_TITLE, className='table-title'),
             html.Div([html.P(TABLE_4_5_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-4-5'),
+            with_export_btn(table, 'table-4-5',
+                            title=f'Households by Family Type - {geo_name}'),
         ], className='pg2-table-lgeo')
     
 
@@ -793,7 +797,7 @@ class Section4Prep:
 
         base_style = get_base_table_style()
         table = make_data_table(
-            id='table-4-5',
+            id='table-4-6',
             columns=columns,
             data=df.to_dict('records'),
             merge_duplicate_headers=True,
@@ -813,7 +817,8 @@ class Section4Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_4_6_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-4-6'),
+            with_export_btn(table, 'table-4-6',
+                            title=f'Households by Family Type by Indigenous Identity - {geo_name}'),
         ], className='pg2-table-lgeo')
 
 

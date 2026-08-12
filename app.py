@@ -79,9 +79,10 @@ app.clientside_callback(
     Input({"type": "export-btn", "index": ALL}, "n_clicks"),
     State({"type": "export-data", "index": ALL}, "data"),
     State({"type": "export-cols", "index": ALL}, "data"),
+    State({"type": "export-title", "index": ALL}, "data"),
     prevent_initial_call=True,
 )
-def download_xlsx(n_clicks_list, all_data, all_cols):
+def download_xlsx(n_clicks_list, all_data, all_cols, title):
     if not callback_context.triggered:
         return no_update
 
@@ -102,7 +103,7 @@ def download_xlsx(n_clicks_list, all_data, all_cols):
         return no_update
 
     idx = store_ids.index(table_id)
-    return table_to_excel(all_cols[idx], all_data[idx], f"{table_id}.xlsx")
+    return table_to_excel(all_cols[idx], all_data[idx], f"{table_id}.xlsx", title[idx])
 
 if __name__ == '__main__':
     app.run_server(debug=True, host='0.0.0.0')
