@@ -172,7 +172,7 @@ class Section7Prep:
             html.H5(TABLE_7_3_TITLE, className='table-title'),
             html.H6(TABLE_7_3_1_TITLE, className='table-title'),
             html.Div([html.P(CHART_7_3_1_DESC)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-7-3-1', figure=fig, config=PLOT_CONFIG, style={'height': '550px', 'width': '100%'},)
         ], className='pg2-table-lgeo')
 
     
@@ -291,7 +291,7 @@ class Section7Prep:
         return html.Div([
             html.H6(TABLE_7_3_2_TITLE, className='table-desc'),
             html.Div([html.P(CHART_7_3_2_DESC)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-7-3-2', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-7-3-2', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},)
         ], className='pg2-table-lgeo')
     
 
@@ -403,7 +403,7 @@ class Section7Prep:
             html.H6(TABLE_7_3_3_TITLE, className='table-desc'),
             html.Div([html.P(CHART_7_3_3_DESC_P1),
                       html.P(CHART_7_3_3_DESC_P2)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-7-3-3', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-7-3-3', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},)
         ], className='pg2-table-lgeo')
     
 

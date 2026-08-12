@@ -269,7 +269,7 @@ class Section4Prep:
                       html.P(SECTION_4_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_4_1_TITLE, className='table-title'),
             html.Div(html.P(CHART_4_1_DESC), className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG),
+            dcc.Graph(id='chart-4-1', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},),
         ], className='pg2-table-lgeo')
     
 
@@ -532,7 +532,7 @@ class Section4Prep:
         return html.Div([
             html.H5(TABLE_4_3_TITLE, className='table-title'),
             html.Div([html.P(CHART_4_3_DESC)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-4-3', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-4-3', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},)
         ], className='pg2-table-lgeo')
     
 

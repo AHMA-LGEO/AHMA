@@ -289,7 +289,7 @@ class Section9Prep:
                       html.P(dcc.Markdown(TABLE_9_1_LINK_3)),
                       html.P(dcc.Markdown(TABLE_9_1_LINK_4))], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG,
-                      style={"width": "100%"})
+                      style={'height': '560px', "width": "100%"})
         ], className='pg2-table-lgeo')
 
 

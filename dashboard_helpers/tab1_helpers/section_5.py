@@ -292,7 +292,7 @@ class Section5Prep:
             html.H5(TABLE_5_2_TITLE, className='table-title'),
             html.Div([html.P(CHART_5_2_DESC),
                       html.I(CHART_5_2_NOTE)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-5-2', figure=fig, config=PLOT_CONFIG)
+            dcc.Graph(id='chart-5-2', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},)
         ], className='pg2-table-lgeo')
     
 
