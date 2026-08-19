@@ -21,7 +21,11 @@ TABLE_2_1_TITLE = "Indigenous Territory"
 
 TABLE_2_1_P1 = """IHNAT is grounded in the understanding that communities in British Columbia exist on the traditional and ancestral territories of First Nations, and that 95 percent of this land is unceded. The geographic boundaries used in this tool (such as census subdivisions) are colonial constructs and do not reflect Indigenous territorial governance or jurisdiction. The Nations listed below have relationships to the lands within the selected area. These relationships are ongoing and reflect stewardship, governance, and cultural connection that predate and continue beyond colonial boundaries. Métis Chartered Communities identified in this area reflect organized Métis governance and community presence within British Columbia."""
 
-TABLE_2_1_P2 = """This section invites reflection on whose land your selected community is on, and what relationships and responsibilities exist with these Nations. Consider if these relationships are reflected in housing planning and decision-making, and how the data might support respectful engagement and collaboration."""
+TABLE_2_1_P2 = “”
+
+TABLE_2_1_P3 = “”
+
+TABLE_2_1_P4 = """This section invites reflection on whose land your selected community is on, and what relationships and responsibilities exist with these Nations. Consider if these relationships are reflected in housing planning and decision-making, and how the data might support respectful engagement and collaboration."""
 
 TABLE_2_1_NOTE = """Note: The territorial information presented here is drawn from Native Land Digital and other sources. It should be understood as a starting point and not a definitive representation of Indigenous territories. Users are encouraged to engage directly with Nations to more fully understand local context, relationships, and responsibilities."""
 
