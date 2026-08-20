@@ -2,7 +2,7 @@
 Section 12 preparation and layout - Housing Targets.
 """
 import pandas as pd
-from dash import dash_table, html
+from dash import dcc, html
 
 from dashboard_helpers.content_helpers.data_loader import get_data_loader
 from dashboard_helpers.content_helpers.table_styles import (
@@ -128,7 +128,7 @@ class Section12Prep:
             html.H4(SECTION_12_TITLE, className='table-title'),
             html.Div([html.P(SECTION_12_P1)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_12_1_TITLE, className='table-title'),
-            html.Div([html.P(TABLE_12_1_DESC_P1),
+            html.Div([dcc.Markdown(TABLE_12_1_DESC_P1),
                       html.P(TABLE_12_1_DESC_P2),
                       html.P(TABLE_12_1_DESC_P3)], className='pg2-text-content-lgeo'),
             with_export_btn(table4, 'table-12-1-4',
@@ -217,7 +217,7 @@ class Section12Prep:
 
         return html.Div([
             html.H5(TABLE_12_2_TITLE, className='table-title'),
-            html.Div([html.P(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
+            html.Div([dcc.Markdown(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(calc_table, 'table-12-2',
                             export_data=export_data, export_columns=calc_columns,
                             title=f"Indigenous Housing Target - Urban, Rural and Northern (off-reserve) - {geo_name}"),

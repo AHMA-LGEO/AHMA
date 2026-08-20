@@ -222,7 +222,7 @@ layout = html.Div([
         # Section 7 - Shelter Costs
         html.Div([
             html.H4(SECTION_7_TITLE, className='table-title'),
-            html.Div([html.P(SECTION_7_P1),
+            html.Div([dcc.Markdown(SECTION_7_P1),
                       html.P(SECTION_7_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_7_1_TITLE, className='table-title'),
             html.Div([html.P(TABLE_7_1_DESC)], className='pg2-text-content-lgeo'),

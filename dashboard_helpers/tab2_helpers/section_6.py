@@ -150,7 +150,7 @@ class Section6Prep:
         if chart_id == "chart-6-1":
             title_tags = html.Div([
                 html.H4(SECTION_6_TITLE, className='table-title'),
-                html.Div([html.P(SECTION_6_P1),
+                html.Div([dcc.Markdown(SECTION_6_P1),
                           html.P(SECTION_6_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_6_1_TITLE, className='table-title'),
                 html.Div([html.P(CHART_6_1_DESC)], className='pg2-text-content-lgeo'),
