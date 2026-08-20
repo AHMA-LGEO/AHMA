@@ -59,7 +59,7 @@ class Section2Prep:
         count = len(nations)
 
         count_badge = html.P(
-            f"The following {count} nations and communities have their traditional intersecting with the selected census boundary:",
+            f"The following {count} nations and communities have their traditional territories intersecting with the selected census boundary:",
             style={'fontFamily': TABLE_FONT, 'color': '#000000', 'fontWeight': 'bold'}
         )
 
