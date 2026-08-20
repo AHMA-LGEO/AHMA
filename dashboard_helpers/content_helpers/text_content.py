@@ -173,7 +173,7 @@ TABLE_5_5_NOTE = """*Statistics Canada defines a household maintainer as a perso
 #-------------------- Section 6 descriptions --------------------
 SECTION_6_TITLE = 'Dwellings'
 
-SECTION_6_P1 = """This section looks at the types and conditions of housing Indigenous households live in. Housing outcomes are shaped by availability, affordability, and systemic barriers. Indigenous households are more likely to experience inadequate housing, older housing stock, and overcrowding.¹"""
+SECTION_6_P1 = """This section looks at the types and conditions of housing Indigenous households live in. Housing outcomes are shaped by availability, affordability, and systemic barriers. Indigenous households are [more likely to experience inadequate housing, older housing stock, and overcrowding]( https://www.cmhc-schl.gc.ca/professionals/housing-markets-data-and-research/housing-research/research-reports/housing-needs/indigenous-housing-needs-conditions). See also: [Assembly of First Nations]( https://afn.ca/economy-infrastructure/infrastructure/closing-the-infrastructure-gap/housing/)."""
 
 SECTION_6_P2 = """As you explore this data, consider whether the available housing types match the needs of Indigenous households in the community, and how the age and condition of housing impact wellbeing. What types of homes and resources are needed to fully support the community?"""
 
@@ -205,7 +205,7 @@ TABLE_6_6_DESC = """The following table shows the types of housing structures In
 #-------------------- Section 7 descriptions --------------------
 SECTION_7_TITLE = "Shelter Costs and Rental Market"
 
-SECTION_7_P1 = """This section explores the cost of renting and owning housing, as well as broader rental market conditions, which may limit housing options. Indigenous households may face additional barriers to homeownership, including limited access to credit, discrimination, and other systemic barriers in housing and financial systems.² Indigenous people are more likely to be renters and have adverse rental experiences due to discrimination and stigmatization.³"""
+SECTION_7_P1 = """This section explores the cost of renting and owning housing, as well as broader rental market conditions, which may limit housing options. Indigenous households may face additional barriers to homeownership, including limited access to credit, discrimination, and [other systemic barriers]( https://www.cmhc-schl.gc.ca/professionals/housing-markets-data-and-research/housing-research/research-reports/housing-needs/research-insight-alternative-financing-indigenous-housing) in housing and financial systems. Indigenous people are more likely to be renters and [have adverse rental experiences]( https://digitalcommons.osgoode.yorku.ca/jlsp/vol36/iss1/3/) due to discrimination and stigmatization."""
 
 SECTION_7_P2 = """As you explore this section, consider what the data suggests about the accessibility of rental housing in this community, and who is most affected when housing becomes scarce."""
 
@@ -285,7 +285,7 @@ SECTION_9_P2 = """As you explore this data, consider where the gaps in support a
 # Table 9.1 descriptions
 TABLE_9_1_TITLE = "Number of Indigenous People Released from Corrections by Age Group"
 
-TABLE_9_1_DESC_P1 = """This data highlights the number of Indigenous individuals transitioning from one of the 10 custody centres in the province, a key point of housing vulnerability.⁴ There is an alarming overrepresentation of Indigenous people in the criminal justice system,⁵ and a lack of culturally appropriate and responsive services and resources upon release. Indigenous people continue to be disproportionately harmed in this system and this data can be used to support awareness and advocacy for transformational changes."""
+TABLE_9_1_DESC_P1 = """This data highlights the number of Indigenous individuals transitioning from one of the 10 custody centres in the province, a [key point of housing vulnerability](https://www2.gov.bc.ca/gov/content/justice/criminal-justice/corrections/correctional-centres). There is an alarming [overrepresentation of Indigenous people](https://www150.statcan.gc.ca/n1/pub/71-607-x/71-607-x2019018-eng.htm) in the criminal justice system, and a lack of culturally appropriate and responsive services and resources upon release. Indigenous people continue to be disproportionately harmed in this system and this data can be used to support awareness and advocacy for transformational changes."""
 
 TABLE_9_1_DESC_P2 = """To learn more, please visit:"""
 
@@ -309,17 +309,19 @@ TABLE_9_2_LINK = """See [AHMA's Indigenous Youth Housing Strategy](https://ahma-
 # Table 9.3 descriptions
 TABLE_9_3_TITLE = "Indigenous Homelessness"
 
-TABLE_9_3_DESC_P1 = """This section highlights Point in Time Count data focused on Indigenous people experiencing homelessness. Indigenous community members continue to be widely overrepresented across the homeless population in BC.⁶ High rates of Indigenous homelessness are attributed to the lack of affordable, safe, and accessible housing in combination with intergenerational trauma resulting from colonization, cultural genocide, and policies that actively sought to dismantle Indigenous culture, families and communities.⁷ The needs of Indigenous people at risk of and affected by homelessness are best addressed through interdependent healing processes originating within community; for Indigenous and by Indigenous."""
+TABLE_9_3_DESC_P1 = """This section highlights Point in Time Count data focused on Indigenous people experiencing homelessness. Indigenous community members continue to be [widely overrepresented across the homeless population]( https://hsa-bc.ca/_Library/2023_HC/2023-BC-Homeless-Counts.pdf) in BC. High rates of Indigenous homelessness are attributed to the lack of affordable, safe, and accessible housing in combination with intergenerational trauma resulting from colonization, cultural genocide, and [policies that actively sought to dismantle Indigenous culture](https://homelesshub.ca/resource/definition-indigenous-homelessness-canada/), families and communities. The needs of Indigenous people at risk of and affected by homelessness are best addressed through interdependent healing processes originating within community; for Indigenous and by Indigenous."""
 
 TABLE_9_3_DESC_P2 = """It is important to recognize that Indigenous homelessness is often undercounted, and data on demographics, service access, and outcomes remains sparse or inconsistent. This limits accountability and masks the disproportionate harms faced by Indigenous people, particularly Indigenous women, girls, 2SLGBTQQIA+ individuals, and youth."""
 
-TABLE_9_3_DESC_P3 = """For more information: (can go under the references tab as well)"""
+TABLE_9_3_DESC_P3 = """For more information:"""
 
 TABLE_9_3_LINK_1 ="""https://ahma-bc.org/resource-centre/public-policy/bc-indigenous-homelessness/"""
 
-TABLE_9_3_LINK_2 = """Definition of Indigenous Homelessness: https://homelesshub.ca/wp-content/uploads/2023/12/COHIndigenousHomelessnessDefinition.pdf"""
+TABLE_9_3_LINK_2 ="""AHMA's PiT Count Dashboard: https://ahma-bc.org/resource-centre/public-policy/explore-the-pit-count-data-dashboard/"""
 
-TABLE_9_3_LINK_3 = """Where are all of my relations? Video Series by Lu'ma Native Housing https://www.lnhs.ca/indigenous-led-solutions"""
+TABLE_9_3_LINK_3 = """Definition of Indigenous Homelessness: https://homelesshub.ca/wp-content/uploads/2023/12/COHIndigenousHomelessnessDefinition.pdf"""
+
+TABLE_9_3_LINK_4 = """Where are all of my relations? Video Series by Lu'ma Native Housing https://www.lnhs.ca/indigenous-led-solutions"""
 
 #-------------------- Section 10 descriptions --------------------
 SECTION_10_TITLE = "Access to Services"
@@ -353,7 +355,7 @@ SECTION_12_P1 = """AHMA's housing targets reflect the scale of investment requir
 # Table 12.1 descriptions
 TABLE_12_1_TITLE = "AHMA's provincial results for 2034"
 
-TABLE_12_1_DESC_P1 = """This section shows estimated Indigenous affordable housing targets to 2034 based on AHMA's methodology. These targets help illustrate the scale of housing solutions needed to address current and projected need among Indigenous households living off reserve in urban, rural, and northern communities in B.C.⁸"""
+TABLE_12_1_DESC_P1 = """This section shows estimated Indigenous affordable housing targets to 2034 based on [AHMA's methodology]( https://ahma-bc.org/wp-content/uploads/2024/12/AHMA_BCURNI_Housing_Strategy_Report_December2024.pdf). These targets help illustrate the scale of housing solutions needed to address current and projected need among Indigenous households living off reserve in urban, rural, and northern communities in B.C."""
 
 TABLE_12_1_DESC_P2 = """Treat these targets as planning estimates, not a complete measure of all housing need. They should be read alongside local Indigenous knowledge, service-provider input, and community priorities, especially where hidden homelessness, overcrowding, cultural safety, accessibility, or repair needs may not be fully captured. It is important to consider that meeting housing needs may also require operating funding, wraparound supports, land, culturally safe governance, Elders/youth supports, transition housing, and homelessness prevention."""
 
@@ -362,6 +364,6 @@ TABLE_12_1_DESC_P3 = """This tool applies AHMA's approach to local and regional 
 # Table 12.2 descriptions
 TABLE_12_2_TITLE = "Indigenous Housing Target - Urban, Rural and Northern (off-reserve)"
 
-TABLE_12_2_DESC = """The following table breaks down the affordable housing target into types of solutions required, according to AHMA's methodology. For the complete methodology, please see AHMA's Urban, Rural, and Northern Indigenous Housing Strategy document from December 2024.⁹"""
+TABLE_12_2_DESC = """The following table breaks down the affordable housing target into types of solutions required, according to AHMA's methodology. For the complete methodology, please see [AHMA's Urban, Rural, and Northern Indigenous Housing Strategy]( https://ahma-bc.org/wp-content/uploads/2024/12/AHMA_BCURNI_Housing_Strategy_Report_December2024.pdf) document from December 2024."""
 
 TABLE_12_2_NOTE = "*FYI: Values are for City of Vancouver, and they are projected to have fewer Indigenous people in 2034 than 2024, hence the negative value under part 4."
