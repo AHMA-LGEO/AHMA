@@ -6,6 +6,7 @@ from app_file import app
 # Connect to app pages
 from pages import map_picker, indig_territory, tab1, tab2, tab3, tab4
 from dashboard_helpers.content_helpers.export_helpers import table_to_excel
+from dashboard_helpers.content_helpers.data_loader import get_data_loader, resolve_geocode
 
 
 # Define the index page layout
@@ -17,6 +18,7 @@ app.layout = html.Div([
     html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
     html.Script(src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"),
     dcc.Download(id="download-dataframe-xlsx"),
+    dcc.Store(id='display-geo-name', storage_type='memory'),
 ])
 
 server = app.server
@@ -43,9 +45,24 @@ def display_page(pathname):
     else:
         return "404 Page Error! Please choose a link"
 
+
+@app.callback(
+    Output('display-geo-name', 'data'),
+    Input('main-area', 'data'),
+    Input('area-scale-store', 'data'),
+)
+def update_display_geo_name(geo_name, scale):
+    """Track the geography actually shown (post 'Show Region'/'Show Province'
+    scale-up), since main-area keeps the raw dropdown pick unchanged - used so
+    PDF export filenames match what's on screen instead of the stale dropdown value."""
+    loader = get_data_loader()
+    geocode = resolve_geocode(geo_name, scale, loader)
+    return loader.get_geography_name(geocode) or geo_name
+
+
 app.clientside_callback(
       """
-    async function(n_clicks, geo, pathname){
+    async function(n_clicks, geo, displayGeo, pathname){
         if (n_clicks > 0 && geo){
             // Name the PDF after the tab it was exported from.
             var tabNames = {
@@ -55,7 +72,8 @@ app.clientside_callback(
                 '/tab4': 'What is needed'
             };
             var tab = tabNames[pathname];
-            var filename = (tab ? tab + ' - ' + geo : geo) + '.pdf';
+            var geoLabel = displayGeo || geo;
+            var filename = (tab ? tab + ' - ' + geoLabel : geoLabel) + '.pdf';
             var opt = {
                 margin: 1,
                 filename: filename,
@@ -121,6 +139,7 @@ app.clientside_callback(
     Output('dummy-output', 'children'),
     Input('export-btn', 'n_clicks'),
     State('main-area', 'data'),
+    State('display-geo-name', 'data'),
     State('url', 'pathname')
 )
 

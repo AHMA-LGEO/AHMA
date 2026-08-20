@@ -395,7 +395,7 @@ class Section3Prep:
             # **base_style
             style_table={
                             **base_style.get('style_table', {}), 
-                            'maxWidth': '1400px',
+                            'maxWidth': '1200px',
                             'width': '100%' 
                         },
             **{k: v for k, v in base_style.items() if k != 'style_table'}
@@ -403,7 +403,7 @@ class Section3Prep:
 
         return html.Div([
             html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
-            html.Div(with_export_btn(table, 'table-3-3', max_width='1400px',
+            html.Div(with_export_btn(table, 'table-3-3', max_width='1200px',
                             title=f'Population by Indigenous Identity & Age Group - {geo_name}'),
                             className="d-flex flex-column align-items-center w-100"
                             ),
