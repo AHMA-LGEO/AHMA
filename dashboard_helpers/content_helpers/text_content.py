@@ -287,7 +287,7 @@ TABLE_9_1_TITLE = "Number of Indigenous People Released from Corrections by Age 
 
 TABLE_9_1_DESC_P1 = """This data highlights the number of Indigenous individuals transitioning from one of the 10 custody centres in the province, a key point of housing vulnerability.⁴ There is an alarming overrepresentation of Indigenous people in the criminal justice system,⁵ and a lack of culturally appropriate and responsive services and resources upon release. Indigenous people continue to be disproportionately harmed in this system and this data can be used to support awareness and advocacy for transformational changes."""
 
-TABLE_9_1_DESC_P2 = """To learn more, please visit: (can go under the references tab as well)"""
+TABLE_9_1_DESC_P2 = """To learn more, please visit:"""
 
 TABLE_9_1_LINK_1 = """BC First Nations Justice Council: https://trackingjustice.bcfnjc.com"""
 
