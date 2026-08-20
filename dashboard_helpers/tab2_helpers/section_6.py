@@ -232,7 +232,7 @@ class Section6Prep:
         return html.Div([
             title_tags,
             dcc.Graph(id=chart_id, figure=fig, config=PLOT_CONFIG,
-                      style={'height': '560px', "width": "100%"})
+                      style={'height': '560px', 'width': '100%'})
         ], className='pg2-table-lgeo')
     
 

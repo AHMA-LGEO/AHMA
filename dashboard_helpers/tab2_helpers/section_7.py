@@ -350,7 +350,7 @@ class Section7Prep:
         return html.Div([
             html.Div([html.P(TABLE_7_3_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-7-3-2',
-                            title=f'Change in Average Monthly Rent($) (2016-2023) - {geo_name}'),
+                            title=f'Average Monthly Rent($) (2016-2023) - {geo_name}'),
         ], className='pg2-table-lgeo')
 
 
@@ -462,7 +462,7 @@ class Section7Prep:
         return html.Div([
             html.Div([html.P(TABLE_7_3_3_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-7-3-3',
-                            title=f'Change in Vacancy Rate (2016-2023) - {geo_name}'),
+                            title=f'Vacancy Rate (2016-2023) - {geo_name}'),
         ], className='pg2-table-lgeo')
 
 

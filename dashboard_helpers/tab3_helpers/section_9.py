@@ -44,7 +44,7 @@ _ATTR_RENAME_9_3 = {
     "Length of time experiencing homelessness - 12+ months":                            "12+ months",
     "Length of time experiencing homelessness - 6-12 months":                           "6-12 months",
     "Length of time experiencing homelessness - <6 months":                             "<6 months",
-    "Length of time experiencing homelessness - Other/Unknown":                         "Other",
+    "Length of time experiencing homelessness - Other/Unknown":                         "Unknown",
     "Reason for housing loss - Not enough income %":                                    "Not enough income",
     "Reason for housing loss - Substance use issue %":                                  "Substance use issue",
     "Reason for housing loss - Conflict with landlord %":                               "Conflict with landlord",
@@ -289,7 +289,7 @@ class Section9Prep:
                       html.P(dcc.Markdown(TABLE_9_1_LINK_3)),
                       html.P(dcc.Markdown(TABLE_9_1_LINK_4))], className='pg2-text-content-lgeo'),
             dcc.Graph(id='chart-9-1', figure=fig, config=PLOT_CONFIG,
-                      style={'height': '560px', "width": "100%"})
+                      style={'height': '560px', 'width': '100%'})
         ], className='pg2-table-lgeo')
 
 
@@ -312,6 +312,7 @@ class Section9Prep:
             ], className='pg2-table-lgeo')
 
         geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        region_name = df["Geography"].iloc[0]
         df = df.fillna("N/A")
 
         table_df = df.set_index('Exit Reason')[value_cols].reset_index()
@@ -321,8 +322,8 @@ class Section9Prep:
             table_df[col] = table_df[col].apply(fmt)
 
 
-        columns = [{"name": [geo_name, "Data from MCFD Region - FY2024"], "id": "Exit Reason"}] + [
-            {"name": [geo_name, col], "id": col} for col in value_cols
+        columns = [{"name": [f"{geo_name} - {region_name} MCFD Region", "Data from MCFD Region - FY2024"], "id": "Exit Reason"}] + [
+            {"name": [f"{geo_name} - {region_name} MCFD Region", col], "id": col} for col in value_cols
         ]
 
         base_style = get_base_table_style()

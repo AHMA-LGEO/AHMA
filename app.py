@@ -45,7 +45,7 @@ def display_page(pathname):
 
 app.clientside_callback(
       """
-    function(n_clicks, geo, pathname){
+    async function(n_clicks, geo, pathname){
         if (n_clicks > 0 && geo){
             // Name the PDF after the tab it was exported from.
             var tabNames = {
@@ -64,7 +64,57 @@ app.clientside_callback(
                 jsPDF: { unit: 'cm', format: 'a2', orientation: 'p' },
                 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
-            html2pdf().from(document.getElementById("page-content-to-print")).set(opt).save();
+
+            var container = document.getElementById("page-content-to-print");
+            var originalWidth = container.style.width;
+            var originalMaxWidth = container.style.maxWidth;
+            var plots = container.querySelectorAll('.js-plotly-plot');
+            var scrollables = [];
+
+            // Everything that mutates the live DOM - including the setup below -
+            // must be inside this try so a mid-setup error can't leave the page
+            // permanently moved off-screen (which showed as "dashboard flashes
+            // white and stays blank").
+            try {
+                // Tables use overflowX:'auto' (get_base_table_style), so any
+                // table wider than its box scrolls on screen - html2canvas
+                // can't capture content scrolled out of view inside a nested
+                // scrollable/clipped element. DataTable's internal markup also
+                // uses overflow:hidden on some wrapper divs (frozen-column
+                // support), which clips overflowing content outright with no
+                // visible scrollbar. Force all of these to overflow:visible so
+                // the full table renders.
+                container.querySelectorAll('*').forEach(function(el){
+                    var cs = window.getComputedStyle(el);
+                    if (cs.overflowX === 'auto' || cs.overflowX === 'scroll' || cs.overflowX === 'hidden') {
+                        scrollables.push({el: el, overflowX: el.style.overflowX});
+                        el.style.overflowX = 'visible';
+                    }
+                });
+
+                // .dashboard-pg2-lgeo is width:90%, so its rendered pixel width
+                // - and every chart's - depends on whichever window/monitor
+                // triggered the export. Pin it to a fixed width and force each
+                // chart to actually re-layout at that width before capture, so
+                // exports are identical regardless of the triggering device.
+                container.style.width = '1200px';
+                container.style.maxWidth = '1200px';
+                if (window.Plotly) {
+                    plots.forEach(function(p){ Plotly.Plots.resize(p); });
+                }
+
+                // Give the resize/re-render a moment to finish before capturing.
+                await new Promise(function(resolve){ setTimeout(resolve, 300); });
+
+                await html2pdf().from(container).set(opt).save();
+            } finally {
+                container.style.width = originalWidth;
+                container.style.maxWidth = originalMaxWidth;
+                scrollables.forEach(function(s){ s.el.style.overflowX = s.overflowX; });
+                if (window.Plotly) {
+                    plots.forEach(function(p){ Plotly.Plots.resize(p); });
+                }
+            }
         }
     }
     """,

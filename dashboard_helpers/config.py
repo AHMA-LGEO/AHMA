@@ -53,7 +53,8 @@ MODEBAR_ACTIVECOLOR = '#044762'
 PLOT_CONFIG = {
     'displayModeBar': True,
     'displaylogo': False,
-    'modeBarButtonsToRemove': ['zoom', 'lasso2d', 'pan', 'select', 'autoScale'],
+    'modeBarButtonsToRemove': ['zoom', 'lasso2d', 'pan', 'select', 
+                               'autoScale', 'resetScale2d', 'zoomIn2d', 'zoomOut2d'],
     "responsive": True
 }
 
@@ -72,7 +73,14 @@ CHART_COLORS = ['#D0B46A', '#9CA37A', '#C97A63', '#85A7B2',
                 '#D89A86', '#4B6470', '#80875C', '#b55438',
                 '#1d353d', '#5b2a1c', '#7d6c40', '#4d5137', '#000000']
 
-TABLE_FONT = 'Open Sans'
+# A fallback stack, not just 'Open Sans': html2canvas (used for PDF export) renders
+# Plotly's chart text as raw SVG <text>, a code path where it often can't resolve a
+# webfont and silently falls back to the browser default serif. Regular HTML text
+# (headings, tables) isn't affected - only SVG text is. Giving Plotly's font.family a
+# sans-serif fallback here means every chart (all read TABLE_FONT) degrades to a
+# generic sans-serif instead of serif when html2canvas can't load Open Sans.
+TABLE_FONT = 'Open Sans, Helvetica, Arial, sans-serif'
+# TABLE_FONT = 'Open Sans'
 HEADER_FONT = 'Bahnschrift'
 
 # Map data paths

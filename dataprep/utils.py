@@ -266,6 +266,17 @@ def transform_geocode_master() -> pd.DataFrame:
     # Taking example table to fetch all geocodes for 2021, KEEP ONLY 2021 GEOs
     df_2021 = fetch_data("3.5", sheets=["2021_IHNAT_T1"])
 
+    # The source "Geography" string carries no municipality-type marker, so these
+    # pairs are indistinguishable after extract_name() strips the "(Code)" suffix
+    # (e.g. both 5915001 and 5915002 read literally as "Langley (5915001)...").
+    # Hardcoded by geocode since there's nothing in the data to derive this from.
+    _GEOCODE_NAME_OVERRIDES = {
+        "5915001": "Langley DM",
+        "5915002": "Langley CY",
+        "5915046": "North Vancouver DM",
+        "5915051": "North Vancouver CY",
+    }
+
     def extract_name(text):
         """Extract clean name from format 'Name (Code) Value ( %)'"""
         if pd.isna(text):
@@ -330,7 +341,7 @@ def transform_geocode_master() -> pd.DataFrame:
         geography_raw = row['Geography']
 
         # Extract clean name
-        clean_name = extract_name(geography_raw)
+        clean_name = _GEOCODE_NAME_OVERRIDES.get(geocode) or extract_name(geography_raw)
         level = determine_level(geocode)
 
         # Determine codes and names based on hierarchy

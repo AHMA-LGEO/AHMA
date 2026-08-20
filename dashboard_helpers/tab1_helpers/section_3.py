@@ -391,16 +391,25 @@ class Section3Prep:
                 columns, is_multiindex=True, first_col_id='Age Group',
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='15%'),
-            **base_style
+            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='10%'),
+            # **base_style
+            style_table={
+                            **base_style.get('style_table', {}), 
+                            'maxWidth': '1400px',
+                            'width': '100%' 
+                        },
+            **{k: v for k, v in base_style.items() if k != 'style_table'}
         )
 
         return html.Div([
             html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
-            with_export_btn(table, 'table-3-3',
+            html.Div(with_export_btn(table, 'table-3-3', max_width='1400px',
                             title=f'Population by Indigenous Identity & Age Group - {geo_name}'),
+                            className="d-flex flex-column align-items-center w-100"
+                            ),
             html.Div(html.I(TABLE_3_3_NOTE), 
-                                 className="d-flex flex-column align-items-left w-100"),
+                                 className="d-flex flex-column align-items-center w-100"),
+                                #  className="d-flex flex-column align-items-left w-100"
         ], className='pg2-table-lgeo')
     
 
@@ -713,7 +722,7 @@ class Section3Prep:
 
         # to assign the largest portion the first chart color and so on
         df_sorted = df.sort_values("# of People", ascending=False) 
-        top_labels = (df_sorted.nlargest(10, "# of People")[labels].tolist())
+        top_labels = (df_sorted.nlargest(5, "# of People")[labels].tolist())
 
         text = [
             lbl if lbl in top_labels else ""
