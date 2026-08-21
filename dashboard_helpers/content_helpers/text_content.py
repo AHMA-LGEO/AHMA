@@ -236,7 +236,7 @@ TABLE_7_3_3_TITLE = "Change in Vacancy Rates Between 2016 and 2023"
 
 CHART_7_3_3_DESC_P1 = """This data highlights changes in rental vacancy rates over time in the selected community. Vacancy rates are a key indicator of housing availability for renters and low vacancy rates indicate a relative scarcity of rental units. In tight rental markets, Indigenous households may face increased competition, rising rents, and greater barriers to securing stable housing. This can contribute to overcrowding, housing instability, and displacement from community and support networks. Conversely, higher vacancy rates may indicate improved availability, but do not necessarily mean housing is affordable, culturally appropriate, or accessible to Indigenous households."""
 
-CHART_7_3_3_DESC_P2 = """The following graph shows the change in vacancy rates between 2016 and 2023."""
+CHART_7_3_3_DESC_P2 = """The following graph shows the vacancy rates between 2016 and 2023."""
 
 TABLE_7_3_3_DESC = """The following table shows the numeric values of the above graph."""
 

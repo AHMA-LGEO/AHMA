@@ -128,7 +128,7 @@ class Section6Prep:
                 columns, is_multiindex=True, first_col_id=label_col_name,
                 left_align_cells={'column_id': label_col_name, 'header_index': 2}
                 ),
-            style_cell_conditional=make_style_cell(label_col_name, data_cols, label_min_width='160px'),
+            style_cell_conditional=make_style_cell(label_col_name, data_cols, label_width='25%'),
             **base_style
         )
 

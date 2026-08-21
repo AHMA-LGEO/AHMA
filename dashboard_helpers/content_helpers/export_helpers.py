@@ -7,7 +7,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from dashboard_helpers.config import TABLE_FONT
 
-def with_export_btn(table_component, table_id: str, max_width: str = None,
+def with_export_btn(table_component, table_id: str, max_width: str = '1200px',
                     export_data: list = None, export_columns: list = None,
                     title: str = None):
     """
@@ -22,8 +22,11 @@ def with_export_btn(table_component, table_id: str, max_width: str = None,
     button keeps its position beside any toggle above the table.
     """
 
-    # Base layout styles
-    wrapper_style = {"width": "100%"}
+    # Base layout styles. margin: '0 auto' centers the block within its parent
+    # once maxWidth caps it narrower - the same effect table 3.3/3.6 got by
+    # wrapping this call in an extra "d-flex align-items-center" div, applied
+    # once here instead of at every call site.
+    wrapper_style = {"width": "100%", "margin": "0 auto"}
 
     # Dynamically adjust maximum width restriction if provided
     if max_width:

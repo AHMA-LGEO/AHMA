@@ -133,6 +133,19 @@ class Section9Prep:
     def __init__(self):
         self.data_loader = get_data_loader()
 
+    def _cd_display_name(self, geocode: int) -> str:
+        """
+        Table 9.1/9.1.1 are only published at the CD level - the raw data already
+        repeats the parent CD's figures onto every child CSD - so label the chart
+        and table with the CD name instead of the selected CSD's.
+        """
+        is_csd = len(str(geocode)) == 7
+        if is_csd:
+            cd_geocode = self.data_loader.get_region_geocode(geocode)
+            if cd_geocode:
+                return self.data_loader.get_geography_name(int(cd_geocode)) or str(geocode)
+        return self.data_loader.get_geography_name(geocode) or str(geocode)
+
     def create_table_9_1_layout(self, geocode: int):
         """Create Dash DataTable for Table 9.1 and 9.1.1: Indigenous People Released from Corrections (2008-2024)."""
 
@@ -147,7 +160,7 @@ class Section9Prep:
                 )
             ], className='pg2-table-lgeo')
 
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        geo_name = self._cd_display_name(geocode)
         df_9_1 = df_9_1.fillna("N/A")
         df_9_1_1 = df_9_1_1.fillna("N/A")
         
@@ -225,7 +238,7 @@ class Section9Prep:
                     )
             ], className='pg2-table-lgeo')
 
-        geo_name = self.data_loader.get_geography_name(geocode) or str(geocode)
+        geo_name = self._cd_display_name(geocode)
         plot_df = filtered[filtered['Age'] != 'Total']
 
         colors = {t: CHART_COLORS[i % len(CHART_COLORS)] for i, t in enumerate(AGE_GROUPS)}

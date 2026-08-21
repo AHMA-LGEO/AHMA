@@ -199,7 +199,7 @@ class Section12Prep:
                     {'if': {'header_index': 1, 'column_id': _VAL_COL},
                      'textAlign': 'right', 'paddingRight': '12px'},
                 ],
-                style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='65%'),
+                style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='55%'),
                 **base_style
             )
             return table, columns

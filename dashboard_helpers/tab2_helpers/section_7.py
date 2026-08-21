@@ -115,7 +115,7 @@ class Section7Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%'),
             **base_style
         )
 
@@ -234,7 +234,7 @@ class Section7Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_2021, 
-                                                   label_width='40%', label_min_width='200px'),
+                                                   label_width='30%', label_min_width='200px'),
             **base_style
         )
 
@@ -355,7 +355,7 @@ class Section7Prep:
 
 
     def create_chart_7_3_3(self, geocode: int):
-        """Create bar chart for Table 7.3.3 Change in Vacancy Rates."""
+        """Create bar chart for Table 7.3.3 Vacancy Rates."""
         df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode, 
                                         check_columns=YEARS_2016_TO_2023)
 
@@ -363,7 +363,7 @@ class Section7Prep:
             return html.Div([
                 html.H6(TABLE_7_3_3_TITLE, className='table-title'),
                 html.Div(
-                "No chart for Change in Vacancy Rates between 2016 and 2023.",
+                "No chart for Vacancy Rates between 2016 and 2023.",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
                 )
             ], className='pg2-table-lgeo')
@@ -383,7 +383,7 @@ class Section7Prep:
         ))
 
         fig.update_layout(
-            title=dict(text=f'Change in Vacancy Rate (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
+            title=dict(text=f'Vacancy Rate (2016-2023) - {geo_name}', x=0.5, xanchor='center'),
             xaxis_title='Year',
             yaxis=dict(
                 title='Vacancy Rate (%)',
@@ -408,7 +408,7 @@ class Section7Prep:
     
 
     def create_table_7_3_3_layout(self, geocode: int):
-        """Create Dash DataTable for Table 7.3.3: Change in vacancy rates between 2016 and 2023."""
+        """Create Dash DataTable for Table 7.3.3: Vacancy rates between 2016 and 2023."""
 
         df = self.data_loader.get_table('table_7_3_3_1_vacancy_rate', geocode, 
                                         check_columns=YEARS_2016_TO_2023)

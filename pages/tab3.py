@@ -21,7 +21,7 @@ section_9_layout = Section9Prep()
 # Table IDs with toggle features for Tab 3
 TABLE_IDS = ["table-8-1", "table-8-3", "table-8-5"]
 
-TOGGLE_WRAPPER_STYLE = {}
+TOGGLE_WRAPPER_STYLE = {'maxWidth': '1200px', 'margin': '0 auto'}
 
 
 def derive_tab3_state(store: dict) -> str:

@@ -26,7 +26,7 @@ section_5_layout = Section5Prep()
 # Table IDs with toggle features for Tab 1
 TABLE_IDS = ["table-4-1", "table-4-3", "table-5-2", "table-5-5"]
 
-TOGGLE_WRAPPER_STYLE = {}
+TOGGLE_WRAPPER_STYLE = {'maxWidth': '1200px', 'margin': '0 auto'}
 
 def derive_tab1_state(store: dict) -> str:
     """Return 'all_on', 'all_off', or 'mixed' based on per-table toggle states."""

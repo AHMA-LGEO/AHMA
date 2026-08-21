@@ -526,6 +526,12 @@ def get_base_table_style() -> dict:
         'style_table': {
             'overflowY': 'auto',
             'overflowX': 'auto',
+            'maxWidth': '1200px',
+            'width': '100%',
+            # Centers the table itself once maxWidth caps it narrower than its
+            # parent - needed for tables placed without with_export_btn's own
+            # wrapper (e.g. secondary sub-tables in 9.3, 12.2's breakdown table).
+            'margin': '0 auto',
         },
         'style_data': {
             'whiteSpace': 'normal',

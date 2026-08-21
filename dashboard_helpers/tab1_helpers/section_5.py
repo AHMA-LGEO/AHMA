@@ -210,7 +210,7 @@ class Section5Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
                 ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_min_width='160px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, data_cols, label_width='25%'),
             **base_style
         )
 
@@ -544,7 +544,7 @@ class Section5Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=4,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 3}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_min_width='160px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%'),
             **base_style
         )
 

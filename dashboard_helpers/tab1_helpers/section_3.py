@@ -277,7 +277,11 @@ class Section3Prep:
         return html.Div([
             html.H5(CHART_3_2_TITLE, className='table-title'),
             html.Div([html.P(CHART_3_2_DESC)], className='pg2-text-content-lgeo'),
-            dcc.Graph(id='chart-3-2', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},)
+            html.Div(
+                dcc.Graph(id='chart-3-2', figure=fig, config=PLOT_CONFIG, style={'height': '500px', 'width': '100%'},),
+                # Only 2 bars (Indigenous / Non-Indigenous) - full page width is wasted space.
+                style={'maxWidth': '1000px', 'margin': '0 auto'}
+            )
         ], className='pg2-table-lgeo')
 
 
@@ -392,18 +396,12 @@ class Section3Prep:
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='10%'),
-            # **base_style
-            style_table={
-                            **base_style.get('style_table', {}), 
-                            'maxWidth': '1200px',
-                            'width': '100%' 
-                        },
-            **{k: v for k, v in base_style.items() if k != 'style_table'}
+            **base_style
         )
 
         return html.Div([
             html.Div([html.P(TABLE_3_3_DESC)], className='pg2-text-content-lgeo'),
-            html.Div(with_export_btn(table, 'table-3-3', max_width='1200px',
+            html.Div(with_export_btn(table, 'table-3-3',
                             title=f'Population by Indigenous Identity & Age Group - {geo_name}'),
                             className="d-flex flex-column align-items-center w-100"
                             ),
@@ -520,7 +518,7 @@ class Section3Prep:
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Age Group', value_cols, 
-                                                   label_width='25%', label_min_width='120px'),
+                                                   label_width='10%'),
             **base_style
         )
 
