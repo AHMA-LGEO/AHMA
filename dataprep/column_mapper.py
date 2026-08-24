@@ -1428,17 +1428,29 @@ def _pit_map(attrs: dict) -> dict:
 
 
 TABLE_9_3_COL_MAP = strip_map(_pit_map({
+    # "First Nations": {
+    #     "2025": "2025_Indigenous_Indigenous distinction_First Nations",
+    # },
+    # "Métis": {
+    #     "2025": "2025_Indigenous_Indigenous distinction_Métis",
+    # },
+    # "Inuit": {
+    #     "2025": "2025_Indigenous_Indigenous distinction_Inuit",
+    # },
+    # "Other/Multiple Indigenous Communities": {
+    #         "2025": "2025_Indigenous_Indigenous distinction_Other Indigenous ancestry / Unknown",
+    # },
     "First Nations": {
-        "2025": "2025_Indigenous_Indigenous distinction_First Nations",
+        "2025": None,
     },
     "Métis": {
-        "2025": "2025_Indigenous_Indigenous distinction_Métis",
+        "2025": None,
     },
     "Inuit": {
-        "2025": "2025_Indigenous_Indigenous distinction_Inuit",
+        "2025": None,
     },
     "Other/Multiple Indigenous Communities": {
-        "2025": "2025_Indigenous_Indigenous distinction_Other Indigenous ancestry / Unknown",
+        "2025": None,
     },
     "Total number of Indigenous people who experienced homelessness": {
         "2021": "2021_All Respondents_Number of Indigenous individuals who experienced homelessness_(blank)",
