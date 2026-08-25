@@ -1,5 +1,6 @@
 # Import necessary libraries
 from dash import html, dcc, callback_context, no_update, Input, Output, State, ALL
+from flask_compress import Compress
 
 from app_file import app
 
@@ -30,6 +31,12 @@ app.layout = html.Div([
 ])
 
 server = app.server
+
+# Compresses every text response (JS/CSS assets, HTML, callback JSON) on the
+# way out - plotly.js and html2pdf.bundle.js in particular go from several MB
+# down to a fraction of that over the wire. No compression was configured
+# anywhere before this.
+Compress(server)
 
 
 # Create the callback to handle multipage inputs
