@@ -21,10 +21,10 @@ get_data_loader().warm_cache()
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content', children=[]),
-    # Add external scripts for jsPDF and html2canvas
-    html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"),
-    html.Script(src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
-    html.Script(src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"),
+    # jsPDF/html2canvas/html2pdf are already served locally from assets/ (Dash
+    # auto-injects every .js file found there) - loading them again here from
+    # external CDNs was duplicating ~2.5MB of downloads on every first page
+    # load for no benefit.
     dcc.Download(id="download-dataframe-xlsx"),
     dcc.Store(id='display-geo-name', storage_type='memory'),
 ])
