@@ -1,4 +1,6 @@
 # Import necessary libraries
+import threading
+
 from dash import html, dcc, callback_context, no_update, Input, Output, State, ALL
 
 from app_file import app
@@ -7,6 +9,11 @@ from app_file import app
 from pages import map_picker, indig_territory, tab1, tab2, tab3, tab4
 from dashboard_helpers.content_helpers.export_helpers import table_to_excel
 from dashboard_helpers.content_helpers.data_loader import get_data_loader, resolve_geocode
+
+# Preload every DB table in the background so the first visitor to each tab
+# after a cold start doesn't pay the SQL read cost live (mirrors map_picker's
+# own _warm_subregion_cache warm-up for the map's GeoJSON data).
+threading.Thread(target=get_data_loader().warm_cache, daemon=True).start()
 
 
 # Define the index page layout

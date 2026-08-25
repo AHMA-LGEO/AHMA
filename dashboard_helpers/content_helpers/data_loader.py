@@ -91,7 +91,30 @@ class DataLoader:
         if not match.empty:
             return match['Province_Code'].iloc[0]
         return None
-    
+
+    def warm_cache(self):
+        """
+        Eagerly load every table in the database into the cache.
+
+        get_table() and geocode_master normally load lazily on first request, so
+        whichever visitor is first to open a given tab after a cold start pays
+        the SQL read cost live. Call this once in a background thread at app
+        startup so that cost happens during boot instead, before real traffic
+        arrives.
+        """
+        from sqlalchemy import inspect
+
+        _ = self.geocode_master
+
+        inspector = inspect(self.engine)
+        for table_name in inspector.get_table_names():
+            if table_name == 'geocode_master' or table_name in self._table_cache:
+                continue
+            try:
+                self._table_cache[table_name] = pd.read_sql_table(table_name, self.engine)
+            except Exception:
+                pass
+
 
 # Module-level dataloader
 _shared_loader = None
