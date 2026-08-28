@@ -46,7 +46,7 @@ class MapGenerator:
             colors = MAP_COLORS_WO_BLACK
 
         fig = go.Figure()
-        fig.add_trace(go.Choroplethmapbox(
+        fig.add_trace(go.Choroplethmap(
             geojson=self._geojson(gdf, ('province', id(gdf))),
             locations=gdf.index,
             z=gdf['rand'],
@@ -59,12 +59,12 @@ class MapGenerator:
         ))
 
         fig.update_layout(
-            mapbox_style="carto-positron",
-            mapbox_center={
+            map_style="carto-positron",
+            map_center={
                 "lat": gdf['lat'].mean(),
                 "lon": gdf['lon'].mean()
             },
-            mapbox_zoom=3.8,
+            map_zoom=3.8,
             margin=dict(b=0, t=10, l=0, r=10),
             modebar_color=MODEBAR_COLOR,
             modebar_activecolor=MODEBAR_ACTIVECOLOR,
