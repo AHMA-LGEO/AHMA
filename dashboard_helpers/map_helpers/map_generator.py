@@ -107,7 +107,7 @@ class MapGenerator:
             colors = MAP_COLORS_WO_BLACK
 
         fig = go.Figure()
-        fig.add_trace(go.Choroplethmapbox(
+        fig.add_trace(go.Choroplethmap(
             geojson=self._geojson(gdf, ('region', _prov_code)),
             locations=gdf.index,
             z=gdf['rand'],
@@ -120,12 +120,12 @@ class MapGenerator:
         ))
 
         fig.update_layout(
-            mapbox_style="carto-positron",
-            mapbox_center={
+            map_style="carto-positron",
+            map_center={
                 "lat": gdf['lat'].mean() + 3,
                 "lon": gdf['lon'].mean()
             },
-            mapbox_zoom=4.0,
+            map_zoom=4.0,
             margin=dict(b=0, t=10, l=0, r=10),
             modebar_color=MODEBAR_COLOR,
             modebar_activecolor=MODEBAR_ACTIVECOLOR,
@@ -163,7 +163,7 @@ class MapGenerator:
             colors = MAP_COLORS_WO_BLACK
 
         fig = go.Figure()
-        fig.add_trace(go.Choroplethmapbox(
+        fig.add_trace(go.Choroplethmap(
             geojson=self._geojson(gdf, ('subregion', region_code)),
             locations=gdf.index,
             z=gdf['rand'],
@@ -183,12 +183,12 @@ class MapGenerator:
         zoom = 11.5 - np.log(max_bound) if max_bound > 0 else 9
 
         fig.update_layout(
-            mapbox_style="carto-positron",
-            mapbox_center={
+            map_style="carto-positron",
+            map_center={
                 "lat": gdf['lat'].mean(),
                 "lon": gdf['lon'].mean()
             },
-            mapbox_zoom=zoom,
+            map_zoom=zoom,
             margin=dict(b=0, t=10, l=0, r=10),
             modebar_color=MODEBAR_COLOR,
             modebar_activecolor=MODEBAR_ACTIVECOLOR,
