@@ -352,6 +352,19 @@ div { font-size: 13px; }
   }
 }
 
+/* Keep charts in the same 1200px column as the tables (get_base_table_style /
+   with_export_btn both cap and centre at 1200px). Uncapped, a bar chart fills
+   the full width of .dashboard-pg2-lgeo - 90% of the viewport - so zooming the
+   page out left bar charts sprawling while the capped tables stayed a narrow
+   centred column. .dash-graph is dcc.Graph's outer container and the element
+   Plotly measures for responsive sizing, so capping it resizes the plot too.
+   Scoped to the tab content, leaving the geography picker's map full width. */
+#page-content-to-print .dash-graph {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 .dropdown-box-lgeo {
   display: inline;

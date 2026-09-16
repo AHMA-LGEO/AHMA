@@ -281,11 +281,13 @@ class Section5Prep:
                 gridcolor='#E5E5E5',
             ),
             barmode='stack',
+            bargap=0.4,
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([

@@ -217,14 +217,16 @@ class Section6Prep:
                 automargin=True
             ),
             barmode='stack',
-            height=560,
+            bargap=0.4,
+            height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
             autosize=True,
             font=dict(family=TABLE_FONT),
             margin=dict(l=70, r=20, t=70, b=100),
             legend=dict(orientation="h", yanchor="top", y=-0.15,
-                        xanchor="center", x=0.5, traceorder="reversed")
+                        xanchor="center", x=0.5, traceorder="reversed"),
+            dragmode=False,
         )
         fig.update_xaxes(automargin=True)
         fig.update_yaxes(automargin=True)

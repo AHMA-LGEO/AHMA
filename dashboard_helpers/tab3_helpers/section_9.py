@@ -284,7 +284,8 @@ class Section9Prep:
             autosize=True,
             height=560,
             legend=dict(orientation="h", yanchor="top",
-                        y=-0.15, xanchor="center", x=0.5)
+                        y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
         fig.update_xaxes(automargin=True)
         fig.update_yaxes(automargin=True)

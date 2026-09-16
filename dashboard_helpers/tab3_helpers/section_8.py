@@ -285,7 +285,8 @@ class Section8Prep:
             margin=dict(t=90, b=40, l=20, r=20),
             height=550,
             # Prevents text from sizing down into tiny unreadable fonts if slices shrink
-            uniformtext=dict(minsize=9, mode="hide") 
+            uniformtext=dict(minsize=9, mode="hide"),
+            dragmode=False,
         )
         fig.update_traces(leaf=dict(opacity=0.9))
 
@@ -661,7 +662,8 @@ class Section8Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            showlegend=False
+            showlegend=False,
+            dragmode=False,
         )
 
         return html.Div([

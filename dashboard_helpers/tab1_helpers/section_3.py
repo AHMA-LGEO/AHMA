@@ -266,12 +266,14 @@ class Section3Prep:
                 x=0.5, xanchor='center'
             ),
             barmode='stack',
+            bargap=0.5,
             yaxis=dict(title='Percentage of Population', ticksuffix='%', range=[0, 100], dtick=10, gridcolor='#E5E5E5'),
             height=500,
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([
@@ -332,7 +334,8 @@ class Section3Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([
@@ -454,7 +457,8 @@ class Section3Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([
@@ -758,6 +762,7 @@ class Section3Prep:
             showlegend=False,
             margin=dict(t=90, b=40, l=40, r=20),
             height=550,
+            dragmode=False,
 
             annotations=[
                 dict(
@@ -798,6 +803,7 @@ class Section3Prep:
         total_id = 'Total - Indigenous ancestry responses for the population in private households - 25% sample data'
         table_df = (
             df.set_index(index_col)[value_col]
+            .sort_index(ascending=True)
             .reset_index()
         )
 

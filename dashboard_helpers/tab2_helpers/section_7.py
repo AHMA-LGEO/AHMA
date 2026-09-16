@@ -166,6 +166,7 @@ class Section7Prep:
             legend=dict(traceorder="reversed"),
             margin=dict(t=90, b=40, l=20, r=20),
             height=550,
+            dragmode=False,
         )
 
         return html.Div([
@@ -285,7 +286,8 @@ class Section7Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([
@@ -396,7 +398,8 @@ class Section7Prep:
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
-            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5)
+            legend=dict(orientation="h", yanchor="top", y=-0.15, xanchor="center", x=0.5),
+            dragmode=False,
         )
 
         return html.Div([
