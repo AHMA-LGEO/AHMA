@@ -269,6 +269,7 @@ class Section3Prep:
             bargap=0.5,
             yaxis=dict(title='Percentage of Population', ticksuffix='%', range=[0, 100], dtick=10, gridcolor='#E5E5E5'),
             height=500,
+            margin=dict(t=130, b=80, l=60, r=40),
             plot_bgcolor='white',
             paper_bgcolor='white',
             font=dict(family=TABLE_FONT),
