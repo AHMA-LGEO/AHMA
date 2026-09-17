@@ -466,12 +466,13 @@ class Section9Prep:
             html.Div([dcc.Markdown(TABLE_9_3_DESC_P1),
                       html.P(TABLE_9_3_DESC_P2),
                       html.Br(),
-                      html.P(TABLE_9_3_DESC_P3),
+                      html.P(dcc.Markdown(TABLE_9_3_DESC_P3)),
+                      html.P(TABLE_9_3_DESC_P4),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_3)),
-                      html.P(dcc.Markdown(TABLE_9_3_LINK_4))
-                      ], className='pg2-text-content-lgeo'),
+                      # html.P(dcc.Markdown(TABLE_9_3_LINK_4)),
+                     ], className='pg2-text-content-lgeo'),
             *table_blocks,
         ], className='pg2-table-lgeo')
 
