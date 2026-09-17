@@ -229,7 +229,7 @@ TABLE_7_3_2_TITLE = "Change in Average Rents Between 2016 and 2023"
 
 CHART_7_3_2_DESC = """The following chart shows the average change in monthly rents in the selected community over time."""
 
-TABLE_7_3_2_DESC = """The following table shows the numerical values of the above chart."""
+TABLE_7_3_2_DESC = """The following table shows the average change in monthly rents in the selected community over time."""
 
 # Table 7.3.3 descriptions
 TABLE_7_3_3_TITLE = "Change in Vacancy Rates Between 2016 and 2023"
