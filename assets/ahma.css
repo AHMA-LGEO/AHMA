@@ -268,6 +268,28 @@ div { font-size: 13px; }
   border-color: #C97A63;
 }
 
+/* Preview: CTA button for the "View the Dashboard" link inside table 9.3's
+   infobox - background matches the box's own left-border green so the two
+   read as one cohesive callout. */
+.pit-dashboard-cta-btn {
+  display: inline-block;
+  background-color: #80875C;
+  border: 2px solid #80875C;
+  color: #ffffff !important;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  padding: 8px 20px;
+  border-radius: 4px;
+  text-decoration: none !important;
+  margin-top: 4px;
+}
+
+.pit-dashboard-cta-btn:hover {
+  background-color: transparent;
+  color: #80875C !important;
+  cursor: pointer;
+}
+
 
 .background-lgeo {
   width: 90%;

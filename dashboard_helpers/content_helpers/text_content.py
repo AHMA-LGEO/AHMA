@@ -313,7 +313,15 @@ TABLE_9_3_DESC_P1 = """This section highlights Point in Time Count data focused 
 
 TABLE_9_3_DESC_P2 = """It is important to recognize that Indigenous homelessness is often undercounted, and data on demographics, service access, and outcomes remains sparse or inconsistent. This limits accountability and masks the disproportionate harms faced by Indigenous people, particularly Indigenous women, girls, 2SLGBTQQIA+ individuals, and youth."""
 
-TABLE_9_3_DESC_P3 = """AHMA has created a Dashboard to support better understanding of trends in homelessness, identifying service gaps, and strengthening community-led responses. View the Dashboard: https://ahma-bc.org/resource-centre/public-policy/explore-the-pit-count-data-dashboard/"""
+TABLE_9_3_DESC_P3 = """
+**AHMA has created a Dashboard to support better understanding of trends in homelessness, identifying service gaps, and strengthening community-led responses.**
+"""
+
+# Preview: rendered as a styled button (pit-dashboard-cta-btn) instead of a
+# markdown link - split out of TABLE_9_3_DESC_P3 so the button's label/url
+# aren't tangled up in markdown link syntax.
+TABLE_9_3_DASHBOARD_LINK_TEXT = "View the Dashboard ↗"
+TABLE_9_3_DASHBOARD_LINK_URL = "https://ahma-bc.org/resource-centre/public-policy/explore-the-pit-count-data-dashboard/"
 
 TABLE_9_3_DESC_P4 = """For more information:"""
 
