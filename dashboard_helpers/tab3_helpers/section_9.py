@@ -24,7 +24,7 @@ from ..content_helpers.text_content import (
     TABLE_9_1_LINK_1, TABLE_9_1_LINK_2, TABLE_9_1_LINK_3, TABLE_9_1_LINK_4,
     TABLE_9_2_TITLE, TABLE_9_2_DESC, TABLE_9_2_LINK,
     TABLE_9_3_TITLE, TABLE_9_3_DESC_P1, TABLE_9_3_DESC_P2, TABLE_9_3_DESC_P3,
-    TABLE_9_3_LINK_1, TABLE_9_3_LINK_2, TABLE_9_3_LINK_3, TABLE_9_3_LINK_4
+    TABLE_9_3_DESC_P4, TABLE_9_3_LINK_1, TABLE_9_3_LINK_2, TABLE_9_3_LINK_3
     )
 from ..content_helpers.export_helpers import with_export_btn
 from dashboard_helpers.config import (
@@ -378,11 +378,13 @@ class Section9Prep:
                 html.Div([dcc.Markdown(TABLE_9_3_DESC_P1),
                         html.P(TABLE_9_3_DESC_P2),
                         html.Br(),
-                        html.P(TABLE_9_3_DESC_P3),
+                        html.P(dcc.Markdown(TABLE_9_3_DESC_P3)),
+                        html.P(TABLE_9_3_DESC_P4),
                         html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
                         html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
                         html.P(dcc.Markdown(TABLE_9_3_LINK_3)),
-                        html.P(dcc.Markdown(TABLE_9_3_LINK_4)),], className='pg2-text-content-lgeo'),
+                        # html.P(dcc.Markdown(TABLE_9_3_LINK_4)),
+                         ], className='pg2-text-content-lgeo'),
                 html.Div(
                 "No data for Indigenous Homelessness (2021, 2023, 2025).",
                 style={'fontFamily': TABLE_FONT, 'color': '#666'}
@@ -464,12 +466,13 @@ class Section9Prep:
             html.Div([dcc.Markdown(TABLE_9_3_DESC_P1),
                       html.P(TABLE_9_3_DESC_P2),
                       html.Br(),
-                      html.P(TABLE_9_3_DESC_P3),
+                      html.P(dcc.Markdown(TABLE_9_3_DESC_P3)),
+                      html.P(TABLE_9_3_DESC_P4),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_1)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_2)),
                       html.P(dcc.Markdown(TABLE_9_3_LINK_3)),
-                      html.P(dcc.Markdown(TABLE_9_3_LINK_4))
-                      ], className='pg2-text-content-lgeo'),
+                      # html.P(dcc.Markdown(TABLE_9_3_LINK_4)),
+                     ], className='pg2-text-content-lgeo'),
             *table_blocks,
         ], className='pg2-table-lgeo')
 

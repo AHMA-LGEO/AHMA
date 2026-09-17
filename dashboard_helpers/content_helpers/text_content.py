@@ -229,7 +229,7 @@ TABLE_7_3_2_TITLE = "Change in Average Rents Between 2016 and 2023"
 
 CHART_7_3_2_DESC = """The following chart shows the average change in monthly rents in the selected community over time."""
 
-TABLE_7_3_2_DESC = """The following table shows the numerical values of the above chart."""
+TABLE_7_3_2_DESC = """The following table shows the average change in monthly rents in the selected community over time."""
 
 # Table 7.3.3 descriptions
 TABLE_7_3_3_TITLE = "Change in Vacancy Rates Between 2016 and 2023"
@@ -313,15 +313,15 @@ TABLE_9_3_DESC_P1 = """This section highlights Point in Time Count data focused 
 
 TABLE_9_3_DESC_P2 = """It is important to recognize that Indigenous homelessness is often undercounted, and data on demographics, service access, and outcomes remains sparse or inconsistent. This limits accountability and masks the disproportionate harms faced by Indigenous people, particularly Indigenous women, girls, 2SLGBTQQIA+ individuals, and youth."""
 
-TABLE_9_3_DESC_P3 = """For more information:"""
+TABLE_9_3_DESC_P3 = """AHMA has created a Dashboard to support better understanding of trends in homelessness, identifying service gaps, and strengthening community-led responses. View the Dashboard: https://ahma-bc.org/resource-centre/public-policy/explore-the-pit-count-data-dashboard/"""
+
+TABLE_9_3_DESC_P4 = """For more information:"""
 
 TABLE_9_3_LINK_1 ="""https://ahma-bc.org/resource-centre/public-policy/bc-indigenous-homelessness/"""
 
-TABLE_9_3_LINK_2 ="""AHMA's PiT Count Dashboard: https://ahma-bc.org/resource-centre/public-policy/explore-the-pit-count-data-dashboard/"""
+TABLE_9_3_LINK_2 = """Definition of Indigenous Homelessness: https://homelesshub.ca/wp-content/uploads/2023/12/COHIndigenousHomelessnessDefinition.pdf"""
 
-TABLE_9_3_LINK_3 = """Definition of Indigenous Homelessness: https://homelesshub.ca/wp-content/uploads/2023/12/COHIndigenousHomelessnessDefinition.pdf"""
-
-TABLE_9_3_LINK_4 = """Where are all of my relations? Video Series by Lu'ma Native Housing https://www.lnhs.ca/indigenous-led-solutions"""
+TABLE_9_3_LINK_3 = """Where are all of my relations? Video Series by Lu'ma Native Housing https://www.lnhs.ca/indigenous-led-solutions"""
 
 #-------------------- Section 10 descriptions --------------------
 SECTION_10_TITLE = "Access to Services"
