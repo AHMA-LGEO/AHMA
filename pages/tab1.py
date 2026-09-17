@@ -14,7 +14,7 @@ from dashboard_helpers.content_helpers.text_content import (
     TABLE_5_2_DESC, TABLE_5_5_DESC, TABLE_5_5_NOTE, TABLE_5_5_TITLE, 
 )
 from dashboard_helpers.config import TABLE_FONT
-from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME
+from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME, toggle_wrapper_style
 from dashboard_helpers.content_helpers.data_loader import resolve_geocode
 
 
@@ -26,7 +26,6 @@ section_5_layout = Section5Prep()
 # Table IDs with toggle features for Tab 1
 TABLE_IDS = ["table-4-1", "table-4-3", "table-5-2", "table-5-5"]
 
-TOGGLE_WRAPPER_STYLE = {'maxWidth': '1200px', 'margin': '0 auto'}
 
 def derive_tab1_state(store: dict) -> str:
     """Return 'all_on', 'all_off', or 'mixed' based on per-table toggle states."""
@@ -415,11 +414,11 @@ def update_section_4(geo_name, scale, visibility):
     return (
         section_4_layout.create_chart_4_1(geocode),
         table_4_1,
-        {'display': 'none'} if empty_4_1 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_4_1 else toggle_wrapper_style('table-4-1'),
         section_4_layout.create_table_4_2_layout(geocode),
         section_4_layout.create_chart_4_3(geocode),
         table_4_3,
-        {'display': 'none'} if empty_4_3 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_4_3 else toggle_wrapper_style('table-4-3'),
         section_4_layout.create_table_4_4_layout(geocode),
         section_4_layout.create_table_4_5_layout(geocode, True),
         section_4_layout.create_table_4_6_layout(geocode),
@@ -451,9 +450,9 @@ def update_section_5(geo_name, scale, visibility):
         section_5_layout.create_table_5_1_layout(geocode),
         section_5_layout.create_chart_5_2(geocode),
         table_5_2,
-        {'display': 'none'} if empty_5_2 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_5_2 else toggle_wrapper_style('table-5-2'),
         section_5_layout.create_table_5_3_layout(geocode),
         section_5_layout.create_table_5_4_layout(geocode),
         table_5_5,
-        {'display': 'none'} if empty_5_5 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_5_5 else toggle_wrapper_style('table-5-5'),
         )

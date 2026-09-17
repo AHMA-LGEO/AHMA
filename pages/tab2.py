@@ -13,7 +13,7 @@ from dashboard_helpers.content_helpers.text_content import (
     TABLE_6_1_DESC, TABLE_6_3_DESC, TABLE_6_5_DESC, TABLE_6_5_TITLE, TABLE_7_1_DESC, TABLE_7_1_TITLE,
 )
 from dashboard_helpers.config import TABLE_FONT
-from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME
+from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME, toggle_wrapper_style
 from dashboard_helpers.content_helpers.data_loader import resolve_geocode
 
 # Initialize helpers
@@ -25,7 +25,6 @@ section_10_layout = Section10Prep()
 # Table IDs with toggle features for Tab 2
 TABLE_IDS = ["table-6-1", "table-6-3", "table-6-5", "table-7-1"]
 
-TOGGLE_WRAPPER_STYLE = {'maxWidth': '1200px', 'margin': '0 auto'}
 
 def derive_tab2_state(store: dict) -> str:
     """Return 'all_on', 'all_off', or 'mixed' based on per-table toggle states."""
@@ -398,16 +397,16 @@ def update_section_6(geo_name, scale, visibility):
     return (
         section_6_layout.create_chart_6(geocode, table_6_1_name, table_6_1_2_label),
         table_6_1,
-        {'display': 'none'} if empty_6_1 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_6_1 else toggle_wrapper_style('table-6-1'),
         section_6_layout.create_table_6_secondary_layout(geocode, table_6_2_name, table_6_1_2_label),
 
         section_6_layout.create_chart_6(geocode, table_6_3_name, table_6_3_4_label),
         table_6_3,
-        {'display': 'none'} if empty_6_3 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_6_3 else toggle_wrapper_style('table-6-3'),
         section_6_layout.create_table_6_secondary_layout(geocode, table_6_4_name, table_6_3_4_label),
 
         table_6_5,
-        {'display': 'none'} if empty_6_5 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_6_5 else toggle_wrapper_style('table-6-5'),
         section_6_layout.create_table_6_secondary_layout(geocode, table_6_6_name, table_6_5_6_label),
         )
 
@@ -431,7 +430,7 @@ def update_section_7(geo_name, scale, visibility):
     table_7_1, empty_7_1 = section_7_layout.create_table_7_1_layout(geocode, show_both)
     return (
         table_7_1,
-        {'display': 'none'} if empty_7_1 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_7_1 else toggle_wrapper_style('table-7-1'),
         section_7_layout.create_chart_7_3_1(geocode),
         section_7_layout.create_table_7_3_1_layout(geocode),
         # section_7_layout.create_chart_7_3_2(geocode),

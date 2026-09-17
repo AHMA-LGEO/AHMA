@@ -11,7 +11,7 @@ from dashboard_helpers.content_helpers.text_content import (
     TABLE_8_1_DESC, TABLE_8_3_DESC, TABLE_8_3_TITLE, TABLE_8_5_DESC
 )
 from dashboard_helpers.config import TABLE_FONT
-from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME
+from dashboard_helpers.content_helpers.table_styles import COLOR_SCHEME, toggle_wrapper_style
 from dashboard_helpers.content_helpers.data_loader import resolve_geocode
 
 # Initialize helpers
@@ -21,7 +21,6 @@ section_9_layout = Section9Prep()
 # Table IDs with toggle features for Tab 3
 TABLE_IDS = ["table-8-1", "table-8-3", "table-8-5"]
 
-TOGGLE_WRAPPER_STYLE = {'maxWidth': '1200px', 'margin': '0 auto'}
 
 
 def derive_tab3_state(store: dict) -> str:
@@ -328,13 +327,13 @@ def update_section_8(geo_name, scale, visibility):
     return (
         section_8_layout.create_chart_8_1(geocode),
         table_8_1,
-        {'display': 'none'} if empty_8_1 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_8_1 else toggle_wrapper_style('table-8-1'),
         table_8_3,
-        {'display': 'none'} if empty_8_3 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_8_3 else toggle_wrapper_style('table-8-3'),
         section_8_layout.create_table_8_4_layout(geocode),
         section_8_layout.create_chart_8_5(geocode),
         table_8_5,
-        {'display': 'none'} if empty_8_5 else TOGGLE_WRAPPER_STYLE,
+        {'display': 'none'} if empty_8_5 else toggle_wrapper_style('table-8-5'),
         section_8_layout.create_table_8_6_layout(geocode),
         section_8_layout.create_table_8_7_layout(geocode)
     )

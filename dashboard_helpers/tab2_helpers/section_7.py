@@ -98,7 +98,7 @@ class Section7Prep:
                 for y in YEARS_2016_2021
             ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-7-1')
 
         table = make_data_table(
             id='table-7-1',
@@ -115,7 +115,7 @@ class Section7Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 2}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='25%'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, val_cols, label_width='35%'),
             **base_style
         )
 
@@ -221,7 +221,7 @@ class Section7Prep:
             {"name": [geo_name, "2021"], "id": "2021"},
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-7-3-1')
 
         table = make_data_table(
             id='table-7-3-1',
@@ -235,7 +235,7 @@ class Section7Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_2016_2021, 
-                                                   label_width='30%', label_min_width='200px'),
+                                                   label_width='30%'),
             **base_style
         )
 

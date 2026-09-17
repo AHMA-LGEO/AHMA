@@ -57,6 +57,8 @@ class Section12Prep:
             {"name": _VAL_4, "id": _VAL_4},
         ]
 
+        base_style_4 = get_base_table_style('table-12-1-4')
+
         table4 = make_data_table(
             id='table-12-1-4',
             columns=columns4,
@@ -77,8 +79,8 @@ class Section12Prep:
                                                 'textAlign': 'left',  'paddingLeft': '12px'},
                 {'if': {'column_id': _VAL_4},   'textAlign': 'right', 'paddingRight': '12px'},
             ],
-            style_cell_conditional=make_style_cell(_LABEL_4, [_VAL_4], label_width='75%'),
-            **base_style
+            style_cell_conditional=make_style_cell(_LABEL_4, [_VAL_4], label_width='85%'),
+            **base_style_4
         )
 
         
@@ -101,6 +103,8 @@ class Section12Prep:
             {"name": _VAL_6,   "id": _VAL_6},
         ]
 
+        base_style_6 = get_base_table_style('table-12-1-6')
+
         table6 = make_data_table(
             id='table-12-1-6',
             columns=columns6,
@@ -120,8 +124,8 @@ class Section12Prep:
                                                 'textAlign': 'left',  'paddingLeft': '12px'},
                 {'if': {'column_id': _VAL_6},   'textAlign': 'right', 'paddingRight': '12px'},
             ],
-            style_cell_conditional=make_style_cell(_LABEL_6, [_VAL_6], label_width='75%'),
-            **base_style
+            style_cell_conditional=make_style_cell(_LABEL_6, [_VAL_6], label_width='85%'),
+            **base_style_6
         )
 
         return html.Div([
@@ -177,7 +181,7 @@ class Section12Prep:
             [result.loc[total_idx + 1:], total_row], ignore_index=True
         )
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-12-2')
 
         def build_table(table_id, label_header, table_df):
             columns = [{"name": [geo_name, label_header], "id": ""}] + [
@@ -199,7 +203,7 @@ class Section12Prep:
                     {'if': {'header_index': 1, 'column_id': _VAL_COL},
                      'textAlign': 'right', 'paddingRight': '12px'},
                 ],
-                style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='55%'),
+                style_cell_conditional=make_style_cell("", [_VAL_COL], label_width='75%'),
                 **base_style
             )
             return table, columns
@@ -220,7 +224,11 @@ class Section12Prep:
             html.Div([dcc.Markdown(TABLE_12_2_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(calc_table, 'table-12-2',
                             export_data=export_data, export_columns=calc_columns,
-                            title=f"Indigenous Housing Target - Urban, Rural and Northern (off-reserve) - {geo_name}"),
+                            title=[
+                                "Indigenous Housing Target - Urban, Rural and Northern (off-reserve) - ",
+                                html.Br(), 
+                                geo_name
+                            ]),
             html.Br(),
             breakdown_table,
             #html.I(TABLE_12_2_NOTE),

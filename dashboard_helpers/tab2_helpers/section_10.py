@@ -93,7 +93,7 @@ class Section10Prep:
             {"name": [geo_name, col], "id": col} for col in value_cols
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-10-1')
 
         # Row index 5-6 pharmacies, 7-8 friendship centres, 10 total number of indigenous people
         # formatted_df = merge_columns(formatted_df, rows=list(np.arange(5,9)) + [10], value_cols=value_cols)
@@ -116,8 +116,7 @@ class Section10Prep:
                 columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
                 left_align_cells={'column_id':_LABEL_COL, 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell(_LABEL_COL, value_cols, 
-                                                   label_width='25%', label_min_width='120px'),
+            style_cell_conditional=make_style_cell(_LABEL_COL, value_cols, label_width='50%'),
             **base_style
         )
 

@@ -83,6 +83,35 @@ TABLE_FONT = 'Open Sans, Helvetica, Arial, sans-serif'
 # TABLE_FONT = 'Open Sans'
 HEADER_FONT = 'Bahnschrift'
 
+# Central per-table width registry. A table's width has to agree in up to three
+# independently-styled places: its own style_table cap (get_base_table_style),
+# its Export-button wrapper (with_export_btn), and its "Show Comparison" toggle
+# row if it has one (toggle_wrapper_style) - all three read this dict via
+# table_width(). For a table split into several visual DataTables that
+# share one Export button (e.g. 9.3's four parts, 12.2's calc/breakdown pair),
+# only the id passed to with_export_btn needs an entry - the split pieces
+# resolve their width from the same call site, not from their own row here.
+DEFAULT_TABLE_WIDTH = '1200px'
+TABLE_WIDTHS = {
+    'table-3-1':       '900px',
+    'table-3-1-cd':    '900px',
+    'table-3-4':       '900px',
+    'table-3-5':       '900px',
+    'table-3-6':       '600px',
+    'table-5-1':       '900px',
+    'table-5-4':       '800px',
+    'table-5-5':       '900px',
+    'table-7-1':       '800px',
+    'table-7-3-1':     '800px',
+    'table-9-2':       '900px',
+    'table-9-3':       '900px',
+    'table-10-1':      '900px',
+    'table-12-1-4':    '800px',
+    'table-12-1-6':    '800px',
+    'table-12-2':      '800px',
+}
+
+
 # Map data paths
 MAP_DATA_DIR = Path(__file__).parent.parent / "source" / "mapdata_simplified"
 PROVINCE_SHAPEFILE = MAP_DATA_DIR / "province.shp"

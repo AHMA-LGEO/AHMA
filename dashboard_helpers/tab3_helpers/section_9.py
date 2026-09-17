@@ -340,7 +340,7 @@ class Section9Prep:
             {"name": [f"{geo_name} - {region_name} MCFD Region", col], "id": col} for col in value_cols
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-9-2')
 
         table = make_data_table(
             id='table-9-2',
@@ -355,7 +355,7 @@ class Section9Prep:
                 columns, is_multiindex=True, first_col_id='Exit Reason',
                 left_align_cells={'column_id':'Exit Reason', 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell('Exit Reason', value_cols, label_width='40%'),
+            style_cell_conditional=make_style_cell('Exit Reason', value_cols, label_width='60%'),
             **base_style
         )
 
@@ -422,7 +422,7 @@ class Section9Prep:
             {"name": [f"{geo_name} - {region_name} Point-in-Time Count", y], "id": y} for y in PIT_YEARS
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-9-3')
 
         def _build(table_id, group_df):
             return make_data_table(
@@ -438,7 +438,7 @@ class Section9Prep:
                     columns, is_multiindex=True, first_col_id=_LABEL_COL, n_header_rows=2,
                     left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
                 ),
-                style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='30%'),
+                style_cell_conditional=make_style_cell(_LABEL_COL, PIT_YEARS, label_width='50%'),
                 **base_style
             )
 
@@ -475,6 +475,6 @@ class Section9Prep:
 
 
 # For testing
-if __name__ == "__main__":
-    t = Section9Prep()
-    t.create_table_9_3_layout(59)
+# if __name__ == "__main__":
+#     t = Section9Prep()
+#     t.create_table_9_3_layout(59)

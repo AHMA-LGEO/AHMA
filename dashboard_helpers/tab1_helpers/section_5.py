@@ -77,7 +77,7 @@ class Section5Prep:
             {"name": [geo_name, col], "id": col} for col in value_cols
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-5-1')
 
         table = make_data_table(
             id='table-5-1',
@@ -94,7 +94,7 @@ class Section5Prep:
                 left_align_cells={'column_id':'Income Category', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Income Category', value_cols, 
-                                                   label_width='25%', label_min_width='120px'),
+                                                   label_width='35%'),
             **base_style
         )
 
@@ -439,10 +439,10 @@ class Section5Prep:
             'Median Annual Per Person Income'
         }
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-5-4')
 
         table = make_data_table(
-            id='table-5-1',
+            id='table-5-4',
             columns=columns,
             data=table_df.to_dict('records'),
             merge_duplicate_headers=True,
@@ -455,7 +455,7 @@ class Section5Prep:
                 left_align_cells={'column_id': 'Census Year', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Census Year', YEARS_2016_2021, 
-                                                   label_width='25%', label_min_width='120px'),
+                                                   label_width='45%'),
             **base_style
         )
 
@@ -530,7 +530,7 @@ class Section5Prep:
             columns = [c for c in columns if c['id'] in data_cols]
         df_display = df_display[data_cols]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-5-5')
         val_cols = [c for c in data_cols if c != _LABEL_COL]
 
         table = make_data_table(

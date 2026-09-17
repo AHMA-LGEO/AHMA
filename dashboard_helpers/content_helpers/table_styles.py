@@ -4,7 +4,7 @@ Styling utilities for Dash DataTables.
 import re
 import pandas as pd
 from dash import dash_table
-from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT
+from dashboard_helpers.config import TABLE_COLORS, TABLE_FONT, TABLE_WIDTHS, DEFAULT_TABLE_WIDTH
 
 #-------------------- Display label expansion --------------------
 
@@ -109,8 +109,9 @@ def make_style_cell(
     Build style_cell_conditional for a table with one label column
     and one or more right-aligned value columns.
 
-    The label column gets ``label_width``; each value column shares the
-    remaining 60% equally.
+    The label column gets ``label_width``; the value columns split whatever
+    percentage is left over, equally. A non-percentage ``label_width`` (e.g.
+    px) falls back to splitting 60%, since the leftover can't be derived.
 
     Args:
         label_col_id:   Column ID of the left-hand label column.
@@ -122,7 +123,22 @@ def make_style_cell(
         List of style_cell_conditional dicts.
     """
     n = len(value_col_ids)
-    value_width = f'{round(60 / n, 1)}%' if n else '0%'
+
+    # Split what's actually left after the label column instead of a flat 60%.
+    # DataTable leaves table-layout at the CSS default of auto, where these
+    # widths are only hints: when they don't total 100% the browser discards
+    # them and sizes by content, so the column holding the shortest values got
+    # squeezed (e.g. table 9.2 declared 55 + 20 + 20 + 20 = 115%, and its
+    # '% Indigenous' column - cells like '45%' - came out narrowest).
+    label_pct = None
+    if isinstance(label_width, str) and label_width.strip().endswith('%'):
+        try:
+            label_pct = float(label_width.strip()[:-1])
+        except ValueError:
+            label_pct = None
+
+    remaining = max(100 - label_pct, 0) if label_pct is not None else 60
+    value_width = f'{round(remaining / n, 1)}%' if n else '0%'
 
     styles = [{
         'if': {'column_id': label_col_id},
@@ -520,13 +536,41 @@ def make_centered_merged_row_styles(
     return styles
 
 
-def get_base_table_style() -> dict:
-    """Get base styling shared by all tables."""
+def table_width(table_id: str) -> str:
+    """
+    Resolve a table's configured width from the TABLE_WIDTHS registry
+    (config.py), falling back to DEFAULT_TABLE_WIDTH.
+
+    Single source of truth for a table's width: with get_base_table_style,
+    with_export_btn and toggle_wrapper_style all reading through this, changing
+    a table's width means editing TABLE_WIDTHS in config.py, not the table's
+    style_table, its Export wrapper, and any toggle row above it separately.
+    """
+    return TABLE_WIDTHS.get(table_id, DEFAULT_TABLE_WIDTH)
+
+
+def toggle_wrapper_style(table_id: str) -> dict:
+    """
+    Style for a table's "Show Comparison" toggle row, capped and centred to
+    match that table's own width (see table_width) so the two stay aligned
+    without hand-syncing a separate override each time a table's width changes.
+    """
+    return {'maxWidth': table_width(table_id), 'margin': '0 auto'}
+
+
+def get_base_table_style(table_id: str = None) -> dict:
+    """
+    Get base styling shared by all tables.
+
+    table_id resolves this table's width via TABLE_WIDTHS (config.py); omitted,
+    it uses DEFAULT_TABLE_WIDTH. Pass the same id used for the table's
+    with_export_btn call so the two agree.
+    """
     return {
         'style_table': {
             'overflowY': 'auto',
             'overflowX': 'auto',
-            'maxWidth': '1200px',
+            'maxWidth': table_width(table_id),
             'width': '100%',
             # Centers the table itself once maxWidth caps it narrower than its
             # parent - needed for tables placed without with_export_btn's own

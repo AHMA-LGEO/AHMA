@@ -132,7 +132,6 @@ class Section3Prep:
         cd_geocode = self.data_loader.get_region_geocode(geocode) if is_csd else geocode
         cd_name = self.data_loader.get_geography_name(int(cd_geocode)) if is_csd else geo_name
 
-        base_style = get_base_table_style()
         t_3_1_section_headers = {
             'Indigenous Population',
             'Regional Indigenous Households (by CD)',
@@ -153,6 +152,7 @@ class Section3Prep:
             return sub.reset_index(drop=True)
 
         def _build(table_id, sub_df, cols, header_styles):
+            base_style = get_base_table_style(table_id)
             disp = sub_df.copy()
             disp['Indicator'] = disp['Indicator'].replace({
                 '__geo_header__': geo_name,
@@ -398,7 +398,7 @@ class Section3Prep:
                 columns, is_multiindex=True, first_col_id='Age Group',
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
-            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='10%'),
+            style_cell_conditional=make_style_cell('Age Group', display_cols, label_width='20%'),
             **base_style
         )
 
@@ -506,7 +506,7 @@ class Section3Prep:
             {"name": [geo_name, col], "id": col} for col in value_cols
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-3-4')
 
         table = make_data_table(
             id='table-3-4',
@@ -522,7 +522,7 @@ class Section3Prep:
                 left_align_cells={'column_id': 'Age Group', 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell('Age Group', value_cols, 
-                                                   label_width='10%'),
+                                                   label_width='30%'),
             **base_style
         )
 
@@ -569,7 +569,7 @@ class Section3Prep:
             {"name": [geo_name, y], "id": y} for y in YEARS_MINUS_2011
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-3-5')
 
         table = make_data_table(
             id='table-3-5',
@@ -586,7 +586,7 @@ class Section3Prep:
                 left_align_cells={'column_id': _LABEL_COL, 'header_index': 1}
             ),
             style_cell_conditional=make_style_cell(_LABEL_COL, YEARS_MINUS_2011, 
-                                                   label_width='25%', label_min_width='120px'),
+                                                   label_width='35%'),
             **base_style
         )
 
@@ -821,7 +821,7 @@ class Section3Prep:
             {"name": [geo_name, value_col], "id": value_col} 
         ]
 
-        base_style = get_base_table_style()
+        base_style = get_base_table_style('table-3-6')
 
         table = make_data_table(
             id='table-3-6',
@@ -837,20 +837,13 @@ class Section3Prep:
             ),
             style_cell_conditional=make_style_cell(index_col, [value_col],
                                                    label_width='65%'),
-            # style_table={'maxWidth': '600px'},
-            # **base_style
-            style_table={
-                **base_style.get('style_table', {}), 
-                'maxWidth': '600px',
-                'width': '100%' 
-            },
-             **{k: v for k, v in base_style.items() if k != 'style_table'}
+            **base_style
         )
 
         return html.Div([
             html.Div([html.P(TABLE_3_6_DESC)], className='pg2-text-content-lgeo'),
             html.Div(
-                with_export_btn(table, 'table-3-6', max_width='600px',
+                with_export_btn(table, 'table-3-6',
                             title=f'Population by Indigenous Ancestry (2021) - {geo_name}'),
                 className="d-flex flex-column align-items-center w-100"
             ),
