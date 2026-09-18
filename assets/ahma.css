@@ -356,21 +356,31 @@ div { font-size: 13px; }
 @media (max-width: 1000px) {
   .dashboard-pg2-lgeo  {
     width: 1000px;
+    max-width: 1200px;
     display: block;
     margin: 0 auto;
-    padding-left: 8%;
-    padding-right: 1%;
+    /* px, not %: percentage padding resolves against the PARENT's width, so it
+       grew as the page zoomed out and dragged the content column off-centre.
+       Fixed units keep the offset identical at every zoom level. */
+    padding-left: 96px;
+    padding-right: 12px;
   }
 }
 
 
 @media (min-width: 1000px) {
   .dashboard-pg2-lgeo  {
+    /* max-width caps the column so text/headings stop sprawling to the full
+       viewport as the page zooms out, while the tables and charts inside
+       (capped in px at 1200/1000/800) stayed put - the mismatch that left long
+       thin paragraphs beside a narrow centred table. 1200px also matches the
+       width the PDF export pins this container to in app.py. */
     width: 90%;
+    max-width: 1200px;
     display: block;
     margin: 0 auto;
-    padding-left: 8%;
-    padding-right: 1%;
+    padding-left: 96px;
+    padding-right: 12px;
   }
 }
 
