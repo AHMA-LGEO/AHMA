@@ -69,11 +69,15 @@ You will get a message:
 4. Open your browser and navigate to:
 
 ```
-http://localhost:8050/page1
-http://localhost:8050/page2
+http://localhost:8050/map_picker
+http://localhost:8050/indig_territory
+http://localhost:8050/tab1
+http://localhost:8050/tab2
+http://localhost:8050/tab3
+http://localhost:8050/tab4
 ```
 > (8050 is the <port> number from above)
-> If the localhost address is not recognized, try `http://000.000.0.00:8050/page2` where `000.000.0.00` is your machine's IP address.
+> If the localhost address is not recognized, try `http://000.000.0.00:8050/map_picker` where `000.000.0.00` is your machine's IP address.
 
 ### Running the Data Pipeline
 
