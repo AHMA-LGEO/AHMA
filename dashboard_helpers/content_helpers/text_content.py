@@ -86,6 +86,8 @@ TABLE_3_4_DESC = """The following table shows the numeric values of the above gr
 # Table 3.5 descriptions
 TABLE_3_5_TITLE = "Priority Population (2006, 2016, 2021)"
 
+TABLE_3_5_DESC = """This data identifies priority groups within the Indigenous population who may face additional housing challenges, helping to identify a need for targeted and culturally appropriate responses."""
+
 # Table 3.6 descriptions
 TABLE_3_6_TITLE = "Population by Indigenous Ancestry (as reported in Census data) (2021)"
 
