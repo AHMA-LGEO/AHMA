@@ -22,7 +22,7 @@ from ..content_helpers.text_content import (
     CHART_3_2_TITLE, CHART_3_2_DESC,
     TABLE_3_3_TITLE, CHART_3_3_DESC, TABLE_3_3_DESC, TABLE_3_3_NOTE,
     TABLE_3_4_TITLE, CHART_3_4_DESC, CHART_3_4_NOTE, TABLE_3_4_DESC,
-    TABLE_3_5_TITLE, 
+    TABLE_3_5_TITLE, TABLE_3_5_DESC,
     TABLE_3_6_TITLE, CHART_3_6_DESC, TABLE_3_6_DESC, TABLE_3_6_NOTE,
     CHART_3_6_NOTE)
 
@@ -593,6 +593,7 @@ class Section3Prep:
 
         return html.Div([
             html.H5(TABLE_3_5_TITLE, className='table-title'),
+            html.Div([html.P(TABLE_3_5_DESC)], className='pg2-text-content-lgeo'),
             with_export_btn(table, 'table-3-5',
                             title=f'Priority Population - {geo_name}'),
         ], className='pg2-table-lgeo')
