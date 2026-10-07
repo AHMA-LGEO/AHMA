@@ -52,7 +52,7 @@ class Section5Prep:
 
         if df.empty:
             return html.Div([
-                # html.H4(SECTION_5_TITLE, className='table-title'),
+                html.H4(SECTION_5_TITLE, className='table-title'),
                 html.Div([html.P(SECTION_5_P1),
                           html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
                 html.H5(TABLE_5_1_TITLE, className='table-title'),
@@ -99,7 +99,7 @@ class Section5Prep:
         )
 
         return html.Div([
-            # html.H4(SECTION_5_TITLE, className='table-title'),
+            html.H4(SECTION_5_TITLE, className='table-title'),
             html.Div([html.P(SECTION_5_P1),
                       html.P(SECTION_5_P2)], className='pg2-text-content-lgeo'),
             html.H5(TABLE_5_1_TITLE, className='table-title'),
