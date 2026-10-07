@@ -697,7 +697,7 @@ def get_special_row_styles_8_1(data: pd.DataFrame) -> list:
 #-------------------- Section 9 – Systemic Pathways and Indigenous Homelessness --------------------
 
 ############### Table 9.1 stylers ###############
-_T9_1_LABEL_COL_2 = 'Percentage of people released who identify as indigenous'
+_T9_1_LABEL_COL_2 = 'Percentage of people released who identify as Indigenous'
 
 def get_special_row_styles_9_1(data: pd.DataFrame) -> list:
     styles = make_special_row_styles(data, 'Age',
