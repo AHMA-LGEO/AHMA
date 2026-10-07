@@ -171,8 +171,8 @@ class Section9Prep:
             df_9_1.loc[:, col] = df_9_1.loc[:, col].map(format_number)
             df_9_1_1.loc[:, col] = df_9_1_1.loc[:, col].map(format_percent)
 
-        label_col_1 = 'Number of people released who identify as indigenous'
-        label_col_2 = 'Percentage of people released who identify as indigenous'
+        label_col_1 = 'Number of people released who identify as Indigenous'
+        label_col_2 = 'Percentage of people released who identify as Indigenous'
 
         rows = (
             # [blank_row('Age', _FY_YEARS, label_col_1)]
