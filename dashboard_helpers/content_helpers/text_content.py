@@ -146,7 +146,7 @@ TABLE_5_1_TITLE = "Income Categories & Affordable Shelter Costs (2021)"
 
 TABLE_5_1_DESC_P1 = """This section connects household income categories to the maximum monthly shelter costs generally considered affordable. It helps show whether local housing costs are within reach for Indigenous households at different income levels."""
 
-TABLE_5_1_DESC_P2 = """In this data, “affordable” means shelter costs are 30% or less of total before-tax household income. This measure is useful because it can be applied consistently across assessed households, but it does not capture the full picture of housing need. It does not account for wealth, major repair needs, overcrowding, accessibility, cultural safety, household preferences, or trade-offs such as paying more for housing to reduce transportation or other costs. Interpret this section alongside Household and Family Type, housing condition, suitability, tenure, and local Indigenous knowledge."""
+TABLE_5_1_DESC_P2 = """In this data, “affordable” means shelter costs are less than 30% of total before-tax household income. This measure is useful because it can be applied consistently across assessed households, but it does not capture the full picture of housing need. It does not account for wealth, major repair needs, overcrowding, accessibility, cultural safety, household preferences, or trade-offs such as paying more for housing to reduce transportation or other costs. Interpret this section alongside Household and Family Type, housing condition, suitability, tenure, and local Indigenous knowledge."""
 
 # Table 5.2 and 5.3 descriptions
 TABLE_5_2_TITLE = "Households by Income Category (2006, 2016, 2021)"
@@ -350,7 +350,7 @@ SECTION_11_TITLE = "Population & Household Growth"
 
 SECTION_11_P1 = """This section offers a way to explore the predicted growth and needs in the community, and what that might mean for Indigenous housing stability and wellbeing."""
 
-SECTION_11_P2 = """As you explore this data, consider how the Indigenous population changing in this community, and what types of housing will be needed in the future. Are current plans aligned with this reality? How can planning support future generations' housing stability and wellbeing?"""
+SECTION_11_P2 = """As you explore this data, consider how the Indigenous population is changing in this community, and what types of housing will be needed in the future. Are current plans aligned with this reality? How can planning support future generations' housing stability and wellbeing?"""
 
 # Table 11.1 descriptions
 TABLE_11_1_TITLE = "Projected Population of Indigenous People & Households (First Nations, Métis, Inuit, or Other) 2021-2046"
